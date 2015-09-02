@@ -288,14 +288,52 @@ $(function() {
     var LogInView = Parse.View.extend({
         events: {
             "submit form.login-form": "logIn",
-            "submit form.signup-form": "signUp"
+            "submit form.signup-form": "signUp",
+            "submit form.fb-signup-form": "fbLogin"
         },
 
         el: ".content",
 
         initialize: function() {
-            _.bindAll(this, "logIn", "signUp");
+            _.bindAll(this, "logIn", "signUp", "fbLogin");
             this.render();
+        },
+
+        fbLogin: function(e)
+        {
+            var self = this;
+
+            Parse.FacebookUtils.logIn(null, {
+              success: function(user) {
+                // If it's a new user, let's fetch their name from FB
+                if (!user.existed()) {
+                  // We make a graph request
+                  FB.api('/me', function(response) {
+                    if (!response.error) {
+                      // We save the data on the Parse user
+                      user.set("displayName", response.name);
+                      user.save(null, {
+                        success: function(user) {
+                          // And finally save the new score
+                          self.saveHighScore();
+                        },
+                        error: function(user, error) {
+                          console.log("Oops, something went wrong saving your name.");
+                        }
+                      });
+                    } else {
+                      console.log("Oops something went wrong with facebook.");
+                    }
+                  });
+                // If it's an existing user that was logged in, we save the score
+                } else {
+                  self.saveHighScore();
+                }
+              },
+              error: function(user, error) {
+                console.log("Oops, something went wrong.");
+              }
+            });
         },
 
         logIn: function(e) {
@@ -391,10 +429,24 @@ $(function() {
             state.set({ filter: "completed" });
         }
     });
-
     var state = new AppState;
-
     new AppRouter;
     new AppView;
     Parse.history.start();
 });
+
+function doFacebookLogin()
+{
+
+}
+
+function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+    });
+}
+
+function statusChangeCallback(response)
+{
+
+}

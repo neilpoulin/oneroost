@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Next Steps - Changing the world one sale at a time</title>
+    <style>
+    body { font-family: Helvetica, Arial, sans-serif; }
+    h1 { font-size: 30px; margin: 0; }
+    p { margin: 40px 0; }
+    em { font-family: monospace; }
+    a { color: #5298fc; text-decoration: none; }
+    </style>
+
+      <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+      <script src="lib/underscore.js"></script>
+      <script src="http://www.parsecdn.com/js/parse-1.2.13.min.js"></script>
+      <script src="js/initialize.js"></script>
+
+  </head>
+  <body>
+    <div>
+      <h1>Next Steps - This is the new homepage from the cloud!</h1>
+
+      <div class="main_content">
+        	<div>Total users in server query: {%=users.length %}</div>
+          <div>Total from FE query: <span id="fe-count"></span> </div>
+          {% users.forEach(function(user) { %}
+        		<div class="post_link">
+      	  		<h1><a href="{%= '/users/' + user.id %}">{%= user.get("username") %}</a></h1>
+      	  		<h5>{%= formatTime(user.createdAt) %}</h5>
+        		</div>
+          {% }) %}
+      </div>
+    </div>
+    <div id="cloud"></div>
+
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+          var query = new Parse.Query(Parse.User);
+          var total = query.count({success: function(resp){
+            $("#fe-count").html( resp );
+          },
+        error: function(resp){
+          $("#fe-count").html("error: " + resp);
+        }});
+      });
+  </script>
+  </body>
+</html>
