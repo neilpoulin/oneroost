@@ -22,6 +22,7 @@ _site
 .idea
 .project
 .settings
+*.iml
 .tmproj
 *.esproj
 *.sublime-project

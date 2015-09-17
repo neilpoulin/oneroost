@@ -1,0 +1,12 @@
+.label{
+  margin-left: 10px;
+}
+
+
+
+.profileCard{
+  border: 1px solid black;
+  border-radius: 6px;
+  margin-top: 15px;
+  overflow: hidden;
+}

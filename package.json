@@ -1,0 +1,22 @@
+{
+  "name": "nextsteps",
+  "version": "0.0.0",
+  "description": "next steps application",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Neilpoulin/nextsteps.git"
+  },
+  "author": "Neil Poulin",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/Neilpoulin/nextsteps/issues"
+  },
+  "homepage": "https://github.com/Neilpoulin/nextsteps",
+  "dependencies": {
+    "express": "~4.13.3"
+  }
+}

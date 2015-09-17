@@ -14,6 +14,8 @@
       <script src="lib/underscore.js"></script>
       <script src="http://www.parsecdn.com/js/parse-1.2.13.min.js"></script>
       <script src="js/initialize.js"></script>
+      <script src="https://fb.me/react-0.13.3.js"></script>
+      <script src="https://www.parsecdn.com/js/parse-react.js"></script>
 
   </head>
   <body>
@@ -34,15 +36,41 @@
     <div id="cloud"></div>
 
 
-    <script type="text/javascript">
+    <script type="text/jsx">
       $(document).ready(function(){
-          var query = new Parse.Query(Parse.User);
-          var total = query.count({success: function(resp){
-            $("#fe-count").html( resp );
+        //   var query = new Parse.Query(Parse.User);
+        //   var total = query.count({success: function(resp){
+        //     $("#fe-count").html( resp );
+        //   },
+        // error: function(resp){
+        //   $("#fe-count").html("error: " + resp);
+        // }});
+
+        var AccountListItem = React.createClass({
+          mixins: [ParseReact.Mixin], // Enable query subscriptions
+
+          observe: function() {
+            // Subscribe to all Comment objects, ordered by creation date
+            // The results will be available at this.data.comments
+            return {
+              users: (new Parse.Query('User')).ascending('createdAt')
+            };
           },
-        error: function(resp){
-          $("#fe-count").html("error: " + resp);
-        }});
+
+          render: function() {
+            // Render the text of each comment as a list item
+            return (
+              <ul>
+                {this.data.users.map(function(c) {
+                  return <li>{c.id}</li>;
+                })}
+              </ul>
+            );
+          }
+        });
+
+        React.render( <AccountListItem/>, document.getElementById('cloud') );
+
       });
   </script>
   </body>
