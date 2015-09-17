@@ -188,6 +188,10 @@ var Example = React.createClass({
                   Open Popup
               </BootstrapButton>
 
+              <BootstrapButton onClick={this.refreshUsers} className="btn-success">
+                  Refresh Users
+              </BootstrapButton>
+
               {counterWell}
           </div>
         </div>
@@ -197,15 +201,17 @@ var Example = React.createClass({
       </div>
     );
   },
-  openModal: function() {
-    this.refs.modal.open();
+  refreshUsers: function(){
+    this.refs.profiles.refreshQueries();
     this.setState({
       counter: this.state.counter + 1
     });
   },
+  openModal: function() {
+    this.refs.modal.open();
+  },
   closeModal: function() {
     this.refs.modal.close();
-    this.refs.profiles.refreshQueries();
   }
 });
 

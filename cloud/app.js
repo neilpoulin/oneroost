@@ -11,7 +11,6 @@ var app = express();
 // Global app configuration section.
 app.use(express.bodyParser());
 app.engine('ejs', ejs.__express);
-
 app.set('views', 'cloud/views');
 
 app.locals.formatTime = function(time) {
@@ -34,6 +33,9 @@ app.get('/todo', function(request, response){
     response.render( 'todo.ejs', {} );
 });
 
-app.get("/", usersController.index);
+// app.get("/", usersController.index);
+app.get("/", function( request, response ){
+  response.render("react.ejs");
+});
 
 app.listen();

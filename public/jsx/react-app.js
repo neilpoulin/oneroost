@@ -234,6 +234,11 @@ var Example = React.createClass({
             { onClick: this.openModal, className: "btn-primary" },
             "Open Popup"
           ),
+          React.createElement(
+            BootstrapButton,
+            { onClick: this.refreshUsers, className: "btn-success" },
+            "Refresh Users"
+          ),
           counterWell
         )
       ),
@@ -244,15 +249,17 @@ var Example = React.createClass({
       )
     );
   },
-  openModal: function openModal() {
-    this.refs.modal.open();
+  refreshUsers: function refreshUsers() {
+    this.refs.profiles.refreshQueries();
     this.setState({
       counter: this.state.counter + 1
     });
   },
+  openModal: function openModal() {
+    this.refs.modal.open();
+  },
   closeModal: function closeModal() {
     this.refs.modal.close();
-    this.refs.profiles.refreshQueries();
   }
 });
 
