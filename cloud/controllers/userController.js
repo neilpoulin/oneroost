@@ -6,7 +6,7 @@ exports.index = function(req, res) {
   query.ascending('createdAt');
   query.limit(10);
   query.find().then( function(results) {
-    res.render('users/index.ejs', {
+    res.render('user/index.ejs', {
       users: results
     });
   },
@@ -14,3 +14,8 @@ exports.index = function(req, res) {
     res.send(500, 'Failed loading posts');
   });
 };
+
+exports.getMyHome = function(request, response)
+{
+    return response.render('user/userHome.ejs', {request: request});
+}

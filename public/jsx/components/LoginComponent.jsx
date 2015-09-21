@@ -1,4 +1,4 @@
-define( ['react', 'SpinnerIcon'], function(React, SpinnerIcon){
+define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
   return React.createClass({
     getInitialState: function(){
       var username;
@@ -9,6 +9,7 @@ define( ['react', 'SpinnerIcon'], function(React, SpinnerIcon){
       {
           username = user.get("username");
           isLoggedIn = true;
+          // this.handleLoginSuccess(user);
       }
       return {
         isLoggedIn: isLoggedIn,
@@ -49,6 +50,10 @@ define( ['react', 'SpinnerIcon'], function(React, SpinnerIcon){
         username: user.get("username"),
         password: user.get("password")
       });
+      if ( this.props.success )
+      {
+        this.props.success();
+      }
       return this.render();
     },
     handleLogoutSuccess: function()
@@ -58,6 +63,12 @@ define( ['react', 'SpinnerIcon'], function(React, SpinnerIcon){
         username: null,
         password: null
       });
+
+      if ( this.props.logoutSuccess )
+      {
+        this.props.logoutSuccess();
+      }
+
       return this.render();
     },
     handleLogoutError: function(){
@@ -74,7 +85,7 @@ define( ['react', 'SpinnerIcon'], function(React, SpinnerIcon){
       {
         return (
           <div className="LogoutComponent">
-            <a href="#" onClick={this.doLogout}>Logout from {this.state.username}</a><SpinnerIcon ref="spinner"></SpinnerIcon>
+            You are logged in as  {this.state.username} (<a href="#" onClick={this.doLogout}>log out</a>) <SpinnerIcon ref="spinner"></SpinnerIcon>
           </div>
         );
       }
@@ -82,15 +93,18 @@ define( ['react', 'SpinnerIcon'], function(React, SpinnerIcon){
       return (
         <div className="LoginComponent">
             <form >
-              <div class="form-component">
+              <div className="form-component">
                 <label for="loginUsernameInput">Username</label>
-                <input type="text" id="loginUsernameInput" className="form-control" onChange={this.handleUsernameChange} placeholder="username"/>
+                <input type="text" id="loginUsernameInput" className="form-control" onChange={this.handleUsernameChange} placeholder=""/>
               </div>
-              <div class="form-component">
+              <div className="form-component">
                 <label for="loginPasswordInput">Password</label>
                 <input type="password" id="loginPasswordInput" className="form-control" onChange={this.handlePasswordChange}/>
               </div>
-              <button className="button btn-primary" id="loginSubmitBtn" onClick={this.doLogin}>Login <SpinnerIcon ref="spinner"></SpinnerIcon></button>
+              <div className="form-component">
+                <br/>
+                <button className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doLogin}>Login <SpinnerIcon ref="spinner"></SpinnerIcon></button>
+              </div>
             </form>
         </div>
       );
