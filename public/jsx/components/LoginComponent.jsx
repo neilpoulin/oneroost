@@ -14,18 +14,30 @@ define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
       return {
         isLoggedIn: isLoggedIn,
         username: username,
-        password: null
+        password: null,
+        isLogin: false
       };
     },
     doLogin: function(e){
       e.preventDefault();
       var component = this;
-      console.log("logging in for user: " + this.state.username + ", password: " + this.state.password);
 
-      Parse.User.logIn(this.state.username, this.state.password, {
+      if ( this.state.isLogin )
+      {
+        console.log("logging in for user: " + this.state.username + ", password: " + this.state.password);
+
+        Parse.User.logIn(this.state.username, this.state.password, {
+            success: component.handleLoginSuccess,
+            error: component.handleLoginError
+        });
+      }
+      else {
+        Parse.User.signUp( this.state.username, this.state.password, {ACL: new Parse.ACL()}, {
           success: component.handleLoginSuccess,
           error: component.handleLoginError
-      });
+        });
+      }
+
       return this.showLoading();
     },
     doLogout: function(e){
@@ -80,6 +92,12 @@ define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
     handlePasswordChange: function(e){
       this.setState({"password": e.target.value});
     },
+    setIsRegister: function(e){
+      this.setState({isLogin: false});
+    },
+    setIsLogin: function(e){
+      this.setState({isLogin: true});
+    },
     render: function(){
       if ( this.state.isLoggedIn )
       {
@@ -89,12 +107,30 @@ define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
           </div>
         );
       }
+      var registerLoginMessage;
+      var btnText = "Log In";
+      if ( this.state.isLogin )
+      {
+        registerLoginMessage = (
+          <div>
+            Don't have an account? <a onClick={this.setIsRegister}>Create one here</a>.
+          </div>
+        );
+      }
+      else {
+        btnText = "Sign Up";
+        registerLoginMessage = (
+          <div>
+            Already have an account? <a onClick={this.setIsLogin}>Login here</a>.
+          </div>
+        );
+      }
 
       return (
         <div className="LoginComponent">
             <form >
               <div className="form-component">
-                <label for="loginUsernameInput">Username</label>
+                <label for="loginUsernameInput">User Name</label>
                 <input type="text" id="loginUsernameInput" className="form-control" onChange={this.handleUsernameChange} placeholder=""/>
               </div>
               <div className="form-component">
@@ -103,8 +139,9 @@ define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
               </div>
               <div className="form-component">
                 <br/>
-                <button className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doLogin}>Login <SpinnerIcon ref="spinner"></SpinnerIcon></button>
+                <button className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doLogin}>{btnText} <SpinnerIcon ref="spinner"></SpinnerIcon></button>
               </div>
+              {registerLoginMessage}
             </form>
         </div>
       );

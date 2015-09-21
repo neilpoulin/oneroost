@@ -80,25 +80,26 @@ function( Parse, ParseReact, React, jQuery, BootstrapModal, CreateAccount, Accou
         </AccountList>
       );
 
-      if ( !this.getCurrentUser )
+      if ( !this.getCurrentUser() )
       {
         document.location = "/";
         return;
       }
+
       return (
         <div className="container-fluid">
-          <LoginComponent
-            logoutSuccess={this.logoutSuccess}
-            ></LoginComponent>
-          <h1>Welcome to Next Steps</h1>
-          <div className="row">
-            <div className="container-fluid col-md-4 col-md-offset-4">
-                {addAccountModal}
-                <button className="btn btn-default" onClick={this.onAddAccount} >Add Account</button>
+          <LoginComponent logoutSuccess={this.logoutSuccess} ></LoginComponent>
+          <div className="col-md-6 col-md-offset-3">
+            <div className="row">
+              <h1>My Accounts</h1>
+              <div className="container-fluid">
+                  {addAccountModal}
+                  <button className="btn btn-default" onClick={this.onAddAccount} >Add Account</button>
+              </div>
             </div>
-          </div>
-          <div className="row">
-            {accounts}
+            <div className="row">
+              {accounts}
+            </div>
           </div>
         </div>
       );
