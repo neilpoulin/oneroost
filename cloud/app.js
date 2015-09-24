@@ -19,7 +19,7 @@ app.locals.formatTime = function(time) {
 
 // app.get("/", usersController.index);
 app.get("/", function( request, response ){
-  response.render("home.ejs");
+  response.render("construction.ejs");
 });
 
 app.get("/my/home", userController.getMyHome);
