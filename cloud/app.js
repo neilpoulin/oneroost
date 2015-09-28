@@ -2,9 +2,11 @@ var express = require('express');
 var moment = require('moment');
 var _ = require('underscore');
 var userController = require("cloud/controllers/userController.js");
+var envUtil = require("cloud/util/envUtil.js");
+
 var ejs = require('ejs');
-ejs.open= '{%';
-ejs.close = '%}';
+// ejs.open= '{%';
+// ejs.close = '%}';
 
 var app = express();
 
@@ -19,9 +21,12 @@ app.locals.formatTime = function(time) {
 
 // app.get("/", usersController.index);
 app.get("/", function( request, response ){
-  response.render("home.ejs");
+    var env = envUtil.getEnv();
+    var homePage = env.isDev ? "home.ejs" : "construction.ejs";
+
+    response.render( homePage, env.json );
 });
 
-app.get("/my/home", userController.getMyHome);
+app.get("/my/home", userController.getMyHome );
 
 app.listen();

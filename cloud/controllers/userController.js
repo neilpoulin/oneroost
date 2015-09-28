@@ -1,3 +1,4 @@
+var envUtil = require("cloud/util/envUtil.js");
 var _ = require("underscore");
 var User = Parse.User;
 
@@ -15,7 +16,6 @@ exports.index = function(req, res) {
   });
 };
 
-exports.getMyHome = function(request, response)
-{
-    return response.render('user/userHome.ejs', {request: request});
+exports.getMyHome = function(request, response ){
+    return response.render('user/userHome.ejs', envUtil.getEnv().json );
 }

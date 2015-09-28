@@ -12,8 +12,6 @@
 <body>
 <div id="userHome">
 
-{% request %}
-
 </div>
 <!-- <script src="../../lib/es5-shim.min.js"></script>
 <script src="../../lib/es5-sham.min.js"></script>
@@ -21,6 +19,7 @@
 <!-- command for doing babel watch:
  babel --watch js/react/ --out-dir jsx/
 -->
+<% include ../config.ejs %>
 <script data-main="../../js/user/userHome" src="../../lib/require.js"></script>
 
 </body>
