@@ -1,0 +1,19 @@
+{
+  "applications": {
+    "OneRoost - Dev": {
+      "applicationId": "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq"
+    },
+    "OneRoost - Prod": {
+      "applicationId": "lSNtmvBTimEY6VfOo5zvvOQkljcHeDIOQcjefNUu"
+    },
+    "_default": {
+      "link": "OneRoost - Dev"
+    },
+    "dev": {
+      "link": "OneRoost - Dev"
+    },
+    "production": {
+      "link": "OneRoost - Prod"
+    }
+  }
+}
