@@ -2,9 +2,11 @@ var express = require('express');
 var moment = require('moment');
 var _ = require('underscore');
 var userController = require("cloud/controllers/userController.js");
+var envUtil = require("cloud/util/envUtil.js");
+
 var ejs = require('ejs');
-ejs.open= '{%';
-ejs.close = '%}';
+// ejs.open= '{%';
+// ejs.close = '%}';
 
 var app = express();
 
@@ -17,11 +19,42 @@ app.locals.formatTime = function(time) {
   return moment(time).format('MMMM Do YYYY, h:mm a');
 };
 
+var parseConfig = Parse.Config.current();
+
 // app.get("/", usersController.index);
 app.get("/", function( request, response ){
+<<<<<<< HEAD
   response.render("construction.ejs");
+=======
+    var env = envUtil.getEnv();
+    var homePage = env.isDev ? "home.ejs" : "construction.ejs";
+    var params = env.json;
+    getConfig();
+    console.log(parseConfig);
+    console.log( parseConfig.get( "landing_motto" ) ) ;
+
+    response.render( homePage, params);
+>>>>>>> develop
 });
 
-app.get("/my/home", userController.getMyHome);
+
+function getConfig()
+{
+  console.log("attempting to get config");
+  Parse.Config.get().then( function(config){
+    console.log("Successfully retrieved new config");
+    console.log(config);
+    parseConfig = config;
+  },
+  function(error){
+    console.log("error... failed to get config");
+    console.log(error);
+    parseConfig = Parse.Config.current();
+  });
+
+  return parseConfig;
+}
+
+app.get("/my/home", userController.getMyHome );
 
 app.listen();

@@ -3,7 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>NextSteps React App</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <title>One Roost - Welcome</title>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/react-app.css" type="text/css" />
@@ -15,8 +17,10 @@
 <script src="../lib/es5-sham.min.js"></script>
 <script src="../lib/console-polyfill.js"></script>
 <!-- command for doing babel watch:
- babel --watch js/react/ --out-dir jsx/
+ babel --watch jsx/ --out-dir out/js
 -->
+
+<% include config.ejs %>
 <script data-main="../js/home" src="../lib/require.js"></script>
 
 </body>
