@@ -1,4 +1,4 @@
-define( ['react', 'models/Account'], function(React, Account){
+define( ['react', 'models/Account', 'models/Deal'], function(React, Account, Deal){
   return React.createClass({
     mixins: [React.addons.LinkedStateMixin],
     getInitialState: function(){
@@ -28,22 +28,40 @@ define( ['react', 'models/Account'], function(React, Account){
       account.set("zipCode", this.state.zipCode);
 
       account.save(null, {
-        success: component.createSuccess,
-        error: component.createError
+        success: component.accountCreateSuccess,
+        error: component.accountCreateError
       });
 
     },
-    createSuccess: function(){
+    accountCreateSuccess: function( account ){
       if ( this.props.createSuccess )
       {
-        this.props.createSuccess();
+         var component = this;
+         var deal =  new Deal();
+         deal.set("createdBy", component.props.user);
+         deal.set("account", account );
+         deal.set("dealName", component.state.dealName);
+
+         deal.save(null, {
+             success: component.dealCreateSuccess,
+             error: component.dealCreateError
+         });
       }
     },
-    createError: function(){
+    accountCreateError: function(){
       if ( this.props.createError )
       {
         this.props.createError("Failed to create an account. ");
       }
+    },
+    dealCreateSuccess: function( deal ){
+        this.props.createSuccess();
+    },
+    dealCreateError: function(){
+        if ( this.props.createError )
+        {
+          this.props.createError("Failed to create the deal. ");
+        }
     },
     render: function(){
       return (
@@ -53,6 +71,10 @@ define( ['react', 'models/Account'], function(React, Account){
             <div className="form-component">
               <label for="accountNameInput" >Account Name</label>
               <input id="accountNameInput" type="text" className="form-control" valueLink={this.linkState('accountName')} />
+            </div>
+            <div className="form-component">
+                <label for="dealNameInput" >Deal Name</label>
+                <input id="dealNameInput" type="text" className="form-control" valueLink={this.linkState('dealName')} />
             </div>
             <div className="form-component" >
               <label for="primaryContactInput">Primary Contact Name</label>

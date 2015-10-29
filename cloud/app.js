@@ -52,5 +52,10 @@ function getConfig()
 }
 
 app.get("/my/home", userController.getMyHome );
+app.get("/deals/:dealId", function(req, resp){
+    var dealId =req.params.dealId;
+    userController.getDealPage( req, resp, dealId );
+});
+
 
 app.listen();

@@ -8,6 +8,12 @@ requirejs.config({
     "parse": "//www.parsecdn.com/js/parse-1.6.2.min",
     "parse-react": "https://www.parsecdn.com/js/parse-react",
     "app": "../app",
-    "models": "/js/models"
-  }
+    "models": "/js/models",
+    "underscore": "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min"
+},
+shim: {
+        "underscore": {
+            exports: "_"
+        }
+    }
 });

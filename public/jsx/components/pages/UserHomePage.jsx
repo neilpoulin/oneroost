@@ -29,7 +29,6 @@ function( Parse, ParseReact, React, jQuery, BootstrapModal, CreateAccount, Accou
     },
     getCurrentUser: function()
     {
-      console.log(Parse.User.current() );
       return Parse.User.current();
     },
     clearAddAccountForm: function(){
