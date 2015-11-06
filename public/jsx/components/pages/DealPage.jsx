@@ -15,8 +15,7 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'deal/Comments', 'deal/P
         },
         render: function(){
             var deal = this.props.deal;
-            window.deal = deal;
-
+            document.title = "OneRoost Deal Page - " + deal.get("dealName");
             var budget = deal.get("budget");
             return(
                 <div className="container dealContainer">
