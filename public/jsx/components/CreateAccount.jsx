@@ -41,6 +41,9 @@ define( ['react', 'models/Account', 'models/Deal'], function(React, Account, Dea
          deal.set("createdBy", component.props.user);
          deal.set("account", account );
          deal.set("dealName", component.state.dealName);
+         deal.set("profile", {});
+         deal.set("stakeholders", []);
+         deal.set("budget", {"low": 0, "high": 0});
 
          deal.save(null, {
              success: component.dealCreateSuccess,
@@ -49,10 +52,10 @@ define( ['react', 'models/Account', 'models/Deal'], function(React, Account, Dea
       }
     },
     accountCreateError: function(){
-      if ( this.props.createError )
-      {
-        this.props.createError("Failed to create an account. ");
-      }
+        if ( this.props.createError )
+        {
+            this.props.createError("Failed to create an account. ");
+        }
     },
     dealCreateSuccess: function( deal ){
         this.props.createSuccess();
@@ -60,7 +63,7 @@ define( ['react', 'models/Account', 'models/Deal'], function(React, Account, Dea
     dealCreateError: function(){
         if ( this.props.createError )
         {
-          this.props.createError("Failed to create the deal. ");
+            this.props.createError("Failed to create the deal.");
         }
     },
     render: function(){
