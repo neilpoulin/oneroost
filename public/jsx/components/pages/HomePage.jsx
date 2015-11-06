@@ -5,11 +5,11 @@ define(['react', 'LoginComponent'], function( React, LoginComponent ){
     },
     render: function(){
       return (
-        <div className="container-fluid">
-          <h1>Welcome to Next Steps</h1>
-          <div className="container col-md-4 col-md-offset-4">
-              <LoginComponent success={this.handleLoginSuccess} ></LoginComponent>
+        <div className="container ">
+          <div className="row">
+              <h1>Welcome to One Roost</h1>
           </div>
+          <LoginComponent success={this.handleLoginSuccess} ></LoginComponent>
         </div>
       );
     }

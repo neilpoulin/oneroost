@@ -23,8 +23,7 @@ function( Parse, ParseReact, React, jQuery, BootstrapModal, CreateAccount, Accou
       var success = this.refs.createAccountForm.doSubmit();
       if ( success )
       {
-        this.closeAddAccountModal();
-        // this.render();
+        this.accountCreateSuccess();
       }
     },
     getCurrentUser: function()
@@ -39,7 +38,7 @@ function( Parse, ParseReact, React, jQuery, BootstrapModal, CreateAccount, Accou
     },
     accountCreateSuccess: function(){
       this.closeAddAccountModal();
-      this.refs.accountList.refreshQueries('accounts');
+      this.refs.accountList.refreshQueries(['accounts', 'deals']);
       this.render();
     },
     logoutSuccess: function(){
@@ -86,15 +85,12 @@ function( Parse, ParseReact, React, jQuery, BootstrapModal, CreateAccount, Accou
       }
 
       return (
-        <div className="container-fluid">
+        <div className="container">
           <LoginComponent logoutSuccess={this.logoutSuccess} ></LoginComponent>
-          <div className="col-md-6 col-md-offset-3">
+          <div className="col-md-10 col-md-offset-1">
             <div className="row">
-              <h1>My Accounts</h1>
-              <div className="container-fluid">
-                  {addAccountModal}
-                  <button className="btn btn-default" onClick={this.onAddAccount} >Add Account</button>
-              </div>
+                <h1>My Accounts <button className="btn btn-primary" onClick={this.onAddAccount} >Add Account</button> </h1>
+                {addAccountModal}
             </div>
             <div className="row">
               {accounts}

@@ -1,4 +1,4 @@
-define(['react', 'parse', 'parse-react', 'models/Deal', 'deal/Comments'], function( React, Parse, ParseReact, Deal, Comments ){
+define(['react', 'parse', 'parse-react', 'models/Deal', 'deal/Comments', 'deal/Profile'], function( React, Parse, ParseReact, Deal, Comments, DealProfile ){
     return React.createClass({
         mixins: [ParseReact.Mixin],
         observe: function(){
@@ -19,14 +19,17 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'deal/Comments'], functi
 
             var budget = deal.get("budget");
             return(
-                <div className="container-fluid">
-                    <div className="container col-md-8 col-md-offset-2 dealContainer">
+                <div className="container dealContainer">
+                    <div className="row">
+                        <a href="/my/home"><i className="fa fa-angle-double-left"></i> Back to My Deals</a>
+                    </div>
+                    <div className="row">
                         <h1>{deal.get("dealName")}</h1>
-
-                        <div className="row">
-                            Budget High: {budget.high} <br/>
-                            Budget Low: {budget.low}
-                        </div>
+                        <hr/>
+                        <DealProfile
+                            ref="dealProfile"
+                            deal={deal}></DealProfile>
+                        <hr/>
                         <Comments
                             ref="comments"
                             deal={deal}></Comments>

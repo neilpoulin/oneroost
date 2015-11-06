@@ -1,0 +1,37 @@
+.comment{
+    padding: 5px 5px 5px 5px;
+    position: relative;
+}
+
+.comment:nth-child(2n+1){
+    background: #EBEBEB;
+}
+
+.comment > .username{
+    font-weight: bold;
+}
+
+.comment > .message{
+    margin-left: 20px;
+}
+
+.comment > .postTime{
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 5px;
+    z-index: 2;
+    background-color: #F4F2E8;
+}
+
+.hover-show{
+    display:none;
+}
+
+.hover-effects:hover .hover-show{
+    display: inline-block;
+}
+
+.delete-icon{
+    margin-left: 25px;
+}

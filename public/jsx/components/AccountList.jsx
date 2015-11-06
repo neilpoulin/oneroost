@@ -24,17 +24,24 @@ define(['underscore', 'parse', 'parse-react', 'react', 'models/Account', 'models
         });
         window.accountMap = accountMap;
         return (
-          <ul>
-            {this.data.deals.map(function(deal){
-              return <div className="profileCard">
-                  <a href={"/deals/" + deal.objectId} >
-                      <h3>{accountMap[deal.account.objectId].accountName}</h3>
-                      <h2>{deal.dealName}</h2>
-                      <div>Contact: {accountMap[deal.account.objectId].primaryContact}</div>
-                  </a>
-              </div>
-            })}
-          </ul>
+            <table className="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Account</th>
+                        <th>Deal Name</th>
+                        <th>Primary Contact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.data.deals.map(function(deal){
+                      return <tr className="profileCard">
+                          <td>{accountMap[deal.account.objectId].accountName}</td>
+                          <td><a href={"/deals/" + deal.objectId} >{deal.dealName}</a></td>
+                          <td>{accountMap[deal.account.objectId].primaryContact}</td>
+                      </tr>
+                    })}
+                </tbody>
+            </table>
         )
     }
   });

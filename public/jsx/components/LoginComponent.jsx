@@ -9,7 +9,7 @@ define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
       {
           username = user.get("username");
           isLoggedIn = true;
-          // this.handleLoginSuccess(user);
+        //   this.handleLoginSuccess(user);
       }
       return {
         isLoggedIn: isLoggedIn,
@@ -102,9 +102,19 @@ define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
       if ( this.state.isLoggedIn )
       {
         return (
-          <div className="LogoutComponent">
-            You are logged in as  {this.state.username} (<a href="#" onClick={this.doLogout}>log out</a>) <SpinnerIcon ref="spinner"></SpinnerIcon>
-          </div>
+            <div className="row">
+                <div className="container">
+                    <div className="LogoutComponent row">
+                      You are logged in as  {this.state.username} (<a href="#" onClick={this.doLogout}>log out</a>) <SpinnerIcon ref="spinner"></SpinnerIcon>
+                    </div>
+                    <div className="row">
+                        <h2>Pages</h2>
+                        <ul className="list-unstyled">
+                            <li><a href="/my/home">My Accounts</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         );
       }
       var registerLoginMessage;
