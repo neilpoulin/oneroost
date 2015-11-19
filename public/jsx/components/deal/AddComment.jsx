@@ -40,16 +40,14 @@ define( ['react', 'parse-react', 'parse', 'models/DealComment'], function(React,
       render: function(){
           var deal = this.props.deal;
           return (
-              <div>
-                  <div className="row-fluid">
-                        <div className="form-group">
-                            <textarea className="form-control" valueLink={this.linkState('message')} ></textarea>
-                        </div>
-                  </div>
-                  <div className="row-fluid">
-                        <div className="form-group">
-                            <button type="submit" className="btn btn-lg btn-primary" onClick={this.saveComment}>Post</button>
-                        </div>
+              <div className="addCommentContainer">
+                  <div className="container">
+                      <div className="row-fluid">
+                            <div className="input-group">
+                                <textarea className="form-control custom-control" rows="1" valueLink={this.linkState('message')}></textarea>
+                                <span className="input-group-addon btn btn-primary" onClick={this.saveComment}>Send</span>
+                            </div>
+                      </div>
                   </div>
               </div>
 

@@ -95,7 +95,7 @@ define([ 'underscore', 'react', 'parse', 'models/Deal', 'deal/Stakeholder'], fun
             var deal = this.props.deal;
             var profile = this;
             return(
-                <div className="row">
+                <div className="row" id="dealProfileContainer">
                     <div className="row">
                         <div className="container">
                             <div className="form-group">

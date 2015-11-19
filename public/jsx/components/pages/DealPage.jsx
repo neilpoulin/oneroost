@@ -16,15 +16,17 @@ define(['react', 'parse', 'models/Deal', 'deal/Comments', 'deal/Profile'], funct
             var budget = deal.get("budget");
 
             return(
-                <div>
-                    <div className="container dealContainer">
+                <div className="container">
+                    <div className="dealContainer">
                         <div className="row">
-                            <h1>{deal.get("dealName")}</h1>
-                            <hr/>
-                            <DealProfile
-                                ref="dealProfile"
-                                deal={deal}></DealProfile>
-                            <hr/>
+                            <div className="deal-top container">
+                                <h1>{deal.get("dealName")}</h1>
+                                <hr/>
+                                <DealProfile
+                                    ref="dealProfile"
+                                    deal={deal}></DealProfile>
+                                <hr/>
+                            </div>
                             <Comments
                                 ref="comments"
                                 deal={deal}></Comments>

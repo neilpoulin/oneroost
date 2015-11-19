@@ -58,7 +58,34 @@ Inner icon
 .left-addon input  { padding-left:  30px; }
 .right-addon input { padding-right: 30px; }
 
+/* Add Comment Container */
+.deal-top{
+    position: relative;
+    z-index: 5;
+    background: white;
+}
 
+.commentsSection{
+    padding-bottom: 170px;
+    position: relative;
+}
+
+#commentsContainer{
+    position: absolute;
+    bottom: 0px;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.addCommentContainer{
+    position: fixed;
+    bottom: 0px;
+    background-color: lightblue;
+    z-index: 10;
+    left: 0px;
+    right: 0px;
+    padding: 5px 0px 5px 0px;
+}
 
 
 /*Sidebar*/
