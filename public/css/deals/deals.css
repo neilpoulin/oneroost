@@ -36,6 +36,27 @@
     margin-left: 25px;
 }
 
+/*
+Inner icon
+*/
+.inner-addon {
+    position: relative;
+}
+
+/* style icon */
+.inner-addon .fa {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+}
+
+/* align icon */
+.left-addon .fa  { left:  0px;}
+.right-addon .fa { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
 
 
 
@@ -62,10 +83,10 @@ body > div > button {
   float: left;
   margin-right: 10px;
 }
-span {
+.menu > div span {
   color: #888888;
 }
-button {
+.menu > div button {
   width: auto;
   padding: 7px 22px;
 }
@@ -115,6 +136,12 @@ button {
   -o-transform: translate3d(-250px, 0, 0);
   -moz-transform: translate3d(-250px, 0, 0);
 }
+
+.menu > div > .menu-search{
+    padding: 10px 15px;
+    border-bottom: solid 1px #555;
+}
+
 .menu > div > .menu-item {
   float: left;
   width: 100%;
@@ -128,4 +155,17 @@ button {
 }
 .menu > div > .menu-item:hover {
   color: #F0F0F0;
+}
+
+.menu > div > .menu-item .accountName{
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.menu > div > .menu-item .dealName{
+    font-size: 14px;
+}
+
+.menu > div > .menu-item .primaryContact{
+    font-size: 12px;
 }
