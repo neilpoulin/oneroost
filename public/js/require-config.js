@@ -9,7 +9,7 @@ requirejs.config({
     "parse-react": "https://www.parsecdn.com/js/parse-react",
     "app": "../app",
     "models": "/js/models",
-    "underscore": "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min"
+    "underscore": "../../../lib/underscore"
 },
 shim: {
         "underscore": {

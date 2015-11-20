@@ -1,5 +1,5 @@
-define( ['underscore', 'react', 'parse', 'parse-react', 'models/Deal', 'models/DealComment', 'deal/AddComment'],
-function(_, React, Parse, ParseReact, Deal, DealComment, AddComment){
+define( [ 'react', 'parse', 'parse-react', 'models/Deal', 'models/DealComment', 'deal/AddComment', 'deal/CommentItem'],
+function( React, Parse, ParseReact, Deal, DealComment, AddComment, CommentItem ){
     return React.createClass({
         mixins: [ParseReact.Mixin],
         observe: function(){
@@ -12,11 +12,6 @@ function(_, React, Parse, ParseReact, Deal, DealComment, AddComment){
             this.refreshQueries('dealComments');
             this.render();
         },
-        formatCommentDate: function( comment )
-        {
-            var date = comment.createdAt;
-            return date.toLocaleString();
-        },
         componentDidMount: function() {
             window.addEventListener("resize", this.updateDimensions);
         },
@@ -27,35 +22,36 @@ function(_, React, Parse, ParseReact, Deal, DealComment, AddComment){
         {
             this.updateDimensions();
         },
+        scrollToBottom: function()
+        {
+            var $commentContainer = $(this.refs.messagesContainer.getDOMNode());
+            $commentContainer.scrollTop( $commentContainer.prop("scrollHeight") );
+        },
         updateDimensions: function(){
-            var $commentList = $(this.refs.commentList.getDOMNode());
-            $commentList.scrollTop( $commentList.prop("scrollHeight") );
-
             var commentsTopPx = $(".commentsSection").position().top;
             var commentsHeaderHeightPx = $(".commentsHeader").outerHeight();
 
             var $msgContainer = $(".messagesContainer");
             var messageListHeight = commentsTopPx + commentsHeaderHeightPx;
             $msgContainer.css({top: messageListHeight });
+            this.scrollToBottom();
         },
         render: function(){
             var component = this;
             var deal = this.props.deal;
             var comments = this.data.dealComments;
+
             return (
                 <div className="commentsSection">
                     <div className="commentsHeader">
                         <h2>Comments</h2>
                     </div>
                     <div className="row-fluid">
-                        <div className="messagesContainer">
+                        <div className="messagesContainer" ref="messagesContainer">
                             <div className="container">
                                 <ul className="list-unstyled" id="commentsList" ref="commentList">
                                     {comments.map(function(comment){
-                                        return <li className="comment hover-effects">
-                                            <span className="username">{comment.username}</span>:&nbsp;<span className="message">{comment.message}</span>
-                                            <span className="postTime hover-show">{component.formatCommentDate(comment)}</span>
-                                        </li>
+                                        return ( <CommentItem comment={comment} /> )
                                     })}
                                 </ul>
                             </div>

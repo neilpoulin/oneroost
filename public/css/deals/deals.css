@@ -4,24 +4,19 @@
 }
 
 .comment:nth-child(2n+1){
-    background: #EBEBEB;
+    background: #F4F0F0;
 }
 
-.comment > .username{
+.comment .username{
     font-weight: bold;
 }
 
-.comment > .message{
-    margin-left: 20px;
+.comment .message{
+
 }
 
-.comment > .postTime{
-    position: absolute;
-    right: 0px;
-    top: 0px;
-    padding: 5px;
-    z-index: 2;
-    background-color: #F4F2E8;
+.comment .postTime{
+    color: gray;
 }
 
 .hover-show{
