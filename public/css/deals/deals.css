@@ -66,12 +66,18 @@ Inner icon
 }
 
 .commentsSection{
-    padding-bottom: 170px;
-    position: relative;
+
 }
 
-#commentsContainer{
-    position: absolute;
+.messagesContainer{
+    position: fixed;
+    bottom: 51px;
+    top: 500px;
+    overflow: auto;
+    margin-top: 20px;
+}
+
+#commentsList{
     bottom: 0px;
     overflow-y: auto;
     height: 100%;
