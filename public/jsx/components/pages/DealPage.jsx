@@ -10,6 +10,17 @@ define(['react', 'parse', 'models/Deal', 'deal/Comments', 'deal/Profile'], funct
         {
             this.refs.left.show();
         },
+        startCommentResize: function(){
+            var component = this;
+            component.refs.comments.updateDimensions();
+            this.props.commentResizeInterval = setInterval( function(){
+                component.refs.comments.updateDimensions();
+            }, 100 );
+        },
+        stopCommentResize: function(){
+            clearTimeout( this.props.commentResizeInterval );
+            this.refs.comments.updateDimensions();
+        },
         render: function(){
             var deal = this.props.deal;
             document.title = "OneRoost Deal Page - " + deal.get("dealName");
@@ -24,7 +35,10 @@ define(['react', 'parse', 'models/Deal', 'deal/Comments', 'deal/Profile'], funct
                                 <hr/>
                                 <DealProfile
                                     ref="dealProfile"
-                                    deal={deal}></DealProfile>
+                                    deal={deal}
+                                    startResize={this.startCommentResize}
+                                    stopResize={this.stopCommentResize}
+                                    ></DealProfile>
                                 <hr/>
                             </div>
                             <Comments
