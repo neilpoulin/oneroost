@@ -8,7 +8,7 @@ define([ 'underscore', 'react', 'parse', 'models/Deal'], function( _, React, Par
             var stakeholder = this.props.stakeholder;
             return (
                 <li data-name={stakeholder.name} data-email={stakeholder.email} className="hover-effects" >
-                    {stakeholder.name} (<a href="mailto:{stakeholder.email}">{stakeholder.email}</a>)
+                    {stakeholder.name} (<a href={'mailto:' + stakeholder.email} target="_blank">{stakeholder.email}</a>)
                     <i className="fa fa-times hover-show delete-icon" onClick={this.deleteStakeholder}></i>
                 </li>
             );

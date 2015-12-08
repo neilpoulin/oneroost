@@ -111,9 +111,7 @@ body > div > button {
   float: left;
   margin-right: 10px;
 }
-.menu > div span {
-  color: #888888;
-}
+
 .menu > div button {
   width: auto;
   padding: 7px 22px;
@@ -154,7 +152,7 @@ body > div > button {
   -moz-transform: translate3d(250px, 0, 0);
 }
 .menu > div.right {
-  background: #6B1919;
+  background: #c3c0c0;
   right: -250px;
 }
 .menu > div.visible.right {

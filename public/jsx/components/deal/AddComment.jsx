@@ -29,13 +29,22 @@ define( ['react', 'parse-react', 'parse', 'models/DealComment'], function(React,
         comment.save(null, {
               success: function( comment ){
                   console.log("save success");
-                  component.setState({message: ''});
+                //   component.setState({message: ''});
                   component.props.addComment( comment );
               },
               error: function(){
                   console.error( "failed to save comment");
               }
           });
+          component.setState({message: ''});
+      },
+      handleKeyUp: function( event )
+      {
+          if ( event.keyCode == 13 )
+          {
+              event.preventDefault();
+              this.saveComment();
+          }
       },
       render: function(){
           var deal = this.props.deal;
@@ -44,8 +53,8 @@ define( ['react', 'parse-react', 'parse', 'models/DealComment'], function(React,
                   <div className="container">
                       <div className="row-fluid">
                             <div className="input-group">
-                                <textarea className="form-control custom-control" rows="1" valueLink={this.linkState('message')}></textarea>
-                                <span className="input-group-addon btn btn-primary" onClick={this.saveComment}>Send</span>
+                                <textarea className="form-control custom-control" rows="1" valueLink={this.linkState('message')} onKeyUp={this.handleKeyUp} ></textarea>
+                                <span className="input-group-addon btn btn-primary" onClick={this.saveComment} >Send</span>
                             </div>
                       </div>
                   </div>

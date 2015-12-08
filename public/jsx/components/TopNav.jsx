@@ -1,4 +1,4 @@
-define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sidebar/Menu', 'sidebar/MenuItem'], function( React, Parse, ParseReact, Deal, Account, Menu, MenuItem ){
+define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sidebar/Menu', 'sidebar/MenuItem', 'deal/ProfileSidebar'], function( React, Parse, ParseReact, Deal, Account, Menu, MenuItem, DealProfile ){
     return React.createClass({
         mixins: [ParseReact.Mixin],
         observe: function(){
@@ -12,11 +12,16 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sideb
         {
             this.refs.left.show();
         },
+        showRightMenu: function()
+        {
+            this.refs.right.show();
+        },
         render: function(){
             var accountMap = {};
             _.map(this.data.accounts, function(act){
                 accountMap[act.objectId] = act;
             });
+            var deal = this.props.deal;
 
             return (
                 <nav className="navbar navbar-default navbar-static-top">
@@ -36,7 +41,6 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sideb
                             </ul>
 
                             <ul className="nav navbar-nav navbar-right">
-                                <li><a href="#">Link</a></li>
                                 <li className="dropdown">
                                     <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span className="caret"></span></a>
                                       <ul className="dropdown-menu">
@@ -47,18 +51,35 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sideb
                                             <li><a href="#">Separated link</a></li>
                                       </ul>
                                 </li>
+                                <li>
+                                    <a className="" onClick={this.showRightMenu}><i className="fa fa-list"></i> <span className="hidden-xs">Deal Info</span> </a>
+                                </li>
                             </ul>
+
                         </div>
                     </div>
 
-                    <Menu ref="left" alignment="left">
+                    <Menu ref="left"
+                        alignment="left"
+                        side="left"
+                        showSearch={true} >
                         {this.data.deals.map(function(deal){
-                          return <MenuItem location={"/deals/" + deal.objectId} className="profileCard">
-                              <div className="accountName">{accountMap[deal.account.objectId].accountName}</div>
-                              <div className="dealName">{deal.dealName}</div>
-                              <div className="primaryContact">{accountMap[deal.account.objectId].primaryContact}</div>
-                          </MenuItem>
+                            return <MenuItem location={"/deals/" + deal.objectId} className="profileCard">
+                                <div className="accountName">{accountMap[deal.account.objectId].accountName}</div>
+                                <div className="dealName">{deal.dealName}</div>
+                                <div className="primaryContact">{accountMap[deal.account.objectId].primaryContact}</div>
+                            </MenuItem>
                         })}
+                    </Menu>
+
+                    <Menu ref="right"
+                        alignment="right"
+                        side="right"
+                        showSearch={false} >
+                        <DealProfile
+                            ref="dealProfile"
+                            deal={deal} >
+                        </DealProfile>
                     </Menu>
                 </nav>
             )

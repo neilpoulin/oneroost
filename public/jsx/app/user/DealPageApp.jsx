@@ -6,7 +6,7 @@ define( ['parse', 'react', 'pages/DealPage', 'TopNav', 'models/Deal'], function(
           {
                 React.render(
                     <div>
-                        <TopNav />
+                        <TopNav deal={deal} />
                         <DealPage deal={deal} />
                     </div>
                     , document.getElementById('dealPage')

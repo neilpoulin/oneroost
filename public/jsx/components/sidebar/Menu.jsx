@@ -29,17 +29,25 @@ define( ['react', 'sidebar/MenuItem', 'jquery'], function( React, MenuItem, $ ){
             console.log("filtering: " + this.state.filterTerm );
         },
         render: function() {
+            var search = null;
+            if ( this.props.showSearch )
+            {
+                search =
+                    <div className="menu-search">
+                        <div className="form-group">
+                            <div className="inner-addon left-addon">
+                                <div className="inner-addon {this.props.side}-addon"><i className="fa fa-search"></i></div>
+                                <input type="text" className="form-control" placeholder="search" onKeyUp={this.doFilter} valueLink={this.linkState('filterTerm')} />
+                            </div>
+                        </div>
+                    </div>
+                ;
+            }
+
             return (
                 <div className="menu">
                     <div className={(this.state.visible ? "visible " : "") + this.props.alignment}>
-                        <div className="menu-search">
-                            <div className="form-group">
-                                <div className="inner-addon left-addon">
-                                    <div className="inner-addon left-addon"><i className="fa fa-search"></i></div>
-                                    <input type="text" className="form-control" placeholder="search" onKeyUp={this.doFilter} valueLink={this.linkState('filterTerm')} />
-                                </div>
-                            </div>
-                        </div>
+                        {search}
                         {this.props.children}
                     </div>
                 </div>
