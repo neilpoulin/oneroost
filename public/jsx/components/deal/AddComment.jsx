@@ -53,7 +53,11 @@ define( ['react', 'parse-react', 'parse', 'models/DealComment'], function(React,
                   <div className="container">
                       <div className="row-fluid">
                             <div className="input-group">
-                                <textarea className="form-control custom-control" rows="1" valueLink={this.linkState('message')} onKeyUp={this.handleKeyUp} ></textarea>
+                                <textarea className="form-control custom-control"
+                                    id="addCommentInput"
+                                    rows="1"
+                                    valueLink={this.linkState('message')}
+                                    onKeyUp={this.handleKeyUp} ></textarea>
                                 <span className="input-group-addon btn btn-primary" onClick={this.saveComment} >Send</span>
                             </div>
                       </div>
