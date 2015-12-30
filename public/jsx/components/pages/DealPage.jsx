@@ -1,4 +1,5 @@
-define(['react', 'parse', 'models/Deal', 'deal/Comments', 'deal/Profile'], function( React, Parse, Deal, Comments, DealProfile ){
+define(['react', 'parse', 'models/Deal', 'deal/Comments', 'deal/Profile', 'next-steps/NextStepsBanner'],
+        function( React, Parse, Deal, Comments, DealProfile, NextStepsBanner ){
     return React.createClass({
         getInitialState: function(){
             var component = this;
@@ -33,12 +34,7 @@ define(['react', 'parse', 'models/Deal', 'deal/Comments', 'deal/Profile'], funct
                             <div className="deal-top container">
                                 <h1>{deal.get("dealName")}</h1>
                                 <hr/>
-                                <DealProfile
-                                    ref="dealProfile"
-                                    deal={deal}
-                                    startResize={this.startCommentResize}
-                                    stopResize={this.stopCommentResize}
-                                    ></DealProfile>
+                                    <NextStepsBanner deal={deal} ></NextStepsBanner>
                                 <hr/>
                             </div>
                             <Comments

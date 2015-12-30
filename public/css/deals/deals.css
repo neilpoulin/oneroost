@@ -60,7 +60,6 @@ Inner icon
 /* Add Comment Container */
 .deal-top{
     position: relative;
-    z-index: 5;
     background: white;
 }
 
@@ -85,13 +84,12 @@ Inner icon
 .addCommentContainer{
     position: fixed;
     bottom: 0px;
-    background-color: lightblue;
+    border-top: 1px solid lightgray;
     z-index: 10;
     left: 0px;
     right: 0px;
     padding: 5px 0px 5px 0px;
 }
-
 
 /*Sidebar*/
 .border-box {
@@ -114,6 +112,63 @@ body > div > h1 {
 body > div > button {
   float: left;
   margin-right: 10px;
+}
+
+#NextStepsBannerContainer{
+    height: 150px;
+    padding: 15px;
+    border: 2px dashed lightgray;
+}
+
+.NextStepItemContainer .nextStepTitle{
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.NextStepItemContainer .nextStepDescription{
+    color: gray;
+}
+
+.NextStepItemContainer .nextStepDueDate{
+    font-size: .8em;
+}
+
+.NextStepItemContainer.complete{
+    background-color: yellow;
+}
+
+.NextStepItemContainer .editButtons{
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+    right: 15px;
+    display: none;
+}
+
+.NextStepItemContainer:hover .editButtons{
+    display:inline-block;
+}
+
+.NextStepItemContainer{
+    border-top: 2px solid lightgray;
+    border-bottom: 2px solid lightgray;
+    border-right: 2px solid lightgray;
+    padding: 20px;
+    text-align: center;
+    min-width: 50px;
+    float: left;
+    height: 100%;
+    width: 20%;
+    position: relative;
+}
+
+.NextStepItemContainer:first-of-type{
+    border-left: 2px solid lightgray;
+}
+
+.addNextStepBannerContainer{
+    padding: 20px;
+
 }
 
 .menu > div button {
