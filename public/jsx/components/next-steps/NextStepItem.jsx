@@ -1,84 +1,70 @@
-define(['parse', 'react'], function(Parse, React){
+define(['parse', 'react', 'parse-react'], function(Parse, React, ParseReact){
     return React.createClass({
         getInitialState: function(){
             return {
                 step: this.props.step,
-                isComplete: this.props.step.completedDate != null
+                deal: this.props.deal,
+                isComplete: this.props.step.completedDate != null,
+                user: Parse.User.current()
             };
         },
         markAsDone: function(){
-            var component = this;
+            var self = this;
             var step = this.props.step;
-            var query = new Parse.Query("NextStep")
-                .equalTo("objectId", step.objectId)
-                .first({
-                    success: function( step ){
-                        step.set( "completedDate", new Date() );
-                        step.save(null, {
-                            success: function( step ){
-                                console.log("successfully marked next step as done.");
-                                component.setState({"isComplete": true});
-                                component.render();
-                            },
-                            error: function(){
-                                console.error("failed to update next step when marking it as done.");
-                            }
-                        });
-                    },
-                    error: function(){
-                        console.log("failed to retrieve next step from Parse.");
-                    }
-            });
+            this.setState( {"isComplete": true} );
+            ParseReact.Mutation.Set( step, {"completedDate": new Date()} )
+                .dispatch()
+                .then(function(){
+                    self.addStepStatusChangeComment( step );
+                });
         },
         markAsNotDone: function(){
-            var component = this;
+            var self = this;
             var step = this.props.step;
-            var query = new Parse.Query("NextStep")
-                .equalTo("objectId", step.objectId)
-                .first({
-                    success: function( step ){
-                        step.set( "completedDate", null );
-                        step.save(null, {
-                            success: function( step ){
-                                console.log("successfully marked next step as NOT done.");
-                                component.setState({"isComplete": false});
-                                component.render();
-                            },
-                            error: function(){
-                                console.error("failed to update next step when marking it as NOT done.");
-                            }
-                        });
-                    },
-                    error: function(){
-                        console.log("failed to retrieve next step from Parse.");
-                    }
-            });
+            this.setState( {"isComplete": false} )
+            ParseReact.Mutation.Set( step, {"completedDate": null} )
+                .dispatch()
+                .then(function(){
+                    self.addStepStatusChangeComment( step );
+                });
         },
         doDelete(){
-            var step = this.props.step;
+            var self = this;
+            var step = self.props.step;
 
-            var c = confirm( "Are you sure you want to delete next step: " + step.title + "?" );
-            if ( !c )
+            if ( !confirm( "Are you sure you want to delete next step: " + step.title + "?" ) )
             {
                 return;
             }
 
-            var component = this;
-            var query = new Parse.Query("NextStep")
-                .equalTo("objectId", step.objectId)
-                .first({
-                    success: function( obj ){
-                        obj.destroy({
-                            success: function(){
-                                console.log("successfully deleted the next step");
-                                component.props.deleteNextStep();
-                            }
-                        });
-                    },
-                    error: function(){
-                        console.log("failed to retrieve next step from Parse.");
-                    }
+            ParseReact.Mutation.Destroy( step ).dispatch().then(function(){
+                self.addStepDeletedComment( step );
             });
+        },
+        addStepStatusChangeComment: function( step ){
+            var self = this;
+            var status = self.state.isComplete ? "Complete" : "Not Complete";
+
+            var message =  self.state.user.get("username") + " marked " + step.title + " as \"" + status + "\".";
+
+            var comment = {
+                deal: self.state.deal,
+                message: message,
+                author: null,
+                username: "OneRoost Bot",
+            };
+            ParseReact.Mutation.Create('DealComment', comment).dispatch();
+        },
+        addStepDeletedComment: function( step ){
+            var self = this;
+            var message = self.state.user.get("username") + " deleted Next Step: " + step.title;
+            var comment = {
+                deal: self.state.deal,
+                message: message,
+                author: null,
+                username: "OneRoost Bot",
+            };
+            ParseReact.Mutation.Create('DealComment', comment).dispatch();
         },
         formatDate: function( date )
         {

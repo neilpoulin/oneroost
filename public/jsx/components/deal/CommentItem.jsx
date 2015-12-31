@@ -7,8 +7,9 @@ define( ['react', 'models/DealComment',], function( React, DealComment ){
         },
         render: function(){
             var comment = this.props.comment;
+            var isSystem = comment.author == null;
             return (
-                <li className="comment">
+                <li className={"comment " + (isSystem ? "system" : "")}>
                     <div className="container">
                         <div className="row">
                             <span className="username">{comment.username}</span>

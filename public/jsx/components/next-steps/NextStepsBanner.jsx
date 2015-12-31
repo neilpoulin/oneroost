@@ -18,12 +18,12 @@ define(['react', 'parse', 'parse-react', 'next-steps/AddNextStepButton', 'next-s
         },
         render: function(){
             var addButton = (null);
-            var component = this;
+            var self = this;
             if ( this.data.nextSteps.length < 5 )
             {
                 addButton = (
                     <div className="addNextStepBannerContainer">
-                        <AddNextStepButton deal={this.state.deal} />
+                        <AddNextStepButton deal={self.state.deal} />
                     </div>
                 );
             }
@@ -34,7 +34,8 @@ define(['react', 'parse', 'parse-react', 'next-steps/AddNextStepButton', 'next-s
                         return (
                             <NextStepItem
                                 step={step}
-                                deleteNextStep={component.removeNextStep}>
+                                deal={self.state.deal}
+                                deleteNextStep={self.removeNextStep}>
                             </NextStepItem>
                         );
                     })}

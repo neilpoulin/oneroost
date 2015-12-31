@@ -3,7 +3,16 @@
     position: relative;
 }
 
-.comment:nth-child(2n+1){
+.comment.system{
+    background-color: #AC5353;
+    color: white;
+}
+
+.comment.system:nth-child(2n+1){
+    background-color: #963535;
+}
+
+.comment:not(.system):nth-child(2n+1){
     background: #F4F0F0;
 }
 
@@ -17,6 +26,10 @@
 
 .comment .postTime{
     color: gray;
+}
+
+.comment.system .postTime{
+    color: #C1C1C1;
 }
 
 .hover-show{

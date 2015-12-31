@@ -9,7 +9,8 @@ define(['react', 'parse', 'parse-react', 'models/NextStep'], function( React, Pa
                 createdBy: Parse.User.current(),
                 assignedUser: null,
                 deal: this.props.deal,
-                completedDate: null
+                completedDate: null,
+                user: Parse.User.current()
             };
         },
         saveNextStep: function(){
@@ -26,15 +27,16 @@ define(['react', 'parse', 'parse-react', 'models/NextStep'], function( React, Pa
             ParseReact.Mutation.Create('NextStep', step)
                 .dispatch()
                 .then( function( step ){
-                    component.sendSuccessMessage( step );
+                    component.addStepCreatedComment( step );
                 });
             component.clear();
         },
-        sendSuccessMessage: function( step ){
-            var component = this;
+        addStepCreatedComment: function( step ){
+            var self = this;
+            var message = self.state.user.get("username") + " created Next Step: " + step.title;
             var comment = {
-                deal: component.state.deal,
-                message: "Next Step Created: " + step.title,
+                deal: self.state.deal,
+                message: message,
                 author: null,
                 username: "OneRoost Bot",
             };
