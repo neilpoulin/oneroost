@@ -3,7 +3,7 @@ define( ['react', 'sidebar/MenuItem', 'jquery'], function( React, MenuItem, $ ){
         mixins: [React.addons.LinkedStateMixin],
         getInitialState: function() {
             return {
-                visible: false,
+                visible: this.props.visible ? true : false,
                 filterTerm: ""
             };
         },

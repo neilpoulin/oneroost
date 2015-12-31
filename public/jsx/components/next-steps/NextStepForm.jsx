@@ -22,7 +22,7 @@ define(['react', 'parse', 'parse-react', 'models/NextStep'], function( React, Pa
                 "dueDate": new Date( this.state.dueDate ),
                 "assignedUser": this.state.assignedUser,
                 "deal": this.state.deal,
-                "completedDate": ( this.state.completedDate != null ? new Date( this.state.completedDate) : null )
+                "completedDate": ( this.state.completedDate != null ? new Date( this.state.completedDate ) : null )
             }
             ParseReact.Mutation.Create('NextStep', step)
                 .dispatch()

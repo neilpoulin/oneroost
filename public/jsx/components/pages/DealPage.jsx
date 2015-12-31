@@ -34,7 +34,7 @@ define(['react', 'parse', 'models/Deal', 'deal/Comments', 'deal/Profile', 'next-
                             <div className="deal-top container">
                                 <h1>{deal.get("dealName")}</h1>
                                 <hr/>
-                                    <NextStepsBanner deal={deal} ></NextStepsBanner>
+                                <NextStepsBanner deal={deal} ></NextStepsBanner>
                                 <hr/>
                             </div>
                             <Comments

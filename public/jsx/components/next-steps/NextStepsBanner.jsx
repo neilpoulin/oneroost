@@ -11,11 +11,7 @@ define(['react', 'parse', 'parse-react', 'next-steps/AddNextStepButton', 'next-s
                 deal: this.props.deal,
                 user: Parse.User.current()
             };
-        },
-        removeNextStep: function(){
-            this.refreshQueries('nextSteps');
-            this.render();
-        },
+        },        
         render: function(){
             var addButton = (null);
             var self = this;
@@ -34,8 +30,7 @@ define(['react', 'parse', 'parse-react', 'next-steps/AddNextStepButton', 'next-s
                         return (
                             <NextStepItem
                                 step={step}
-                                deal={self.state.deal}
-                                deleteNextStep={self.removeNextStep}>
+                                deal={self.state.deal} >
                             </NextStepItem>
                         );
                     })}

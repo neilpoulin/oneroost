@@ -2,30 +2,28 @@ define(['parse', 'react', 'parse-react'], function(Parse, React, ParseReact){
     return React.createClass({
         getInitialState: function(){
             return {
-                step: this.props.step,
                 deal: this.props.deal,
-                isComplete: this.props.step.completedDate != null,
                 user: Parse.User.current()
             };
         },
         markAsDone: function(){
             var self = this;
             var step = this.props.step;
-            this.setState( {"isComplete": true} );
             ParseReact.Mutation.Set( step, {"completedDate": new Date()} )
                 .dispatch()
-                .then(function(){
+                .then(function( step ){
                     self.addStepStatusChangeComment( step );
+                    self.setState({step: step});
                 });
         },
         markAsNotDone: function(){
             var self = this;
-            var step = this.props.step;
-            this.setState( {"isComplete": false} )
+            var step = this.prop.step;
             ParseReact.Mutation.Set( step, {"completedDate": null} )
                 .dispatch()
-                .then(function(){
+                .then(function( step ){
                     self.addStepStatusChangeComment( step );
+                    self.setState({step: step});
                 });
         },
         doDelete(){
@@ -43,7 +41,7 @@ define(['parse', 'react', 'parse-react'], function(Parse, React, ParseReact){
         },
         addStepStatusChangeComment: function( step ){
             var self = this;
-            var status = self.state.isComplete ? "Complete" : "Not Complete";
+            var status = self.props.step.completedDate != null ? "Complete" : "Not Complete";
 
             var message =  self.state.user.get("username") + " marked " + step.title + " as \"" + status + "\".";
 
@@ -85,8 +83,7 @@ define(['parse', 'react', 'parse-react'], function(Parse, React, ParseReact){
 
             var dateLabel = "Due Date:"
             var date = this.props.step.dueDate;
-
-            if ( this.state.isComplete )
+            if ( this.props.step.completedDate != null )
             {
                 doneButton = (
                     <button className="btn btn-sm btn-default btn-block"
@@ -100,7 +97,7 @@ define(['parse', 'react', 'parse-react'], function(Parse, React, ParseReact){
             }
 
             return (
-                <div className={"NextStepItemContainer " + ( this.state.isComplete ? 'complete' : '' )}>
+                <div className={"NextStepItemContainer " + ( this.props.step.completedDate != null ? 'complete' : '' )}>
                     <div className="nextStepTitle">{this.props.step.title}</div>
                     <div className="nextStepDescription">{this.props.step.description}</div>
                     <div className="nextStepDueDate">

@@ -1,7 +1,8 @@
-define([ 'underscore', 'react', 'parse', 'models/Deal', 'deal/Stakeholder'], function( _, React, Parse, Deal, Stakeholder ){
+define([ 'underscore', 'react', 'parse', 'parse-react', 'models/Deal', 'deal/Stakeholder'], function( _, React, Parse, ParseReact, Deal, Stakeholder ){
     return React.createClass({
         mixins: [React.addons.LinkedStateMixin],
         getInitialState: function(){
+            this.props.deal.objectId = this.props.deal.id;
             return {
                 timeline: this.props.deal.get("profile").timeline,
                 budgetHigh: this.props.deal.get("budget").high,
@@ -10,7 +11,9 @@ define([ 'underscore', 'react', 'parse', 'models/Deal', 'deal/Stakeholder'], fun
                 stakeholderName: '',
                 stakeholders: this.props.deal.get("stakeholders"),
                 summary: this.props.deal.get("summary"),
-                visible: false
+                visible: false,
+                user: Parse.User.current(),
+                deal: this.props.deal
             }
         },
         addStakeholder: function( ){
@@ -28,47 +31,53 @@ define([ 'underscore', 'react', 'parse', 'models/Deal', 'deal/Stakeholder'], fun
                 return;
             }
 
-            this.state.stakeholders.push( {
+            var newStakeholder = {
                 name: this.state.stakeholderName,
                 email: this.state.stakeholderEmail
-            });
-            this.props.deal.save( {stakeholders: this.state.stakeholders}, {
-                success: function( deal ){
-                    console.log("saved stakeholders");
-                    component.props.deal = deal;
-                    component.setState({
-                        'stakeholderName': '',
-                        'stakeholderEmail': ''
-                    });
-                    component.render();
-                },
-                error: function(){
-                    console.error( "failed to save deal" )
-                }
+            };
+            this.state.stakeholders.push( newStakeholder );
+            ParseReact.Mutation.Set( this.state.deal, {stakeholders: this.state.stakeholders} )
+                .dispatch()
+                .then( function(){
+                    component.addStakeholderComment( newStakeholder, true );
+                });
+
+            component.setState({
+                'stakeholderName': '',
+                'stakeholderEmail': ''
             });
         },
         removeStakeholder: function( deleted )
         {
+            var component = this;
             var profile = this;
             var stakeholders = [];
-            // $(node).remove();
             stakeholders = _.reject( this.state.stakeholders, function( current ){
                 return (current.name == deleted.name && current.email == deleted.email);
             });
 
-            this.props.deal.save({stakeholders: stakeholders}, {
-                success: function( deal ){
-                    profile.props.deal = deal;
-                    profile.setState({stakeholders: stakeholders});
-                },
-                error: function()
-                {
-                    console.log( "failed to save deal for stakeholders");
-                }
+            profile.setState({stakeholders: stakeholders});
+
+            ParseReact.Mutation.Set( this.state.deal, {stakeholders: this.state.stakeholders} ).dispatch().then( function(){
+                component.addStakeholderComment( deleted, false );
             });
         },
+        addStakeholderComment: function( stakeholder, isAdded )
+        {
+            var self = this;
+            var verb = isAdded ? "added" : "removed";
+            var message = self.state.user.get("username") + " " + verb + " a stakeholder: " + stakeholder.name + " (" + stakeholder.email + ")";
+
+            var comment = {
+                deal: self.state.deal,
+                message: message,
+                author: null,
+                username: "OneRoost Bot",
+            };
+            ParseReact.Mutation.Create('DealComment', comment).dispatch();
+        },
         saveProfile: function(){
-            var props = this.props;
+            var self = this;
             var timeline = this.state.timeline;
             var low = this.state.budgetLow;
             var high = this.state.budgetHigh;
@@ -78,23 +87,28 @@ define([ 'underscore', 'react', 'parse', 'models/Deal', 'deal/Stakeholder'], fun
                 low: low
             };
 
-            this.props.deal.save({
+            ParseReact.Mutation.Set( self.props.deal, {
                     budget: budget,
                     profile: {timeline: timeline},
-                    summary: this.state.summary
-                },
-                {
-                    success: function( deal ){
-                        props.deal = deal;
-                    },
-                    error: function(){
-
-                    }
+                    summary: self.state.summary
+                })
+                .dispatch()
+                .then(function(deal){
+                    self.props.deal = deal;
+                    self.addProfileUpdatedComment( deal );
                 });
         },
-        componentDidMount: function()
-        {
+        addProfileUpdatedComment: function(deal){
+            var self = this;
+            var message = self.state.user.get("username") + " updated the deal profile.";
 
+            var comment = {
+                deal: self.state.deal,
+                message: message,
+                author: null,
+                username: "OneRoost Bot",
+            };
+            ParseReact.Mutation.Create('DealComment', comment).dispatch();
         },
         render: function(){
             var deal = this.props.deal;

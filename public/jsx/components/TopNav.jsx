@@ -62,6 +62,7 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sideb
                     <Menu ref="left"
                         alignment="left"
                         side="left"
+                        visible="true"
                         showSearch={true} >
                         {this.data.deals.map(function(deal){
                             return <MenuItem location={"/deals/" + deal.objectId} className="profileCard">
