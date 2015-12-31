@@ -12,10 +12,6 @@ define(['react', 'parse', 'parse-react', 'next-steps/AddNextStepButton', 'next-s
                 user: Parse.User.current()
             };
         },
-        addNextStep: function(){
-            this.refreshQueries('nextSteps');
-            this.render();
-        },
         removeNextStep: function(){
             this.refreshQueries('nextSteps');
             this.render();
@@ -27,10 +23,7 @@ define(['react', 'parse', 'parse-react', 'next-steps/AddNextStepButton', 'next-s
             {
                 addButton = (
                     <div className="addNextStepBannerContainer">
-                        <AddNextStepButton
-                            deal={this.state.deal}
-                            addNextStep={this.addNextStep}
-                            ></AddNextStepButton>
+                        <AddNextStepButton deal={this.state.deal} />
                     </div>
                 );
             }

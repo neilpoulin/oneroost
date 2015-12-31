@@ -6,9 +6,6 @@ define(['react', 'parse', 'next-steps/CreateNextStepModal'], function( React, Pa
         openModal: function(){
             this.refs.nextStepModal.openModal();
         },
-        nextStepCreated: function(){
-            this.props.addNextStep();
-        },
         render: function()
         {
             return (
@@ -20,11 +17,9 @@ define(['react', 'parse', 'next-steps/CreateNextStepModal'], function( React, Pa
                     <CreateNextStepModal
                         ref="nextStepModal"
                         deal={this.props.deal}
-                        onSuccess={this.nextStepCreated}
                     ></CreateNextStepModal>
                 </div>
             );
         }
-
     })
 });

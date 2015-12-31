@@ -1,4 +1,4 @@
-define(['react', 'parse', 'models/NextStep'], function( React, Parse, NextStep ){
+define(['react', 'parse', 'parse-react', 'models/NextStep'], function( React, Parse, ParseReact, NextStep ){
     return React.createClass({
         mixins: [React.addons.LinkedStateMixin],
         getInitialState: function(){
@@ -14,26 +14,34 @@ define(['react', 'parse', 'models/NextStep'], function( React, Parse, NextStep )
         },
         saveNextStep: function(){
             var component = this;
-            var nextStep = new NextStep();
-            nextStep.set("createdBy", this.state.createdBy);
-            nextStep.set("title", this.state.title);
-            nextStep.set("description", this.state.description);
-            nextStep.set("dueDate", new Date( this.state.dueDate) );
-            nextStep.set("assignedUser", this.state.assignedUser);
-            nextStep.set("deal", this.state.deal);
-            nextStep.set("completedDate", ( this.state.completedDate != null ? new Date( this.state.completedDate) : null ) );
-            nextStep.save(null, {
-                success: function( step ){
-                    console.log("successfully saved next step");
-                    component.saveSuccess();
-                },
-                error: function(){
-                    console.error("failed to save next step");
-                }
-            })
+            var step = {
+                "createdBy": this.state.createdBy,
+                "title": this.state.title,
+                "description": this.state.description,
+                "dueDate": new Date( this.state.dueDate ),
+                "assignedUser": this.state.assignedUser,
+                "deal": this.state.deal,
+                "completedDate": ( this.state.completedDate != null ? new Date( this.state.completedDate) : null )
+            }
+            ParseReact.Mutation.Create('NextStep', step)
+                .dispatch()
+                .then( function( step ){
+                    component.sendSuccessMessage( step );
+                });
+            component.clear();
         },
-        saveSuccess: function(){
-            this.props.saveSuccess();
+        sendSuccessMessage: function( step ){
+            var component = this;
+            var comment = {
+                deal: component.state.deal,
+                message: "Next Step Created: " + step.title,
+                author: null,
+                username: "OneRoost Bot",
+            };
+            ParseReact.Mutation.Create('DealComment', comment).dispatch();
+        },
+        clear: function(){
+            this.setState( this.getInitialState() );
         },
         render: function(){
             return (

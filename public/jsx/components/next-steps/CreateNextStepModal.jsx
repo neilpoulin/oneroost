@@ -10,29 +10,20 @@ define(['react', 'parse', 'examples/BootstrapModal', 'next-steps/NextStepForm'],
         },
         closeModal: function(){
             this.refs.addNextStepModal.close();
-            this.clearModalForm();
-        },
-        clearModalForm: function(){
-            this.refs.addNextStepForm.setState( this.refs.addNextStepForm.getInitialState() );
-            // this.refs.addNextStepForm.render();
         },
         modalCancel: function(){
             this.closeModal();
+            this.refs.addNextStepForm.clear();
         },
         modalConfirm: function(){
             this.refs.addNextStepForm.saveNextStep();
-            this.props.onSuccess();
             this.closeModal();
-        },
-        nextStepCreated: function(){
-            //form will be cleared on close
         },
         render: function(){
             var nextStepForm = (
                 <NextStepForm
                 ref="addNextStepForm"
-                deal={this.state.deal}
-                saveSuccess={this.nextStepCreated} />
+                deal={this.state.deal} />
             );
 
             return (
