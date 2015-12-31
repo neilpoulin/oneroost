@@ -18,7 +18,7 @@ define(['parse', 'react', 'parse-react'], function(Parse, React, ParseReact){
         },
         markAsNotDone: function(){
             var self = this;
-            var step = this.prop.step;
+            var step = this.props.step;
             ParseReact.Mutation.Set( step, {"completedDate": null} )
                 .dispatch()
                 .then(function( step ){
