@@ -72,7 +72,6 @@ Inner icon
 
 /* Add Comment Container */
 .deal-top{
-    position: relative;
     background: white;
 }
 
@@ -84,6 +83,7 @@ Inner icon
     position: fixed;
     bottom: 51px;
     top: 500px;
+    right:0px;
     overflow: auto;
     margin-top: 20px;
 }
@@ -244,26 +244,48 @@ body > div > button {
   float: left;
   width: 100%;
   margin: 0;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.menu-item {
   padding: 10px 15px;
   border-bottom: solid 1px #555;
   cursor: pointer;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  color: #B0B0B0;
-}
-.menu > div > .menu-item:hover {
-  color: #F0F0F0;
 }
 
-.menu > div > .menu-item .accountName{
+.menu-item:hover {
+  color: darkgray;
+}
+
+.menu-item .accountName{
     font-size: 14px;
     font-weight: 800;
 }
 
-.menu > div > .menu-item .dealName{
+.menu-item .dealName{
     font-size: 14px;
 }
 
-.menu > div > .menu-item .primaryContact{
+.menu-item .primaryContact{
     font-size: 12px;
+}
+
+#dealPage{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#accountSidebarContainer{
+
+}
+
+#accountSidebar{
+    position: fixed;
+    top: 70px;
+    bottom: 0px;
+    overflow: auto;
 }

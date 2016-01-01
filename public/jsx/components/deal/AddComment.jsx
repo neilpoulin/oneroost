@@ -31,8 +31,8 @@ define( ['react', 'parse-react', 'parse', 'models/DealComment'], function(React,
       render: function(){
         var deal = this.props.deal;
         return (
-            <div className="addCommentContainer">
-                <div className="container">
+            <div className="addCommentContainer row-fluid">
+                <div className="container-fluid">
                     <div className="row-fluid">
                         <div className="input-group">
                             <textarea className="form-control custom-control"
