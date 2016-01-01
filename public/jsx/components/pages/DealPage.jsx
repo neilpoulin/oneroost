@@ -43,7 +43,7 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'deal/
 
             return(
                 <div className="container-fluid" id="dealPageContainer">
-                    <div id="accountSidebar" className="col-md-2 container-fluid">
+                    <div id="accountSidebar" className="col-md-2 container-fluid hidden-sm hidden-xs">
                         {this.data.deals.map(function(deal){
                             return <MenuItem location={"/deals/" + deal.objectId} className="profileCard">
                                 <div className="accountName">{accountMap[deal.account.objectId].accountName}</div>
@@ -54,7 +54,7 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'deal/
                     </div>
                     <div className="dealContainer col-md-10 col-md-offset-2 container-fluid">
                         <div className="row-fluid">
-                            <div className="deal-top container-fluid">
+                            <div className="deal-top">
                                 <h1>{deal.get("dealName")}</h1>
                                 <hr/>
                                 <NextStepsBanner deal={deal} ></NextStepsBanner>

@@ -36,8 +36,8 @@ function( React, Parse, ParseReact, Deal, DealComment, AddComment, CommentItem )
             var $addCommentContainer = $(".addCommentContainer");
 
             var messageListHeight = commentsTopPx + 50; // + commentsHeaderHeightPx;
-            $msgContainer.css({top: messageListHeight, left: accountSidebarWidthPx + 20 });
-            $addCommentContainer.css({left: accountSidebarWidthPx + 20 });
+            $msgContainer.css({top: messageListHeight, left: accountSidebarWidthPx + 25 });
+            $addCommentContainer.css({left: accountSidebarWidthPx + 25 });
             this.scrollToBottom();
         },
         render: function(){
@@ -64,7 +64,7 @@ function( React, Parse, ParseReact, Deal, DealComment, AddComment, CommentItem )
             return (
                 <div className="commentsSection container-fluid">
                     <div className="messagesContainer" ref="messagesContainer">
-                        <div className="container-fluid">
+                        <div className="">
                             {commentsSection}
                         </div>
                     </div>
