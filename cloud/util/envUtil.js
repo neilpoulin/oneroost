@@ -16,6 +16,10 @@ exports.getEnv = function(){
                 javascriptKey = "EZKlfRO9ydZrpO2fpLkIRNTp9dEJxF4IyTh4VkWT";
                 isDev = false;
                 break;
+            case "llcq2KXGOGoOQMO9W1rvgFcramBjAMgZEVRhNagb": //stage
+                javascriptKey = "y6EMasJca2ez13ff88AW6XEFaIEHaqi0xTejTpFP";
+                isDev = true;
+                break;
         }
         var props = {
                     "applicationId": applicationId,

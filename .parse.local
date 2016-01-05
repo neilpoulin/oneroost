@@ -6,11 +6,17 @@
     "OneRoost - Prod": {
       "applicationId": "lSNtmvBTimEY6VfOo5zvvOQkljcHeDIOQcjefNUu"
     },
+    "OneRoost - Stage": {
+      "applicationId": "llcq2KXGOGoOQMO9W1rvgFcramBjAMgZEVRhNagb"
+    },
     "_default": {
       "link": "OneRoost - Dev"
     },
     "dev": {
       "link": "OneRoost - Dev"
+    },
+    "stage": {
+      "link": "OneRoost - Stage"
     },
     "production": {
       "link": "OneRoost - Prod"
