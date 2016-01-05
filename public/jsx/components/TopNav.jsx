@@ -8,10 +8,6 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sideb
                 deals: (new Parse.Query(Deal)).equalTo('createdBy', user )
             }
         },
-        showLeftMenu: function()
-        {
-            this.refs.left.show();
-        },
         showRightMenu: function()
         {
             this.refs.right.show();
@@ -32,8 +28,7 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sideb
                                 <span className="icon-bar"></span>
                                 <span className="icon-bar"></span>
                                 <span className="icon-bar"></span>
-                            </button>
-                            <a className="navbar-brand" onClick={this.showLeftMenu}><i className="fa fa-list"></i> <span className="hidden-xs">Accounts</span> </a>
+                            </button>                            
                         </div>
 
                         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -58,20 +53,6 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sideb
 
                         </div>
                     </div>
-
-                    <Menu ref="left"
-                        alignment="left"
-                        side="left"
-                        visible="true"
-                        showSearch={true} >
-                        {this.data.deals.map(function(deal){
-                            return <MenuItem location={"/deals/" + deal.objectId} className="profileCard">
-                                <div className="accountName">{accountMap[deal.account.objectId].accountName}</div>
-                                <div className="dealName">{deal.dealName}</div>
-                                <div className="primaryContact">{accountMap[deal.account.objectId].primaryContact}</div>
-                            </MenuItem>
-                        })}
-                    </Menu>
 
                     <Menu ref="right"
                         alignment="right"

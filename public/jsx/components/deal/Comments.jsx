@@ -30,11 +30,14 @@ function( React, Parse, ParseReact, Deal, DealComment, AddComment, CommentItem )
         },
         updateDimensions: function(){
             var commentsTopPx = $(".commentsSection").position().top;
-            var commentsHeaderHeightPx = $(".commentsHeader").outerHeight();
-
+            // var commentsHeaderHeightPx = $(".commentsHeader").outerHeight();
+            var accountSidebarWidthPx = $("#accountSidebar").outerWidth();
             var $msgContainer = $(".messagesContainer");
-            var messageListHeight = commentsTopPx + commentsHeaderHeightPx;
-            $msgContainer.css({top: messageListHeight });
+            var $addCommentContainer = $(".addCommentContainer");
+
+            var messageListHeight = commentsTopPx + 50; // + commentsHeaderHeightPx;
+            $msgContainer.css({top: messageListHeight, left: accountSidebarWidthPx + 25 });
+            $addCommentContainer.css({left: accountSidebarWidthPx + 25 });
             this.scrollToBottom();
         },
         render: function(){
@@ -59,15 +62,10 @@ function( React, Parse, ParseReact, Deal, DealComment, AddComment, CommentItem )
             }
 
             return (
-                <div className="commentsSection">
-                    <div className="commentsHeader">
-                        <h2>Comments</h2>
-                    </div>
-                    <div className="row-fluid">
-                        <div className="messagesContainer" ref="messagesContainer">
-                            <div className="container">
-                                {commentsSection}
-                            </div>
+                <div className="commentsSection container-fluid">
+                    <div className="messagesContainer" ref="messagesContainer">
+                        <div className="">
+                            {commentsSection}
                         </div>
                     </div>
                     <AddComment

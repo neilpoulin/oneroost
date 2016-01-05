@@ -10,7 +10,7 @@ define( ['react', 'models/DealComment',], function( React, DealComment ){
             var isSystem = comment.author == null;
             return (
                 <li className={"comment " + (isSystem ? "system" : "")}>
-                    <div className="container">
+                    <div className="container-fluid">
                         <div className="row">
                             <span className="username">{comment.username}</span>
                             &nbsp;

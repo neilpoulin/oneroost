@@ -11,7 +11,7 @@ define(['react', 'parse', 'parse-react', 'next-steps/AddNextStepButton', 'next-s
                 deal: this.props.deal,
                 user: Parse.User.current()
             };
-        },        
+        },
         render: function(){
             var addButton = (null);
             var self = this;
@@ -25,16 +25,18 @@ define(['react', 'parse', 'parse-react', 'next-steps/AddNextStepButton', 'next-s
             }
 
             return (
-                <div id="NextStepsBannerContainer">
-                    {this.data.nextSteps.map(function(step){
-                        return (
-                            <NextStepItem
-                                step={step}
-                                deal={self.state.deal} >
-                            </NextStepItem>
-                        );
-                    })}
-                    {addButton}
+                <div id="NextStepsBannerContainer" className="">
+                    <div className="scrollable">
+                        {this.data.nextSteps.map(function(step){
+                            return (
+                                <NextStepItem
+                                    step={step}
+                                    deal={self.state.deal} >
+                                </NextStepItem>
+                            );
+                        })}
+                        {addButton}
+                    </div>
                 </div>
             );
         }

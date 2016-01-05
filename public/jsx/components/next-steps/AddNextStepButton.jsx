@@ -9,7 +9,7 @@ define(['react', 'parse', 'next-steps/CreateNextStepModal'], function( React, Pa
         render: function()
         {
             return (
-                <div className="">
+                <div className="container">
                     <button className="btn btn-primary"
                         onClick={this.openModal}>
                         Add Next Step
