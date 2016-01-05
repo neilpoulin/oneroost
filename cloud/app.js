@@ -36,6 +36,35 @@ app.get("/", function( request, response ){
     response.render( homePage, params);
 });
 
+Parse.Cloud.afterSave( 'NextStep', function( req, resp ){
+    var step = req.object;
+    // Mandrill.sendEmail({
+    //   message: {
+    //     text: "Body: " + step.get('description'),
+    //     subject: "Next Step marked as " + ( step.get('completedDate') != null ? 'Done: ' : 'Not Done: ' ) + step.get('title'),
+    //     from_email: "info@oneroost.com",
+    //     from_name: "OneRoost Dev",
+    //     to: [
+    //       {
+    //         email: "neil.j.poulin@gmail.com",
+    //         name: "Neil Poulin"
+    //       }
+    //     ]
+    //   },
+    //   async: true
+    // },{
+    //   success: function(httpResponse) {
+    //     console.log(httpResponse);
+    //     resp.success("Email sent!");
+    //   },
+    //   error: function(httpResponse) {
+    //     console.error(httpResponse);
+    //     resp.error("Uh oh, something went wrong");
+    //   }
+    // });
+
+});
+
 app.get("/notifications", function( request, response ){
   console.log("attempting to post to /notifications");
   Mandrill.sendEmail({
