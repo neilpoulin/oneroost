@@ -3,6 +3,9 @@ var moment = require('moment');
 var _ = require('underscore');
 var userController = require("cloud/controllers/userController.js");
 var envUtil = require("cloud/util/envUtil.js");
+var Mandrill = require('mandrill');
+Mandrill.initialize('dmCF3Rb55CIbJVvnzB4uzw');
+
 
 var ejs = require('ejs');
 // ejs.open= '{%';
@@ -33,6 +36,62 @@ app.get("/", function( request, response ){
     response.render( homePage, params);
 });
 
+app.get("/notifications", function( request, response ){
+  console.log("attempting to post to /notifications");
+  Mandrill.sendEmail({
+    message: {
+      text: "testing more stuff",
+      subject: "testing",
+      from_email: "info@oneroost.com",
+      from_name: "OneRoost Dev",
+      to: [
+        {
+          email: "neil.j.poulin@gmail.com",
+          name: "Neil Poulin"
+        }
+      ]
+    },
+    async: false
+  },{
+    success: function(httpResponse) {
+      console.log(httpResponse);
+      response.success("Email sent!");
+    },
+    error: function(httpResponse) {
+      console.error(httpResponse);
+      response.error("Uh oh, something went wrong");
+    }
+  });
+  response.send("thanks again");
+});
+
+
+function sendNextStepCreatedEmail( user, nextStep ){
+  Mandrill.sendEmail({
+    message: {
+      text: "email testing",
+      subject: "new Next Step Created",
+      from_email: "info@oneroost.com",
+      from_name: "OneRoost Dev",
+      to: [
+        {
+          email: "neil.j.poulin@gmail.com",
+          name: "Neil Poulin"
+        }
+      ]
+    },
+    async: false
+  },{
+    success: function(httpResponse) {
+      console.log(httpResponse);
+      response.success("Email sent!");
+    },
+    error: function(httpResponse) {
+      console.error(httpResponse);
+      response.error("Uh oh, something went wrong");
+    }
+  });
+}
 
 function getConfig()
 {

@@ -17,7 +17,7 @@ define( ['react', 'parse-react', 'parse', 'models/DealComment'], function(React,
             deal: this.props.deal
         };
 
-        ParseReact.Mutation.Create('DealComment', comment).dispatch();
+        ParseReact.Mutation.Create('DealComment', comment).dispatch();      
         this.setState({message: ''});
       },
       handleKeyDown: function( event )
@@ -31,7 +31,7 @@ define( ['react', 'parse-react', 'parse', 'models/DealComment'], function(React,
       render: function(){
         var deal = this.props.deal;
         return (
-            <div className="addCommentContainer row-fluid">                
+            <div className="addCommentContainer row-fluid">
                 <div className="input-group">
                     <textarea className="form-control custom-control"
                         id="addCommentInput"
