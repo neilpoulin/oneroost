@@ -1,5 +1,5 @@
-define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'deal/Comments', 'deal/Profile', 'next-steps/NextStepsBanner', 'sidebar/MenuItem'],
-        function( React, Parse, ParseReact, Deal, Account, Comments, DealProfile, NextStepsBanner, MenuItem){
+define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'deal/Comments', 'next-steps/NextStepsBanner', 'sidebar/MenuItem'],
+        function( React, Parse, ParseReact, Deal, Account, Comments, NextStepsBanner, MenuItem){
     return React.createClass({
         mixins: [ParseReact.Mixin],
         observe: function(){
