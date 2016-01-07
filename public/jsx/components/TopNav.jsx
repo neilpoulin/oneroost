@@ -1,4 +1,4 @@
-define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sidebar/Menu', 'sidebar/MenuItem', 'deal/ProfileSidebar'], function( React, Parse, ParseReact, Deal, Account, Menu, MenuItem, DealProfile ){
+define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sidebar/Menu', 'sidebar/MenuItem', 'deal/ProfileSidebar'], function( React, Parse, ParseReact, Deal, Account, Menu, MenuItem, ProfileSidebar ){
     return React.createClass({
         mixins: [ParseReact.Mixin],
         observe: function(){
@@ -28,7 +28,7 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sideb
                                 <span className="icon-bar"></span>
                                 <span className="icon-bar"></span>
                                 <span className="icon-bar"></span>
-                            </button>                            
+                            </button>
                         </div>
 
                         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -58,10 +58,10 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sideb
                         alignment="right"
                         side="right"
                         showSearch={false} >
-                        <DealProfile
+                        <ProfileSidebar
                             ref="dealProfile"
                             deal={deal} >
-                        </DealProfile>
+                        </ProfileSidebar>
                     </Menu>
                 </nav>
             )

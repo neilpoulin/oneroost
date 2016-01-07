@@ -27,5 +27,5 @@ exports.getDealPage = function( request, response, dealId ){
     var props = envUtil.getEnv().json;
     props['dealId'] = dealId;
     console.log(props);
-    response.render('user/deal.ejs', props );    
+    response.render('user/deal.ejs', props );
 }

@@ -3,14 +3,9 @@ var moment = require('moment');
 var _ = require('underscore');
 var userController = require("cloud/controllers/userController.js");
 var envUtil = require("cloud/util/envUtil.js");
+var emailTriggers = require('cloud/emailTriggers.js');
 var Mandrill = require('mandrill');
-Mandrill.initialize('dmCF3Rb55CIbJVvnzB4uzw');
-
-
 var ejs = require('ejs');
-// ejs.open= '{%';
-// ejs.close = '%}';
-
 var app = express();
 
 // Global app configuration section.
@@ -36,92 +31,6 @@ app.get("/", function( request, response ){
     response.render( homePage, params);
 });
 
-Parse.Cloud.afterSave( 'NextStep', function( req, resp ){
-    var step = req.object;
-    // Mandrill.sendEmail({
-    //   message: {
-    //     text: "Body: " + step.get('description'),
-    //     subject: "Next Step marked as " + ( step.get('completedDate') != null ? 'Done: ' : 'Not Done: ' ) + step.get('title'),
-    //     from_email: "info@oneroost.com",
-    //     from_name: "OneRoost Dev",
-    //     to: [
-    //       {
-    //         email: "neil.j.poulin@gmail.com",
-    //         name: "Neil Poulin"
-    //       }
-    //     ]
-    //   },
-    //   async: true
-    // },{
-    //   success: function(httpResponse) {
-    //     console.log(httpResponse);
-    //     resp.success("Email sent!");
-    //   },
-    //   error: function(httpResponse) {
-    //     console.error(httpResponse);
-    //     resp.error("Uh oh, something went wrong");
-    //   }
-    // });
-
-});
-
-app.get("/notifications", function( request, response ){
-  console.log("attempting to post to /notifications");
-  Mandrill.sendEmail({
-    message: {
-      text: "testing more stuff",
-      subject: "testing",
-      from_email: "info@oneroost.com",
-      from_name: "OneRoost Dev",
-      to: [
-        {
-          email: "neil.j.poulin@gmail.com",
-          name: "Neil Poulin"
-        }
-      ]
-    },
-    async: false
-  },{
-    success: function(httpResponse) {
-      console.log(httpResponse);
-      response.success("Email sent!");
-    },
-    error: function(httpResponse) {
-      console.error(httpResponse);
-      response.error("Uh oh, something went wrong");
-    }
-  });
-  response.send("thanks again");
-});
-
-
-function sendNextStepCreatedEmail( user, nextStep ){
-  Mandrill.sendEmail({
-    message: {
-      text: "email testing",
-      subject: "new Next Step Created",
-      from_email: "info@oneroost.com",
-      from_name: "OneRoost Dev",
-      to: [
-        {
-          email: "neil.j.poulin@gmail.com",
-          name: "Neil Poulin"
-        }
-      ]
-    },
-    async: false
-  },{
-    success: function(httpResponse) {
-      console.log(httpResponse);
-      response.success("Email sent!");
-    },
-    error: function(httpResponse) {
-      console.error(httpResponse);
-      response.error("Uh oh, something went wrong");
-    }
-  });
-}
-
 function getConfig()
 {
   console.log("attempting to get config");
@@ -144,6 +53,9 @@ app.get("/deals/:dealId", function(req, resp){
     var dealId =req.params.dealId;
     userController.getDealPage( req, resp, dealId );
 });
+
+
+emailTriggers.registerEmailTriggers();
 
 
 app.listen();
