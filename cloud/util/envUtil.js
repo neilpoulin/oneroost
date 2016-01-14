@@ -7,6 +7,7 @@ exports.getEnv = function(){
         var javascriptKey = "";
         var isDev = true;
         var envName;
+        var mandrillAppId = 'dmCF3Rb55CIbJVvnzB4uzw';
         switch (applicationId)
         {
             case "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq": //dev
@@ -29,7 +30,8 @@ exports.getEnv = function(){
                     "applicationId": applicationId,
                     "javascriptKey": javascriptKey,
                     "isDev": isDev,
-                    "envName": envName
+                    "envName": envName,
+                    "mandrillAppId": mandrillAppId
                 };
 
         var json = JSON.stringify( props );
