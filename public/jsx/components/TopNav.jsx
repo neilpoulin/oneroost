@@ -12,6 +12,11 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sideb
         {
             this.refs.right.show();
         },
+        doLogout: function( e ){
+            e.preventDefault();
+            Parse.User.logOut();
+            window.location = "/";
+        },
         render: function(){
             var accountMap = {};
             _.map(this.data.accounts, function(act){
@@ -37,13 +42,11 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'sideb
 
                             <ul className="nav navbar-nav navbar-right">
                                 <li className="dropdown">
-                                    <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span className="caret"></span></a>
+                                    <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i className="fa fa-user"></i> My Profile <span className="caret"></span></a>
                                       <ul className="dropdown-menu">
-                                            <li><a href="#">Action</a></li>
-                                            <li><a href="#">Another action</a></li>
-                                            <li><a href="#">Something else here</a></li>
+                                            <li><a href="#" onClick={this.doLogout}>Logout</a></li>
                                             <li role="separator" className="divider"></li>
-                                            <li><a href="#">Separated link</a></li>
+                                            <li><a href="#">Placeholder Link</a></li>
                                       </ul>
                                 </li>
                                 <li>
