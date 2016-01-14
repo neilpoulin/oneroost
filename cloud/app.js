@@ -22,9 +22,6 @@ app.get("/", function( request, response ){
     var homePage = env.isDev ? "home.ejs" : "construction.ejs";
     var params = env.json;
 
-    console.log(parseConfig);
-    console.log( parseConfig.get( "landing_motto" ) ) ;
-
     response.render( homePage, params);
 });
 
