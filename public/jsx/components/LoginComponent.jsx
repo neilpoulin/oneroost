@@ -1,27 +1,31 @@
 define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
   return React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
     getInitialState: function(){
       var username;
       var password;
       var isLoggedIn = false;
+      var email = null;
       var user = Parse.User.current();
       if ( user )
       {
           username = user.get("username");
           isLoggedIn = true;
+          email = user.get("email");
         //   this.handleLoginSuccess(user);
       }
       return {
         isLoggedIn: isLoggedIn,
         username: username,
         password: null,
+        email: email,
         isLogin: false
       };
     },
     doLogin: function(e){
       e.preventDefault();
       var component = this;
-
+      debugger;
       if ( this.state.isLogin )
       {
         console.log("logging in for user: " + this.state.username + ", password: " + this.state.password);
@@ -32,10 +36,15 @@ define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
         });
       }
       else {
-        Parse.User.signUp( this.state.username, this.state.password, {ACL: new Parse.ACL()}, {
-          success: component.handleLoginSuccess,
-          error: component.handleLoginError
-        });
+          var user = new Parse.User();
+          user.set("username", this.state.email);
+          user.set("email", this.state.email);
+          user.set("password", this.state.password);
+
+          user.signUp( null, {
+              success: component.handleLoginSuccess,
+              error: component.handleLoginError
+          });
       }
 
       return this.showLoading();
@@ -60,7 +69,8 @@ define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
       this.setState({
         isLoggedIn: true,
         username: user.get("username"),
-        password: user.get("password")
+        password: user.get("password"),
+        email: user.get("email")
       });
       if ( this.props.success )
       {
@@ -73,7 +83,8 @@ define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
       this.setState({
         isLoggedIn: false,
         username: null,
-        password: null
+        password: null,
+        email: null
       });
 
       if ( this.props.logoutSuccess )
@@ -85,12 +96,6 @@ define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
     },
     handleLogoutError: function(){
 
-    },
-    handleUsernameChange: function(e){
-      this.setState({"username": e.target.value});
-    },
-    handlePasswordChange: function(e){
-      this.setState({"password": e.target.value});
     },
     setIsRegister: function(e){
       this.setState({isLogin: false});
@@ -140,12 +145,12 @@ define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
         <div className="LoginComponent">
             <form >
               <div className="form-component">
-                <label for="loginUsernameInput">User Name</label>
-                <input type="text" id="loginUsernameInput" className="form-control" onChange={this.handleUsernameChange} placeholder=""/>
+                <label for="loginUsernameInput">Email</label>
+                <input type="text" id="loginEmailInput" className="form-control" valueLink={this.linkState('email')} placeholder=""/>
               </div>
               <div className="form-component">
                 <label for="loginPasswordInput">Password</label>
-                <input type="password" id="loginPasswordInput" className="form-control" onChange={this.handlePasswordChange}/>
+                <input type="password" id="loginPasswordInput" className="form-control" valueLink={this.linkState('password')}/>
               </div>
               <div className="form-component">
                 <br/>
