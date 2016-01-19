@@ -12,14 +12,13 @@ define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
             username = user.get("username");
             isLoggedIn = true;
             email = user.get("email");
-
       }
       return {
             isLoggedIn: isLoggedIn,
             username: username,
             password: null,
             email: email,
-            isLogin: false,
+            isLogin: window.location.pathname.indexOf("login") != -1,
             error: null,
             isTyping: false,
             emailValidation: null,

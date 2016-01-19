@@ -25,6 +25,20 @@ app.get("/", function( request, response ){
     response.render( homePage, params);
 });
 
+app.get("/login", function( request, response){
+    var env = envUtil.getEnv();
+    var homePage = "home.ejs";
+    var params = env.json;
+    response.render( homePage, params );
+});
+
+app.get("/signup", function( request, response){
+    var env = envUtil.getEnv();
+    var homePage = "home.ejs";
+    var params = env.json;    
+    response.render( homePage, params);
+});
+
 app.get("/my/home", userController.getMyHome );
 app.get("/deals/:dealId", function(req, resp){
     var dealId =req.params.dealId;
