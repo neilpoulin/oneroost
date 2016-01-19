@@ -6,3 +6,28 @@
 .hidden{
   display: none;
 }
+
+.LoginComponent .forgotPassword{
+    margin-top: 20px;
+}
+
+.LoginComponent form{
+    padding-top: 15px;
+}
+
+@media (max-width: 768px) {
+  .LoginComponent  .nav-justified > li {
+    display: table-cell;
+    width: 1%;
+  }
+  .LoginComponent .nav-justified > li > a  {
+    border-bottom: 1px solid #ddd !important;
+    border-radius: 4px 4px 0 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .LoginComponent .nav-justified > li.active > a  {
+    border-bottom: 0px solid #fff !important;
+  }
+
+}

@@ -9,157 +9,289 @@ define( ['react', 'parse', 'SpinnerIcon'], function(React, Parse, SpinnerIcon){
       var user = Parse.User.current();
       if ( user )
       {
-          username = user.get("username");
-          isLoggedIn = true;
-          email = user.get("email");
-        //   this.handleLoginSuccess(user);
+            username = user.get("username");
+            isLoggedIn = true;
+            email = user.get("email");
+
       }
       return {
-        isLoggedIn: isLoggedIn,
-        username: username,
-        password: null,
-        email: email,
-        isLogin: false
+            isLoggedIn: isLoggedIn,
+            username: username,
+            password: null,
+            email: email,
+            isLogin: false,
+            error: null,
+            isTyping: false,
+            emailValidation: null,
+            passwordValidation: null
       };
     },
     doLogin: function(e){
-      e.preventDefault();
-      var component = this;
-      debugger;
-      if ( this.state.isLogin )
-      {
-        console.log("logging in for user: " + this.state.username + ", password: " + this.state.password);
+        e.preventDefault();
+        var component = this;
 
-        Parse.User.logIn(this.state.username, this.state.password, {
-            success: component.handleLoginSuccess,
-            error: component.handleLoginError
-        });
-      }
-      else {
-          var user = new Parse.User();
-          user.set("username", this.state.email);
-          user.set("email", this.state.email);
-          user.set("password", this.state.password);
+        if ( this.state.isLogin )
+        {
+            console.log("logging in for email: " + this.state.email + ", password: " + this.state.password);
 
-          user.signUp( null, {
-              success: component.handleLoginSuccess,
-              error: component.handleLoginError
-          });
-      }
+            Parse.User.logIn(this.state.email, this.state.password, {
+                success: component.handleLoginSuccess,
+                error: component.handleLoginError
+            });
+        }
+        else {
+            var user = new Parse.User();
+            user.set("username", this.state.email);
+            user.set("email", this.state.email);
+            user.set("password", this.state.password);
 
-      return this.showLoading();
+            user.signUp( null, {
+                success: component.handleLoginSuccess,
+                error: component.handleLoginError
+            });
+        }
+
+        return this.showLoading();
     },
     doLogout: function(e){
-      e.preventDefault();
-      var component = this;
-      this.showLoading();
-      Parse.User.logOut().done(component.handleLogoutSuccess).fail(component.handleLogoutError);
+        e.preventDefault();
+        var component = this;
+        this.showLoading();
+        Parse.User.logOut()
+            .done(component.handleLogoutSuccess)
+            .fail(component.handleLogoutError);
     },
     showLoading(){
         this.refs.spinner.doShow();
     },
+    hideLoading(){
+        this.refs.spinner.doHide();
+    },
     handleLoginError: function(user, error)
     {
-      // new ManageTodosView();
-      // self.undelegateEvents();
-      // delete self;
-      return this.render();
+        switch( error.code )
+        {
+            case 101: //invalid login params
+                break;
+            case 202: //username taken
+                break;
+            default:
+                break;
+        }
+        this.setState({"error": error});
+        this.refs.spinner.doHide();
     },
     handleLoginSuccess: function(user){
-      this.setState({
-        isLoggedIn: true,
-        username: user.get("username"),
-        password: user.get("password"),
-        email: user.get("email")
-      });
-      if ( this.props.success )
-      {
-        this.props.success();
-      }
-      return this.render();
+        this.setState({
+            isLoggedIn: true,
+            username: user.get("username"),
+            password: user.get("password"),
+            email: user.get("email")
+        });
+        if ( this.props.success )
+        {
+            this.props.success();
+        }
+        return this.render();
     },
     handleLogoutSuccess: function()
     {
-      this.setState({
-        isLoggedIn: false,
-        username: null,
-        password: null,
-        email: null
-      });
+        this.setState({
+            isLoggedIn: false,
+            username: null,
+            password: null,
+            email: null
+        });
 
-      if ( this.props.logoutSuccess )
-      {
-        this.props.logoutSuccess();
-      }
-
-      return this.render();
+        if ( this.props.logoutSuccess )
+        {
+            this.props.logoutSuccess();
+        }
+        return this.render();
     },
-    handleLogoutError: function(){
-
+    handleLogoutError: function( user, error ){
+        console.error( "failed to log out" );
+        console.error( error );
     },
     setIsRegister: function(e){
-      this.setState({isLogin: false});
+        this.setState({isLogin: false});
     },
     setIsLogin: function(e){
-      this.setState({isLogin: true});
+        this.setState({isLogin: true});
+    },
+    resetPassword: function(){
+        if ( this.state.email != null )
+        {
+            Parse.User.requestPasswordReset(this.state.email, {
+                success: function() {
+                    // Password reset request was sent successfully
+                    alert("reset request successful");
+                },
+                error: function(error) {
+                    // Show the error message somewhere
+                    alert("Error: " + error.code + " " + error.message);
+                }
+            });
+        }
+        else {
+            //todo: tell the use to enter an email
+        }
+    },
+    emailKeyUp: function(){
+        var self = this;
+        if ( this.emailTypingTimeout != null )
+        {
+            clearTimeout( self.emailTypingTimeout );
+        }
+        if ( self.state.emailValidation != null && self.isValidEmail() )
+        {
+            self.doEmailValidation();
+        }
+        else
+        {
+            self.emailTypingTimeout = setTimeout( function(){
+                self.doEmailValidation();
+            } , 500 );
+        }
+    },
+    doEmailValidation: function()
+    {
+        var email = this.state.email;
+        if ( email && email.length > 2 && !this.isValidEmail() )
+        {
+            this.setState({emailValidation: {
+                message: "Please enter a valid email",
+                level: "error"
+            }});
+        }
+        else
+        {
+            this.setState({emailValidation: null});
+        }
+    },
+    isValidEmail: function(){
+        var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(this.state.email);
+    },
+    emailTypingTimeout: null,
+    passwordKeyUp: function(){
+        var self = this;
+        if ( self.passwordTypingTimeout != null )
+        {
+            clearTimeout( self.passwordTypingTimeout );
+        }
+        if ( self.state.passwordValidation != null && self.isValidPassword() )
+        {
+            self.doPasswordValidation();
+        }
+        else {
+            this.passwordTypingTimeout = setTimeout( function(){
+                self.doPasswordValidation();
+            }, 500 );
+        }
+    },
+    doPasswordValidation: function(){
+        var password = this.state.password;
+        if ( password && password.length > 1 && !this.isValidPassword() )
+        {
+            this.setState({passwordValidation: {
+                message: "Your password must be at least 4 characters long",
+                level: "error"
+            }});
+        }
+        else
+        {
+            this.setState({passwordValidation: null});
+        }
+    },
+    passwordTypingTimeout: null,
+    isValidPassword: function(){
+        var password = this.state.password || "";
+        return password.length > 3;
     },
     render: function(){
-      if ( this.state.isLoggedIn )
-      {
-        return (
-            <div className="row">
-                <div className="container">
-                    <div className="LogoutComponent row">
-                      You are logged in as  {this.state.username} (<a href="#" onClick={this.doLogout}>log out</a>) <SpinnerIcon ref="spinner"></SpinnerIcon>
-                    </div>
-                    <div className="row">
-                        <h2>Pages</h2>
-                        <ul className="list-unstyled">
-                            <li><a href="/my/home">My Accounts</a></li>
-                        </ul>
+        if ( this.state.isLoggedIn )
+        {
+            return (
+                <div className="row">
+                    <div className="container">
+                        <div className="LogoutComponent row">
+                          You are logged in as  {this.state.username} (<a href="#" onClick={this.doLogout}>log out</a>) <SpinnerIcon ref="spinner"></SpinnerIcon>
+                        </div>
                     </div>
                 </div>
+            );
+        }
+
+        var btnText = this.state.isLogin ? "Log In" : "Sign Up";
+
+        var tabs = (
+            <ul className="nav nav-tabs nav-justified" >
+                <li role="presentation" className={this.state.isLogin ? "" : "active"} >
+                    <a onClick={this.setIsRegister}>Sign Up</a>
+                </li>
+                <li role="presentation" className={this.state.isLogin ? "active" : ""} >
+                    <a onClick={this.setIsLogin}>Login</a>
+                </li>
+            </ul>
+        );
+
+        var error = (<div></div>);
+        if ( this.state.error )
+        {
+            error = (
+                <div className="errorMessage alert alert-danger">
+                    {this.state.error.message}
+                </div>
+            );
+        }
+
+        var emailHelpBlock = "";
+        var emailValidationClass = "";
+
+        var passwordHelpBlock = "";
+        var passwordValidationClass = "";
+
+
+        if ( this.state.emailValidation )
+        {
+            emailHelpBlock = this.state.emailValidation.message;
+            emailValidationClass = "has-" + this.state.emailValidation.level;
+        }
+
+        if ( this.state.passwordValidation )
+        {
+            passwordHelpBlock = this.state.passwordValidation.message;
+            passwordValidationClass = "has-" + this.state.passwordValidation.level;
+        }
+
+        return (
+            <div className="LoginComponent">
+                <div className="">
+                    {tabs}
+                </div>
+                <form className="container-fluid">
+                    {error}
+                    <div className={"form-group " + emailValidationClass}>
+                        <label for="loginUsernameInput" className="control-label">Email</label>
+                        <input type="email" id="loginEmailInput" className="form-control" valueLink={this.linkState('email')} onKeyUp={this.emailKeyUp} placeholder="" aria-describedby="emailHelpBlock"/>
+                        <span className="help-block" id="emailHelpBlock">{emailHelpBlock}</span>
+                    </div>
+                    <div className={"form-group " + passwordValidationClass}>
+                        <label for="loginPasswordInput" className="control-label">Password</label>
+                        <input type="password" id="loginPasswordInput" className="form-control" valueLink={this.linkState('password')} onKeyUp={this.passwordKeyUp} aria-describedby="passwordHelpBlock"/>
+                        <span className="help-block" id="passwordHelpBlock">{passwordHelpBlock}</span>
+                    </div>
+                    <div className="form-group">
+                        <br/>
+                        <button className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doLogin}>{btnText} <SpinnerIcon ref="spinner"></SpinnerIcon></button>
+                    </div>
+                    <div className="forgotPassword">
+                        Forgot your password? <a href="#" onClick={this.resetPassword}>Click here</a> to reset it.
+                    </div>
+                </form>
             </div>
         );
-      }
-      var registerLoginMessage;
-      var btnText = "Log In";
-      if ( this.state.isLogin )
-      {
-        registerLoginMessage = (
-          <div>
-            Don't have an account? <a onClick={this.setIsRegister}>Create one here</a>.
-          </div>
-        );
-      }
-      else {
-        btnText = "Sign Up";
-        registerLoginMessage = (
-          <div>
-            Already have an account? <a onClick={this.setIsLogin}>Login here</a>.
-          </div>
-        );
-      }
-
-      return (
-        <div className="LoginComponent">
-            <form >
-              <div className="form-component">
-                <label for="loginUsernameInput">Email</label>
-                <input type="text" id="loginEmailInput" className="form-control" valueLink={this.linkState('email')} placeholder=""/>
-              </div>
-              <div className="form-component">
-                <label for="loginPasswordInput">Password</label>
-                <input type="password" id="loginPasswordInput" className="form-control" valueLink={this.linkState('password')}/>
-              </div>
-              <div className="form-component">
-                <br/>
-                <button className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doLogin}>{btnText} <SpinnerIcon ref="spinner"></SpinnerIcon></button>
-              </div>
-              {registerLoginMessage}
-            </form>
-        </div>
-      );
     }
   });
 });
