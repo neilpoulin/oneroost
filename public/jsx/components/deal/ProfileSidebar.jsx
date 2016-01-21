@@ -1,5 +1,5 @@
-define([ 'underscore', 'react', 'parse', 'parse-react', 'models/Deal', 'deal/Stakeholder'], function( _, React, Parse, ParseReact, Deal, Stakeholder ){
-    return React.createClass({
+define([ 'underscore', 'react', 'parse', 'parse-react', 'models/Deal', 'deal/Stakeholder', 'deal/AddStakeholderButton'], function( _, React, Parse, ParseReact, Deal, Stakeholder, AddStakeholderButton ){
+		return React.createClass({
         mixins: [React.addons.LinkedStateMixin],
         getInitialState: function(){
             this.props.deal.objectId = this.props.deal.id;
@@ -185,6 +185,7 @@ define([ 'underscore', 'react', 'parse', 'parse-react', 'models/Deal', 'deal/Sta
                                     </div>
                                     <div className="form-group">
                                         <button className="form-control" onClick={this.addStakeholder} ><i className="fa fa-plus"></i></button>
+                                        <AddStakeholderButton/>
                                     </div>
                                 </div>
                             </div>

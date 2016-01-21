@@ -1,5 +1,5 @@
-define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'deal/Comments', 'next-steps/NextStepsBanner', 'sidebar/MenuItem'],
-        function( React, Parse, ParseReact, Deal, Account, Comments, NextStepsBanner, MenuItem){
+define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'deal/Comments', 'next-steps/NextStepsBanner', 'sidebar/MenuItem', 'deal/AddStakeholderButton'],
+        function( React, Parse, ParseReact, Deal, Account, Comments, NextStepsBanner, MenuItem, AddStakeholderButton){
     return React.createClass({
         mixins: [ParseReact.Mixin],
         observe: function(){
@@ -59,6 +59,7 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'deal/
                                 <hr/>
                                 <NextStepsBanner deal={deal} ></NextStepsBanner>
                                 <hr/>
+                                <AddStakeholderButton/>
                             </div>
                         </div>
                         <div className="row-fluid">
