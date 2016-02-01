@@ -59,7 +59,9 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'deal/
                                 <hr/>
                                 <NextStepsBanner deal={deal} ></NextStepsBanner>
                                 <hr/>
-                                <AddStakeholderButton/>
+                                <AddStakeholderButton
+                                    deal={deal}
+                                    />
                             </div>
                         </div>
                         <div className="row-fluid">

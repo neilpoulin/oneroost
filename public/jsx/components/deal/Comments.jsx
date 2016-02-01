@@ -53,9 +53,7 @@ function( React, Parse, ParseReact, Deal, DealComment, AddComment, CommentItem )
             );
 
             if (this.pendingQueries().length)
-            {
-                console.log("pending queries for comments:");
-                console.log(this.pendingQueries());
+            {                
                 commentsSection = (
                     <div>LOADING <i className="fa fa-spinner fa-spin"></i></div>
                 );

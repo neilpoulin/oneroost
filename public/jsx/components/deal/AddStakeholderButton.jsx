@@ -2,10 +2,12 @@ define(['react', 'parse', 'parse-react', 'deal/StakeholderModal'], function(Reac
     return React.createClass({
         mixins: [React.addons.LinkedStateMixin],
         getInitialState: function(){
-            return {};
+            return {
+                deal: this.props.deal
+            };
         },
         openModal: function(){
-                this.refs.addStakeholderModal.openModal();
+            this.refs.addStakeholderModal.openModal();
         },
         render: function(){
             return (
@@ -15,6 +17,7 @@ define(['react', 'parse', 'parse-react', 'deal/StakeholderModal'], function(Reac
                         Add Stakeholder
                     </button>
                     <StakeholderModal
+                        deal={this.state.deal}
                         ref="addStakeholderModal">
                     </StakeholderModal>
                 </div>

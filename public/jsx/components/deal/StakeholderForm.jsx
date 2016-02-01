@@ -6,14 +6,28 @@ define(['react', 'parse', 'parse-react'], function( React, Parse, ParseReact ){
                 firstName: null,
                 lastName: null,
                 email: null,
-                role: null
+                role: null,
+                deal: this.props.deal
             };
         },
         clear: function(){
             this.setState( this.getInitialState() );
         },
         saveStakeholder: function(){
-            console.log("saveing stakeholder");
+            var self = this;
+            console.log("saving stakeholder for deal " + this.state.deal.get("dealName"));
+            Parse.Cloud.run('addStakeholder', {
+                dealId: self.state.deal.objectId,
+                stakeholder: {
+                    firstName: this.state.firstName,
+                    lastName: this.state.lastName,
+                    email: this.state.email,
+                    role: this.state.role
+                }                
+            }).then(function(stakeholder) {
+                alert( "added stakeholder" );
+                console.log(stakeholder);
+            });
         },
         render: function(){
             return (
