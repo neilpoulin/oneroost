@@ -73,14 +73,7 @@ Parse.Cloud.define("addStakeholder", function(request, response) {
                     else
                     {
                         console.log( "no user found with email = " + stakeholder.email );
-                        var callback = new function( message ){
-                            response.success( {
-                                success: "no user found with email = " + stakeholder.email + ", added new stakeholder",
-                                extra: "field",
-                                message: message || "no message"
-                            });
-                        };
-                        createStakeholderUser( stakeholder, deal, Parse.User.current(), callback );
+                        createStakeholderUser( stakeholder, deal, Parse.User.current(), response );
                     }
                 },
                 error: function(){
@@ -97,7 +90,7 @@ Parse.Cloud.define("addStakeholder", function(request, response) {
     });
 });
 
-function addUserToDeal( user, deal, role, invitedBy, responseCallback ){
+function addUserToDeal( user, deal, role, invitedBy, response ){
     console.log( "adding user to stakeholder table" );
     var Stakeholder = Parse.Object.extend( "Stakeholder" );
     var stakeholder = new Stakeholder();
@@ -108,19 +101,23 @@ function addUserToDeal( user, deal, role, invitedBy, responseCallback ){
     stakeholder.set( "invitedBy", invitedBy );
     stakeholder.save(null, {
         success: function( stakeholder ){
-            // console.log( "successfully saved stakeholder " + stakeholder.id );
-            responseCallback( "added stakeholder" );
+            console.log( "successfully saved stakeholder " + stakeholder.id );
+            response.success( {
+                success: "successfully saved stakeholder, stakeholderId = " + stakeholder.id,
+                stakeholder: stakeholder
+            });
         },
         error: function(){
             console.error( "failed to save stakeholder" );
-            responseCallback( "failed to save stakeholder mapping" );
+            response.error({
+                error: "failed to save stakeholder"
+            });
         }
     });
 }
 
-function createStakeholderUser( stakeholder, deal, invitedBy, responseCallback ){
-    // console.log("creating new stakeholder user with email " + stakeholder.email + " for dealId = " + deal.id + ", invited by userId = " + invitedBy.id );
-    console.log( "creating new stakeholder user" );
+function createStakeholderUser( stakeholder, deal, invitedBy, response ){
+    console.log("creating new stakeholder user with email " + stakeholder.email + " for dealId = " + deal.id + ", invited by userId = " + invitedBy.id );
     var user = new Parse.User();
     user.set( "email", stakeholder.email );
     user.set( "username", stakeholder.email );
@@ -129,49 +126,17 @@ function createStakeholderUser( stakeholder, deal, invitedBy, responseCallback )
     user.set( "password", deal.id );
     user.set( "sourceDeal", deal );
     user.set( "invitedBy", invitedBy );
-    console.log( "using promises to signup" );
-    user.signUp( null ).then(function(created){
-            console.log( "successfully created a stakeholder user." );
-            addUserToDeal( user, deal, stakeholder.role, invitedBy, responseCallback );
-
-
-            // console.log( "adding user to stakeholder table" );
-            // var Stakeholder = Parse.Object.extend( "Stakeholder" );
-            // var stakeholder = new Stakeholder();
-            // stakeholder.set( "user", created );
-            // stakeholder.set( "deail", deal );
-            // stakeholder.set( "role", stakeholder.role );
-            // stakeholder.set( "inviteAccepted", false );
-            // stakeholder.set( "invitedBy", invitedBy );
-            // stakeholder.save(null, {
-            //     success: function( stakeholder ){
-            //         // console.log( "successfully saved stakeholder " + stakeholder.id );
-            //         responseCallback( "added stakeholder" );
-            //     },
-            //     error: function(){
-            //         console.error( "failed to save stakeholder" );
-            //         responseCallback( "failed to save stakeholder mapping" );
-            //     }
-            // });
-
-
+    user.signUp( null, {
+        success: function(created){
+            console.log( "successfully created a user to be added as a stakeholder." );
+            response.success({user: created});
+            // addUserToDeal( user, deal, stakeholder.role, invitedBy, response );
         },
-        function( created, error ){
+        error: function( created, error ){
             console.error( "failed to create stakeholder user." );
-            responseCallback( "failed to create stakeholder user." );
+            response.error( {error: "failed to create stakeholder user."} );
         }
-    );
-    console.log("end of create user function");
+    });
 }
-
-
-Parse.Cloud.afterSave( 'User', function( req, res ){
-    console.log("User afterSave triggered");
-    var user = req.object;
-    if ( user.createdAt == user.updatedAt && user.sourceDeal != null )
-    {
-        
-    }
-});
 
 app.listen();

@@ -1,6 +1,15 @@
 define([ 'underscore', 'react', 'parse', 'parse-react', 'models/Deal', 'deal/Stakeholder', 'deal/AddStakeholderButton'], function( _, React, Parse, ParseReact, Deal, Stakeholder, AddStakeholderButton ){
 		return React.createClass({
-        mixins: [React.addons.LinkedStateMixin],
+        mixins: [React.addons.LinkedStateMixin, ParseReact.Mixin],
+		observe: function(){
+            var user = Parse.User.current();
+			var stakeholderQuery = (new Parse.Query("Stakeholder"));
+			stakeholderQuery.equalTo( 'deal', this.props.deal );
+			stakeholderQuery.include( "user" );
+            return {
+                stakeholders: stakeholderQuery
+            }
+        },
         getInitialState: function(){
             this.props.deal.objectId = this.props.deal.id;
             return {
@@ -9,72 +18,21 @@ define([ 'underscore', 'react', 'parse', 'parse-react', 'models/Deal', 'deal/Sta
                 budgetLow: this.props.deal.get("budget").low,
                 stakeholderEmail: '',
                 stakeholderName: '',
-                stakeholders: this.props.deal.get("stakeholders"),
                 summary: this.props.deal.get("summary"),
                 visible: false,
                 user: Parse.User.current(),
                 deal: this.props.deal
             }
         },
-        addStakeholder: function( ){
-            var component = this;
-            var name = this.state.stakeholderName;
-            var email = this.state.stakeholderEmail;
-
-            var existing = _.find( this.state.stakeholders, function( s ){
-                return ( s.name == name && s.email == email );
-            });
-
-            if ( existing != undefined )
-            {
-                console.log("stakeholder already exists");
-                return;
-            }
-
-            var newStakeholder = {
-                name: this.state.stakeholderName,
-                email: this.state.stakeholderEmail
-            };
-            this.state.stakeholders.push( newStakeholder );
-            ParseReact.Mutation.Set( this.state.deal, {stakeholders: this.state.stakeholders} )
-                .dispatch()
-                .then( function(){
-                    component.addStakeholderComment( newStakeholder, true );
-                });
-
-            component.setState({
-                'stakeholderName': '',
-                'stakeholderEmail': ''
-            });
-        },
+		refreshStakeholders()
+		{
+			this.refreshQueries(["stakeholders"]);
+		},
         removeStakeholder: function( deleted )
         {
-            var component = this;
-            var profile = this;
-            var stakeholders = [];
-            stakeholders = _.reject( this.state.stakeholders, function( current ){
-                return (current.name == deleted.name && current.email == deleted.email);
-            });
+			//TODO: use mutations to dispatch deletion of stakeholder
+			// ParseReact.Mutation.Destroy( "Stakeholder",  )
 
-            profile.setState({stakeholders: stakeholders});
-
-            ParseReact.Mutation.Set( this.state.deal, {stakeholders: this.state.stakeholders} ).dispatch().then( function(){
-                component.addStakeholderComment( deleted, false );
-            });
-        },
-        addStakeholderComment: function( stakeholder, isAdded )
-        {
-            var self = this;
-            var verb = isAdded ? "added" : "removed";
-            var message = self.state.user.get("username") + " " + verb + " a stakeholder: " + stakeholder.name + " (" + stakeholder.email + ")";
-
-            var comment = {
-                deal: self.state.deal,
-                message: message,
-                author: null,
-                username: "OneRoost Bot",
-            };
-            ParseReact.Mutation.Create('DealComment', comment).dispatch();
         },
         saveProfile: function(){
             var self = this;
@@ -163,11 +121,11 @@ define([ 'underscore', 'react', 'parse', 'parse-react', 'models/Deal', 'deal/Sta
                                 <div class="container-fluid">
                                     <h2>Stakeholders</h2>
                                     <ul className="list-unstyled" id="stakeholderList">
-                                        {this.state.stakeholders.map( function(stakeholder){
-                                                return (<Stakeholder
-                                                    stakeholder={stakeholder}
-                                                    onDelete={profile.removeStakeholder}
-                                                    ></Stakeholder>
+                                        {this.data.stakeholders.map( function(stakeholder){
+                                                return (
+													<Stakeholder
+                                                    	stakeholder={stakeholder} >														
+													</Stakeholder>
                                             );
                                         })}
                                     </ul>
@@ -184,7 +142,6 @@ define([ 'underscore', 'react', 'parse', 'parse-react', 'models/Deal', 'deal/Sta
                                         <input type="text" id="stakeholderEmailInput" className="form-control" placeholder="Email" valueLink={this.linkState('stakeholderEmail')}  />
                                     </div>
                                     <div className="form-group">
-                                        <button className="form-control" onClick={this.addStakeholder} ><i className="fa fa-plus"></i></button>
                                         <AddStakeholderButton/>
                                     </div>
                                 </div>

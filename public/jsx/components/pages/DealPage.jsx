@@ -60,7 +60,7 @@ define(['react', 'parse', 'parse-react', 'models/Deal', 'models/Account', 'deal/
                                 <NextStepsBanner deal={deal} ></NextStepsBanner>
                                 <hr/>
                                 <AddStakeholderButton
-                                    deal={deal}
+                                    deal={deal}                                    
                                     />
                             </div>
                         </div>

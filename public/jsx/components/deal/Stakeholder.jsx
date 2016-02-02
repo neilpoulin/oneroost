@@ -1,14 +1,27 @@
-define([ 'underscore', 'react', 'parse', 'models/Deal'], function( _, React, Parse, Deal ){
+define([ 'underscore', 'react', 'parse', 'models/Deal', 'parse-react'], function( _, React, Parse, Deal, ParseReact ){
     return React.createClass({
         mixins: [React.addons.LinkedStateMixin],
         deleteStakeholder: function( stakeholder ){
-            this.props.onDelete( this.props.stakeholder );
+            //TODO delete stakeholder with Mutation
+            var stakeholder = this.props.stakeholder;
+            ParseReact.Mutation.Destroy( stakeholder ).dispatch();            
         },
         render: function(){
             var stakeholder = this.props.stakeholder;
+            console.log( stakeholder );
+            var user = stakeholder.user;
+            var firstName = user.firstName;
+            var lastName = user.lastName;
+            var email = user.email;
+            if ( !user.firstName )
+            {
+                firstName = user.get("firstName");
+                lastName = user.get("lastName");
+                email = user.get("email");
+            }
             return (
-                <li data-name={stakeholder.name} data-email={stakeholder.email} className="hover-effects" >
-                    {stakeholder.name} (<a href={'mailto:' + stakeholder.email} target="_blank">{stakeholder.email}</a>)
+                <li data-name={firstName + " " + lastName} data-email={email} className="hover-effects" >
+                    {firstName + " " + lastName} (<a href={'mailto:' + email} target="_blank">{email}</a>)
                     <i className="fa fa-times hover-show delete-icon" onClick={this.deleteStakeholder}></i>
                 </li>
             );
