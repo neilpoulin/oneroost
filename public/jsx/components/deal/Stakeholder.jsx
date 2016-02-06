@@ -2,9 +2,8 @@ define([ 'underscore', 'react', 'parse', 'models/Deal', 'parse-react'], function
     return React.createClass({
         mixins: [React.addons.LinkedStateMixin],
         deleteStakeholder: function( stakeholder ){
-            //TODO delete stakeholder with Mutation
             var stakeholder = this.props.stakeholder;
-            ParseReact.Mutation.Destroy( stakeholder ).dispatch();            
+            ParseReact.Mutation.Destroy( stakeholder ).dispatch();
         },
         render: function(){
             var stakeholder = this.props.stakeholder;

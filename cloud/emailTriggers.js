@@ -1,6 +1,6 @@
 var Mandrill = require('mandrill');
 var envUtil = require("cloud/util/envUtil.js");
-
+var EmailSender = require("cloud/EmailSender.js")
 
 exports.registerEmailTriggers = function()
 {
@@ -63,6 +63,27 @@ function doRegister( mandrillAppId )
             console.log("not sending deal comment email as the author was null");
         }
     });
+
+
+    Parse.Cloud.afterSave( 'Stakeholder', function( req, res ){
+        console.log( "Stakeholder afterSave triggered" );
+        var stakeholderQuery = new Parse.Query("Stakeholder");
+        stakeholderQuery.include( "user" );
+        stakeholderQuery.include( "invitedBy" );
+        stakeholderQuery.include( "deal" );
+
+        stakeholderQuery.get( req.object.id ).then( function( stakeholder ){
+            console.log( "found stakeholder object", stakeholder );
+            message = buildStakeholderSaveEmail( stakeholder );
+            var recipients = [{
+              email: "neil.j.poulin@gmail.com",
+              name: "Neil Poulin"
+            }];
+            sendEmail( message, recipients, {} );
+        } );
+
+    });
+
 }
 
 
@@ -140,38 +161,19 @@ function buildDealCommentSaveEmail( comment, deal )
   };
 }
 
+function buildStakeholderSaveEmail( stakeholder )
+{
+    var html = "<b>" + stakeholder.get("user").get("email") + " has been added to " + stakeholder.get("deal").get("dealName");
+    var text = stakeholder.get("user").get("email") + " has been added to " + stakeholder.get("deal").get("dealName");
+    var subject =  stakeholder.get("user").get("email") + "is a new stakeholder on " + stakeholder.get("deal").get("dealName");
+
+    return {
+      html: html,
+      text: text,
+      subject: subject
+    };
+}
+
 function sendEmail( message, recipients, opts ){
-    Parse.Config.get().then( function(config){
-          console.log("retrieved config");
-          if ( config.get( "emailEnabled" ) ){
-              console.log( "the config says email is enabled...preparing to send email." );
-              var options = opts || {};
-              var env = envUtil.getEnv();
-              message.from_email = "info@oneroost.com";
-              message.from_name = "OneRoost " + ( env.envName == "prod" ? "" : env.envName );
-              message.to = recipients;
-              console.log("email message: " + JSON.stringify( message ) );
-              console.log( "sending email to " + JSON.stringify( recipients ) );
-              Mandrill.sendEmail({
-                  message: message,
-                  async: options.async || true
-              },
-              {
-                success: function( response ){
-                    console.log( "Email sent successfully: " + message.subject );
-                },
-                error: function ( response ){
-                    console.error( "FAILED TO SEND EMAIL: " + message.subject + " | to: " + JSON.stringify(recipients) );
-                    console.error( response );
-                }
-              });
-          }
-          else {
-              console.log("the config does not allow sending email, not sending email");
-          }
-      },
-      function(error){
-          console.log("error... failed to get config");
-          console.log(error);
-      });
+    EmailSender.sendEmail( message, recipients, opts );
 }
