@@ -80,18 +80,30 @@ function doRegister( mandrillAppId )
               name: "Neil Poulin"
             }];
             sendEmail( message, recipients, {} );
+            sendEmail( buildStakeholderWelcomeEmail(stakeholder), recipients, {} );
         } );
-
     });
-
 }
 
+function buildStakeholderWelcomeEmail( stakeholder )
+{
+    var html = "<h2>Deal Invite</h2>You have been invited to participate in the deal " + stakeholder.get("deal").get("dealName")
+    + "<br/>Invited by:  " + stakeholder.get("invitedBy").get("username")
+    + "<br/>Click <a href='www.oneroost.com/deals/" + stakeholder.get("deal").id + "'>here</a> to get started.";
+
+    var text ="Deal Invite \n You have been invited to participate in the deal " + stakeholder.get("deal").get("dealName")
+    + "\nInvited by:  " + stakeholder.get("invitedBy").get("username");;
+    var subject =  "You have been invited to participate in the deal " + stakeholder.get("deal").get("dealName");
+
+    return {
+      html: html,
+      text: text,
+      subject: subject
+    };
+}
 
 function getNextStepSavedRecipients( step, author ){
-  var recipients = [{
-    email: "neil.j.poulin@gmail.com",
-    name: "Neil Poulin"
-  }];
+  var recipients = [];
 
   if ( author.email )
   {
@@ -104,24 +116,27 @@ function getNextStepSavedRecipients( step, author ){
 }
 
 function getCommentAddedRecipients( deal, author ){
-  var recipients = [{
-    email: "neil.j.poulin@gmail.com",
-    name: "Neil Poulin"
-  }];
-
-  var stakeholders = deal.get( "stakeholders" ) || [];
-  for ( var i = 0; i < stakeholders.length; i++ )
-  {
-    var stakeholder = stakeholders[i];
-    if ( stakeholder.email != author.get("email ") )
-    {
-      console.log( "adding stakeholder to email... " + JSON.stringify( stakeholder) );
-    }
-    else
-    {
-        console.log( "excluding author from email");
-    }
-  }
+  var recipients = [];
+//TODO: this needs to be udated to use real stakeholders
+    var authorEmail = author.get("email");
+    var stakeholderQuery = new Parse.Query("Stakeholder");
+    stakeholderQuery.include( "user" );
+    stakeholderQuery.equalTo( "deal", deal );
+    stakeholderQuery.find().then( function( stakeholders ){
+        for ( var i = 0; i < stakeholders.length; i++ )
+        {
+          var stakeholder = stakeholders[i];
+          if ( stakeholder.get("email") != authorEmail )
+          {
+            console.log( "adding stakeholder to email... " + JSON.stringify( stakeholder) );
+            recipients.push( {email: stakeholder.email, name: stakeholder.get("username")} );
+          }
+          else
+          {
+              console.log( "excluding author from email");
+          }
+        }
+    });
 
   return recipients;
 }

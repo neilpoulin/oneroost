@@ -13,7 +13,14 @@ exports.sendEmail = function( message, recipients, opts ){
               var env = envUtil.getEnv();
               message.from_email = "info@oneroost.com";
               message.from_name = "OneRoost " + ( env.envName == "prod" ? "" : env.envName );
+
+              var emailOverride = config.get( "emailOverride");
+              if ( emailOverride )
+              {
+                    recipients = emailOverride.replace(/ /g, "").split(",");
+              }
               message.to = recipients;
+
               console.log("email message: " + JSON.stringify( message ) );
               console.log( "sending email to " + JSON.stringify( recipients ) );
               Mandrill.sendEmail({
