@@ -45,8 +45,7 @@ function doRegister( mandrillAppId )
                     new Parse.Query("User").get( comment.get("author").id, {
                         success: function( author ){
                           var message = buildDealCommentSaveEmail( comment, deal );
-                          var recipients = getCommentAddedRecipients( deal, author)
-                          sendEmail( message, recipients );
+                          sendCommentEmail( deal, author, message );
                         },
                         error: function(){
                           console.error( "failed to get author of comment" );
@@ -74,13 +73,19 @@ function doRegister( mandrillAppId )
 
         stakeholderQuery.get( req.object.id ).then( function( stakeholder ){
             console.log( "found stakeholder object", stakeholder );
-            message = buildStakeholderSaveEmail( stakeholder );
-            var recipients = [{
-              email: "neil.j.poulin@gmail.com",
-              name: "Neil Poulin"
-            }];
-            sendEmail( message, recipients, {} );
-            sendEmail( buildStakeholderWelcomeEmail(stakeholder), recipients, {} );
+
+            sendEmail( buildStakeholderWelcomeEmail(stakeholder), {
+                email: stakeholder.get( "user" ).get("email"),
+                name: stakeholder.get( "user" ).get( "username" )
+            }, {} );
+
+            var allStakeholderQuery = new Parse.Query( "Stakeholder" );
+            allStakeholderQuery.equalTo( "deal", stakeholder.deal );
+            allStakeholderQuery.find().then( function (stakeholders){
+                sendEmail( buildStakeholderSaveEmail( stakeholder ), getRecipientsFromStakeholders( stakeholders ), {} );
+            });
+
+
         } );
     });
 }
@@ -89,7 +94,7 @@ function buildStakeholderWelcomeEmail( stakeholder )
 {
     var html = "<h2>Deal Invite</h2>You have been invited to participate in the deal " + stakeholder.get("deal").get("dealName")
     + "<br/>Invited by:  " + stakeholder.get("invitedBy").get("username")
-    + "<br/>Click <a href='www.oneroost.com/deals/" + stakeholder.get("deal").id + "'>here</a> to get started.";
+    + "<br/>Click <a href='" + envUtil.getEnv().domain + "www.oneroost.com/deals/" + stakeholder.get("deal").id + "'>here</a> to get started.";
 
     var text ="Deal Invite \n You have been invited to participate in the deal " + stakeholder.get("deal").get("dealName")
     + "\nInvited by:  " + stakeholder.get("invitedBy").get("username");;
@@ -115,30 +120,40 @@ function getNextStepSavedRecipients( step, author ){
   return recipients;
 }
 
-function getCommentAddedRecipients( deal, author ){
-  var recipients = [];
-//TODO: this needs to be udated to use real stakeholders
+function sendCommentEmail( deal, author, message ){
+    var recipients = [];
     var authorEmail = author.get("email");
     var stakeholderQuery = new Parse.Query("Stakeholder");
     stakeholderQuery.include( "user" );
     stakeholderQuery.equalTo( "deal", deal );
     stakeholderQuery.find().then( function( stakeholders ){
-        for ( var i = 0; i < stakeholders.length; i++ )
-        {
-          var stakeholder = stakeholders[i];
-          if ( stakeholder.get("email") != authorEmail )
-          {
-            console.log( "adding stakeholder to email... " + JSON.stringify( stakeholder) );
-            recipients.push( {email: stakeholder.email, name: stakeholder.get("username")} );
-          }
-          else
-          {
-              console.log( "excluding author from email");
-          }
-        }
+        console.log( "found stakeholders for the deal" );
+        recipients = getRecipientsFromStakeholders( stakeholders, authorEmail );
+        sendEmail( message, recipients );
     });
+}
 
-  return recipients;
+function getRecipientsFromStakeholders( stakeholders, excludedEmail )
+{
+    var recipients = [];
+    console.log("processing " + stakeholders.length + " stakeholder emails. Excluding = " + excludedEmail );
+    for ( var i = 0; i < stakeholders.length; i++ )
+    {
+        var stakeholder = stakeholders[i].get("user");
+        console.log( "stakeholder is " + JSON.stringify( stakeholder) );
+        if ( !excludedEmail || stakeholder.get("email") != excludedEmail )
+        {
+            var recipient = {email: stakeholder.get("email"), name: stakeholder.get("username")};
+            console.log( "adding stakeholder to email... " + JSON.stringify( recipient) );
+            recipients.push( recipient );
+        }
+        else
+        {
+            console.log( "excluding author from email");
+        }
+    }
+    console.log("retrieved recipients for the list of stakeholders.");
+    return recipients;
 }
 
 function buildNextStepSavedEmail( step, deal ){
