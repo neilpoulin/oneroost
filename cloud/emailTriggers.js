@@ -9,9 +9,6 @@ exports.registerEmailTriggers = function()
 
 function doRegister( mandrillAppId )
 {
-    console.log("registering mandrill with appId = " + mandrillAppId);
-    Mandrill.initialize(mandrillAppId);
-
     Parse.Cloud.afterSave( 'NextStep', function( req, resp ){
         console.log("Next Step afterSave was triggered... ");
         var step = req.object;
@@ -44,8 +41,9 @@ function doRegister( mandrillAppId )
                 success: function( deal ){
                     new Parse.Query("User").get( comment.get("author").id, {
                         success: function( author ){
-                          var message = buildDealCommentSaveEmail( comment, deal );
-                          sendCommentEmail( deal, author, message );
+                        //   var message = buildDealCommentSaveEmail( comment, deal );
+                          console.log("........sending comment email");
+                          sendCommentEmail( deal, author, comment );
                         },
                         error: function(){
                           console.error( "failed to get author of comment" );
@@ -94,10 +92,12 @@ function buildStakeholderWelcomeEmail( stakeholder )
 {
     var html = "<h2>Deal Invite</h2>You have been invited to participate in the deal " + stakeholder.get("deal").get("dealName")
     + "<br/>Invited by:  " + stakeholder.get("invitedBy").get("username")
-    + "<br/>Click <a href='" + envUtil.getEnv().domain + "www.oneroost.com/deals/" + stakeholder.get("deal").id + "'>here</a> to get started.";
+    + "<br/>Click <a href='http://" + envUtil.getEnv().domain + "/deals/" + stakeholder.get("deal").id + "'>here</a> to get started.";
 
     var text ="Deal Invite \n You have been invited to participate in the deal " + stakeholder.get("deal").get("dealName")
-    + "\nInvited by:  " + stakeholder.get("invitedBy").get("username");;
+    + "\nInvited by:  " + stakeholder.get("invitedBy").get("username")
+    + "\nhttp://" + envUtil.getEnv().domain + "/deals/" + stakeholder.get("deal").id;
+
     var subject =  "You have been invited to participate in the deal " + stakeholder.get("deal").get("dealName");
 
     return {
@@ -120,7 +120,20 @@ function getNextStepSavedRecipients( step, author ){
   return recipients;
 }
 
-function sendCommentEmail( deal, author, message ){
+function buildDealCommentSaveEmail( comment, deal )
+{
+  var html = "<b>" + comment.get("username") + "</b> said: <br/>" + comment.get("message");
+  var text = comment.get("username") + " said: \n" + comment.get("message");
+  var subject = deal.get("dealName") +  " - New Comment from " + comment.get("username");
+
+  return {
+    html: html,
+    text: text,
+    subject: subject
+  };
+}
+
+function sendCommentEmail( deal, author, comment ){
     var recipients = [];
     var authorEmail = author.get("email");
     var stakeholderQuery = new Parse.Query("Stakeholder");
@@ -129,7 +142,30 @@ function sendCommentEmail( deal, author, message ){
     stakeholderQuery.find().then( function( stakeholders ){
         console.log( "found stakeholders for the deal" );
         recipients = getRecipientsFromStakeholders( stakeholders, authorEmail );
-        sendEmail( message, recipients );
+        var message = {
+            subject: deal.get("dealName") +  " - New Comment from " + comment.get("username"),
+            to: recipients
+        };
+
+        var templateContent = [{
+            name: "dealName",
+            content: deal.get("dealName")
+        },
+        {
+            name: "username",
+            content: author.get("username")
+        },
+        {
+            name: "message",
+            content: comment.get("message")
+        },
+        {
+            name: "time",
+            content: comment.get("createdAt")
+        }];
+        console.log("attempting to send via templates");
+        EmailSender.sendTemplate( "commentnotification", templateContent, message, true );
+        // sendEmail( message, recipients );
     });
 }
 
@@ -176,19 +212,6 @@ function buildNextStepSavedEmail( step, deal ){
       text: text,
       subject: subject
     };
-}
-
-function buildDealCommentSaveEmail( comment, deal )
-{
-  var html = "<b>" + comment.get("username") + "</b> said: <br/>" + comment.get("message");
-  var text = comment.get("username") + " said: \n" + comment.get("message");
-  var subject = deal.get("dealName") +  " - New Comment from " + comment.get("username");
-
-  return {
-    html: html,
-    text: text,
-    subject: subject
-  };
 }
 
 function buildStakeholderSaveEmail( stakeholder )
