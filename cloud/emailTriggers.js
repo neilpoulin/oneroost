@@ -148,20 +148,25 @@ function sendCommentEmail( deal, author, comment ){
         };
 
         var templateContent = [{
-            name: "dealName",
-            content: deal.get("dealName")
+            name: "deal",
+            content: {
+                name: deal.get("dealName")
+            }
         },
         {
-            name: "username",
-            content: author.get("username")
+            name: "author",
+            content: {
+                username: author.get("username"),
+                email: author.get("email")
+            }
         },
         {
-            name: "message",
-            content: comment.get("message")
-        },
-        {
-            name: "time",
-            content: comment.get("createdAt")
+            name: "comment",
+            content: {
+                message: comment.get("message"),
+                createdAt: comment.get("createdAt")
+            }
+
         }];
         console.log("attempting to send via templates");
         EmailSender.sendTemplate( "commentnotification", templateContent, message, true );

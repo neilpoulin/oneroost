@@ -33,16 +33,23 @@ exports.sendTemplate = function (templateName, templateContent, message, async, 
               message.from_email = "info@oneroost.com";
               message.from_name = "OneRoost " + ( env.envName == "prod" ? "" : env.envName );
               message.to = actualRecipients;
-
+              message.inline_css = true;
+              message.merge = true;
+              message.merge_language = "handlebars";
+              templateContent.push({
+                  name: "recipients",
+                  content: recipients
+              });
+              message.global_merge_vars = templateContent;
               var request = {
                   key: envUtil.getEnv().mandrillAppId,
                   template_name: templateName,
-                  template_content: templateContent,
+                  template_content: [],
                   message: message
               };
 
-              console.log( "sending template request:" )
-              console.log( JSON.stringify( request, null, 4 ) );
+              console.log( "sending template request:" );
+              console.log( JSON.stringify( message ) );
               Parse.Cloud.httpRequest({
                   method: 'POST',
                   headers: {
@@ -50,9 +57,15 @@ exports.sendTemplate = function (templateName, templateContent, message, async, 
                   },
                   url: 'https://mandrillapp.com/api/1.0/messages/send-template.json',
                   body: request,
-                  success: emailSendSuccess,
-                  error: emailSendError
-                });
+                  success: function(){
+                      console.log("Email template sent succesfully");
+                  },
+                  error: function(error){
+                      console.log("Email template failed to send");
+                      console.log(error.text);
+                  }
+              });
+              console.log("http request made");
           }
           else {
               console.log("the config does not allow sending email, not sending email");
@@ -63,17 +76,6 @@ exports.sendTemplate = function (templateName, templateContent, message, async, 
           console.log(error);
       });
 };
-
-function emailSendSuccess( response )
-{
-    console.log( "Email sent successfully: " + message.subject );
-}
-
-function emailSendError( response )
-{
-    console.error( "FAILED TO SEND EMAIL: " + message.subject + " | to: " + JSON.stringify(recipients) );
-    console.error( response );
-}
 
 exports.sendEmail = function( message, recipients, opts ){
     Parse.Config.get().then( function(config){
