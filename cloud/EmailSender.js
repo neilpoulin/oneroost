@@ -4,10 +4,25 @@ var envUtil = require("cloud/util/envUtil.js");
 console.log("registering mandrill with appId = " + envUtil.getEnv().mandrillAppId );
 Mandrill.initialize(envUtil.getEnv().mandrillAppId);
 
+function getActualRecipients( original, config )
+{
+    var emailOverride = config.get( "emailOverride");
+    if ( emailOverride )
+    {
+        var overrides = [];
+        var overrideEmails = emailOverride.replace(/ /g, "").split(",");
+        for ( var i = 0; i < overrideEmails.length; i++ )
+        {
+            overrides.push({email: overrideEmails[i], name: overrideEmails[i]});
+        }
+        return overrides;
+    }
+    return original
+}
 
-exports.sendTemplate = function (templateName, templateContent, message, async, ipPool, sendAt, opts) {
+exports.sendTemplate = function (templateName, globalMergeVars, message, async, ipPool, sendAt, opts) {
     console.log("sending template for " + templateName );
-    console.log( JSON.stringify(templateContent));
+    console.log( JSON.stringify(globalMergeVars));
 
     Parse.Config.get().then( function(config){
         console.log("retrieved config");
@@ -15,21 +30,8 @@ exports.sendTemplate = function (templateName, templateContent, message, async, 
             console.log( "the config says email is enabled...preparing to send email." );
               var options = opts || {};
               var env = envUtil.getEnv();
-              var recipients = message.to;
-              var actualRecipients = recipients;
-              var emailOverride = config.get( "emailOverride");
-              if ( emailOverride )
-              {
-                  var overrides = [];
-                  var overrideEmails = emailOverride.replace(/ /g, "").split(",");
-                  for ( var i = 0; i < overrideEmails.length; i++ )
-                  {
-                      overrides.push({email: overrideEmails[i], name: overrideEmails[i]});
-                  }
-                  actualRecipients = overrides;
-                  message.html += "<br/><hr/>Email Override is On. Original recipients were: " + JSON.stringify( recipients );
-                  message.text += "\n\nEmail Override is On. Original recipients were: " + JSON.stringify( recipients );
-              }
+              var actualRecipients = getActualRecipients( message.to, config );
+
               message.from_email = "info@oneroost.com";
               message.from_name = "OneRoost " + ( env.envName == "prod" ? "" : env.envName );
               message.to = actualRecipients;
@@ -40,32 +42,15 @@ exports.sendTemplate = function (templateName, templateContent, message, async, 
                   name: "recipients",
                   content: recipients
               });
-              message.global_merge_vars = templateContent;
+              message.global_merge_vars = globalMergeVars;
+
               var request = {
                   key: envUtil.getEnv().mandrillAppId,
                   template_name: templateName,
                   template_content: [],
                   message: message
               };
-
-              console.log( "sending template request:" );
-              console.log( JSON.stringify( message ) );
-              Parse.Cloud.httpRequest({
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  url: 'https://mandrillapp.com/api/1.0/messages/send-template.json',
-                  body: request,
-                  success: function(){
-                      console.log("Email template sent succesfully");
-                  },
-                  error: function(error){
-                      console.log("Email template failed to send");
-                      console.log(error.text);
-                  }
-              });
-              console.log("http request made");
+              sendTemplateRequest( request );
           }
           else {
               console.log("the config does not allow sending email, not sending email");
@@ -77,6 +62,25 @@ exports.sendTemplate = function (templateName, templateContent, message, async, 
       });
 };
 
+function sendTemplateRequest( body )
+{
+    Parse.Cloud.httpRequest({
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        url: 'https://mandrillapp.com/api/1.0/messages/send-template.json',
+        body: body,
+        success: function(){
+            console.log("Email template sent succesfully");
+        },
+        error: function(error){
+            console.log("Email template failed to send");
+            console.log(error.text);
+        }
+    });
+}
+
 exports.sendEmail = function( message, recipients, opts ){
     Parse.Config.get().then( function(config){
         console.log("retrieved config");
@@ -84,23 +88,11 @@ exports.sendEmail = function( message, recipients, opts ){
             console.log( "the config says email is enabled...preparing to send email." );
               var options = opts || {};
               var env = envUtil.getEnv();
-              var actualRecipients = recipients;
-              var emailOverride = config.get( "emailOverride");
-              if ( emailOverride )
-              {
-                  var overrides = [];
-                  var overrideEmails = emailOverride.replace(/ /g, "").split(",");
-                  for ( var i = 0; i < overrideEmails.length; i++ )
-                  {
-                      overrides.push({email: overrideEmails[i], name: overrideEmails[i]});
-                  }
-                  actualRecipients = overrides;
-                  message.html += "<br/><hr/>Email Override is On. Original recipients were: " + JSON.stringify( recipients );
-                  message.text += "\n\nEmail Override is On. Original recipients were: " + JSON.stringify( recipients );
-              }
+              var actualRecipients = getActualRecipients( recipients, config );
+
+              message.to = actualRecipients;
               message.from_email = "info@oneroost.com";
               message.from_name = "OneRoost " + ( env.envName == "prod" ? "" : env.envName );
-              message.to = actualRecipients;
 
               console.log("email message: " + JSON.stringify( message ) );
               console.log( "sending email to " + JSON.stringify( actualRecipients ) );
