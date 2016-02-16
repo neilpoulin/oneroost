@@ -52,35 +52,3 @@ exports.afterSave = function(){
         } );
     });
 }
-
-function buildStakeholderWelcomeEmail( stakeholder )
-{
-    var html = "<h2>Deal Invite</h2>You have been invited to participate in the deal " + stakeholder.get("deal").get("dealName")
-    + "<br/>Invited by:  " + stakeholder.get("invitedBy").get("username")
-    + "<br/>Click <a href='http://" + envUtil.getEnv().domain + "/deals/" + stakeholder.get("deal").id + "'>here</a> to get started.";
-
-    var text ="Deal Invite \n You have been invited to participate in the deal " + stakeholder.get("deal").get("dealName")
-    + "\nInvited by:  " + stakeholder.get("invitedBy").get("username")
-    + "\nhttp://" + envUtil.getEnv().domain + "/deals/" + stakeholder.get("deal").id;
-
-    var subject =  "You have been invited to participate in the deal " + stakeholder.get("deal").get("dealName");
-
-    return {
-        html: html,
-        text: text,
-        subject: subject
-    };
-}
-
-function buildStakeholderSaveEmail( stakeholder )
-{
-    var html = "<b>" + stakeholder.get("user").get("email") + " has been added to " + stakeholder.get("deal").get("dealName");
-    var text = stakeholder.get("user").get("email") + " has been added to " + stakeholder.get("deal").get("dealName");
-    var subject =  stakeholder.get("user").get("email") + "is a new stakeholder on " + stakeholder.get("deal").get("dealName");
-
-    return {
-        html: html,
-        text: text,
-        subject: subject
-    };
-}
