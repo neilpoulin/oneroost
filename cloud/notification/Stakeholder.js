@@ -32,6 +32,7 @@ exports.afterSave = function(){
                     .putGlobalVar( "user", user.toJSON() )
                     .putGlobalVar( "role", role )
                     .putGlobalVar( "dealUrl", dealUrl )
+                    .putGlobalVar( "deal", deal.toJSON() )
                     .setSubject( user.get("email") + "is a new stakeholder on " + deal.get("dealName") );
 
                 EmailSender.sendMandrillTemplate( stakeholderAddedTemplate );
@@ -44,6 +45,7 @@ exports.afterSave = function(){
                     .putGlobalVar( "role", role )
                     .putGlobalVar( "invitedBy", invitedBy.toJSON() )
                     .putGlobalVar( "dealUrl", dealUrl )
+                    .putGlobalVar( "deal", deal.toJSON() )
                     .setSubject( "You have been invited to participate in the deal " + deal.get("dealName") );
 
                 EmailSender.sendMandrillTemplate( welcomeTemplate );
