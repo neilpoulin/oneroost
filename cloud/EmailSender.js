@@ -1,6 +1,7 @@
 var Mandrill = require('mandrill');
 var envUtil = require("cloud/util/envUtil.js");
-
+var MandrillEmailTemplate = require("cloud/email/MandrillEmailTemplate.js");
+var env = envUtil.getEnv();
 console.log("registering mandrill with appId = " + envUtil.getEnv().mandrillAppId );
 Mandrill.initialize(envUtil.getEnv().mandrillAppId);
 
@@ -17,66 +18,46 @@ function getActualRecipients( original, config )
         }
         return overrides;
     }
-    return original
+    return original;
 }
 
-exports.sendTemplate = function (templateName, globalMergeVars, message, async, ipPool, sendAt, opts) {
-    console.log("sending template for " + templateName );
-    console.log( JSON.stringify(globalMergeVars));
+exports.sendMandrillTemplate = function( template )
+{
+    console.log( "sending mandrill template" );
 
     Parse.Config.get().then( function(config){
-        console.log("retrieved config");
         if ( config.get( "emailEnabled" ) ){
-            console.log( "the config says email is enabled...preparing to send email." );
-              var options = opts || {};
-              var env = envUtil.getEnv();
-              var actualRecipients = getActualRecipients( message.to, config );
+            console.log( "the config says email is enabled...preparing to send template " + template.templateName );
+            template.putGlobalVar("originalRecipients", template.recipients )
+                .setRecipients( getActualRecipients( template.recipients, config ) )
+                .setFromName( "OneRoost " + ( env.envName == "prod" ? "" : env.envName ) );
 
-              message.from_email = "info@oneroost.com";
-              message.from_name = "OneRoost " + ( env.envName == "prod" ? "" : env.envName );
-              message.to = actualRecipients;
-              message.inline_css = true;
-              message.merge = true;
-              message.merge_language = "handlebars";
-              templateContent.push({
-                  name: "recipients",
-                  content: recipients
-              });
-              message.global_merge_vars = globalMergeVars;
+            sendTemplateRequest( template );
+        }
+        else {
+            console.log("the config does not allow sending email, not sending email");
+        }
+    },
+    function(error){
+        console.log("error... failed to get config");
+        console.log(error);
+    });
+}
 
-              var request = {
-                  key: envUtil.getEnv().mandrillAppId,
-                  template_name: templateName,
-                  template_content: [],
-                  message: message
-              };
-              sendTemplateRequest( request );
-          }
-          else {
-              console.log("the config does not allow sending email, not sending email");
-          }
-      },
-      function(error){
-          console.log("error... failed to get config");
-          console.log(error);
-      });
-};
-
-function sendTemplateRequest( body )
+function sendTemplateRequest( template )
 {
     Parse.Cloud.httpRequest({
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         },
         url: 'https://mandrillapp.com/api/1.0/messages/send-template.json',
-        body: body,
+        body: template.get(),
         success: function(){
             console.log("Email template sent succesfully");
         },
         error: function(error){
-            console.log("Email template failed to send");
-            console.log(error.text);
+            console.log("Email template failed to send: " + error.text);
         }
     });
 }
@@ -86,21 +67,21 @@ exports.sendEmail = function( message, recipients, opts ){
         console.log("retrieved config");
         if ( config.get( "emailEnabled" ) ){
             console.log( "the config says email is enabled...preparing to send email." );
-              var options = opts || {};
-              var env = envUtil.getEnv();
-              var actualRecipients = getActualRecipients( recipients, config );
+            var options = opts || {};
+            var env = envUtil.getEnv();
+            var actualRecipients = getActualRecipients( recipients, config );
 
-              message.to = actualRecipients;
-              message.from_email = "info@oneroost.com";
-              message.from_name = "OneRoost " + ( env.envName == "prod" ? "" : env.envName );
+            message.to = actualRecipients;
+            message.from_email = "info@oneroost.com";
+            message.from_name = "OneRoost " + ( env.envName == "prod" ? "" : env.envName );
 
-              console.log("email message: " + JSON.stringify( message ) );
-              console.log( "sending email to " + JSON.stringify( actualRecipients ) );
-              Mandrill.sendEmail({
-                  message: message,
-                  async: options.async || true
-              },
-              {
+            console.log("email message: " + JSON.stringify( message ) );
+            console.log( "sending email to " + JSON.stringify( actualRecipients ) );
+            Mandrill.sendEmail({
+                message: message,
+                async: options.async || true
+            },
+            {
                 success: function( response ){
                     console.log( "Email sent successfully: " + message.subject );
                 },
@@ -108,14 +89,14 @@ exports.sendEmail = function( message, recipients, opts ){
                     console.error( "FAILED TO SEND EMAIL: " + message.subject + " | to: " + JSON.stringify(recipients) );
                     console.error( response );
                 }
-              });
-          }
-          else {
-              console.log("the config does not allow sending email, not sending email");
-          }
-      },
-      function(error){
-          console.log("error... failed to get config");
-          console.log(error);
-      });
+            });
+        }
+        else {
+            console.log("the config does not allow sending email, not sending email");
+        }
+    },
+    function(error){
+        console.log("error... failed to get config");
+        console.log(error);
+    });
 }

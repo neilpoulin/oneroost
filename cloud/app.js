@@ -3,11 +3,12 @@ var moment = require('moment');
 var _ = require('underscore');
 var userController = require("cloud/controllers/userController.js");
 var envUtil = require("cloud/util/envUtil.js");
-var emailTriggers = require('cloud/emailTriggers.js');
 var Stakeholders = require('cloud/stakeholders.js');
 var Mandrill = require('mandrill');
+var Notifications = require("cloud/notification/Notifications.js");
 var ejs = require('ejs');
 var app = express();
+
 
 // Global app configuration section.
 app.use(express.bodyParser());
@@ -47,7 +48,7 @@ app.get("/deals/:dealId", function(req, resp){
 });
 
 
-emailTriggers.registerEmailTriggers();
+Notifications.initialize();
 Stakeholders.initialize();
 
 app.listen();
