@@ -42,3 +42,5 @@ node_modules
 #parse
 
 /public/out/
+
+build/
