@@ -8,60 +8,85 @@ var browserify = require("gulp-browserify");
 var del = require("del");
 var shell = require("gulp-shell");
 
+var bootstrapRoot = './node_modules/bootstrap-sass/';
+var bootstrapPaths = {
+    fonts: bootstrapRoot + 'assets/fonts/**/*',
+    stylesheets: bootstrapRoot + 'assets/stylesheets'
+}
+
+var fontAwesomeRoot = './node_modules/font-awesome/';
+var fontAwesomePaths = {
+    fonts: fontAwesomeRoot + 'fonts/**/*',
+    stylesheets: fontAwesomeRoot + 'scss'
+}
+
 var paths = {
-    scripts: ['./src/jsx/**/*.jsx'],
-    styles: ['./src/scss/**/*.scss']
-}
+    src: {
+        root: './src',
+        scripts: ['./src/jsx/**/*.jsx'],
+        styles: ['./src/scss/**/*.scss'],
+        fonts: [bootstrapPaths.fonts, fontAwesomePaths.fonts]
+    },
+    build: {
+        root: './build',
+        js: '.build/js',
+        sourceFile: '.build/js/index.js'
+    },
+    dest: {
+        root: './public',
+        css: './public/css',
+        js: './public/bundle',
+        fonts: './public/css/fonts',
+        styleName: 'styles.css',
+        scriptName: 'bundle.js'
+    }
+};
 
-var outdir = {
-    scripts: "./public/out/js",
-    styles: "./public/out/css",
-    root: "./public/out"
-}
+var sassOpts = {
+    outputStyle: 'nested',
+    precison: 3,
+    errLogToConsole: true,
+    includePaths: [bootstrapPaths.stylesheets, fontAwesomePaths.stylesheets]
+};
 
-gulp.task('sass', function(){
-    return gulp.src(paths.styles)
-    .pipe(sass().on('error', sass.logError ) )
-    // .pipe(concat('style.css'))
-    .pipe(gulp.dest(outdir.styles));
+gulp.task('fonts', function(){
+    console.log("fonts path: ", paths.src.fonts );
+    return gulp.src(paths.src.fonts)
+    .pipe(gulp.dest(paths.dest.fonts));
 });
 
-gulp.task("transpile", function(){
-    return gulp.src(paths.scripts)
-    .pipe( babel() )
-    .pipe( gulp.dest( "./build/js/" ) )
-});
-
-gulp.task('scripts', ['transpile'], function(){
-    return gulp.src("./build/js/**/*.js")
-    .pipe(browserify())
-    .pipe( gulp.dest(outdir.scripts) );
+gulp.task('sass', ['clean', 'fonts'], function(){
+    return gulp.src(paths.src.styles)
+    .pipe(sass( sassOpts ).on('error', sass.logError ) )
+    .pipe(concat(paths.dest.styleName))
+    .pipe(gulp.dest( paths.dest.css ));
 });
 
 gulp.task('clean', function(){
-    return del([outdir.root, 'build', 'public/bundle']);
+    return del(['build']);
 });
 
-gulp.task('transpile:2', ['clean'], function(){
-    return gulp.src('./src/jsx/**/*.js')
+gulp.task('transpile', ['clean'], function(){
+    return gulp.src(paths.src.scripts)
     .pipe( babel() )
-    .pipe( gulp.dest( "./build/js/"));
+    .pipe( gulp.dest( paths.build.js ));
 });
 
-gulp.task('bundle', ['clean', 'transpile:2'], function(){
-    return gulp.src('./build/js/index.js')
+gulp.task('bundle', ['clean', 'transpile' ], function(){
+    return gulp.src(paths.build.sourceFile)
     .pipe(browserify())
-    .pipe(concat('bundle.js'))
-    .pipe( gulp.dest('./public/bundle') );
+    .pipe(concat(paths.dest.scriptName))
+    .pipe( gulp.dest(paths.dest.js) );
 });
 
-gulp.task('build', ['clean', 'scripts', 'sass']);
+gulp.task('build', ['clean', 'bundle', 'sass']);
 
 gulp.task('parse-develop', shell.task('parse develop dev') );
 
-gulp.task('watch', ['build'], function(){
+gulp.task('watch', ['clean', 'build'], function(){
     gulp.watch(paths.styles, ['sass']);
-    gulp.watch(paths.scripts, ['scripts']);
+    gulp.watch(paths.scripts, ['bundle']);
+    return;
 });
 gulp.task('develop', ['watch'], function(){
     gulp.run('parse-develop');

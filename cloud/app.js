@@ -21,7 +21,7 @@ app.locals.formatTime = function(time) {
 // app.get("/", usersController.index);
 app.get("/", function( request, response ){
     var env = envUtil.getEnv();
-    var homePage = env.isDev ? "home.ejs" : "construction.ejs";
+    var homePage = env.isDev ? "index.ejs" : "construction.ejs";
     var params = env.json;
 
     response.render( homePage, params);
