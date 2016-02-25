@@ -7,6 +7,8 @@ var concat = require('gulp-concat');
 var browserify = require("gulp-browserify");
 var del = require("del");
 var shell = require("gulp-shell");
+var plumber = require('gulp-plumber');
+var gutil = require('gulp-util');
 
 var bootstrapRoot = './node_modules/bootstrap-sass/';
 var bootstrapPaths = {
@@ -50,32 +52,43 @@ var sassOpts = {
 };
 
 gulp.task('fonts', function(){
-    console.log("fonts path: ", paths.src.fonts );
-    return gulp.src(paths.src.fonts)
-    .pipe(gulp.dest(paths.dest.fonts));
+    return gulp.src( paths.src.fonts )
+    .pipe( gulp.dest( paths.dest.fonts ) );
 });
 
 gulp.task('sass', ['clean', 'fonts'], function(){
-    return gulp.src(paths.src.styles)
-    .pipe(sass( sassOpts ).on('error', sass.logError ) )
-    .pipe(concat(paths.dest.styleName))
-    .pipe(gulp.dest( paths.dest.css ));
+    return gulp.src( paths.src.styles )
+    .pipe( sass( sassOpts ).on('error', sass.logError ) )
+    .pipe( concat(paths.dest.styleName) )
+    .pipe( gulp.dest( paths.dest.css ) );
 });
 
 gulp.task('clean', function(){
-    return del(['build']);
+    return del( ['build'] );
 });
 
 gulp.task('transpile', ['clean'], function(){
-    return gulp.src(paths.src.scripts)
+    return gulp.src( paths.src.scripts )
+    .pipe( plumber() )
     .pipe( babel() )
+    .on('error', function(err){
+        gutil.log( gutil.colors.red('[Transpile Error]') );
+        gutil.log( gutil.colors.red(err.message) );
+    })
+    .pipe( plumber.stop() )
     .pipe( gulp.dest( paths.build.js ));
 });
 
 gulp.task('bundle', ['clean', 'transpile' ], function(){
-    return gulp.src(paths.build.sourceFile)
-    .pipe(browserify())
-    .pipe(concat(paths.dest.scriptName))
+    return gulp.src( paths.build.sourceFile )
+    .pipe( plumber() )
+    .pipe( browserify() )
+    .on('error', function(err){
+        gutil.log( gutil.colors.red('[Compilation Error]') );
+        gutil.log( gutil.colors.red(err.message) );
+    })
+    .pipe( plumber.stop() )
+    .pipe( concat( paths.dest.scriptName ) )
     .pipe( gulp.dest(paths.dest.js) );
 });
 
@@ -84,10 +97,10 @@ gulp.task('build', ['clean', 'bundle', 'sass']);
 gulp.task('parse-develop', shell.task('parse develop dev') );
 
 gulp.task('watch', ['clean', 'build'], function(){
-    gulp.watch(paths.styles, ['sass']);
-    gulp.watch(paths.scripts, ['bundle']);
-    return;
+    gulp.watch( paths.src.styles, ['sass'] );
+    gulp.watch( paths.src.scripts, ['bundle'] );
+    gulp.watch( paths.src.fonts, ['fonts'] );
 });
 gulp.task('develop', ['watch'], function(){
-    gulp.run('parse-develop');
+    gulp.run( 'parse-develop' );
 });

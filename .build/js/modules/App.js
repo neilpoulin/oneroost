@@ -25,7 +25,7 @@ exports.default = _react2.default.createClass({
             _react2.default.createElement(
                 'h1',
                 null,
-                'One Roost Dev Home'
+                'One Roost Dev Home Testing'
             ),
             _react2.default.createElement(
                 'ul',
