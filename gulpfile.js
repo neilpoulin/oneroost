@@ -9,8 +9,8 @@ var del = require("del");
 var shell = require("gulp-shell");
 
 var paths = {
-    scripts: ['./public/jsx/**/*.jsx'],
-    styles: ['./public/style/**/*.scss']
+    scripts: ['./src/jsx/**/*.jsx'],
+    styles: ['./src/scss/**/*.scss']
 }
 
 var outdir = {
@@ -20,7 +20,7 @@ var outdir = {
 }
 
 gulp.task('sass', function(){
-    gulp.src(paths.styles)
+    return gulp.src(paths.styles)
     .pipe(sass().on('error', sass.logError ) )
     // .pipe(concat('style.css'))
     .pipe(gulp.dest(outdir.styles));
@@ -33,13 +33,26 @@ gulp.task("transpile", function(){
 });
 
 gulp.task('scripts', ['transpile'], function(){
-    gulp.src("./build/js/**/*.js")
+    return gulp.src("./build/js/**/*.js")
     .pipe(browserify())
-    .pipe( gulp.dest("./public/out/js/") );
+    .pipe( gulp.dest(outdir.scripts) );
 });
 
 gulp.task('clean', function(){
-    return del([outdir.root, 'build']);
+    return del([outdir.root, 'build', 'public/bundle']);
+});
+
+gulp.task('transpile:2', ['clean'], function(){
+    return gulp.src('./src/jsx/**/*.js')
+    .pipe( babel() )
+    .pipe( gulp.dest( "./build/js/"));
+});
+
+gulp.task('bundle', ['clean', 'transpile:2'], function(){
+    return gulp.src('./build/js/index.js')
+    .pipe(browserify())
+    .pipe(concat('bundle.js'))
+    .pipe( gulp.dest('./public/bundle') );
 });
 
 gulp.task('build', ['clean', 'scripts', 'sass']);

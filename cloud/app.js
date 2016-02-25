@@ -27,6 +27,10 @@ app.get("/", function( request, response ){
     response.render( homePage, params);
 });
 
+app.get("/test", function(request, response){
+    response.render( 'index.ejs' );
+});
+
 app.get("/login", function( request, response){
     var env = envUtil.getEnv();
     var homePage = "home.ejs";
