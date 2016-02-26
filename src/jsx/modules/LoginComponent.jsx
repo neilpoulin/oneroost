@@ -5,121 +5,121 @@ import SpinnerIcon from './SpinnerIcon'
 
 
 export default React.createClass({
-        mixins: [LinkedStateMixin],
-        getInitialState: function(){
-            var username;
-            var password;
-            var isLoggedIn = false;
-            var email = null;
-            var user = Parse.User.current();
-            if ( user )
-            {
-                username = user.get("username");
-                isLoggedIn = true;
-                email = user.get("email");
-            }
-            return {
-                isLoggedIn: isLoggedIn,
-                username: username,
-                password: null,
-                email: email,
-                isLogin: window.location.pathname.indexOf("login") != -1,
-                error: null,
-                isTyping: false,
-                emailValidation: null,
-                passwordValidation: null
-            };
-        },
-        doLogin: function(e){
-            e.preventDefault();
-            var component = this;
-            this.showLoading();
-            if ( this.state.isLogin )
-            {
-                console.log("logging in for email: " + this.state.email + ", password: " + this.state.password);
-
-                Parse.User.logIn(this.state.email, this.state.password, {
-                    success: component.handleLoginSuccess,
-                    error: component.handleLoginError
-                });
-            }
-            else {
-                var user = new Parse.User();
-                user.set("username", this.state.email);
-                user.set("email", this.state.email);
-                user.set("password", this.state.password);
-
-                user.signUp( null, {
-                    success: component.handleLoginSuccess,
-                    error: component.handleLoginError
-                });
-            }
-        },
-        doLogout: function(e){
-            e.preventDefault();
-            var component = this;
-            this.showLoading();
-            Parse.User.logOut()
-            .done(component.handleLogoutSuccess)
-            .fail(component.handleLogoutError);
-        },
-        showLoading(){
-            this.refs.spinner.doShow();
-        },
-        hideLoading(){
-            this.refs.spinner.doHide();
-        },
-        handleLoginError: function(user, error)
+    mixins: [LinkedStateMixin],
+    getInitialState: function(){
+        var username;
+        var password;
+        var isLoggedIn = false;
+        var email = null;
+        var user = Parse.User.current();
+        if ( user )
         {
-            switch( error.code )
-            {
-                case 101: //invalid login params
-                break;
-                case 202: //username taken
-                break;
-                default:
-                break;
-            }
-            this.setState({"error": error});
-            this.hideLoading();
-        },
-        handleLoginSuccess: function(user){
-            this.setState({
-                isLoggedIn: true,
-                username: user.get("username"),
-                password: user.get("password"),
-                email: user.get("email")
-            });
-            if ( this.props.success )
-            {
-                this.props.success();
-            }
-            return this.render();
-        },
-        handleLogoutSuccess: function()
+            username = user.get("username");
+            isLoggedIn = true;
+            email = user.get("email");
+        }
+        return {
+            isLoggedIn: isLoggedIn,
+            username: username,
+            password: null,
+            email: email,
+            isLogin: window.location.pathname.indexOf("login") != -1,
+            error: null,
+            isTyping: false,
+            emailValidation: null,
+            passwordValidation: null
+        };
+    },
+    doLogin: function(e){
+        e.preventDefault();
+        var component = this;
+        this.showLoading();
+        if ( this.state.isLogin )
         {
-            this.setState({
-                isLoggedIn: false,
-                username: null,
-                password: null,
-                email: null
-            });
+            console.log("logging in for email: " + this.state.email + ", password: " + this.state.password);
 
-            if ( this.props.logoutSuccess )
-            {
-                this.props.logoutSuccess();
-            }
-            return this.render();
-        },
-        handleLogoutError: function( user, error ){
-            console.error( "failed to log out" );
-            console.error( error );
-        },
-        setIsRegister: function(e){
-            this.setState({isLogin: false,
-                emailValidation: null,
-                passwordValidation: null,
-                error: null});
+            Parse.User.logIn(this.state.email, this.state.password, {
+                success: component.handleLoginSuccess,
+                error: component.handleLoginError
+            });
+        }
+        else {
+            var user = new Parse.User();
+            user.set("username", this.state.email);
+            user.set("email", this.state.email);
+            user.set("password", this.state.password);
+
+            user.signUp( null, {
+                success: component.handleLoginSuccess,
+                error: component.handleLoginError
+            });
+        }
+    },
+    doLogout: function(e){
+        e.preventDefault();
+        var component = this;
+        this.showLoading();
+        Parse.User.logOut()
+                    .done(component.handleLogoutSuccess)
+                    .fail(component.handleLogoutError);
+    },
+    showLoading(){
+        this.refs.spinner.doShow();
+    },
+    hideLoading(){
+        this.refs.spinner.doHide();
+    },
+    handleLoginError: function(user, error)
+    {
+        switch( error.code )
+        {
+            case 101: //invalid login params
+            break;
+            case 202: //username taken
+            break;
+            default:
+            break;
+        }
+        this.setState({"error": error});
+        this.hideLoading();
+    },
+    handleLoginSuccess: function(user){
+        this.setState({
+            isLoggedIn: true,
+            username: user.get("username"),
+            password: user.get("password"),
+            email: user.get("email")
+        });
+        if ( this.props.success )
+        {
+            this.props.success();
+        }
+        return this.render();
+    },
+    handleLogoutSuccess: function()
+    {
+        this.setState({
+            isLoggedIn: false,
+            username: null,
+            password: null,
+            email: null
+        });
+
+        if ( this.props.logoutSuccess )
+        {
+            this.props.logoutSuccess();
+        }
+        return this.render();
+    },
+    handleLogoutError: function( user, error ){
+        console.error( "failed to log out" );
+        console.error( error );
+    },
+    setIsRegister: function(e){
+        this.setState({isLogin: false,
+            emailValidation: null,
+            passwordValidation: null,
+            error: null});
         },
         setIsLogin: function(e){
             this.setState({isLogin: true,

@@ -25,14 +25,16 @@ var fontAwesomePaths = {
 var paths = {
     src: {
         root: './src',
-        scripts: ['./src/jsx/**/*.jsx'],
+        scripts: ['./src/**/*.jsx',
+            './src/**/*.js',
+            './node_modules/bootstrap/dist/js/bootstrap.min.js'],
         styles: ['./src/scss/**/*.scss'],
         fonts: [bootstrapPaths.fonts, fontAwesomePaths.fonts]
     },
     build: {
         root: './build',
-        js: '.build/js',
-        sourceFile: '.build/js/index.js'
+        js: './build/js',
+        sourceFile: './build/js/jsx/index.js'
     },
     dest: {
         root: './public',
@@ -64,7 +66,7 @@ gulp.task('sass', ['clean', 'fonts'], function(){
 });
 
 gulp.task('clean', function(){
-    return del( ['build'] );
+    return del( [paths.build.root] );
 });
 
 gulp.task('transpile', ['clean'], function(){
@@ -72,7 +74,7 @@ gulp.task('transpile', ['clean'], function(){
     .pipe( plumber() )
     .pipe( babel() )
     .on('error', function(err){
-        gutil.log( gutil.colors.red('[Transpile Error]') );
+        gutil.log( gutil.colors.red('[Task "transpile"][Babel Error]') );
         gutil.log( gutil.colors.red(err.message) );
     })
     .pipe( plumber.stop() )
@@ -84,7 +86,7 @@ gulp.task('bundle', ['clean', 'transpile' ], function(){
     .pipe( plumber() )
     .pipe( browserify() )
     .on('error', function(err){
-        gutil.log( gutil.colors.red('[Compilation Error]') );
+        gutil.log( gutil.colors.red('[Task "bundle"][Browserify Error]') );
         gutil.log( gutil.colors.red(err.message) );
     })
     .pipe( plumber.stop() )
