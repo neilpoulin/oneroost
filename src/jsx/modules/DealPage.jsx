@@ -10,6 +10,7 @@ import AddStakeholderButton from './deal/AddStakeholderButton';
 import _ from 'underscore';
 import $ from 'jquery';
 import TopNav from './TopNav';
+import LoadingTakeover from './util/LoadingTakeover';
 
 export default React.createClass(
     {
@@ -17,9 +18,9 @@ export default React.createClass(
         observe: function(){
             var user = Parse.User.current();
             return {
+                deal: (new Parse.Query(Deal).equalTo('objectId', this.props.params['dealId']) ),
                 accounts: (new Parse.Query(Account)).equalTo('createdBy', user ),
-                deals: (new Parse.Query(Deal)).equalTo('createdBy', user ),
-                deal: (new Parse.Query(Deal).equalTo('objectId', this.props.params['dealId']) )
+                deals: (new Parse.Query(Deal)).equalTo('createdBy', user )                
             }
         },
         getInitialState: function(){
@@ -44,18 +45,25 @@ export default React.createClass(
             this.refs.comments.updateDimensions();
         },
         render: function(){
+
             if ( this.pendingQueries().length > 0 )
             {
+                var message = "Loading...";
+
+                if ( this.pendingQueries().indexOf( 'deal' ) == -1 )
+                {
+                    dealName = this.data.deal[0].dealName;
+                    message = "Loading " + dealName;
+                    document.title = "OneRoost Deal Page - " + dealName ;
+                }
+
                 return (
-                    <div>LOADING!!</div>
+                    <LoadingTakeover size="3x" message={message} />
                 );
             }
-            debugger;
             var deal = this.data.deal[0];
             var dealName = deal.dealName;
-            document.title = "OneRoost Deal Page - " + dealName;
             var budget = deal.budget;
-
             var accountMap = {};
             _.map(this.data.accounts, function(act){
                 accountMap[act.objectId] = act;

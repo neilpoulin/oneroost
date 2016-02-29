@@ -8,33 +8,30 @@ exports.afterSave = function(){
         console.log("Next Step afterSave was triggered... ");
         var stepQuery = new Parse.Query("NextStep");
         stepQuery.include("deal");
-        stepQuery.include("createdBy");
-        stepQuery.get( req.object.id, {
-            success: function( step ){
-                console.log("found next step");
-                var status = 'Not Done';
-                var templateName = "next-step-created";
-                if ( step.get("completedDate") != null )
-                {
-                    templateName = "next-step-completed";
-                    status = "Completed";
-                }
-                var author = step.get("createdBy");
-                var deal = step.get("deal");
-                var template = new Template( templateName );
-                template.putGlobalVar( "step", step.toJSON() )
-                .addRecipient({email: author.get("email"),
-                                name: author.get("username")
-                });
+        // stepQuery.include("createdBy"); //this fixed the issue where it didn't know the properties of the author
+        stepQuery.get( req.object.id).then( function( step ){
+            var status = 'Not Done';
+            var templateName = "next-step-created";
+            if ( step.get("completedDate") != null )
+            {
+                templateName = "next-step-completed";
+                status = "Completed";
+            }
+            var author = step.get("createdBy");
+            var deal = step.get("deal");
+            var template = new Template( templateName );
+            template.putGlobalVar( "step", step.toJSON() )
+                .addRecipient({
+                    email: author.get("email"),
+                    name: author.get("username")
+                })
                 .putGlobalVar( "deal", step.get("deal").toJSON() )
                 .putGlobalVar( "createdBy", step.get("createdBy").toJSON() )
                 .setSubject( deal.get("dealName") + " - Next Step " + step.get("title") + " marked as " + status );
-
-                EmailSender.sendMandrillTemplate( template );
-            },
-            error: function( error ){
-                console.error( "failed to retrieve the next step" );
-            }
+            console.log("sending Next Step after Save Email...");
+            EmailSender.sendMandrillTemplate( template );
+        }).then( function( error ){
+            console.error( "failed to retrieve the next step" );
         });
     });
 }

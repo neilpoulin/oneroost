@@ -31,7 +31,6 @@ export default React.createClass({
 
         return (
             <div id="NextStepsBannerContainer" className="">
-                <div className="scrollable">
                     {this.data.nextSteps.map(function(step){
                         return (
                             <NextStepItem
@@ -41,7 +40,6 @@ export default React.createClass({
                         );
                     })}
                     {addButton}
-                </div>
             </div>
         );
     }

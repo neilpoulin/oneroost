@@ -31,7 +31,8 @@ var paths = {
         scripts: ['./src/**/*.jsx',
             './src/**/*.js',
             './node_modules/bootstrap/dist/js/bootstrap.min.js'],
-        styles: ['./src/scss/index.scss'],
+        styles: ['./src/scss/**/*.scss'],
+        styleEntry: './src/scss/index.scss',
         fonts: [bootstrapPaths.fonts, fontAwesomePaths.fonts]
     },
     build: {
@@ -63,7 +64,7 @@ gulp.task('fonts', function(){
 });
 
 gulp.task('sass', ['clean', 'fonts'], function(){
-    return gulp.src( paths.src.styles )
+    return gulp.src( paths.src.styleEntry )
     .pipe(sourcemaps.init())
     .pipe( sass( sassOpts ).on( 'error', sass.logError ) )
     .pipe( concat( paths.dest.styleName ) )

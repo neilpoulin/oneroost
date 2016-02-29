@@ -16,7 +16,7 @@ export default React.createClass({
     render: function(){
         return (
             <div className="container">
-                <button className="btn btn-primary"
+                <button className="btn btn-outline-primary"
                     onClick={this.openModal}>
                     Add Stakeholder
                 </button>

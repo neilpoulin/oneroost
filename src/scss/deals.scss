@@ -127,69 +127,6 @@ body > div > button {
   margin-right: 10px;
 }
 
-#NextStepsBannerContainer{
-    height: 125px;
-    overflow-x: auto;
-}
-
-#NextStepsBannerContainer > .scrollable{
-    height: 100%;
-    min-width: 992px;
-}
-
-
-.NextStepItemContainer .nextStepTitle{
-    font-size: 1.2em;
-    font-weight: bold;
-}
-
-.NextStepItemContainer .nextStepDescription{
-    color: gray;
-}
-
-.NextStepItemContainer .nextStepDueDate{
-    font-size: .8em;
-}
-
-.NextStepItemContainer.complete{
-    background-color: yellow;
-}
-
-.NextStepItemContainer .editButtons{
-    position: absolute;
-    bottom: 10px;
-    left: 15px;
-    right: 15px;
-    display: none;
-}
-
-.NextStepItemContainer:hover .editButtons{
-    display:inline-block;
-}
-
-.NextStepItemContainer{
-    border-top: 2px solid lightgray;
-    border-bottom: 2px solid lightgray;
-    border-right: 2px solid lightgray;
-    padding: 20px;
-    text-align: center;
-    min-width: 50px;
-    height: 100%;
-    width: 20%;
-    float:left;
-    position: relative;
-    overflow: auto;
-}
-
-.NextStepItemContainer:first-of-type{
-    border-left: 2px solid lightgray;
-}
-
-.addNextStepBannerContainer{
-    padding: 20px;
-
-}
-
 
 
 .menu > div button {

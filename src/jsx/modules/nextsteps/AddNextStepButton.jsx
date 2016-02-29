@@ -13,7 +13,7 @@ export default React.createClass({
     {
         return (
             <div className="container">
-                <button className="btn btn-primary"
+                <button className="btn btn-outline-primary"
                     onClick={this.openModal}>
                     Add Next Step
                 </button>
