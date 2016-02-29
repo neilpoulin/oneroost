@@ -5,7 +5,7 @@ import BootstrapModal from './BootstrapModal';
 import CreateAccount from './CreateAccount';
 import AccountList from './AccountList';
 import LoginComponent from './LoginComponent';
-import { browserHistory } from 'react-router'
+import { browserHistory } from 'react-router';
 
 export default React.createClass({
     mixins: [ParseReact.Mixin],
