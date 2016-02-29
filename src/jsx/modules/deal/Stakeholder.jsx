@@ -1,9 +1,9 @@
 import _ from 'underscore';
 import React from 'react';
 import Parse from 'parse';
-import Deal from '../models/Deal';
 import ParseDeal from 'parse-react';
 import LinkedStateMixin from 'react-addons-linked-state-mixin'
+import Deal from './../../models/Deal';
 
 export default React.createClass({
     mixins: [LinkedStateMixin],

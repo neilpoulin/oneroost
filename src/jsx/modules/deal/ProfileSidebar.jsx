@@ -1,9 +1,9 @@
 import _ from 'underscore';
 import React from 'react';
 import ParseReact from 'parse-react';
-import Deal from '../models/Deal';
-import Stakeholder from 'Stakeholder';
-import AddStakeholderButton from 'AddStakeholderButton';
+import Deal from './../../models/Deal';
+import Stakeholder from './Stakeholder';
+import AddStakeholderButton from './AddStakeholderButton';
 import LinkedStateMixin from 'react-addons-linked-state-mixin'
 
 export default React.createClass({
@@ -11,7 +11,7 @@ export default React.createClass({
 	observe: function(){
 		var user = Parse.User.current();
 		var stakeholderQuery = (new Parse.Query("Stakeholder"));
-		stakeholderQuery.equalTo( 'deal', this.props.deal );
+		stakeholderQuery.equalTo( 'deal', this.props.deal.objectId );
 		stakeholderQuery.include( "user" );
 		return {
 			stakeholders: stakeholderQuery
@@ -20,12 +20,12 @@ export default React.createClass({
 	getInitialState: function(){
 		this.props.deal.objectId = this.props.deal.id;
 		return {
-			timeline: this.props.deal.get("profile").timeline,
-			budgetHigh: this.props.deal.get("budget").high,
-			budgetLow: this.props.deal.get("budget").low,
+			timeline: this.props.deal.profile.timeline,
+			budgetHigh: this.props.deal.budget.high,
+			budgetLow: this.props.deal.budget.low,
 			stakeholderEmail: '',
 			stakeholderName: '',
-			summary: this.props.deal.get("summary"),
+			summary: this.props.deal.summary,
 			visible: false,
 			user: Parse.User.current(),
 			deal: this.props.deal
@@ -77,7 +77,7 @@ export default React.createClass({
 	},
 	render: function(){
 		var deal = this.props.deal;
-		var profile = this;
+		var profile = this;		
 		return(
 			<div id="" className="container-fluid" >
 				<div className="row-fluid">

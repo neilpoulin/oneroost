@@ -25,7 +25,7 @@ exports.afterSave = function(){
                 template.putGlobalVar( "step", step.toJSON() )
                 .addRecipient({email: author.get("email"),
                                 name: author.get("username")
-                })
+                });
                 .putGlobalVar( "deal", step.get("deal").toJSON() )
                 .putGlobalVar( "createdBy", step.get("createdBy").toJSON() )
                 .setSubject( deal.get("dealName") + " - Next Step " + step.get("title") + " marked as " + status );

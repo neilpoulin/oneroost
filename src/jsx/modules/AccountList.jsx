@@ -42,14 +42,16 @@ export default React.createClass({
                 </thead>
                 <tbody>
                     {this.data.deals.map(function(deal){
-                        return <tr className="profileCard">
-                            <td>{accountMap[deal.account.objectId].accountName}</td>
-                            <td><Link to={"/deals/" + deal.objectId} >{deal.dealName}</Link></td>
-                            <td>{accountMap[deal.account.objectId].primaryContact}</td>
-                        </tr>
-                    })}
-                </tbody>
-            </table>
-        )
-    }
-});
+                        return (
+                            <tr className="profileCard" key={"account_list_item_" + deal.objectId}>
+                                <td>{accountMap[deal.account.objectId].accountName}</td>
+                                <td><Link to={"/deals/" + deal.objectId} >{deal.dealName}</Link></td>
+                                <td>{accountMap[deal.account.objectId].primaryContact}</td>
+                            </tr>)
+                        })
+                    }
+                    </tbody>
+                </table>
+            )
+        }
+    });

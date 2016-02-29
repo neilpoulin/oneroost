@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import React from 'react';
-import MenuItem from 'MenuItem';
 import LinkedStateMixin from 'react-addons-linked-state-mixin'
+import MenuItem from './MenuItem';
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
