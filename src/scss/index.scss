@@ -1,0 +1,17 @@
+@import "mixins";
+@import "variables";
+
+@import "bootstrap";
+@import "bootstrap-custom/custom";
+$fa-font-path: "./fonts";
+@import "font-awesome";
+@import "deals";
+@import "components";
+
+.label{
+    margin-left: 10px;
+}
+
+.hidden{
+    display: none;
+}

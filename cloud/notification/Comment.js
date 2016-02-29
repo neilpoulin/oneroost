@@ -46,7 +46,7 @@ function sendCommentEmail( comment ){
             .putGlobalVar( "deal", deal.toJSON() )
             .putGlobalVar( "author", author.toJSON() )
             .putGlobalVar( "comment", comment.toJSON() )
-            .setSubject( deal.get("dealName") +  " - New Comment from " + comment.get("username") );
+            .setSubject( deal.dealName +  " - New Comment from " + comment.get("username") );
 
         console.log("attempting to send via templates");
         EmailSender.sendMandrillTemplate( template );

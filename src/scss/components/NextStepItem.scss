@@ -1,0 +1,51 @@
+#NextStepsBannerContainer{
+    overflow-x: auto;
+}
+
+.NextStepItemContainer{
+    border-top: 2px solid lightgray;
+    border-bottom: 2px solid lightgray;
+    border-right: 2px solid lightgray;
+    padding: 20px;
+    text-align: center;
+    min-width: 50px;
+    height: 100%;
+    width: 20%;
+    float:left;
+    position: relative;
+    overflow: auto;
+
+    .nextStepTitle{
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    .nextStepDescription{
+        color: gray;
+    }
+    .nextStepDueDate{
+        font-size: .8em;
+    }
+    &.complete{
+        text-decoration: line-through;
+    }
+    .editButtons{
+        display: none;
+        @include vertical-align();
+        position: absolute;
+        left: 5px;
+        right: 6px;
+    }
+    &:hover{
+        .editButtons{
+            display: inline-block;
+        }
+    }
+    &:first-of-type{
+        border-left: 2px solid lightgray;
+    }
+
+}
+
+.addNextStepBannerContainer{
+    padding: 20px;
+}
