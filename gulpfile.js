@@ -100,8 +100,8 @@ gulp.task('bundle', ['clean', 'transpile' ], function(){
       debug: true
     });
 
-    return b.bundle()
-    .pipe( plumber() )
+    return plumber()
+    .pipe(b.bundle() )
     .pipe( source(paths.build.sourceFile) )
     .pipe( buffer() )
     .pipe( sourcemaps.init({ loadMaps: true }) )
@@ -113,6 +113,7 @@ gulp.task('bundle', ['clean', 'transpile' ], function(){
     .pipe( plumber.stop() )
     .pipe( concat( paths.dest.scriptName ) )
     .pipe( sourcemaps.write('./maps') )
+    .pipe( plumber.stop() )
     .pipe( gulp.dest(paths.dest.js) );
 });
 

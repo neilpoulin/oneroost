@@ -60,8 +60,8 @@ export default React.createClass({
         var component = this;
         this.showLoading();
         Parse.User.logOut()
-                    .done(component.handleLogoutSuccess)
-                    .fail(component.handleLogoutError);
+        .done(component.handleLogoutSuccess)
+        .fail(component.handleLogoutError);
     },
     showLoading(){
         this.refs.spinner.doShow();
@@ -220,85 +220,77 @@ export default React.createClass({
             render: function(){
                 if ( this.state.isLoggedIn )
                 {
-                    return (
-                        <div className="row">
-                            <div className="container">
-                                <div className="LogoutComponent row">
-                                    You are logged in as  {this.state.username} (<a href="#" onClick={this.doLogout}>log out</a>) <SpinnerIcon ref="spinner"></SpinnerIcon>
+                    return false;
+                }
+
+                var btnText = this.state.isLogin ? "Log In" : "Sign Up";
+
+                var tabs = (
+                    <ul className="nav nav-tabs nav-justified" >
+                        <li role="presentation " className={"pointer " + ( this.state.isLogin ? "" : "active" )} >
+                            <a onClick={this.setIsRegister}>Sign Up</a>
+                        </li>
+                        <li role="presentation" className={"pointer " + ( this.state.isLogin ? "active" : "" )} >
+                            <a onClick={this.setIsLogin}>Login</a>
+                        </li>
+                    </ul>
+                );
+
+                var error = (<div></div>);
+                if ( this.state.error )
+                {
+                    error = (
+                        <div className="errorMessage alert alert-danger">
+                            {this.state.error.message}
+                        </div>
+                    );
+                }
+
+                var emailHelpBlock = "";
+                var emailValidationClass = "";
+
+                var passwordHelpBlock = "";
+                var passwordValidationClass = "";
+
+
+                if ( this.state.emailValidation )
+                {
+                    emailHelpBlock = this.state.emailValidation.message;
+                    emailValidationClass = "has-" + this.state.emailValidation.level;
+                }
+
+                if ( this.state.passwordValidation )
+                {
+                    passwordHelpBlock = this.state.passwordValidation.message;
+                    passwordValidationClass = "has-" + this.state.passwordValidation.level;
+                }
+
+                return (
+                    <div className="LoginComponent">
+                        <div className="">
+                            {tabs}
+                        </div>
+                        <form className="container-fluid">
+                            {error}
+                            <div className={"form-group " + emailValidationClass}>
+                                <label htmlFor="loginUsernameInput" className="control-label">Email</label>
+                                <input type="email" id="loginEmailInput" className="form-control" valueLink={this.linkState('email')} onKeyUp={this.emailKeyUp} placeholder="" aria-describedby="emailHelpBlock"/>
+                                <span className="help-block" id="emailHelpBlock">{emailHelpBlock}</span>
                             </div>
-                        </div>
+                            <div className={"form-group " + passwordValidationClass}>
+                                <label htmlFor="loginPasswordInput" className="control-label">Password</label>
+                                <input type="password" id="loginPasswordInput" className="form-control" valueLink={this.linkState('password')} onKeyUp={this.passwordKeyUp} aria-describedby="passwordHelpBlock"/>
+                                <span className="help-block" id="passwordHelpBlock">{passwordHelpBlock}</span>
+                            </div>
+                            <div className="form-group">
+                                <br/>
+                                <button className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doLogin}>{btnText} <SpinnerIcon ref="spinner"></SpinnerIcon></button>
+                            </div>
+                            <div className={"forgotPassword " + (this.state.isLogin ? "" : "hidden")}>
+                                Forgot your password? <a href="#" onClick={this.resetPassword}>Click here</a> to reset it.
+                            </div>
+                        </form>
                     </div>
                 );
             }
-
-            var btnText = this.state.isLogin ? "Log In" : "Sign Up";
-
-            var tabs = (
-                <ul className="nav nav-tabs nav-justified" >
-                    <li role="presentation " className={"pointer " + ( this.state.isLogin ? "" : "active" )} >
-                        <a onClick={this.setIsRegister}>Sign Up</a>
-                    </li>
-                    <li role="presentation" className={"pointer " + ( this.state.isLogin ? "active" : "" )} >
-                        <a onClick={this.setIsLogin}>Login</a>
-                    </li>
-                </ul>
-            );
-
-            var error = (<div></div>);
-            if ( this.state.error )
-            {
-                error = (
-                    <div className="errorMessage alert alert-danger">
-                        {this.state.error.message}
-                    </div>
-                );
-            }
-
-            var emailHelpBlock = "";
-            var emailValidationClass = "";
-
-            var passwordHelpBlock = "";
-            var passwordValidationClass = "";
-
-
-            if ( this.state.emailValidation )
-            {
-                emailHelpBlock = this.state.emailValidation.message;
-                emailValidationClass = "has-" + this.state.emailValidation.level;
-            }
-
-            if ( this.state.passwordValidation )
-            {
-                passwordHelpBlock = this.state.passwordValidation.message;
-                passwordValidationClass = "has-" + this.state.passwordValidation.level;
-            }
-
-            return (
-                <div className="LoginComponent">
-                    <div className="">
-                        {tabs}
-                    </div>
-                    <form className="container-fluid">
-                        {error}
-                        <div className={"form-group " + emailValidationClass}>
-                            <label for="loginUsernameInput" className="control-label">Email</label>
-                            <input type="email" id="loginEmailInput" className="form-control" valueLink={this.linkState('email')} onKeyUp={this.emailKeyUp} placeholder="" aria-describedby="emailHelpBlock"/>
-                            <span className="help-block" id="emailHelpBlock">{emailHelpBlock}</span>
-                        </div>
-                        <div className={"form-group " + passwordValidationClass}>
-                            <label for="loginPasswordInput" className="control-label">Password</label>
-                            <input type="password" id="loginPasswordInput" className="form-control" valueLink={this.linkState('password')} onKeyUp={this.passwordKeyUp} aria-describedby="passwordHelpBlock"/>
-                            <span className="help-block" id="passwordHelpBlock">{passwordHelpBlock}</span>
-                        </div>
-                        <div className="form-group">
-                            <br/>
-                            <button className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doLogin}>{btnText} <SpinnerIcon ref="spinner"></SpinnerIcon></button>
-                        </div>
-                        <div className={"forgotPassword " + (this.state.isLogin ? "" : "hidden")}>
-                            Forgot your password? <a href="#" onClick={this.resetPassword}>Click here</a> to reset it.
-                        </div>
-                    </form>
-                </div>
-            );
-        }
-    });
+        });

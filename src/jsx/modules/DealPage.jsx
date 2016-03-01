@@ -11,6 +11,7 @@ import _ from 'underscore';
 import $ from 'jquery';
 import TopNav from './TopNav';
 import LoadingTakeover from './util/LoadingTakeover';
+import AccountSidebar from './account/AccountSidebar';
 
 export default React.createClass(
     {
@@ -20,7 +21,7 @@ export default React.createClass(
             return {
                 deal: (new Parse.Query(Deal).equalTo('objectId', this.props.params['dealId']) ),
                 accounts: (new Parse.Query(Account)).equalTo('createdBy', user ),
-                deals: (new Parse.Query(Deal)).equalTo('createdBy', user )                
+                deals: (new Parse.Query(Deal)).equalTo('createdBy', user )
             }
         },
         getInitialState: function(){
@@ -69,27 +70,43 @@ export default React.createClass(
                 accountMap[act.objectId] = act;
             });
 
+            // var accountSidebar = { this.data.deals.map(function(d){
+            //     return (
+            //         <MenuItem
+            //             key={"deals_" + d.objectId}
+            //             location={"/deals/" + d.objectId}
+            //             className="profileCard">
+            //             <div className="accountName">
+            //                 {accountMap[d.account.objectId].accountName}
+            //             </div>
+            //             <div className="dealName">
+            //                 {d.dealName}
+            //             </div>
+            //             <div className="primaryContact">
+            //                 {accountMap[d.account.objectId].primaryContact}
+            //             </div>
+            //         </MenuItem>
+            //     )
+            // })};
+
+
+
             return(
                 <div className="dealPageContainer">
                     <TopNav deal={deal} />
-                    <div className="container-fluid" id="dealPageContainer">
-                        <div id="accountSidebar" className="col-md-2 container-fluid hidden-sm hidden-xs">
-                            { this.data.deals.map(function(d){
-                                return (
-                                    <MenuItem key={"deals_" + d.objectId} location={"/deals/" + d.objectId} className="profileCard">
-                                        <div className="accountName">{accountMap[d.account.objectId].accountName}</div>
-                                        <div className="dealName">{d.dealName}</div>
-                                        <div className="primaryContact">{accountMap[d.account.objectId].primaryContact}</div>
-                                    </MenuItem>)
-                                })
-                            }
-                        </div>
+                    <div
+                        className="container-fluid"
+                        id="dealPageContainer">
+                        <AccountSidebar/>
                         <div className="dealContainer col-md-10 col-md-offset-2 container-fluid">
                             <div className="row-fluid">
                                 <div className="deal-top">
-                                    <h1>{deal.dealName}</h1>
+                                    <h1>
+                                        {deal.dealName}
+                                    </h1>
                                     <hr/>
-                                    <NextStepsBanner deal={deal} ></NextStepsBanner>
+                                    <NextStepsBanner deal={deal} >
+                                    </NextStepsBanner>
                                     <hr/>
                                     <AddStakeholderButton
                                         deal={deal}

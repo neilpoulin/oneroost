@@ -76,15 +76,15 @@ export default React.createClass({
                 <div>Create Account Form for {this.props.user.get("username")}</div>
                 <div>
                     <div className="form-component">
-                        <label for="accountNameInput" >Account Name</label>
+                        <label htmlFor="accountNameInput" >Account Name</label>
                         <input id="accountNameInput" type="text" className="form-control" valueLink={this.linkState('accountName')} />
                     </div>
                     <div className="form-component">
-                        <label for="dealNameInput" >Deal Name</label>
+                        <label htmlFor="dealNameInput" >Deal Name</label>
                         <input id="dealNameInput" type="text" className="form-control" valueLink={this.linkState('dealName')} />
                     </div>
                     <div className="form-component" >
-                        <label for="primaryContactInput">Primary Contact Name</label>
+                        <label htmlFor="primaryContactInput">Primary Contact Name</label>
                         <input id="primaryContactInput" type="text" className="form-control" valueLink={this.linkState('primaryContact')} />
                     </div>
                 </div>

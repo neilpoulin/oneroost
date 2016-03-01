@@ -55,28 +55,28 @@ export default React.createClass({
         return (
             <div className="NextStepsFormContainer">
                 <div className="form-component">
-                    <label for="nextStepTitle">Title</label>
+                    <label htmlFor="nextStepTitle">Title</label>
                     <input id="nextStepTitle"
                         type="text"
                         className="form-control"
                         valueLink={this.linkState('title')} />
                 </div>
                 <div className="form-component">
-                    <label for="nextStepDescription">Description</label>
+                    <label htmlFor="nextStepDescription">Description</label>
                     <input id="nextStepDescription"
                         type="text"
                         className="form-control"
                         valueLink={this.linkState('description')} />
                 </div>
                 <div className="form-component">
-                    <label for="nextStepDueDate">Due Date</label>
+                    <label htmlFor="nextStepDueDate">Due Date</label>
                     <input id="nextStepDueDate"
                         type="text"
                         className="form-control"
                         valueLink={this.linkState('dueDate')} />
                 </div>
                 <div className="form-component">
-                    <label for="nextStepAssignedUser">Assigned User</label>
+                    <label htmlFor="nextStepAssignedUser">Assigned User</label>
                     <input id="nextStepAssignedUser"
                         type="text"
                         className="form-control"

@@ -62,28 +62,28 @@ export default React.createClass({
         return (
             <div className="StakeholderFormContainer">
                 <div className="form-group">
-                    <label for="firstNameInput">First Name</label>
+                    <label htmlFor="firstNameInput">First Name</label>
                     <input id="firstNameInput"
                         type="text"
                         className="form-control"
                         valueLink={this.linkState('firstName')} />
                 </div>
                 <div className="form-group">
-                    <label for="lastNameInput">Last Name</label>
+                    <label htmlFor="lastNameInput">Last Name</label>
                     <input id="lastNameInput"
                         type="text"
                         className="form-control"
                         valueLink={this.linkState('lastName')} />
                 </div>
                 <div className="form-group">
-                    <label for="stakeholderEmailInput">Email</label>
+                    <label htmlFor="stakeholderEmailInput">Email</label>
                     <input id="stakeholderEmailInput"
                         type="text"
                         className="form-control"
                         valueLink={this.linkState('email')} />
                 </div>
                 <div className="form-group">
-                    <label for="userRoleInput">User Role</label>
+                    <label htmlFor="userRoleInput">User Role</label>
                     <input id="userRoleInput"
                         type="text"
                         className="form-control"

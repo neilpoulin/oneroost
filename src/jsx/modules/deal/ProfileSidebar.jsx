@@ -77,13 +77,13 @@ export default React.createClass({
 	},
 	render: function(){
 		var deal = this.props.deal;
-		var profile = this;		
+		var profile = this;
 		return(
 			<div id="" className="container-fluid" >
 				<div className="row-fluid">
 					<div className="container-fluid">
 						<div className="form-group">
-							<label for="dealSummary">Objective / Summary</label>
+							<label htmlFor="dealSummary">Objective / Summary</label>
 							<textarea id="dealSummary" placeholder="enter the deal summary / objective " valueLink={this.linkState('summary')} className="form-control" ></textarea>
 						</div>
 					</div>
@@ -93,7 +93,7 @@ export default React.createClass({
 						<div className="row-fluid">
 							<div className="">
 								<div className="form-group">
-									<label for="timelineInput">Timeline</label>
+									<label htmlFor="timelineInput">Timeline</label>
 									<div className="input-group">
 										<span className="input-group-addon"><i className="fa fa-calendar"></i></span>
 										<input type="text" id="timelineInput" valueLink={this.linkState('timeline')} className="form-control" />
@@ -104,14 +104,14 @@ export default React.createClass({
 						<div className="row-fluid">
 							<div className="">
 								<div className="form-group">
-									<label for="budgetLowInput">Budget (Low)</label>
+									<label htmlFor="budgetLowInput">Budget (Low)</label>
 									<div className="input-group">
 										<span className="input-group-addon">$</span>
 										<input type="number" id="budgetLowInput" className="form-control" valueLink={this.linkState('budgetLow')} />
 									</div>
 								</div>
 								<div className="form-group">
-									<label for="budgetHighInput">Budget (High)</label>
+									<label htmlFor="budgetHighInput">Budget (High)</label>
 									<div className="input-group">
 										<span className="input-group-addon">$</span>
 										<input type="number" id="budgetHighInput" className="form-control" valueLink={this.linkState('budgetHigh')} />
@@ -141,11 +141,11 @@ export default React.createClass({
 						<div className="row-fluid">
 							<div className="form-inline">
 								<div className="form-group">
-									<label for="stakeholderNameInput" className="sr-only">Name</label>
+									<label htmlFor="stakeholderNameInput" className="sr-only">Name</label>
 									<input type="text" id="stakeholderNameInput" className="form-control" placeholder="Name" valueLink={this.linkState('stakeholderName')} />
 								</div>
 								<div className="form-group">
-									<label for="stakeholderNameInput" className="sr-only">Email</label>
+									<label htmlFor="stakeholderNameInput" className="sr-only">Email</label>
 									<input type="text" id="stakeholderEmailInput" className="form-control" placeholder="Email" valueLink={this.linkState('stakeholderEmail')}  />
 								</div>
 								<div className="form-group">

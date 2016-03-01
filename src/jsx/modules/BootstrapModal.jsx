@@ -1,4 +1,5 @@
 import React from 'react';
+import { findDOMNode } from 'react-dom';
 import BootstrapButton from './BootstrapButton';
 import $ from 'jquery';
 global.jQuery = require('jquery');
@@ -9,17 +10,17 @@ export default React.createClass({
     // integrate Bootstrap or jQuery with the components lifecycle methods.
     componentDidMount: function() {
         // When the component is added, turn it into a modal
-        $(React.findDOMNode(this))
+        $(findDOMNode(this))
         .modal({backdrop: 'static', keyboard: false, show: false});
     },
     componentWillUnmount: function() {
-        $(React.findDOMNode(this)).off('hidden', this.handleHidden);
+        $(findDOMNode(this)).off('hidden', this.handleHidden);
     },
     close: function() {
-        $(React.findDOMNode(this)).modal('hide');
+        $(findDOMNode(this)).modal('hide');
     },
     open: function() {
-        $(React.findDOMNode(this)).modal('show');
+        $(findDOMNode(this)).modal('show');
     },
     render: function() {
         var confirmButton = null;

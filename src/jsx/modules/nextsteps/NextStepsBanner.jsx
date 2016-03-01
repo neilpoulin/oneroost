@@ -35,7 +35,8 @@ export default React.createClass({
                         return (
                             <NextStepItem
                                 step={step}
-                                deal={self.state.deal} >
+                                deal={self.state.deal}
+                                key={"deal_" + self.state.deal.objectId + "step_" + step.objectId} >
                             </NextStepItem>
                         );
                     })}

@@ -13,14 +13,16 @@ export default React.createClass({
     {
         return (
             <div className="container">
-                <button className="btn btn-outline-primary"
+                <button
+                    className="btn btn-outline-primary"
                     onClick={this.openModal}>
                     Add Next Step
                 </button>
                 <CreateNextStepModal
                     ref="nextStepModal"
                     deal={this.props.deal}
-                    ></CreateNextStepModal>
+                    >
+                </CreateNextStepModal>
             </div>
         );
     }

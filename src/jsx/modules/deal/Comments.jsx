@@ -32,7 +32,7 @@ export default React.createClass({
     },
     scrollToBottom: function()
     {
-        var $commentContainer = $(this.refs.messagesContainer.getDOMNode());
+        var $commentContainer = $(this.refs.messagesContainer);
         $commentContainer.scrollTop( $commentContainer.prop("scrollHeight") );
     },
     updateDimensions: function(){

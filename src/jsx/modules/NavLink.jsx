@@ -1,8 +1,14 @@
 import React from 'react'
-import { Link } from 'react-router'
+import activeComponent from 'react-router-active-component'
 
 export default React.createClass({
+    getDefaultProps: function(){
+        return {
+            tag: 'li'
+        }
+    },
     render() {
-        return <Link {...this.props} activeClassName="active"/>
+        var ActiveComponent = activeComponent(this.props.tag);
+        return <ActiveComponent {...this.props} activeClassName="active"/>
     }
 })
