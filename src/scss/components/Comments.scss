@@ -50,12 +50,12 @@ $timestampTextColor: gray;
     bottom: 0px;
     left: 0px;
     right: 30px;
-    padding: 0px 0px 15px 0px;
+    padding: 0px 0px 0px 0px;
     background-color: white;
 
     .input-group{
         position:relative;
-        top: -10px;
+        top: -20px;
     }
     textarea:focus{
         border-color: $input-border;
@@ -65,7 +65,7 @@ $timestampTextColor: gray;
 
 .messagesContainer{
     position: fixed;
-    bottom: 70px;
+    bottom: 60px;
     top: 500px;
     right:15px;
     padding-right: 15px;

@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react'
 import NavLink from './../NavLink';
+import Parse from 'parse';
 import LogoutLink from './LogoutLink';
 
 const LoggedInLinks = React.createClass({
     render () {
+        var user = Parse.User.current();
         return (
             <div>
                 <ul className="nav navbar-nav">
@@ -14,7 +16,7 @@ const LoggedInLinks = React.createClass({
                 <ul className="nav navbar-nav navbar-right">
                     <li className="dropdown">
                         <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            <i className="fa fa-user"></i> {this.props.user.username} <span className="caret"></span>
+                            <i className="fa fa-user"></i> {user.get("username")} <span className="caret"></span>
                         </a>
                         <ul className="dropdown-menu">
                             <NavLink to='/deals'>Deals</NavLink>

@@ -4,7 +4,7 @@ import { browserHistory } from 'react-router'
 
 export default React.createClass({
     handleLoginSuccess: function(){
-        browserHistory.push("/my/home");
+        browserHistory.push("/deals");
     },
     handleLogoutSuccess: function(){
         browserHistory.push("/");

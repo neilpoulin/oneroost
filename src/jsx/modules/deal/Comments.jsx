@@ -55,7 +55,7 @@ export default React.createClass({
             <ul className="list-unstyled" id="commentsList" ref="commentList">
                 {this.data.dealComments.reverse().map(function(comment){
                     var item = ( <CommentItem key={"commentItem_" + comment.objectId}
-                        comment={comment} 
+                        comment={comment}
                         previousComment={previousComment} /> );
                     previousComment = comment;
                     return item;
