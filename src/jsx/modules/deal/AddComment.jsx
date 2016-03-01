@@ -38,7 +38,7 @@ export default React.createClass({
         return (
             <div className="addCommentContainer row-fluid">
                 <div className="input-group">
-                    <textarea className="form-control custom-control"
+                    <textarea className="form-control custom-control input-lg"
                         id="addCommentInput"
                         rows="1"
                         valueLink={this.linkState('message')}

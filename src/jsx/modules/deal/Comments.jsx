@@ -50,11 +50,15 @@ export default React.createClass({
     render: function(){
         var component = this;
         var deal = this.props.deal;
-
+        var previousComment = null;
         var commentsSection = (
             <ul className="list-unstyled" id="commentsList" ref="commentList">
                 {this.data.dealComments.reverse().map(function(comment){
-                    return ( <CommentItem key={"commentItem_" + comment.objectId} comment={comment} /> )
+                    var item = ( <CommentItem key={"commentItem_" + comment.objectId}
+                        comment={comment} 
+                        previousComment={previousComment} /> );
+                    previousComment = comment;
+                    return item;
                 })}
             </ul>
         );

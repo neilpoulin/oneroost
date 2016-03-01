@@ -1,0 +1,80 @@
+$msgBg: white;
+$systemMsgBg: #66637a;
+$timestampTextColor: gray;
+
+.comment{
+    padding: 5px 5px 5px 5px;
+    position: relative;
+
+    .username{
+        font-weight: bold;
+    }
+
+    .message{
+        margin-left: 30px;
+    }
+
+    .postTime{
+        color: $timestampTextColor;
+    }
+
+    &.repeatAuthor{
+        .authorRow{
+            display:none;
+        }
+        padding-top: 0px;
+    }
+
+    &.system{
+        background-color: $systemMsgBg;
+        color: white;
+        .postTime{
+            color: lighten($timestampTextColor, 20%);;
+        }
+        &:nth-child(2n+1){
+            // background-color: darken($systemMsgBg, 5%);
+        }
+    }
+    &:not(.system):nth-child(2n+1){
+        // background: darken($msgBg, 5%);
+    }
+}
+
+#addCommentInput{
+    resize: none;
+}
+
+
+.addCommentContainer{
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 30px;
+    padding: 0px 0px 15px 0px;
+    background-color: white;
+
+    .input-group{
+        position:relative;
+        top: -10px;
+    }
+    textarea:focus{
+        border-color: $input-border;
+    }
+}
+
+
+.messagesContainer{
+    position: fixed;
+    bottom: 70px;
+    top: 500px;
+    right:15px;
+    padding-right: 15px;
+    overflow: auto;
+    margin-top: 20px;
+}
+
+#commentsList{
+    bottom: 0px;
+    overflow-y: auto;
+    height: 100%;
+}

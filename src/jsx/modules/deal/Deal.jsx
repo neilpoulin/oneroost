@@ -58,13 +58,13 @@ const Deal = React.createClass({
                                 <h1>
                                     {deal.dealName}
                                 </h1>
+                                <AddStakeholderButton
+                                    deal={deal}
+                                    />
                                 <hr/>
                                 <NextStepsBanner deal={deal} >
                                 </NextStepsBanner>
                                 <hr/>
-                                <AddStakeholderButton
-                                    deal={deal}
-                                    />
                             </div>
                         </div>
                         <div className="row-fluid">

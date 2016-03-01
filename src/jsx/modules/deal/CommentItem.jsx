@@ -11,10 +11,16 @@ export default React.createClass({
     render: function(){
         var comment = this.props.comment;
         var isSystem = comment.author == null;
+        var sameAuthorAsPrevious = ( comment.author != null ?
+                                        comment.author.objectId :
+                                        null ) ==
+                                        ( ( this.props.previousComment != null && this.props.previousComment.author != null ) ?
+                                            this.props.previousComment.author.objectId :
+                                            null );
         return (
-            <li className={"comment " + (isSystem ? "system" : "")}>
+            <li className={"comment " + (isSystem ? "system " : "") + (sameAuthorAsPrevious ? "repeatAuthor " : "") }>
                 <div className="container-fluid">
-                    <div className="row">
+                    <div className="row authorRow">
                         <span className="username">{comment.username}</span>
                         &nbsp;
                         <span className="postTime">{this.formatCommentDate(comment)}</span>

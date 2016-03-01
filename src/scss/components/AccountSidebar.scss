@@ -1,12 +1,61 @@
+$backgroundColor: #0e69a0;
+$textColor: #8fb9cf;
+#accountSidebarContainer{
+
+}
+
+#accountSidebar{
+    position: fixed;
+    top: $navbarHeight;
+    bottom: 0px;
+    overflow: auto;
+    background-color: $backgroundColor;
+    color: $textColor;
+    padding: 0px 0px 0px 0px;
+    font-family: AlrightSans,Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
 .AccountSidebarList{
     list-style: none;
     margin-left: 0px;
     padding-left: 0px;
     .AccountSidebarItem{
-        margin-bottom: 10px;
-        border-top: 1px solid black;
+        $activeBackgroundColor: #159CEE;
+        $activeTextColor: #FFF;
+        $darkenPct: 10%;
+        $hoverTextColor: #FFF;
+
+        background-color: $backgroundColor;
+        // border-top: 1px solid $textColor;
+        font-weight: 300;
+        a{
+            padding: 10px 5px 10px 5px;
+            text-decoration: none;
+            display: block;
+            color: $textColor;
+            background-color: inherit;
+        }
+        &:hover a{
+            color: $hoverTextColor;
+        }
         &:first-child{
             border-top: 0px solid black;
         }
+        &.active a{
+            background: $activeBackgroundColor;
+            color: #fff;
+            border-color: $activeBackgroundColor;
+            &:hover{
+                background-color: darken( $activeBackgroundColor, $darkenPct );
+            }
+        }
+        .dealName, .accountName{
+            display:block;
+        }
+        .dealName{
+            @extend .lead;
+            margin-bottom: 0px;
+        }
+
     }
 }

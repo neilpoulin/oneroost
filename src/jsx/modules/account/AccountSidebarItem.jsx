@@ -1,17 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router'
+import activeComponent from 'react-router-active-component'
+import NavLink from './../NavLink';
 
 const AccountSidebarItem = React.createClass({
     render () {
         var deal = this.props.deal;
+
         return (
-            <li className="AccountSidebarItem">
-                <Link to={"/deals/" + deal.objectId}>
-                    dealName: {deal.dealName}
-                </Link>
-                <br/>
-                accountName: {deal.account.accountName}
-            </li>
+            <NavLink className="AccountSidebarItem" to={"/deals/" + deal.objectId} activeClassName="active">
+                <span className="dealName">{deal.dealName}</span>
+                <span className="accountName">{deal.account.accountName}</span>
+            </NavLink>
         )
     }
 })

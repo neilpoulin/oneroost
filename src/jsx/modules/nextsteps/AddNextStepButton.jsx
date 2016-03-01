@@ -12,11 +12,11 @@ export default React.createClass({
     render: function()
     {
         return (
-            <div className="container">
+            <div className="AddNextStepButton">
                 <button
                     className="btn btn-outline-primary"
                     onClick={this.openModal}>
-                    Add Next Step
+                    <i className="fa fa-plus"></i> Add Next Step
                 </button>
                 <CreateNextStepModal
                     ref="nextStepModal"
