@@ -31,6 +31,7 @@ You can then test your changes at [dev.oneroost.com](http://dev.oneroost.com)
 We depend on several libraries for styles
 ### Google Material Colors
 For information and examples, visit [Google Material Colors](https://www.google.com/design/spec/style/color.html)
+
 For information on the library used in this project: [Sass Material Colors Github](https://github.com/minusfive/sass-material-colors)
 
 ### Twitter Bootstrap v3.X
