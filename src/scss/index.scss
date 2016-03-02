@@ -5,8 +5,18 @@
 @import "bootstrap-custom/custom";
 $fa-font-path: "./fonts";
 @import "font-awesome";
+
+@import "sass-material-colors";
+@import 'sass-material-colors-classes';
+@import 'sass-material-colors-placeholders';
+
 @import "deals";
 @import "components";
+
+
+body{
+    @extend %color-cyan-400
+}
 
 .label{
     margin-left: 10px;

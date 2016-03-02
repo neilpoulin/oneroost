@@ -25,6 +25,11 @@ var fontAwesomePaths = {
     stylesheets: fontAwesomeRoot + 'scss'
 }
 
+var materialColorsRoot = './node_modules/sass-material-colors/';
+var GoogleMaterialColors = {
+    stylesheets: materialColorsRoot + 'sass'
+}
+
 var paths = {
     src: {
         root: './src',
@@ -55,7 +60,10 @@ var sassOpts = {
     outputStyle: 'nested',
     precison: 3,
     errLogToConsole: true,
-    includePaths: [bootstrapPaths.stylesheets, fontAwesomePaths.stylesheets, './src/scss/**/*.scss']
+    includePaths: [bootstrapPaths.stylesheets,
+        fontAwesomePaths.stylesheets,
+        GoogleMaterialColors.stylesheets,
+        './src/scss/**/*.scss']
 };
 
 gulp.task('fonts', function(){
