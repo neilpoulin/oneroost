@@ -6,7 +6,6 @@ import Account from './../models/Account';
 import Comments from './deal/Comments';
 import NextStepsBanner from './nextsteps/NextStepsBanner';
 import MenuItem from './sidebar/MenuItem';
-import AddStakeholderButton from './deal/AddStakeholderButton';
 import _ from 'underscore';
 import $ from 'jquery';
 import TopNav from './TopNav';

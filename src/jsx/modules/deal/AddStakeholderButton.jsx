@@ -15,11 +15,13 @@ export default React.createClass({
     },
     render: function(){
         return (
-            <div className="container">
-                <button className="btn btn-outline-primary"
-                    onClick={this.openModal}>
-                    Add Stakeholder
-                </button>
+            <div className="AddStakeholderButton">
+                <div className="text-center">
+                    <button className="btn btn-outline-primary"
+                        onClick={this.openModal}>
+                        Add Stakeholder
+                    </button>
+                </div>
                 <StakeholderModal
                     deal={this.state.deal}
                     ref="addStakeholderModal">

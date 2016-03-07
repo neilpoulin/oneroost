@@ -59,7 +59,8 @@ $completedTextColor: #80848f;
     width: 20%;
     float:left;
     position: relative;
-    padding-top: 18px;
+    padding-top: .5em;
+    padding-bottom: .5em;
     .nextStepTitle{
         font-size: 1.2em;
         font-weight: bold;
@@ -70,7 +71,7 @@ $completedTextColor: #80848f;
     .nextStepDueDate{
         font-size: .8em;
     }
-    &.complete{        
+    &.complete{
         color: $completedTextColor;
     }
     .editButtons{

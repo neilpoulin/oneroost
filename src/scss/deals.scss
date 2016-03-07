@@ -1,3 +1,7 @@
+.dealPageContainer{
+    background-color: $dealPageContainerBg;
+}
+
 .hover-show{
     display:none;
 }
@@ -32,10 +36,6 @@ Inner icon
 .left-addon input  { padding-left:  30px; }
 .right-addon input { padding-right: 30px; }
 
-/* Add Comment Container */
-.deal-top{
-    background: white;
-}
 
 /*Sidebar*/
 .border-box {

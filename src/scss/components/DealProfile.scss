@@ -1,0 +1,17 @@
+.deal-top{
+    background: $dealPageContainerBg;
+    color: white;
+}
+
+.DealProfile{
+    margin-bottom: 10px;
+    padding: 10px 0px 10px 0px;
+    .widget{
+        .budget-high{
+            color: green;
+        }
+        .budget-low{
+            color: red;
+        }
+    }
+}

@@ -3,8 +3,9 @@ import Parse from 'parse';
 import ParseReact from 'parse-react';
 import LoadingTakeover from './../util/LoadingTakeover';
 import NextStepsBanner from './../nextsteps/NextStepsBanner';
-import AddStakeholderButton from './../deal/AddStakeholderButton';
 import Comments from './../deal/Comments';
+import DealProfile from './DealProfile';
+
 const Deal = React.createClass({
     mixins: [ParseReact.Mixin],
     observe: function(props, state){
@@ -58,7 +59,7 @@ const Deal = React.createClass({
                                 <h1>
                                     {deal.dealName}
                                 </h1>
-                                <AddStakeholderButton deal={deal} />
+                                <DealProfile deal={deal} />
                                 <NextStepsBanner deal={deal} />
                             </div>
                         </div>
