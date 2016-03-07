@@ -1,9 +1,10 @@
 $borderHeight: ($nextStepBannerHeight )/2;
 $endPadding: 10px;
+$completedTextColor: #80848f;
 .arrow-right{
     display: block;
     float: left;
-    background: #3498db;
+    background: $nextStepsBg;
     text-align: center;
     position: relative;
     margin: 0 10px 0 0;
@@ -14,7 +15,7 @@ $endPadding: 10px;
         content: "";
         border-top: $borderHeight solid transparent;
         border-bottom: $borderHeight solid transparent;
-        border-left: $borderHeight solid #3498db;
+        border-left: $borderHeight solid $nextStepsBg;
         position: absolute; right: -$borderHeight; top: 0;
     }
 
@@ -69,8 +70,8 @@ $endPadding: 10px;
     .nextStepDueDate{
         font-size: .8em;
     }
-    &.complete{
-        text-decoration: line-through;
+    &.complete{        
+        color: $completedTextColor;
     }
     .editButtons{
         display: none;

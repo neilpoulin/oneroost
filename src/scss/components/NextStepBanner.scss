@@ -6,6 +6,7 @@ $nextStepBannerHeight: 80px;
 #NextStepsBannerContainer{
     overflow-x: auto;
     height: $nextStepBannerHeight;
+    margin-bottom: 5px;
 }
 
 .AddNextStepButton{

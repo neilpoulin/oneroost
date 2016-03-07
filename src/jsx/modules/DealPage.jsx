@@ -104,13 +104,8 @@ export default React.createClass(
                                     <h1>
                                         {deal.dealName}
                                     </h1>
-                                    <hr/>
-                                    <NextStepsBanner deal={deal} >
-                                    </NextStepsBanner>
-                                    <hr/>
-                                    <AddStakeholderButton
-                                        deal={deal}
-                                        />
+                                    <NextStepsBanner deal={deal} />
+                                    <AddStakeholderButton deal={deal} />
                                 </div>
                             </div>
                             <div className="row-fluid">
