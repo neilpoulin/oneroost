@@ -1,17 +1,64 @@
+$borderHeight: ($nextStepBannerHeight )/2;
+$endPadding: 10px;
+.arrow-right{
+    display: block;
+    float: left;
+    background: #3498db;
+    text-align: center;
+    position: relative;
+    margin: 0 10px 0 0;
+    text-decoration: none;
+    color: #fff;
+    padding-left: $borderHeight;
+    &:after {
+        content: "";
+        border-top: $borderHeight solid transparent;
+        border-bottom: $borderHeight solid transparent;
+        border-left: $borderHeight solid #3498db;
+        position: absolute; right: -$borderHeight; top: 0;
+    }
+
+    &:before {
+        content: "";
+        border-top: $borderHeight solid transparent;
+        border-bottom: $borderHeight solid transparent;
+        border-left: $borderHeight solid $nextStepsContainerBg;
+        position: absolute; left: 0; top: 0;
+    }
+
+    &:first-child {
+        border-top-left-radius: 10px; border-bottom-left-radius: 10px;
+        padding-left: $endPadding;
+    }
+    &:first-child:before {
+        display: none;
+    }
+
+    &:nth-last-child(2) {
+        padding-right: $endPadding;
+        border-top-right-radius: 10px; border-bottom-right-radius: 10px;
+    }
+    &:nth-last-child(2):after {
+        display: none;
+    }
+
+    $numSteps: 5;
+    @for $i from 0 to $numSteps {
+        &:nth-child(#{$i}) {
+            z-index: 100 - $i;
+        }
+    }
+
+}
 
 .NextStepItemContainer{
-    border-top: 2px solid lightgray;
-    border-bottom: 2px solid lightgray;
-    border-right: 2px solid lightgray;
-    padding: 20px;
     text-align: center;
     min-width: 50px;
     height: 100%;
     width: 20%;
     float:left;
     position: relative;
-    overflow: auto;
-
+    padding-top: 18px;
     .nextStepTitle{
         font-size: 1.2em;
         font-weight: bold;
@@ -29,8 +76,8 @@
         display: none;
         @include vertical-align();
         position: absolute;
-        left: 5px;
-        right: 6px;
+        left: $borderHeight + $endPadding;
+        right: $endPadding;
     }
     &:hover{
         .editButtons{
@@ -38,7 +85,14 @@
         }
     }
     &:first-of-type{
-        border-left: 2px solid lightgray;
+        .editButtons{
+            left: $endPadding;
+        }
+    }
+    &:nth-last-child(2){
+        .editButtons{
+            right: $endPadding;
+        }
     }
 
 }

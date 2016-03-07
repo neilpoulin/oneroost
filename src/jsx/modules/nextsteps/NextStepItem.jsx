@@ -98,7 +98,7 @@ export default React.createClass({
         }
 
         return (
-            <div className={"NextStepItemContainer " + ( this.props.step.completedDate != null ? 'complete' : '' )}>
+            <div className={"arrow-right NextStepItemContainer " + ( this.props.step.completedDate != null ? 'complete' : '' )}>
                 <div className="nextStepTitle">{this.props.step.title}</div>
                 <div className="nextStepDueDate">
                     {dateLabel} {this.formatDate(date)}
@@ -116,6 +116,6 @@ export default React.createClass({
                     </div>
                 </div>
 
-            </div>
+            </div>            
         </div>);
     }});
