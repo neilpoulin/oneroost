@@ -18,12 +18,12 @@ export default React.createClass({
         };
     },
     render: function(){
-        var addButton = (null);
+        var addButton = (<div className="width-0"></div>);
         var self = this;
         if ( this.data.nextSteps.length < 5 )
         {
             addButton = (
-                <AddNextStepButton deal={self.state.deal} />                
+                <AddNextStepButton deal={self.state.deal} />
             );
         }
 

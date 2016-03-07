@@ -30,7 +30,7 @@ const DealProfile = React.createClass({
     },
     render () {
         var deal = this.props.deal;
-        var widgetClassName = 'col-md-4 widget';
+        var widgetClassName = 'col-xs-4 widget';
         var iconSizeClassname = 'fa-3x';
         return (
             <div className="DealProfile container-fluid">
