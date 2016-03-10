@@ -16,6 +16,7 @@ $nextStepBannerHeight: 60px;
     position: relative;
     .btn{
         margin-left: 10px;
-        @include vertical-align();
+        margin-top: 15px;
+        // @include vertical-align();
     }
 }

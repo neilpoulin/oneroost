@@ -1,5 +1,6 @@
+@import 'sass-material-colors';
 $dealPageContainerBg: #094162;
 
 $navbarHeight: 50px;
 $nextStepsContainerBg: $dealPageContainerBg;
-$nextStepsBg: #353446;
+$nextStepsBg: material-color('amber', '700');

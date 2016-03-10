@@ -43,37 +43,3 @@ $timestampTextColor: gray;
 #addCommentInput{
     resize: none;
 }
-
-
-.addCommentContainer{
-    position: fixed;
-    bottom: 0px;
-    left: 0px;
-    right: 30px;
-    padding: 0px 0px 0px 0px;
-    background-color: white;
-
-    .input-group{
-        position:relative;
-        top: -20px;
-    }
-    textarea:focus{
-        border-color: $input-border;
-    }
-}
-
-
-.messagesContainer{
-    position: fixed;
-    bottom: 60px;
-    top: 500px;
-    right:15px;
-    padding-right: 15px;
-    overflow: auto;
-}
-
-#commentsList{
-    bottom: 0px;
-    overflow-y: auto;
-    height: 100%;
-}

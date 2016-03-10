@@ -14,7 +14,7 @@ export default React.createClass({
         return (
             <div className="AddNextStepButton">
                 <button
-                    className="btn btn-outline-primary"
+                    className="btn btn-outline-secondary"
                     onClick={this.openModal}>
                     <i className="fa fa-plus"></i> Add Next Step
                 </button>

@@ -1,6 +1,7 @@
+$textColor: white;
 .deal-top{
     background: $dealPageContainerBg;
-    color: white;
+    color: $textColor;
 }
 
 .DealProfile{
@@ -12,6 +13,21 @@
         }
         .budget-low{
             color: red;
+        }
+        .widgetLink, a{
+            text-decoration: none;
+            color: $textColor;
+            &:visited{
+                text-decoration: none;
+            }
+            &.active, &.active a{
+                color: material-color('amber', '700');
+
+            }
+        }
+
+        .widgetLink a:hover{
+            color:  material-color('amber', '300');
         }
     }
 }

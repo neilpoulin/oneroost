@@ -2,6 +2,7 @@ import React from 'react';
 import { findDOMNode } from 'react-dom';
 import BootstrapButton from './BootstrapButton';
 import $ from 'jquery';
+import RenderInBody from './util/RenderInBody';
 global.jQuery = require('jquery');
 require('bootstrap');
 
@@ -43,7 +44,7 @@ export default React.createClass({
             );
         }
 
-        return (
+        var modal = (
             <div className="modal fade">
                 <div className="modal-dialog">
                     <div className="modal-content">
@@ -66,6 +67,10 @@ export default React.createClass({
                     </div>
                 </div>
             </div>
+        );
+
+        return (
+            <RenderInBody>{modal}</RenderInBody>
         );
     },
     handleCancel: function() {

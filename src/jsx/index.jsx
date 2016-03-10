@@ -6,9 +6,9 @@ import Home from './modules/Home'
 import App from './modules/App'
 import $ from 'jquery'
 import UserHomePage from './modules/UserHomePage';
-import DealPage from './modules/DealPage'
 import Deal from './modules/deal/Deal';
 import DealDashboard from './modules/deal/DealDashboard';
+import StakeholderSidebar from './modules/deal/sidebar/StakeholderSidebar';
 
 Parse.$ = $;
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
@@ -20,7 +20,9 @@ render(
                 <IndexRoute component={Home}/>
                 <Route path="/deals" component={DealDashboard}>
                     <IndexRoute component={UserHomePage}/>
-                    <Route path="/deals/:dealId" component={Deal}/>
+                    <Route path="/deals/:dealId" component={Deal}>
+                        <Route path="/deals/:dealId/stakeholders" component={StakeholderSidebar} />
+                    </Route>
                 </Route>
             </Route>
         </Router>

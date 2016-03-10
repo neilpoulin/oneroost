@@ -5,6 +5,8 @@ import LoadingTakeover from './../util/LoadingTakeover';
 import NextStepsBanner from './../nextsteps/NextStepsBanner';
 import Comments from './../deal/Comments';
 import DealProfile from './DealProfile';
+import DealPageBottom from './DealPageBottom';
+import { Link } from 'react-router'
 
 const Deal = React.createClass({
     mixins: [ParseReact.Mixin],
@@ -14,22 +16,10 @@ const Deal = React.createClass({
             deal: (new Parse.Query("Deal").equalTo('objectId', props.params.dealId ) )
         }
     },
-    startCommentResize: function(){
-        var component = this;
-        component.refs.comments.updateDimensions();
-        this.props.commentResizeInterval = setInterval( function(){
-            component.refs.comments.updateDimensions();
-        }, 100 );
-    },
-    stopCommentResize: function(){
-        clearTimeout( this.props.commentResizeInterval );
-        this.refs.comments.updateDimensions();
-    },
     render () {
         if ( this.pendingQueries().length > 0 )
         {
             var message = "Loading...";
-
             if ( this.pendingQueries().indexOf( 'deal' ) == -1 )
             {
                 var dealName = this.data.deal[0].dealName;
@@ -58,13 +48,15 @@ const Deal = React.createClass({
                             <div className="deal-top">
                                 <h1>
                                     {deal.dealName}
-                                </h1>
+                                </h1>                                
                                 <DealProfile deal={deal} />
                                 <NextStepsBanner deal={deal} />
                             </div>
                         </div>
                         <div className="row-fluid">
-                            <Comments ref="comments" deal={deal} />
+                            <DealPageBottom ref="dealPageBottom" deal={deal}>
+                                {this.props.children}
+                            </DealPageBottom>
                         </div>
                     </div>
                 </div>

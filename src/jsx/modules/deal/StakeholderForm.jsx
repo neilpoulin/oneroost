@@ -4,10 +4,7 @@ import ParseReact from 'parse-react';
 import LinkedStateMixin from 'react-addons-linked-state-mixin'
 
 export default React.createClass({
-    mixins: [LinkedStateMixin, ParseReact.Mixin],
-    observe: function(){
-        return {};
-    },
+    mixins: [LinkedStateMixin],
     getInitialState: function(){
         return {
             firstName: null,
@@ -23,7 +20,7 @@ export default React.createClass({
     },
     saveStakeholder: function(){
         var self = this;
-        console.log("saving stakeholder for deal " + this.state.dealdealName);
+        console.log("saving stakeholder for deal " + this.props.deal.dealName);
         var stakeholderRequest = {
             firstName: this.state.firstName,
             lastName: this.state.lastName,
@@ -43,19 +40,25 @@ export default React.createClass({
                 "inviteAccepted": false,
                 "invitedBy": self.state.user
             };
-
-            ParseReact.Mutation.Create('Stakeholder', stakeholder, {waitForServer: true}).dispatch();
+            console.log("attempting to create the stakeholder...");
+            console.log(stakeholder);
+            ParseReact.Mutation.Create('Stakeholder', stakeholder).dispatch();
+            console.log("mutation for stakeholder sent");
 
             var message = self.state.user.get("username") + " added a stakeholder: "
             + createdUser.get("firstName") + " " + createdUser.get("lastName") + " (" + createdUser.get("email") + ")";
 
+            console.log("created message to send.. " + message )
+
             var comment = {
-                deal: self.state.deal,
+                deal: self.props.deal,
                 message: message,
                 author: null,
                 username: "OneRoost Bot",
             };
+            console.log("attempting to send comment ");
             ParseReact.Mutation.Create('DealComment', comment).dispatch();
+
         });
     },
     render: function(){

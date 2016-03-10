@@ -1,0 +1,44 @@
+.DealPageBottom .fixedContainer{
+    position: fixed;
+
+    bottom: 0px;
+    right: 0px;
+    left: 300px;
+    z-index: 1000;
+    .commentsSection{
+        position: absolute;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        .messagesContainer{
+            position: absolute;
+            bottom: 60px;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            overflow: auto;
+        }
+        .addCommentContainer{
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            padding: 0px 0px 0px 0px;
+            background-color: white;
+            .input-group{
+                position:relative;
+                top: -20px;
+            }
+            textarea:focus{
+                border-color: $input-border;
+            }
+        }
+    }
+
+    .FixedSidebar{
+        position: absolute;
+        right: 0px;
+        bottom: 0px;
+        top: 0px;
+    }
+}

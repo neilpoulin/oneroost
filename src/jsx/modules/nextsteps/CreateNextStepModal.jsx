@@ -1,27 +1,29 @@
 import React from 'react';
 import Parse from 'parse';
-import BootstrapModal from './../BootstrapModal';
 import NextStepForm from './NextStepForm';
+import {Modal, ModalClose} from 'react-modal-bootstrap'
 
 export default React.createClass({
     getInitialState: function(){
         return {
-            deal: this.props.deal
+            deal: this.props.deal,
+            isOpen: false
         };
     },
-    openModal: function(){
-        this.refs.addNextStepModal.open();
-    },
-    closeModal: function(){
-        this.refs.addNextStepModal.close();
-    },
-    modalCancel: function(){
-        this.closeModal();
+    hideModal: function(){
+        this.setState({
+            isOpen: false
+        });
         this.refs.addNextStepForm.clear();
     },
-    modalConfirm: function(){
+    openModal: function(){
+        this.setState({
+            isOpen: true
+        });
+    },
+    submit: function(){
         this.refs.addNextStepForm.saveNextStep();
-        this.closeModal();
+        this.hideModal();
     },
     render: function(){
         var nextStepForm = (
@@ -31,15 +33,23 @@ export default React.createClass({
         );
 
         return (
-            <BootstrapModal
-                ref="addNextStepModal"
-                confirm="Add"
-                cancel="Cancel"
-                onCancel={this.modalCancel}
-                onConfirm={this.modalConfirm}
-                title={'Add a Next Step for ' + this.state.deal.dealName} >
-                {nextStepForm}
-            </BootstrapModal>
+            <Modal isOpen={this.state.isOpen} onRequestHide={this.hideModal}>
+                <div className='modal-header'>
+                    <ModalClose onClick={this.hideModal}/>
+                    <h4 className='modal-title'>Add a Next Step</h4>
+                </div>
+                <div className="modal-body">
+                    {nextStepForm}
+                </div>
+                <div className='modal-footer'>
+                    <button className='btn btn-default' onClick={this.hideModal}>
+                        Cancel
+                    </button>
+                    <button className='btn btn-primary' onClick={this.submit}>
+                        Add
+                    </button>
+                </div>
+            </Modal>
         )
     }
 });

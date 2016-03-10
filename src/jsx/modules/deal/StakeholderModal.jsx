@@ -2,44 +2,54 @@ import React from 'react';
 import Parse from 'parse';
 import BootstrapModal from './../BootstrapModal';
 import StakeholderForm from './StakeholderForm';
+import {Modal, ModalClose} from 'react-modal-bootstrap';
 
 export default React.createClass({
     getInitialState: function(){
         return {
-            deal: this.props.deal
+            isOpen: false
         };
     },
-    openModal: function(){
-        this.refs.addStakeholderModal.open();
-    },
-    closeModal: function(){
-        this.refs.addStakeholderModal.close();
-    },
-    modalCancel: function(){
-        this.closeModal();
+    hideModal: function(){
+        this.setState({
+            isOpen: false
+        });
         this.refs.addStakeholderForm.clear();
     },
-    modalConfirm: function(){
+    openModal: function(){
+        this.setState({
+            isOpen: true
+        });
+    },
+    submit: function(){
         this.refs.addStakeholderForm.saveStakeholder();
-        this.closeModal();
+        this.hideModal();
     },
     render: function(){
         var stakeholderForm = (
             <StakeholderForm
                 ref="addStakeholderForm"
-                deal={this.state.deal} />
+                deal={this.props.deal} />
         );
 
         return (
-            <BootstrapModal
-                ref="addStakeholderModal"
-                confirm="Invite"
-                cancel="Cancel"
-                onCancel={this.modalCancel}
-                onConfirm={this.modalConfirm}
-                title={'Add a Stakeholder' } >
-                {stakeholderForm}
-            </BootstrapModal>
+            <Modal isOpen={this.state.isOpen} onRequestHide={this.hideModal}>
+                <div className='modal-header'>
+                    <ModalClose onClick={this.hideModal}/>
+                    <h4 className='modal-title'>Add a Stakeholder</h4>
+                </div>
+                <div className="modal-body">
+                    {stakeholderForm}
+                </div>
+                <div className='modal-footer'>
+                    <button className='btn btn-default' onClick={this.hideModal}>
+                        Cancel
+                    </button>
+                    <button className='btn btn-primary' onClick={this.submit}>
+                        Save changes
+                    </button>
+                </div>
+            </Modal>
         )
     }
 });
