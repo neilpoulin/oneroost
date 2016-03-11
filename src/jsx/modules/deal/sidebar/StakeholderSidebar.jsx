@@ -14,6 +14,7 @@ const StakeholderSidebar = React.createClass({
         var stakeholderQuery = (new Parse.Query("Stakeholder"));
         stakeholderQuery.include('user');
         stakeholderQuery.include('invitedBy');
+        stakeholderQuery.ascending('role');
         stakeholderQuery.equalTo('deal', deal );
         return {
             deal: dealQuery,
@@ -34,16 +35,16 @@ const StakeholderSidebar = React.createClass({
         var deal = this.data.deal[0];
 
         return (
-            <div className="ProfileSidebar">
-                <h3>Stakeholders</h3>
-                <AddStakeholderButton deal={deal}
-                    btnClassName="btn-outline-success"
-                    onSuccess={this.refreshStakeholders} />
+            <div className="StakeholderSidebar">
+                <h3 className="title">Stakeholders</h3>
                 {this.data.stakeholders.map(function(stakeholder){
                     return (
                         <Stakeholder key={"stakeholder_" + stakeholder.objectId} stakeholder={stakeholder}/>
                     )
                 })}
+                <AddStakeholderButton deal={deal}
+                    btnClassName="btn-outline-success"
+                    onSuccess={this.refreshStakeholders} />
             </div>
         )
     }

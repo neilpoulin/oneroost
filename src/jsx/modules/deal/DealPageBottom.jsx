@@ -24,7 +24,7 @@ const DealPageBottom = React.createClass({
         var fixedContainer = this.refs.fixedContainer;
         fixedContainer.style.left = dealBoundingRect.left + "px";
         fixedContainer.style.top = dealBoundingRect.top + "px";
-        fixedContainer.style.width = dealBoundingRect.width + "px";
+        // fixedContainer.style.width = dealBoundingRect.width + "px";
     },
     render: function() {
         var deal = this.props.deal;
@@ -33,7 +33,7 @@ const DealPageBottom = React.createClass({
         var sidebar = (null);
         if ( this.props.children )
         {
-            commentsColumns = 8;            
+            commentsColumns = 8;
             sidebar = (
                 <FixedSidebar ref="sidebar" columns={totalColumns - commentsColumns}>
                     {this.props.children}

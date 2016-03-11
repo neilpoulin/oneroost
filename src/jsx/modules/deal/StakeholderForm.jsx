@@ -87,10 +87,13 @@ export default React.createClass({
                 </div>
                 <div className="form-group">
                     <label htmlFor="userRoleInput">User Role</label>
-                    <input id="userRoleInput"
+                    <select id="userRoleInput"
                         type="text"
                         className="form-control"
-                        valueLink={this.linkState('role')} />
+                        valueLink={this.linkState('role')} >
+                        <option value="BUYER">Buyer</option>
+                        <option value="SELLER">Seller</option>
+                    </select>
                 </div>
             </div>
         );

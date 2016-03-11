@@ -30,7 +30,7 @@ export default React.createClass({
             <div data-name={firstName + " " + lastName} data-email={email} className="Stakeholder row" >
                 <div className="col-xs-10 container-fluid">
                     <span className={"roleName label " + roleClass}>{stakeholder.role}</span>
-                    <a href="mailto:{email}" target="_blank">
+                    <a href={"mailto:" + email} target="_blank">
                          {firstName}&nbsp;{lastName}
                     </a>
                 </div>

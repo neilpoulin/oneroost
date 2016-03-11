@@ -6,10 +6,12 @@ const FixedSidebar = React.createClass({
     render () {
         return (
             <div className={"FixedSidebar container-fluid col-xs-12 col-md-" + this.props.columns}>
-                <Link to={"/deals/" + this.props.children.props.params.dealId}
-                    className="pull-right" >
-                    <i className="fa fa-times fa-lg"></i>
-                </Link>
+                <div className="close">
+                    <Link to={"/deals/" + this.props.children.props.params.dealId}
+                        className="" >
+                        <i className="fa fa-times fa-lg"></i>
+                    </Link>
+                </div>
                 {this.props.children}
             </div>
         )

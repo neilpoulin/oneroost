@@ -39,24 +39,30 @@ export default React.createClass({
         var component = this;
         var deal = this.props.deal;
         var previousComment = null;
-        var commentsSection = (
-            <ul className="list-unstyled" id="commentsList" ref="commentList">
-                {this.data.dealComments.reverse().map(function(comment){
-                    var item = ( <CommentItem key={"commentItem_" + comment.objectId}
-                        comment={comment}
-                        previousComment={previousComment} /> );
-                    previousComment = comment;
-                    return item;
-                })}
-            </ul>
-        );
 
-        if (this.pendingQueries().length)
+        var commentsSection = (null);
+        if (this.pendingQueries().length > 0)
         {
             commentsSection = (
                 <div>LOADING <i className="fa fa-spinner fa-spin"></i></div>
             );
         }
+
+        var comments = this.data.dealComments.sort(function(a, b){
+            return a.createdAt.getTime() > b.createdAt.getTime();
+        });
+
+        var commentsSection = (
+            <ul className="list-unstyled" id="commentsList" ref="commentList">
+                {comments.map(function(comment){
+                    var item = ( <CommentItem key={"commentItem_" + comment.objectId}
+                    comment={comment}
+                    previousComment={previousComment} /> );
+                    previousComment = comment;
+                    return item;
+                })}
+            </ul>
+        );
 
         return (
             <div className={"commentsSection container-fluid col-xs-12 col-md-" + this.props.columns}>

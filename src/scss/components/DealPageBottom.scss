@@ -1,6 +1,6 @@
 .DealPageBottom .fixedContainer{
     position: fixed;
-
+    $messagePaddingRight: 15px;
     bottom: 0px;
     right: 0px;
     left: 300px;
@@ -15,14 +15,14 @@
             bottom: 60px;
             top: 0px;
             left: 0px;
-            right: 0px;
+            right: $messagePaddingRight;
             overflow: auto;
         }
         .addCommentContainer{
             position: absolute;
             bottom: 0px;
             left: 0px;
-            right: 0px;
+            right: $messagePaddingRight;
             padding: 0px 0px 0px 0px;
             background-color: white;
             .input-group{
