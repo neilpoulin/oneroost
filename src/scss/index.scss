@@ -10,8 +10,9 @@ $fa-font-path: "./fonts";
 @import 'sass-material-colors-classes';
 @import 'sass-material-colors-placeholders';
 
-@import "deals";
 @import "components";
+
+body { padding-top: 50px; }
 
 
 .label{
@@ -28,4 +29,8 @@ h1{
 
 .text-center{
     text-align: center;
+}
+
+.pointer{
+    cursor: pointer;
 }

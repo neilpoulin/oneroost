@@ -120,7 +120,7 @@ gulp.task('bundle', ['clean', 'transpile' ], function(){
     })
     .pipe( plumber.stop() )
     .pipe( concat( paths.dest.scriptName ) )
-    .pipe( sourcemaps.write('./maps') )
+    // .pipe( sourcemaps.write('./maps') )
     .pipe( plumber.stop() )
     .pipe( gulp.dest(paths.dest.js) );
 });

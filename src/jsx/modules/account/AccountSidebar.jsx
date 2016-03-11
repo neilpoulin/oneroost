@@ -12,6 +12,7 @@ export default React.createClass({
         var user = Parse.User.current();
         var dealQuery = new Parse.Query(Deal);
         dealQuery.include("account");
+        dealQuery.ascending('dealName');
         return {
             deals: (dealQuery).equalTo('createdBy', user )
         }

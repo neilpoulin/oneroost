@@ -39,7 +39,7 @@ const Deal = React.createClass({
             )
         }
         return (
-            <div className="dealPageContainer">
+            <div className="Deal">
                 <div
                     className="container-fluid"
                     id="dealPageContainer">
@@ -48,7 +48,7 @@ const Deal = React.createClass({
                             <div className="deal-top">
                                 <h1>
                                     {deal.dealName}
-                                </h1>                                
+                                </h1>
                                 <DealProfile deal={deal} />
                                 <NextStepsBanner deal={deal} />
                             </div>

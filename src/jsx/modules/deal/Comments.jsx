@@ -34,7 +34,7 @@ export default React.createClass({
     {
         var $commentContainer = $(this.refs.messagesContainer);
         $commentContainer.scrollTop( $commentContainer.prop("scrollHeight") );
-    },    
+    },
     render: function(){
         var component = this;
         var deal = this.props.deal;
@@ -59,7 +59,7 @@ export default React.createClass({
         }
 
         return (
-            <div className={"commentsSection container-fluid col-sm-" + this.props.columns}>
+            <div className={"commentsSection container-fluid col-xs-12 col-md-" + this.props.columns}>
                 <div className="messagesContainer" ref="messagesContainer">
                     <div className="">
                         {commentsSection}

@@ -5,8 +5,8 @@ import TopNav from './navigation/TopNav';
 export default React.createClass({
     render() {
         return (
-            <div>
-                <TopNav/>                
+            <div >
+                <TopNav/>
                 {this.props.children}
             </div>
         )

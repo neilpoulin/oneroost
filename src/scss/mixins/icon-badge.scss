@@ -1,0 +1,22 @@
+@mixin icon-badge{
+    &[data-badge]:after{
+      position:absolute;
+      right:-26%;
+      top:-26%;
+      content: attr(data-badge);
+      font-size:35%;
+      padding:.6em;
+      border-radius:99999px;
+      line-height:.75em;
+      color: white;
+      background:rgba(255,0,0,.85);
+      text-align:center;
+      min-width:2em;
+      font-weight:bold;
+    }
+}
+
+.icon-badge{
+    @include icon-badge;
+    position: relative;
+}

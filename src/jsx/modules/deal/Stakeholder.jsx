@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import React from 'react';
 import Parse from 'parse';
-import ParseDeal from 'parse-react';
+import ParseReact from 'parse-react';
 import LinkedStateMixin from 'react-addons-linked-state-mixin'
 import Deal from './../../models/Deal';
 
@@ -13,7 +13,6 @@ export default React.createClass({
     },
     render: function(){
         var stakeholder = this.props.stakeholder;
-        console.log( stakeholder );
         var user = stakeholder.user;
         var firstName = user.firstName;
         var lastName = user.lastName;
@@ -24,11 +23,21 @@ export default React.createClass({
             lastName = user.get("lastName");
             email = user.get("email");
         }
+
+        var roleClass = stakeholder.role.toLowerCase();
+
         return (
-            <li data-name={firstName + " " + lastName} data-email={email} className="hover-effects" >
-                {firstName + " " + lastName} (<a href={'mailto:' + email} target="_blank">{email}</a>)
-                <i className="fa fa-times hover-show delete-icon" onClick={this.deleteStakeholder}></i>
-            </li>
+            <div data-name={firstName + " " + lastName} data-email={email} className="Stakeholder row" >
+                <div className="col-xs-10 container-fluid">
+                    <span className={"roleName label " + roleClass}>{stakeholder.role}</span>
+                    <a href="mailto:{email}" target="_blank">
+                         {firstName}&nbsp;{lastName}
+                    </a>
+                </div>
+                <div className="col-xs-2 container-fluid">
+                    <i className="fa fa-times delete-icon pointer visible-hover text-center" onClick={this.deleteStakeholder}></i>
+                </div>
+            </div>
         );
     }
 });
