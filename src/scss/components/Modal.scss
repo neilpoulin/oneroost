@@ -1,3 +1,11 @@
 .modal, .modal-dialog{
     color: black;
 }
+
+.modal-dialog, .modal-content{
+    text-align: left;
+}
+
+.modal{
+    display:block;
+}

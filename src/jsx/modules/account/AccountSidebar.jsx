@@ -4,6 +4,7 @@ import ParseReact from 'parse-react';
 import Deal from './../../models/Deal';
 import Account from './../../models/Account';
 import AccountSidebarList from './AccountSidebarList';
+import AddAccountButton from './AddAccountButton'
 
 
 export default React.createClass({
@@ -13,8 +14,15 @@ export default React.createClass({
         var dealQuery = new Parse.Query(Deal);
         dealQuery.include("account");
         dealQuery.ascending('dealName');
+
+        var stakeholders = new Parse.Query("Stakeholder");
+        stakeholders.include("deal");
+        stakeholders.include(["deal.account"]);
+        stakeholders.equalTo("user", user );
+
         return {
-            deals: (dealQuery).equalTo('createdBy', user )
+            stakeholders: stakeholders
+
         }
     },
     render () {
@@ -25,15 +33,22 @@ export default React.createClass({
             )
         }
         else {
-            contents = <AccountSidebarList deals={this.data.deals} />
+            var deals = this.data.stakeholders.map(function(stakeholder){
+                    return stakeholder.deal
+                })
+                .sort(function(a, b){
+                    a.dealName <= b.dealName;
+                });
+            contents = <AccountSidebarList deals={deals} />
         }
 
-
         return (
-            <div id="accountSidebar" className="col-md-2 container-fluid hidden-sm hidden-xs">
+            <div id="accountSidebar" className="col-md-2 container-fluid hidden-sm hidden-xs">            
+                <AddAccountButton btnClassName="btn-success">
+                    <i className="fa fa-plus">Create Account</i>
+                </AddAccountButton>
                 {contents}
             </div>
-
         )
     }
 })

@@ -12,6 +12,10 @@ var sourcemaps = require('gulp-sourcemaps');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var browserify = require('browserify');
+var less = require('gulp-less');
+var merge = require('merge-stream');
+
+
 
 var bootstrapRoot = './node_modules/bootstrap-sass/';
 var bootstrapPaths = {
@@ -28,6 +32,10 @@ var fontAwesomePaths = {
 var materialColorsRoot = './node_modules/sass-material-colors/';
 var GoogleMaterialColors = {
     stylesheets: materialColorsRoot + 'sass'
+}
+
+var reactModalBootstrap = {
+    stylesheets: './node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less'
 }
 
 var paths = {
@@ -63,6 +71,7 @@ var sassOpts = {
     includePaths: [bootstrapPaths.stylesheets,
         fontAwesomePaths.stylesheets,
         GoogleMaterialColors.stylesheets,
+        reactModalBootstrap.stylesheets,
         './src/scss/**/*.scss']
 };
 
@@ -72,12 +81,21 @@ gulp.task('fonts', function(){
 });
 
 gulp.task('sass', ['clean', 'fonts'], function(){
-    return gulp.src( paths.src.styleEntry )
-    .pipe(sourcemaps.init())
-    .pipe( sass( sassOpts ).on( 'error', sass.logError ) )
-    .pipe( concat( paths.dest.styleName ) )
-    .pipe( sourcemaps.write('./maps') )
-    .pipe( gulp.dest( paths.dest.css ) );
+    var scssStream = gulp.src( paths.src.styleEntry )
+        .pipe(sourcemaps.init())
+        .pipe( sass( sassOpts ).on( 'error', sass.logError ) )
+        .pipe( sourcemaps.write('./maps') )
+        .pipe( concat( paths.dest.styleName ) );
+
+    var lessStream = gulp.src(reactModalBootstrap.stylesheets)
+        .pipe(less())
+        .pipe(concat('less-files.less'));
+
+    var mergedStream = merge( scssStream, lessStream )
+        .pipe(concat('styles.css'))
+        .pipe( gulp.dest( paths.dest.css ) );
+
+    return mergedStream;
 });
 
 gulp.task('clean', function(){

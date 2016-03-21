@@ -21,6 +21,8 @@ export default React.createClass({
         return {
             isLoggedIn: isLoggedIn,
             username: username,
+            firstName: null,
+            lastName: null,
             password: null,
             email: email,
             isLogin: window.location.pathname.indexOf("login") != -1,
@@ -48,7 +50,8 @@ export default React.createClass({
             user.set("username", this.state.email);
             user.set("email", this.state.email);
             user.set("password", this.state.password);
-
+            user.set("firstName", this.state.firstName);
+            user.set("lastName", this.state.lastName);
             user.signUp( null, {
                 success: component.handleLoginSuccess,
                 error: component.handleLoginError
@@ -272,6 +275,15 @@ export default React.createClass({
                         </div>
                         <form className="container-fluid">
                             {error}
+                            <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
+                                <label htmlFor="loginLastNameInput" className="control-label">First Name</label>
+                                <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState('firstName')} placeholder="" aria-describedby="firstNameHelpBlock"/>
+                            </div>
+                            <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
+                                <label htmlFor="loginLastNameInput" className="control-label">Last Name</label>
+                                <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState('lastName')} placeholder="" aria-describedby="firstNameHelpBlock"/>
+                            </div>
+
                             <div className={"form-group " + emailValidationClass}>
                                 <label htmlFor="loginUsernameInput" className="control-label">Email</label>
                                 <input type="email" id="loginEmailInput" className="form-control" valueLink={this.linkState('email')} onKeyUp={this.emailKeyUp} placeholder="" aria-describedby="emailHelpBlock"/>

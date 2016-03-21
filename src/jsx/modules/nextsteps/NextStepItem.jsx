@@ -32,7 +32,6 @@ export default React.createClass({
     doDelete(){
         var self = this;
         var step = self.props.step;
-
         if ( !confirm( "Are you sure you want to delete next step: " + step.title + "?" ) )
         {
             return;
@@ -116,6 +115,6 @@ export default React.createClass({
                     </div>
                 </div>
 
-            </div>            
+            </div>
         </div>);
     }});

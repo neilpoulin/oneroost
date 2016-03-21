@@ -19,8 +19,11 @@ export default React.createClass({
             user: Parse.User.current()
         };
     },
+    doSubmit: function(){
+        this.saveNextStep();
+    },
     saveNextStep: function(){
-        var component = this;
+        var self = this;
         var step = {
             "createdBy": this.state.createdBy,
             "title": this.state.title,
@@ -33,9 +36,9 @@ export default React.createClass({
         ParseReact.Mutation.Create('NextStep', step)
         .dispatch()
         .then( function( step ){
-            component.addStepCreatedComment( step );
+            self.addStepCreatedComment( step );
         });
-        component.clear();
+        self.clear();
     },
     addStepCreatedComment: function( step ){
         var self = this;
@@ -54,28 +57,28 @@ export default React.createClass({
     render: function(){
         return (
             <div className="NextStepsFormContainer">
-                <div className="form-component">
+                <div className="form-self">
                     <label htmlFor="nextStepTitle">Title</label>
                     <input id="nextStepTitle"
                         type="text"
                         className="form-control"
                         valueLink={this.linkState('title')} />
                 </div>
-                <div className="form-component">
+                <div className="form-self">
                     <label htmlFor="nextStepDescription">Description</label>
                     <input id="nextStepDescription"
                         type="text"
                         className="form-control"
                         valueLink={this.linkState('description')} />
                 </div>
-                <div className="form-component">
+                <div className="form-self">
                     <label htmlFor="nextStepDueDate">Due Date</label>
                     <input id="nextStepDueDate"
                         type="text"
                         className="form-control"
                         valueLink={this.linkState('dueDate')} />
                 </div>
-                <div className="form-component">
+                <div className="form-self">
                     <label htmlFor="nextStepAssignedUser">Assigned User</label>
                     <input id="nextStepAssignedUser"
                         type="text"

@@ -24,7 +24,7 @@ export default React.createClass({
         this.refs.addStakeholderForm.saveStakeholder();
         this.hideModal();
     },
-    render: function(){
+    render: function(){        
         var stakeholderForm = (
             <StakeholderForm
                 ref="addStakeholderForm"

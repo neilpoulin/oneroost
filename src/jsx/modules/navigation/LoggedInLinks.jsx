@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import NavLink from './../NavLink';
 import Parse from 'parse';
 import LogoutLink from './LogoutLink';
+import AddAccountButton from './../account/AddAccountButton';
 
 const LoggedInLinks = React.createClass({
     render () {
@@ -12,6 +13,12 @@ const LoggedInLinks = React.createClass({
                     <NavLink to='/' onlyActiveOnIndex>Home</NavLink>
                     <NavLink to='/deals'>Deals</NavLink>
                 </ul>
+
+                <div className="navbar-form navbar-left">
+                    <AddAccountButton className="navbar-btn">
+                        <i className="fa fa-plus">&nbsp;Create Account</i>
+                    </AddAccountButton>
+                </div>
 
                 <ul className="nav navbar-nav navbar-right">
                     <li className="dropdown">

@@ -6,9 +6,9 @@ import NextStepItem from './NextStepItem';
 
 export default React.createClass({
     mixins: [ParseReact.Mixin],
-    observe: function(){
+    observe: function(props, state){
         return {
-            nextSteps: new Parse.Query('NextStep').equalTo( 'deal', this.props.deal ).ascending('dueDate')
+            nextSteps: new Parse.Query('NextStep').equalTo( 'deal', props.deal ).ascending('dueDate')
         };
     },
     getInitialState: function(){
@@ -17,7 +17,7 @@ export default React.createClass({
             user: Parse.User.current()
         };
     },
-    render: function(){
+    render: function(){        
         var addButton = (<div className="width-0"></div>);
         var self = this;
         if ( this.data.nextSteps.length < 5 )

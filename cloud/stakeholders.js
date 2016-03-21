@@ -22,7 +22,7 @@ exports.initialize = function()
                                 };
                                 response.success( responseObject );
                             };
-                            addUserToDeal( user, deal, stakeholder.role, Parse.User.current(), callback );
+                            // addUserToDeal( user, deal, stakeholder.role, Parse.User.current(), callback );
                         }
                         else
                         {

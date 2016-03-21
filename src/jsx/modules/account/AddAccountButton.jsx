@@ -1,19 +1,27 @@
 import React, { PropTypes } from 'react'
-import AccountModal from './AccountModal';
+import ModalButton from './../util/ModalButton';
+import CreateAccountForm from './CreateAccountForm';
 
 const AddAccountButton = React.createClass({
     openModal: function(){
-        this.refs.modal.openModal();
+        this.refs.modal.openModal()
+    },
+    getDefaultProps: function(){
+        return {
+            btnClassName: 'btn-outline-success'
+        }
     },
     render () {
-        var btnClass = this.props.btnClassName || 'btn-outline-success';
         return (
-            <div className="AddAccountButton">
-                <button className={"btn " + btnClass}  onClick={this.openModal}>
-                     {this.props.children || "Create Account"}
-                </button>
-                <AccountModal ref="modal"/>
-            </div>
+            <ModalButton
+                buttonText="Testing"
+                buttonIcon="usd"
+                containerClass="AddAccountButton"
+                buttonClass={this.props.btnClassName}
+                modalTitle="Create Account"
+                >
+                <CreateAccountForm/>
+            </ModalButton>
         )
     }
 })

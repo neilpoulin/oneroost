@@ -40,7 +40,6 @@ const DealPageBottom = React.createClass({
                 </FixedSidebar>
             );
         }
-
         return (
             <div className="DealPageBottom" ref="DealPageBottom">
                 <div className="fixedContainer" ref="fixedContainer">

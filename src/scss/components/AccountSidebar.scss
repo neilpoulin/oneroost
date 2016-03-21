@@ -13,6 +13,11 @@ $textColor: #8fb9cf;
     color: $textColor;
     padding: 0px 0px 0px 0px;
     font-family: AlrightSans,Helvetica Neue,Helvetica,Arial,sans-serif;
+
+    .AddAccountButton{
+        text-align: center;
+        padding: 10px;
+    }
 }
 
 .AccountSidebarList{

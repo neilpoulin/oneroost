@@ -21,7 +21,7 @@ const DealProfile = React.createClass({
         var budget = deal.budget;
         if ( !budget )
         {
-            return "Not Set";
+            return "Not Quoted";
         }
 
         if( budget.low == budget.high )
@@ -30,7 +30,7 @@ const DealProfile = React.createClass({
             {
                 return this.formatMoney( budget.low, false );
             }
-            return "0";
+            return "Not Quoted";
         }
         return this.formatMoney( budget.low, false ) + " - " + this.formatMoney( budget.high, false );
     },

@@ -11,6 +11,7 @@ export default React.createClass({
             dealName: null,
             primaryContact: null,
             streetAddress: null,
+            timeline: null,
             city: null,
             state: null,
             zipCode: null
@@ -18,7 +19,6 @@ export default React.createClass({
     },
     doSubmit: function()
     {
-        debugger;
         var self = this;
         var account = {
             createdBy: Parse.User.current(),
@@ -30,19 +30,21 @@ export default React.createClass({
             zipCode: this.state.zipCode
         }
         var dealName = self.state.dealName;
+        var timeline = self.state.timelone;
         ParseReact.Mutation.Create("Account", account)
         .dispatch()
         .then( function( acct ){
-            self.createDeal( acct, dealName );
+            self.createDeal( acct, dealName, timeline );
         });
     },
-    createDeal: function( account, dealName ){
+    createDeal: function( account, dealName, timeline ){
         var self = this;
-        debugger;
         var deal =  {
             createdBy: Parse.User.current(),
             account: account,
             dealName: dealName,
+            timeline: timeline,
+            profile: {"timeline": "2016-05-13"},
             budget: {"low": 0, "high": 0}
         }
 
@@ -82,9 +84,10 @@ export default React.createClass({
                         <label htmlFor="dealNameInput" >Deal Name</label>
                         <input id="dealNameInput" type="text" className="form-control" valueLink={this.linkState('dealName')} />
                     </div>
+
                     <div className="form-component" >
-                        <label htmlFor="primaryContactInput">Primary Contact Name</label>
-                        <input id="primaryContactInput" type="text" className="form-control" valueLink={this.linkState('primaryContact')} />
+                        <label htmlFor="primaryContactInput">Expected Close Date</label>
+                        <input id="primaryContactInput" type="text" className="form-control" valueLink={this.linkState('timeline')} />
                     </div>
                 </div>
             </div>
