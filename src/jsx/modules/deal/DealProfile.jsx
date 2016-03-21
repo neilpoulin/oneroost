@@ -35,17 +35,17 @@ const DealProfile = React.createClass({
         return this.formatMoney( budget.low, false ) + " - " + this.formatMoney( budget.high, false );
     },
     formatMoney( amount, includeSymbol ){
-        var format = '($0.00a)';
+        var format = '($0[.]0a)';
         if ( ! includeSymbol )
         {
-            format = '(0.00a)'
+            format = '(0[.]0a)'
         }
         return numeral( amount ).format(format);
     },
-    formatDate( date ){
-        if ( date != null && date != undefined )
+    formatDate( dateString ){
+        if ( dateString != null && dateString != undefined )
         {
-            return moment( date ).format('MMM D, YYYY');
+            return moment( dateString, "MM-DD-YYYY" ).format('MMM D, YYYY');
         }
         return null;
     },

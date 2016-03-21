@@ -32,7 +32,7 @@ const ModalButton = React.createClass({
                 <button className={"btn " + this.props.buttonClass + " fa fa-" + this.props.buttonIcon}
                     onClick={this.openModal}
                     >
-                    {this.props.buttonText}
+                    &nbsp;{this.props.buttonText}
                 </button>
                 <Modal
                     title={this.props.modalTitle}

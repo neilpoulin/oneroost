@@ -14,8 +14,8 @@ const AddAccountButton = React.createClass({
     render () {
         return (
             <ModalButton
-                buttonText="Testing"
-                buttonIcon="usd"
+                buttonText="Create Account"
+                buttonIcon="plus"
                 containerClass="AddAccountButton"
                 buttonClass={this.props.btnClassName}
                 modalTitle="Create Account"
