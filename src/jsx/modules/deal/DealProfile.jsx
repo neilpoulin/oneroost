@@ -45,7 +45,7 @@ const DealProfile = React.createClass({
     formatDate( dateString ){
         if ( dateString != null && dateString != undefined )
         {
-            return moment( dateString, "MM-DD-YYYY" ).format('MMM D, YYYY');
+            return moment( dateString ).format('MMM D, YYYY');
         }
         return null;
     },

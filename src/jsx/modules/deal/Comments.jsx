@@ -44,25 +44,36 @@ export default React.createClass({
         if (this.pendingQueries().length > 0)
         {
             commentsSection = (
-                <div>LOADING <i className="fa fa-spinner fa-spin"></i></div>
+                <div className="loadingComments lead">
+                    <i className="fa fa-spinner fa-spin"></i> &nbsp; Loading Comments...
+                </div>
             );
         }
-
-        var comments = this.data.dealComments.sort(function(a, b){
-            return a.createdAt.getTime() > b.createdAt.getTime();
-        });
-
-        var commentsSection = (
-            <ul className="list-unstyled" id="commentsList" ref="commentList">
-                {comments.map(function(comment){
-                    var item = ( <CommentItem key={"commentItem_" + comment.objectId}
-                    comment={comment}
-                    previousComment={previousComment} /> );
-                    previousComment = comment;
-                    return item;
-                })}
-            </ul>
-        );
+        else if ( this.data.dealComments.length == 0 )
+        {
+            commentsSection = (
+                <div className="emptyComments lead">
+                    There are no comments yet, add one below to get started!
+                </div>
+            );
+        }
+        else
+        {
+            var comments = this.data.dealComments.sort(function(a, b){
+                return a.createdAt.getTime() > b.createdAt.getTime();
+            });
+            commentsSection = (
+                <ul className="list-unstyled" id="commentsList" ref="commentList">
+                    {comments.map(function(comment){
+                        var item = ( <CommentItem key={"commentItem_" + comment.objectId}
+                        comment={comment}
+                        previousComment={previousComment} /> );
+                        previousComment = comment;
+                        return item;
+                    })}
+                </ul>
+            );
+        }
 
         return (
             <div className={"commentsSection container-fluid col-xs-12 col-md-" + this.props.columns}>

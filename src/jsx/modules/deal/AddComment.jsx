@@ -40,6 +40,7 @@ export default React.createClass({
                 <div className="input-group">
                     <textarea className="form-control custom-control input-lg"
                         id="addCommentInput"
+                        placeholder="Write your message..."
                         rows="1"
                         valueLink={this.linkState('message')}
                         onKeyDown={this.handleKeyDown} ></textarea>

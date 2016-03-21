@@ -40,6 +40,20 @@ $timestampTextColor: gray;
     }
 }
 
+.loadingComments, .emptyComments{
+    margin-top: 50px;
+    padding: 35px;
+    text-align: center;
+}
+
+.emptyComments{
+    border: 2px dashed gray;
+    border-radius: 20px;
+}
+
 #addCommentInput{
     resize: none;
+    &:not(:focus){
+        background-color: material-color('yellow', 'a100');
+    }
 }
