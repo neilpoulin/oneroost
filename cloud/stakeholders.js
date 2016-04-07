@@ -9,7 +9,7 @@ exports.initialize = function()
         new Parse.Query("Deal").get( dealId , {
             success: function( deal ){
                 console.log("deal found..trying to find the user with email = " + stakeholder.email );
-                new Parse.Query(Parse.User).equalTo( "email", stakeholder.email ).first({
+                new Parse.Query("User").equalTo( "email", stakeholder.email ).first({
                     success: function( user ){
                         if ( user != null)
                         {
@@ -22,7 +22,6 @@ exports.initialize = function()
                                 };
                                 response.success( responseObject );
                             };
-                            // addUserToDeal( user, deal, stakeholder.role, Parse.User.current(), callback );
                         }
                         else
                         {
@@ -30,8 +29,9 @@ exports.initialize = function()
                             createStakeholderUser( stakeholder, deal, Parse.User.current(), response );
                         }
                     },
-                    error: function(){
+                    error: function(error){
                         console.error("failed to find user, something went wrong");
+                        console.error(error);
                         response.success({
                             error: "something went wrong"
                         });
@@ -42,33 +42,6 @@ exports.initialize = function()
                 response.error();
             }
         });
-    });
-}
-
-
-function addUserToDeal( user, deal, role, invitedBy, response ){
-    console.log( "adding user to stakeholder table" );
-    var Stakeholder = Parse.Object.extend( "Stakeholder" );
-    var stakeholder = new Stakeholder();
-    stakeholder.set( "user", user );
-    stakeholder.set( "deal", deal );
-    stakeholder.set( "role", role );
-    stakeholder.set( "inviteAccepted", false );
-    stakeholder.set( "invitedBy", invitedBy );
-    stakeholder.save(null, {
-        success: function( stakeholder ){
-            console.log( "successfully saved stakeholder " + stakeholder.id );
-            response.success( {
-                success: "successfully saved stakeholder, stakeholderId = " + stakeholder.id,
-                stakeholder: stakeholder
-            });
-        },
-        error: function(){
-            console.error( "failed to save stakeholder" );
-            response.error({
-                error: "failed to save stakeholder"
-            });
-        }
     });
 }
 
@@ -86,7 +59,6 @@ function createStakeholderUser( stakeholder, deal, invitedBy, response ){
         success: function(created){
             console.log( "successfully created a user to be added as a stakeholder." );
             response.success({user: created});
-            // addUserToDeal( user, deal, stakeholder.role, invitedBy, response );
         },
         error: function( created, error ){
             console.error( "failed to create stakeholder user." );
