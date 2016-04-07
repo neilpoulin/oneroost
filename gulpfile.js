@@ -43,6 +43,7 @@ var paths = {
         root: './src',
         scripts: ['./src/**/*.jsx',
             './src/**/*.js',
+            './node_modules/jquery/jquery.min.js',
             './node_modules/bootstrap/dist/js/bootstrap.min.js'],
         styles: ['./src/scss/**/*.scss'],
         styleEntry: './src/scss/index.scss',

@@ -2,10 +2,16 @@ import React, { PropTypes } from 'react'
 import Parse from 'parse';
 import AnonymousLinks from './AnonymousLinks';
 import LoggedInLinks from './LoggedInLinks';
+import jQuery from 'jquery'
+import Bootstrap from 'bootstrap'
+
 
 const TopNav = React.createClass({
     isLoggedIn: function(){
         return Parse.User.current() != null;
+    },
+    componentDidMount(){
+        jQuery('.collapse').collapse();
     },
     render: function() {
         var links = (<AnonymousLinks/>);
@@ -25,9 +31,7 @@ const TopNav = React.createClass({
                             <span className="icon-bar"></span>
                         </button>
                     </div>
-                    <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        {links}
-                    </div>
+                    {links}
                 </div>
             </nav>
         )

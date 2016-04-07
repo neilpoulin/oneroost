@@ -8,7 +8,7 @@ const LoggedInLinks = React.createClass({
     render () {
         var user = Parse.User.current();
         return (
-            <div>
+            <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul className="nav navbar-nav">
                     <NavLink to='/' onlyActiveOnIndex>Home</NavLink>
                     <NavLink to='/deals'>Deals</NavLink>
