@@ -27,12 +27,17 @@ const ModalButton = React.createClass({
     },
     render () {
         var buttonClass = this.props.buttonClass;
+        var buttonIcon = (null);
+        if ( this.props.buttonIcon )
+        {
+            buttonIcon = (<i className={"fa fa-" + this.props.buttonIcon}></i>);
+        }
         return (
             <div className={"ModalButton " + this.props.containerClass}>
-                <button className={"btn " + this.props.buttonClass + " fa fa-" + this.props.buttonIcon}
+                <button className={"btn " + this.props.buttonClass }
                     onClick={this.openModal}
                     >
-                    &nbsp;{this.props.buttonText}
+                    {buttonIcon}&nbsp;{this.props.buttonText}
                 </button>
                 <Modal
                     title={this.props.modalTitle}

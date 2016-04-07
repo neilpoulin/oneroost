@@ -91,7 +91,7 @@ export default React.createClass({
                         type="text"
                         className="form-control"
                         valueLink={this.linkState('role')} >
-                        <option value="BUYER">Buyer</option>
+                        <option value="BUYER" selected>Buyer</option>
                         <option value="SELLER">Seller</option>
                     </select>
                 </div>
