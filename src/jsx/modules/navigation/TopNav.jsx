@@ -2,17 +2,11 @@ import React, { PropTypes } from 'react'
 import Parse from 'parse';
 import AnonymousLinks from './AnonymousLinks';
 import LoggedInLinks from './LoggedInLinks';
-window.$ = window.jQuery = require('jquery');
-window.Tether = require('tether');
 import Bootstrap from 'bootstrap'
-
 
 const TopNav = React.createClass({
   isLoggedIn: function () {
     return Parse.User.current() != null;
-  },
-  componentDidMount(){
-    jQuery('.collapse').collapse();
   },
   render: function () {
     var links = (<AnonymousLinks/>);
@@ -37,6 +31,6 @@ const TopNav = React.createClass({
       </nav>
     )
   }
-})
+});
 
 export default TopNav
