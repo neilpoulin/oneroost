@@ -9,23 +9,25 @@ import UserHomePage from './modules/UserHomePage';
 import Deal from './modules/deal/Deal';
 import DealDashboard from './modules/deal/DealDashboard';
 import StakeholderSidebar from './modules/deal/sidebar/StakeholderSidebar';
+import TimelineSidebar from './modules/deal/sidebar/TimelineSidebar';
 
 Parse.$ = $;
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
 
 render(
-    (
-        <Router history={browserHistory}>
-            <Route path="/" component={App}>
-                <IndexRoute component={Home}/>
-                <Route path="/deals" component={DealDashboard}>
-                    <IndexRoute component={UserHomePage}/>
-                    <Route path="/deals/:dealId" component={Deal}>
-                        <Route path="/deals/:dealId/stakeholders" component={StakeholderSidebar} />
-                    </Route>
-                </Route>
-            </Route>
-        </Router>
-    )
-    , document.getElementById('app')
+  (
+    <Router history={browserHistory}>
+      <Route path="/" component={App}>
+        <IndexRoute component={Home}/>
+        <Route path="/deals" component={DealDashboard}>
+          <IndexRoute component={UserHomePage}/>
+          <Route path="/deals/:dealId" component={Deal}>
+            <Route path="/deals/:dealId/stakeholders" component={StakeholderSidebar}/>
+            <Route path="/deals/:dealId/timeline" component={TimelineSidebar}/>
+          </Route>
+        </Route>
+      </Route>
+    </Router>
+  )
+  , document.getElementById('app')
 )

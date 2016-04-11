@@ -13,28 +13,27 @@ var buffer = require('vinyl-buffer');
 var browserify = require('browserify');
 var less = require('gulp-less');
 var merge = require('merge-stream');
-var jQuery = require('jquery');
 
 var bootstrapRoot = './node_modules/bootstrap-sass/';
 var bootstrapPaths = {
   fonts: bootstrapRoot + 'assets/fonts/**/*',
   stylesheets: bootstrapRoot + 'assets/stylesheets'
-}
+};
 
 var fontAwesomeRoot = './node_modules/font-awesome/';
 var fontAwesomePaths = {
   fonts: fontAwesomeRoot + 'fonts/**/*',
   stylesheets: fontAwesomeRoot + 'scss'
-}
+};
 
 var materialColorsRoot = './node_modules/sass-material-colors/';
 var GoogleMaterialColors = {
   stylesheets: materialColorsRoot + 'sass'
-}
+};
 
 var reactModalBootstrap = {
   stylesheets: './node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less'
-}
+};
 
 var paths = {
   src: {
