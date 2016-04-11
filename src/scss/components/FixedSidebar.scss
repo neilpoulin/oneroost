@@ -1,9 +1,13 @@
-.FixedSidebar{
-    background-color: $fixedSidebarBg;
-    .close{
-        margin-top: 10px;
-        i{
-            color: #fff;
-        }
+.FixedSidebar {
+  background-color: $fixedSidebarBg;
+  .close {
+    margin-top: 10px;
+    i {
+      color: #fff;
     }
+  }
+
+  .title, a {
+    color: #fff;
+  }
 }

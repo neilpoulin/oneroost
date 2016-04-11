@@ -21,18 +21,17 @@ const TimelineForm = React.createClass({
   },
   doSubmit(){
     var deal = this.props.deal;
-    deal.profile.timeline = this.state.timeline;
+    deal.profile.timeline = this.state.timeline.format();
 
     var setter = ParseReact.Mutation.Set(deal, {profile: deal.profile});
     setter.dispatch();
   },
   render(){
     return (
-      <div>
+      <div className="TimelineForm">
         <DatePicker
           selected={this.state.timeline}
           onChange={this.handleChange}
-          isClearable={true}
           className="form-control"
         />
         <br/>
