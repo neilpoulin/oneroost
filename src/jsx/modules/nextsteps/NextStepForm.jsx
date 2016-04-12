@@ -5,6 +5,7 @@ import NextStep from './../../models/NextStep';
 import LinkedStateMixin from 'react-addons-linked-state-mixin'
 var DatePicker = require('react-datepicker');
 var moment = require('moment');
+import Dropdown from './../stakeholder/Dropdown'
 
 export default React.createClass({
   mixins: [LinkedStateMixin],
@@ -60,6 +61,16 @@ export default React.createClass({
       dueDate: date
     });
   },
+  handleUserChange(val){
+    var user = null;
+    if (val != null) {
+      user = {className: "_User", objectId: val.value}
+
+    }
+    this.setState({
+      assignedUser: user
+    });
+  },
   render: function () {
     return (
       <div className="NextStepsFormContainer">
@@ -90,10 +101,9 @@ export default React.createClass({
         </div>
         <div className="form-self">
           <label htmlFor="nextStepAssignedUser">Assigned User</label>
-          <input id="nextStepAssignedUser"
-                 type="text"
-                 className="form-control"
-                 valueLink={this.linkState('assignedUser')}/>
+
+          <Dropdown deal={this.props.deal} handleChange={this.handleUserChange}/>
+
         </div>
       </div>
     );

@@ -76,9 +76,9 @@ const DealProfile = React.createClass({
           </div>
           <div className={widgetClassName}>
             <div className="row text-center">
-              <NavLink tag="span" to={"/deals/" + deal.objectId + "/stakeholders" } className="widgetLink">
+              <NavLink tag="span" to={"/deals/" + deal.objectId + "/participants" } className="widgetLink">
                 <i data-badge={stakeholderCount} className={"fa icon-badge fa-user " + iconSizeClassname}></i>
-                <span className="title">&nbsp;Stakeholders</span>
+                <span className="title">&nbsp;Participants</span>
               </NavLink>
             </div>
           </div>

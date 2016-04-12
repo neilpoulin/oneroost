@@ -23,7 +23,7 @@ render(
         <Route path="/deals" component={DealDashboard}>
           <IndexRoute component={UserHomePage}/>
           <Route path="/deals/:dealId" component={Deal}>
-            <Route path="/deals/:dealId/stakeholders" component={StakeholderSidebar}/>
+            <Route path="/deals/:dealId/participants" component={StakeholderSidebar}/>
             <Route path="/deals/:dealId/timeline" component={TimelineSidebar}/>
             <Route path="/deals/:dealId/budget" component={BudgetSidebar}/>
           </Route>
