@@ -60,9 +60,10 @@ const DealProfile = React.createClass({
         <div className="row">
           <div className={widgetClassName}>
             <div className="row text-center">
-              <i className={"fa fa-usd " + iconSizeClassname}></i>
-              &nbsp;
-              <span className="title">{budget}</span>
+              <NavLink tag="span" to={"/deals/" + deal.objectId + "/budget" } className="widgetLink">
+                <i className={"fa fa-usd " + iconSizeClassname}></i>
+                &nbsp; <span className="title">{budget}</span>
+              </NavLink>
             </div>
           </div>
           <div className={widgetClassName}>
@@ -72,7 +73,6 @@ const DealProfile = React.createClass({
                 &nbsp; <span className="title">{this.formatDate(deal.profile.timeline)}</span>
               </NavLink>
             </div>
-
           </div>
           <div className={widgetClassName}>
             <div className="row text-center">

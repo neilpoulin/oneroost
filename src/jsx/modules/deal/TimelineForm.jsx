@@ -29,12 +29,13 @@ const TimelineForm = React.createClass({
   render(){
     return (
       <div className="TimelineForm">
-        <DatePicker
-          selected={this.state.timeline}
-          onChange={this.handleChange}
-          className="form-control"
-        />
-        <br/>
+        <div className="form-group">
+          <DatePicker
+            selected={this.state.timeline}
+            onChange={this.handleChange}
+            className="form-control"
+          />
+        </div>
         <button className="btn btn-primary" onClick={this.doSubmit}>Save</button>
       </div>
     )
