@@ -22,8 +22,11 @@ export default React.createClass({
 
         return {
             stakeholders: stakeholders
-
         }
+    },
+    onSuccess: function(){
+        console.log("refreshing stakeholder queries");
+        this.refreshQueries(['stakeholders']);
     },
     render () {
         var contents;
@@ -43,8 +46,11 @@ export default React.createClass({
         }
 
         return (
-            <div id="accountSidebar" className="col-md-2 container-fluid hidden-sm hidden-xs">            
-                <AddAccountButton btnClassName="btn-success">
+            <div id="accountSidebar" className="col-md-2 container-fluid hidden-sm hidden-xs">
+                <AddAccountButton
+                    btnClassName="btn-success"
+                    onSuccess={this.onSuccess}
+                >
                     <i className="fa fa-plus">Create Account</i>
                 </AddAccountButton>
                 {contents}

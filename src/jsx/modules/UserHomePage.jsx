@@ -2,7 +2,6 @@ import Parse from 'parse';
 import React from 'react';
 import LoginComponent from './LoginComponent';
 import { browserHistory } from 'react-router';
-import AddAccountButton from './account/AddAccountButton';
 
 export default React.createClass({
     handleLoginSuccess: function(){
@@ -38,9 +37,7 @@ export default React.createClass({
                     </div>
                     <div className="text-center">
                         <div className="container-fluid">
-                            <AddAccountButton>
-                                <i className="fa fa-plus">&nbsp;Create Account</i>
-                            </AddAccountButton>
+                            
                         </div>
                     </div>
                 </div>

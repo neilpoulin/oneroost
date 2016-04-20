@@ -5,6 +5,11 @@ import Parse from 'parse';
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
+    getDefaultProps: function(){
+        return{
+            onSuccess: function(){}
+        }
+    },
     getInitialState: function(){
         return {
             accountName: null,
@@ -67,7 +72,7 @@ export default React.createClass({
 
         ParseReact.Mutation.Create('Stakeholder', stakeholder)
         .dispatch()
-        .then( self.props.createSuccess );
+        .then( self.props.onSuccess );
     },
     render: function(){
         return (

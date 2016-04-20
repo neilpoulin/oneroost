@@ -6,9 +6,13 @@ const AddAccountButton = React.createClass({
     openModal: function(){
         this.refs.modal.openModal()
     },
+    propTypes: {
+        onSuccess: React.PropTypes.func.isRequired
+    },
     getDefaultProps: function(){
         return {
-            btnClassName: 'btn-outline-success'
+            btnClassName: 'btn-outline-success',
+            onSuccess: function(){ console.log("this is the default function from AddAccountButton"); }
         }
     },
     render () {
@@ -20,7 +24,9 @@ const AddAccountButton = React.createClass({
                 buttonClass={this.props.btnClassName}
                 modalTitle="Create Account"
                 >
-                <CreateAccountForm/>
+                <CreateAccountForm
+                    onSuccess={this.props.onSuccess}
+                />
             </ModalButton>
         )
     }
