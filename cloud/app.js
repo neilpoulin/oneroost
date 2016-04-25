@@ -17,7 +17,7 @@ var app = express();
 app.engine('ejs', ejs.__express);
 app.use(bodyParser.json());
 app.use('/parse', getParseServer());
-app.use(express.static(__dirname + './../public'));
+app.use("/static", express.static(__dirname + './../public'));
 app.set('views', 'cloud/views');
 
 app.locals.formatTime = function(time) {
