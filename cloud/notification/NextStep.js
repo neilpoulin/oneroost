@@ -1,7 +1,11 @@
-var envUtil = require("cloud/util/envUtil.js");
-var EmailSender = require("cloud/EmailSender.js");
-var Template = require("cloud/email/MandrillEmailTemplate.js").Template;
-var EmailUtil = require("cloud/util/EmailUtil.js");
+var envUtil = require("./../util/envUtil.js");
+var EmailSender = require("./../EmailSender.js");
+var Template = require("./../email/MandrillEmailTemplate.js").Template;
+var EmailUtil = require("./../util/EmailUtil.js");
+
+var ParseCloud = require('parse-cloud-express');
+var Parse = ParseCloud.Parse;
+Parse.serverURL = envUtil.serverURL;
 
 exports.afterSave = function(){
     Parse.Cloud.afterSave( 'NextStep', function( req, resp ){

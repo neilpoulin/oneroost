@@ -1,4 +1,4 @@
-var envUtil = require("cloud/util/envUtil.js");
+var envUtil = require("./../util/envUtil.js");
 
 var Template = function( templateName ){
     this.globalMergeVars = {};

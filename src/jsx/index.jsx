@@ -12,8 +12,9 @@ import StakeholderSidebar from './modules/deal/sidebar/StakeholderSidebar';
 import TimelineSidebar from './modules/deal/sidebar/TimelineSidebar';
 import BudgetSidebar from './modules/deal/sidebar/BudgetSidebar';
 
-Parse.$ = $;
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
+Parse.$ = $;
+Parse.serverURL = 'http://localhost:1337/parse';
 
 render(
   (

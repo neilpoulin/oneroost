@@ -1,9 +1,15 @@
-var Mandrill = require('mandrill');
-var envUtil = require("cloud/util/envUtil.js");
-var MandrillEmailTemplate = require("cloud/email/MandrillEmailTemplate.js");
+var mandrill = require('mandrill-api/mandrill');
+
+var envUtil = require("./util/envUtil.js");
+var MandrillEmailTemplate = require("./email/MandrillEmailTemplate.js");
 var env = envUtil.getEnv();
 console.log("registering mandrill with appId = " + envUtil.getEnv().mandrillAppId );
-Mandrill.initialize(envUtil.getEnv().mandrillAppId);
+
+var Mandrill = new mandrill.Mandrill(envUtil.getEnv().mandrillAppId);
+
+var ParseCloud = require('parse-cloud-express');
+var Parse = ParseCloud.Parse;
+Parse.serverURL = envUtil.serverURL;
 
 function getActualRecipients( original, config )
 {
