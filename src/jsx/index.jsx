@@ -14,7 +14,7 @@ import BudgetSidebar from './modules/deal/sidebar/BudgetSidebar';
 
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
 Parse.$ = $;
-Parse.serverURL = 'http://localhost:1337/parse';
+Parse.serverURL = OneRoost.Config.parseSeverURL;
 
 render(
   (

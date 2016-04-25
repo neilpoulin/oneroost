@@ -46,8 +46,11 @@ node_modules
 /public/bundle/
 
 build/
+logs/
+parse-server/
 
 # Elastic Beanstalk Files
+.elasticbeanstalk
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml

@@ -1,1 +1,1 @@
-require('./app.js');
+require('./cloud/app.js');

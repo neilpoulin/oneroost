@@ -15,7 +15,7 @@ exports.getEnv = function(){
         var envName;
         var mandrillAppId = 'dmCF3Rb55CIbJVvnzB4uzw';
         var domain = "";
-        
+
         switch (applicationId)
         {
             case "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq": //dev
@@ -43,7 +43,8 @@ exports.getEnv = function(){
                     "isDev": isDev,
                     "envName": envName,
                     "mandrillAppId": mandrillAppId,
-                    "domain": domain
+                    "domain": domain,
+                    "parseServerURL": serverURL
                 };
 
         var json = JSON.stringify( props );
