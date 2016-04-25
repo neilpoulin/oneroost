@@ -44,7 +44,6 @@ app.get("*", function( request, response ){
     var homePage = env.isDev ? "index.ejs" : "construction.ejs";
     var params = env.json;
 
-    debugger;
     response.render( homePage, params);
 });
 

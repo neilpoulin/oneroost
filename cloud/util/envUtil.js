@@ -9,13 +9,13 @@ exports.serverURL = serverURL;
 exports.getEnv = function(){
     if ( appEnv == null )
     {
-        var applicationId = Parse.applicationId || 'TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq;'
+        var applicationId = Parse.applicationId || 'TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq'
         var javascriptKey = "";
         var isDev = true;
         var envName;
         var mandrillAppId = 'dmCF3Rb55CIbJVvnzB4uzw';
         var domain = "";
-        debugger;
+        
         switch (applicationId)
         {
             case "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq": //dev
