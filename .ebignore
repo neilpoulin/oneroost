@@ -41,12 +41,8 @@ node_modules
 
 #parse
 
-/public/out/
-/public/css/
-/public/bundle/
-
 build/
 logs/
 parse-server/
-
+gulpfile.js
 src/

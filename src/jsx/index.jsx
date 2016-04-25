@@ -1,7 +1,9 @@
 import React from 'react'
 import { render } from 'react-dom'
 import Parse from 'parse'
-import { Router, Route, browserHistory, IndexRoute } from 'react-router'
+import { Router, Route, useRouterHistory, IndexRoute } from 'react-router'
+import { createHistory } from 'history'
+
 import Home from './modules/Home'
 import App from './modules/App'
 import $ from 'jquery'
@@ -15,6 +17,10 @@ import BudgetSidebar from './modules/deal/sidebar/BudgetSidebar';
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
 Parse.$ = $;
 Parse.serverURL = OneRoost.Config.parseSeverURL;
+
+const browserHistory = useRouterHistory(createHistory)({
+            basename: '/'
+        });
 
 render(
   (
