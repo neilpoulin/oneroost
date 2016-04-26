@@ -15,7 +15,7 @@ import TimelineSidebar from './modules/deal/sidebar/TimelineSidebar';
 import BudgetSidebar from './modules/deal/sidebar/BudgetSidebar';
 
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
-Parse.serverURL = OneRoost.Config.parseServerURL;
+Parse.serverURL = OneRoost.Config.serverURL;
 Parse.$ = $;
 
 const browserHistory = useRouterHistory(createHistory)({

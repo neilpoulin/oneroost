@@ -1,51 +1,103 @@
-var serverURL = 'http://localhost:1337/parse'
 var appEnv = null;
-var ParseCloud = require('parse-cloud-express');
-var Parse = ParseCloud.Parse;
-Parse.serverURL = serverURL;
 
-exports.serverURL = serverURL;
+var APP_ID = process.env.PARSE_APP_ID || 'TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq';
+var MASTER_KEY = process.env.PARSE_MASTER_KEY || 'RQ50598LZUsDXzgnz6HgnGSwlCuv6XrZ3h7Li13P';
+var DATABASE_URL = process.env.DATABASE_URL || 'mongodb://oneroost:oneroost@ds013941.mlab.com:13941/oneroost-db';
+var PARSE_MOUNT = process.env.PARSE_MOUNT || "/parse";
+var PARSE_PORT = process.env.PARSE_PORT || 1337;
+var AWS_ID = process.env.AWS_ID || "AKIAIJI2VKVQPR4V4JYA";
+var AWS_SECRET_ID = process.env.AWS_SECRET_ID || "HYS3LqjQV/0Ej6COtVAow7M0xhe6GV3h7fWPkR9K";
+var SERVER_URL = process.env.PARSE_SERVER_URL || "http://localhost"
+
+if ( SERVER_URL.trim().indexOf("http:") != 0 )
+{
+    if ( SERVER_URL.indexOf("//") != 0 )
+    {
+        SERVER_URL = "//" + SERVER_URL;
+    }
+    SERVER_URL = "http:" + SERVER_URL;
+}
+
+SERVER_URL += ":" + PARSE_PORT + PARSE_MOUNT;
+
+console.log("APP_ID: " + APP_ID);
+console.log("MASTER_KEY: " + MASTER_KEY);
+console.log("DATABASE_URL: " + DATABASE_URL);
+console.log("PORT: " + PARSE_PORT);
+console.log("PARSE_MOUNT: " + PARSE_MOUNT);
+console.log("SERVER_URL: " + SERVER_URL);
+
+exports.getParseServerUrl = function(){
+    return SERVER_URL;
+}
+
+exports.getParseAppId = function(){
+    return APP_ID;
+}
+
+exports.getParseMasterKey = function(){
+    return MASTER_KEY;
+}
+
+exports.getDatabaseUrl = function(){
+    return DATABASE_URL;
+}
+
+exports.getParseMount = function(){
+    return PARSE_MOUNT;
+}
+
+exports.getParsePort = function(){
+    return PARSE_PORT;
+}
+
+exports.getAwsId = function(){
+    return AWS_ID;
+}
+
+exports.getAwsSecretId = function(){
+    return AWS_SECRET_ID;
+}
 
 exports.getEnv = function(){
     if ( appEnv == null )
     {
-        var applicationId = Parse.applicationId || 'TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq'
         var javascriptKey = "";
         var isDev = true;
         var envName;
         var mandrillAppId = 'dmCF3Rb55CIbJVvnzB4uzw';
         var domain = "";
 
-        switch (applicationId)
+        switch (APP_ID)
         {
             case "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq": //dev
-                javascriptKey = "CZfXoAnHhHU46Id1GBZ0zB9LFKHZI0HZJt1GfTlo";
-                isDev = true;
-                envName = "dev";
-                domain = "dev.oneroost.com"
-                break;
+            javascriptKey = "CZfXoAnHhHU46Id1GBZ0zB9LFKHZI0HZJt1GfTlo";
+            isDev = true;
+            envName = "dev";
+            domain = "dev.oneroost.com"
+            break;
             case "lSNtmvBTimEY6VfOo5zvvOQkljcHeDIOQcjefNUu": //prod
-                javascriptKey = "EZKlfRO9ydZrpO2fpLkIRNTp9dEJxF4IyTh4VkWT";
-                isDev = false;
-                envName = "prod";
-                domain = "www.oneroost.com";
-                break;
+            javascriptKey = "EZKlfRO9ydZrpO2fpLkIRNTp9dEJxF4IyTh4VkWT";
+            isDev = false;
+            envName = "prod";
+            domain = "www.oneroost.com";
+            break;
             case "llcq2KXGOGoOQMO9W1rvgFcramBjAMgZEVRhNagb": //stage
-                javascriptKey = "y6EMasJca2ez13ff88AW6XEFaIEHaqi0xTejTpFP";
-                isDev = true;
-                envName = "stage";
-                domain = "stage.oneroost.com";
-                break;
+            javascriptKey = "y6EMasJca2ez13ff88AW6XEFaIEHaqi0xTejTpFP";
+            isDev = true;
+            envName = "stage";
+            domain = "stage.oneroost.com";
+            break;
         }
         var props = {
-                    "applicationId": applicationId,
-                    "javascriptKey": javascriptKey,
-                    "isDev": isDev,
-                    "envName": envName,
-                    "mandrillAppId": mandrillAppId,
-                    "domain": domain,
-                    "parseServerURL": serverURL
-                };
+            "applicationId": APP_ID,
+            "javascriptKey": javascriptKey,
+            "isDev": isDev,
+            "envName": envName,
+            "mandrillAppId": mandrillAppId,
+            "domain": domain,
+            "serverURL": SERVER_URL
+        };
 
         var json = JSON.stringify( props );
         props.json = {"env": json};

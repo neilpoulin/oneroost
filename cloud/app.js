@@ -11,8 +11,6 @@ var Notifications = require("./notification/Notifications.js");
 var envUtil = require("./util/envUtil.js");
 var Stakeholders = require('./stakeholders.js');
 
-
-
 var app = express();
 app.engine('ejs', ejs.__express);
 app.use(bodyParser.json());
@@ -20,7 +18,7 @@ app.use('/parse', getParseServer());
 app.use("/static", express.static(__dirname + './../public'));
 app.set('views', 'cloud/views');
 
-var port = 1337;
+var port = envUtil.getParsePort();
 
 app.locals.formatTime = function(time) {
     return moment(time).format('MMMM Do YYYY, h:mm a');
@@ -47,19 +45,19 @@ app.listen(port, function() {
 function getParseServer()
 {
     return new ParseServer({
-        databaseURI: 'mongodb://oneroost:oneroost@ds013941.mlab.com:13941/oneroost-db',
+        databaseURI: envUtil.getDatabaseUrl(),
         cloud: 'main.js',
-        appId: 'TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq', //dev
+        appId: envUtil.getParseAppId(), //dev
         fileKey: 'myFileKey',
-        masterKey: 'RQ50598LZUsDXzgnz6HgnGSwlCuv6XrZ3h7Li13P',
+        masterKey: envUtil.getParseMasterKey(),
         push: {}, // See the Push wiki page
-        serverURL: 'http://localhost:1337/parse',
-        liveQuery: {
-            classNames: ['User', 'Account', 'Deal', 'DealComment', 'NextStep', 'Stakeholder']
-        },
+        // liveQuery: {
+        //     classNames: ['User', 'Account', 'Deal', 'DealComment', 'NextStep', 'Stakeholder']
+        // },
+        serverURL: envUtil.getParseServerUrl(),
         filesAdapter:  new S3Adapter(
-            "AKIAIJI2VKVQPR4V4JYA",
-            "HYS3LqjQV/0Ej6COtVAow7M0xhe6GV3h7fWPkR9K",
+            envUtil.getAwsId(),
+            envUtil.getAwsSecretId(),
             "parse-direct-access",
             {directAccess: true}
         )

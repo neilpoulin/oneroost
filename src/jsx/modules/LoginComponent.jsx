@@ -85,7 +85,7 @@ export default React.createClass({
             break;
         }
         this.setState({"error": error});
-        log.error(error);
+        console.error(error);
         this.hideLoading();
     },
     handleLoginSuccess: function(user){
