@@ -5,8 +5,7 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node main.js",
-    "debug": "node debug main.js"
+    "start": "node main.js --appId TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq --masterKey RQ50598LZUsDXzgnz6HgnGSwlCuv6XrZ3h7Li13P --serverURL http://localhost:1337/parse"
   },
   "repository": {
     "type": "git",
@@ -40,7 +39,7 @@
     "express": "~4.13.3",
     "mandrill-api": "^1.0.45",
     "moment": "^2.11.2",
-    "parse": "^1.8.0",
+    "parse": "1.6.14",
     "parse-cloud-express": "^1.2.0",
     "parse-server": "^2.2.7",
     "react": "^0.14.7",

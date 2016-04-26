@@ -20,6 +20,8 @@ app.use('/parse', getParseServer());
 app.use("/static", express.static(__dirname + './../public'));
 app.set('views', 'cloud/views');
 
+var port = 1337;
+
 app.locals.formatTime = function(time) {
     return moment(time).format('MMMM Do YYYY, h:mm a');
 };
@@ -35,7 +37,7 @@ app.get("*", function( request, response ){
 Notifications.initialize();
 Stakeholders.initialize();
 
-var port = 1337;
+
 app.listen(port, function() {
     console.log('parse-server OneRoost running on port ' + port + '.');
 });
@@ -52,9 +54,9 @@ function getParseServer()
         masterKey: 'RQ50598LZUsDXzgnz6HgnGSwlCuv6XrZ3h7Li13P',
         push: {}, // See the Push wiki page
         serverURL: 'http://localhost:1337/parse',
-        // liveQuery: {
-        //     classNames: ['User', 'Account', 'Deal', 'DealComment', 'NextStep', 'Stakeholder']
-        // },
+        liveQuery: {
+            classNames: ['User', 'Account', 'Deal', 'DealComment', 'NextStep', 'Stakeholder']
+        },
         filesAdapter:  new S3Adapter(
             "AKIAIJI2VKVQPR4V4JYA",
             "HYS3LqjQV/0Ej6COtVAow7M0xhe6GV3h7fWPkR9K",

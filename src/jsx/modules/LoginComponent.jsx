@@ -1,8 +1,9 @@
 import React from 'react'
-import Parse from 'parse'
+// import {Parse} from './../config/OneRoost'
+import Parse from 'parse';
+Parse.serverURL = OneRoost.Config.parseSeverURL;
 import LinkedStateMixin from 'react-addons-linked-state-mixin'
 import SpinnerIcon from './SpinnerIcon'
-
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
@@ -84,6 +85,7 @@ export default React.createClass({
             break;
         }
         this.setState({"error": error});
+        log.error(error);
         this.hideLoading();
     },
     handleLoginSuccess: function(user){

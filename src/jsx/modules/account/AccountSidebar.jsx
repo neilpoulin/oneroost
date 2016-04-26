@@ -1,11 +1,11 @@
 import React from 'react'
+// import {Parse} from './../../config/OneRoost';
 import Parse from 'parse';
 import ParseReact from 'parse-react';
 import Deal from './../../models/Deal';
 import Account from './../../models/Account';
 import AccountSidebarList from './AccountSidebarList';
 import AddAccountButton from './AddAccountButton'
-
 
 export default React.createClass({
     mixins: [ParseReact.Mixin],
@@ -19,7 +19,6 @@ export default React.createClass({
         stakeholders.include("deal");
         stakeholders.include(["deal.account"]);
         stakeholders.equalTo("user", user );
-
         return {
             stakeholders: stakeholders
         }

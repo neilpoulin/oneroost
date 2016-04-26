@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react'
+// import {Parse} from './../../config/OneRoost';
 import Parse from 'parse';
+Parse.serverURL = OneRoost.Config.parseSeverURL;
 import ParseReact from 'parse-react';
 import LoadingTakeover from './../util/LoadingTakeover';
 import NextStepsBanner from './../nextsteps/NextStepsBanner';
