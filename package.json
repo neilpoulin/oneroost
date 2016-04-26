@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node main.js"
+    "dashboard": "parse-dashboard --config parse-dashboard-config.json",
+    "start": "node main.js & parse-dashboard --config parse-dashboard-config.json"
   },
   "repository": {
     "type": "git",
@@ -41,6 +42,7 @@
     "moment": "^2.11.2",
     "parse": "1.6.14",
     "parse-cloud-express": "^1.2.0",
+    "parse-dashboard": "^1.0.10",
     "parse-server": "^2.2.7",
     "underscore": "^1.8.3"
   },
