@@ -13,6 +13,7 @@ var buffer = require('vinyl-buffer');
 var browserify = require('browserify');
 var less = require('gulp-less');
 var merge = require('merge-stream');
+var file = require('gulp-file');
 
 var bootstrapRoot = './node_modules/bootstrap-sass/';
 var bootstrapPaths = {
@@ -95,7 +96,7 @@ gulp.task('sass', ['clean', 'fonts'], function () {
 });
 
 gulp.task('clean', function () {
-  return del([paths.build.root]);
+  return del([paths.build.root, './npm-debug.log']);
 });
 
 gulp.task('clean:all', ['clean'], function () {
@@ -152,3 +153,11 @@ gulp.task('watch', ['clean', 'build'], function () {
   gulp.watch(paths.src.fonts, ['fonts']);
 });
 gulp.task('develop', ['watch', 'parse-develop']);
+
+gulp.task('clean:npm-log', ['clean'], function(){
+    return file('npm-debug.log', "", { src: true }).pipe(gulp.dest('./'));
+});
+
+gulp.task('eb-deploy', ['clean:npm-log', 'build'], shell.task("eb deploy"));
+
+gulp.task('deploy-aws', ['clean', 'build', 'eb-deploy']);
