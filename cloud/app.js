@@ -10,6 +10,7 @@ var Mandrill = require('mandrill-api/mandrill');
 var Notifications = require("./notification/Notifications.js");
 var envUtil = require("./util/envUtil.js");
 var Stakeholders = require('./stakeholders.js');
+var SES = require('./email/SESEmailSender.js');
 
 var app = express();
 app.engine('ejs', ejs.__express);
@@ -32,6 +33,15 @@ app.get("*", function( request, response ){
     response.render( homePage, params);
 });
 
+app.post("/email", function(req, resp){
+    var email = req.body;
+    debugger;
+    var status = SES.sendEmail( email );
+    resp.setHeader('Content-Type', 'application/json');
+    debugger;
+    resp.send(JSON.stringify(status));
+});
+
 Notifications.initialize();
 Stakeholders.initialize();
 
@@ -40,7 +50,6 @@ app.listen(port, function() {
     console.log('parse-server OneRoost running on port ' + port + '.');
 });
 // app.listen();
-
 
 function getParseServer()
 {

@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dashboard": "parse-dashboard --config parse-dashboard-config.json",
-    "start": "node main.js & parse-dashboard --config parse-dashboard-config.json --allowInsecureHTTP=1"
+    "debug": "AWS_PROFILE=oneroost node debug main.js",
+    "start": "AWS_PROFILE=oneroost node main.js & parse-dashboard --config parse-dashboard-config.json --allowInsecureHTTP=1"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
     }
   },
   "dependencies": {
+    "aws-sdk": "^2.3.5",
     "body-parser": "^1.15.0",
     "ejs": "^2.4.1",
     "express": "~4.13.3",
