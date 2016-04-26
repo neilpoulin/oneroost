@@ -12,5 +12,11 @@
             "masterKey": "RQ50598LZUsDXzgnz6HgnGSwlCuv6XrZ3h7Li13P",
             "appName": "OneRoost - EB"
         }
+    ],
+    "users": [
+        {
+            "user":"neil",
+            "pass":"OneRoost88"
+        }        
     ]
 }
