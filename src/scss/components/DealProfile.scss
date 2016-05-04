@@ -25,13 +25,13 @@ $textColor: white;
                 text-decoration: none;
             }
             &.active, &.active a{
-                color: material-color('amber', '700');
+                color: material-color("amber", "700");
 
             }
         }
 
         .widgetLink a:hover{
-            color:  material-color('amber', '300');
+            color:  material-color("amber", "300");
         }
     }
 }

@@ -1,13 +1,13 @@
-import React, { PropTypes } from 'react';
-import Modal from './OneRoostModal';
+import React, { PropTypes } from "react";
+import Modal from "./OneRoostModal";
 
 const ModalButton = React.createClass({
     propTypes: {
-        buttonClass: React.PropTypes.string,
-        buttonText: React.PropTypes.string,
-        containerClass: React.PropTypes.string,
-        buttonIcon: React.PropTypes.string,
-        modalTitle: React.PropTypes.string.isRequired
+        buttonClass: PropTypes.string,
+        buttonText: PropTypes.string,
+        containerClass: PropTypes.string,
+        buttonIcon: PropTypes.string,
+        modalTitle: PropTypes.string.isRequired
     },
     getInitialState: function(){
         return {
@@ -26,11 +26,10 @@ const ModalButton = React.createClass({
         this.refs.modal.openModal();
     },
     render () {
-        var buttonClass = this.props.buttonClass;
-        var buttonIcon = (null);
+        var buttonIcon = null;
         if ( this.props.buttonIcon )
         {
-            buttonIcon = (<i className={"fa fa-" + this.props.buttonIcon}></i>);
+            buttonIcon = <i className={"fa fa-" + this.props.buttonIcon}></i>;
         }
         return (
             <div className={"ModalButton " + this.props.containerClass}>

@@ -1,17 +1,20 @@
-import React, { PropTypes } from 'react'
-import ParseReact from 'parse-react';
-import Parse from 'parse';
-import LinkedStateMixin from 'react-addons-linked-state-mixin';
-import Select from 'react-select';
+import React, { PropTypes } from "react"
+import ParseReact from "parse-react";
+import Parse from "parse";
+import LinkedStateMixin from "react-addons-linked-state-mixin";
+import Select from "react-select";
 
 const Dropdown = React.createClass({
   mixins: [LinkedStateMixin, ParseReact.Mixin],
+  propTypes: {
+    deal: PropTypes.object.isRequired
+  },
   observe: function () {
-    var stakeholderQuery = (new Parse.Query("Stakeholder"));
-    stakeholderQuery.include('user');
-    stakeholderQuery.include('invitedBy');
-    stakeholderQuery.ascending('role');
-    stakeholderQuery.equalTo('deal', this.props.deal);
+    var stakeholderQuery = new Parse.Query("Stakeholder");
+    stakeholderQuery.include("user");
+    stakeholderQuery.include("invitedBy");
+    stakeholderQuery.ascending("role");
+    stakeholderQuery.equalTo("deal", this.props.deal);
     return {
       stakeholders: stakeholderQuery
     }
@@ -27,10 +30,7 @@ const Dropdown = React.createClass({
         console.error("You did not implement a change handler for the stakeholder dropdown")
       }
     }
-  },
-  getInitialState(){
-    return {}
-  },
+  },  
   handleChange(val){
     this.props.handleChange(val);
     this.setState({

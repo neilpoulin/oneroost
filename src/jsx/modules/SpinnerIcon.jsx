@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 
 export default React.createClass({
     getInitialState: function(){
@@ -17,7 +17,7 @@ export default React.createClass({
     },
     render: function(){
         return (
-            <i className={'fa fa-spinner ' + (this.state.isSpinning ? 'fa-spin ' : '') + (this.state.isVisible ? '' : 'hidden ')}></i>
+            <i className={"fa fa-spinner " + (this.state.isSpinning ? "fa-spin " : "") + (this.state.isVisible ? "" : "hidden ")}></i>
         );
     }
 });

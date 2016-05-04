@@ -1,7 +1,7 @@
-import React from 'react';
-import LinkedStateMixin from 'react-addons-linked-state-mixin';
-import ParseReact from 'parse-react';
-import Parse from 'parse';
+import React from "react";
+import LinkedStateMixin from "react-addons-linked-state-mixin";
+import ParseReact from "parse-react";
+import Parse from "parse";
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
@@ -42,7 +42,7 @@ export default React.createClass({
     },
     createDeal: function( account, dealName ){
         var self = this;
-        var deal =  {
+        var deal = {
             createdBy: Parse.User.current(),
             account: account,
             dealName: dealName,
@@ -65,12 +65,12 @@ export default React.createClass({
         var stakeholder = {
             "user": user,
             "deal": deal,
-            "role": 'OWNER',
+            "role": "OWNER",
             "inviteAccepted": true,
             "invitedBy": user
         };
 
-        ParseReact.Mutation.Create('Stakeholder', stakeholder)
+        ParseReact.Mutation.Create("Stakeholder", stakeholder)
         .dispatch()
         .then( self.props.onSuccess );
     },
@@ -80,11 +80,11 @@ export default React.createClass({
                 <div>
                     <div className="form-component">
                         <label htmlFor="accountNameInput" >Client</label>
-                        <input id="accountNameInput" type="text" className="form-control" valueLink={this.linkState('accountName')} />
+                        <input id="accountNameInput" type="text" className="form-control" valueLink={this.linkState("accountName")} />
                     </div>
                     <div className="form-component">
                         <label htmlFor="dealNameInput" >Opportunity</label>
-                        <input id="dealNameInput" type="text" className="form-control" valueLink={this.linkState('dealName')} />
+                        <input id="dealNameInput" type="text" className="form-control" valueLink={this.linkState("dealName")} />
                     </div>
                 </div>
             </div>

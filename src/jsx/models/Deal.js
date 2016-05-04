@@ -1,3 +1,3 @@
-import Parse from 'parse';
+import Parse from "parse";
 
 export default Parse.Object.extend("Deal");

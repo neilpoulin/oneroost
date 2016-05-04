@@ -3,12 +3,12 @@ var EmailSender = require("./../EmailSender.js");
 var Template = require("./../email/MandrillEmailTemplate.js").Template;
 var EmailUtil = require("./../util/EmailUtil.js");
 
-var ParseCloud = require('parse-cloud-express');
+var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
 Parse.serverURL = envUtil.serverURL;
 
 exports.afterSave = function(){
-    Parse.Cloud.afterSave( 'Stakeholder', function( req, res ){
+    Parse.Cloud.afterSave( "Stakeholder", function( req ){
         console.log( "Stakeholder afterSave triggered" );
         var stakeholderQuery = new Parse.Query("Stakeholder");
         stakeholderQuery.include( "user" );

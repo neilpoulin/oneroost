@@ -1,21 +1,24 @@
-import React, { PropTypes } from 'react'
-import AddStakeholderButton from './../AddStakeholderButton';
-import ParseReact from 'parse-react';
-import Parse from 'parse';
-import Stakeholder from './../Stakeholder';
+import React, { PropTypes } from "react"
+import AddStakeholderButton from "./../AddStakeholderButton";
+import ParseReact from "parse-react";
+import Parse from "parse";
+import Stakeholder from "./../Stakeholder";
 
 const StakeholderSidebar = React.createClass({
   mixins: [ParseReact.Mixin],
+  propTypes: {
+      params: PropTypes.object
+  },
   observe: function () {
     var Deal = Parse.Object.extend("Deal");
     var deal = new Deal();
     deal.id = this.props.params.dealId;
-    var dealQuery = (new Parse.Query("Deal")).equalTo('objectId', this.props.params.dealId);
-    var stakeholderQuery = (new Parse.Query("Stakeholder"));
-    stakeholderQuery.include('user');
-    stakeholderQuery.include('invitedBy');
-    stakeholderQuery.ascending('role');
-    stakeholderQuery.equalTo('deal', deal);
+    var dealQuery = (new Parse.Query("Deal")).equalTo("objectId", this.props.params.dealId);
+    var stakeholderQuery = new Parse.Query("Stakeholder");
+    stakeholderQuery.include("user");
+    stakeholderQuery.include("invitedBy");
+    stakeholderQuery.ascending("role");
+    stakeholderQuery.equalTo("deal", deal);
     return {
       deal: dealQuery,
       stakeholders: stakeholderQuery

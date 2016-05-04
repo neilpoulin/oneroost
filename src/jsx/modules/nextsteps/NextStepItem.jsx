@@ -1,6 +1,6 @@
-import Parse from 'parse';
-import React from 'react';
-import ParseReact from 'parse-react';
+import Parse from "parse";
+import React from "react";
+import ParseReact from "parse-react";
 
 export default React.createClass({
     getInitialState: function(){
@@ -45,7 +45,7 @@ export default React.createClass({
         var self = this;
         var status = self.props.step.completedDate != null ? "Complete" : "Not Complete";
 
-        var message =  self.state.user.get("username") + " marked " + step.title + " as \"" + status + "\".";
+        var message = self.state.user.get("username") + " marked " + step.title + " as \"" + status + "\".";
 
         var comment = {
             deal: self.state.deal,
@@ -53,7 +53,7 @@ export default React.createClass({
             author: null,
             username: "OneRoost Bot",
         };
-        ParseReact.Mutation.Create('DealComment', comment).dispatch();
+        ParseReact.Mutation.Create("DealComment", comment).dispatch();
     },
     addStepDeletedComment: function( step ){
         var self = this;
@@ -64,57 +64,58 @@ export default React.createClass({
             author: null,
             username: "OneRoost Bot",
         };
-        ParseReact.Mutation.Create('DealComment', comment).dispatch();
+        ParseReact.Mutation.Create("DealComment", comment).dispatch();
     },
     formatDate: function( date )
     {
-        if ( ! (date instanceof Date) )
+        if ( !(date instanceof Date) )
         {
             date = new Date( date );
         }
 
-        return (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear()
+        var month = date.getMonth() + 1;
+        return month + "/" + date.getDate() + "/" + date.getFullYear()
     },
     render: function(){
-        var doneButton = (
-            <button className="btn btn-sm btn-success"
-                onClick={this.markAsDone} >
-                Done <i className="fa fa-check"></i>
-        </button>);
+        var doneButton =
+        <button className="btn btn-sm btn-success"
+            onClick={this.markAsDone} >
+            Done <i className="fa fa-check"></i>
+    </button>;
 
-        var dateLabel = "Due Date:"
-        var date = this.props.step.dueDate;
-        if ( this.props.step.completedDate != null )
-        {
-            doneButton = (
-                <button className="btn btn-sm btn-default"
-                    onClick={this.markAsNotDone} >
-                    Not Done <i className="fa fa-times"></i>
-            </button>);
+    var dateLabel = "Due Date:"
+    var date = this.props.step.dueDate;
+    if ( this.props.step.completedDate != null )
+    {
+        doneButton =
+            <button className="btn btn-sm btn-default"
+                onClick={this.markAsNotDone} >
+                Not Done <i className="fa fa-times"></i>
+        </button>;
 
-            dateLabel = "Completed Date: ";
-            date = this.props.step.completedDate;
-        }
+        dateLabel = "Completed Date: ";
+        date = this.props.step.completedDate;
+    }
 
-        return (
-            <div className={"arrow-right NextStepItemContainer " + ( this.props.step.completedDate != null ? 'complete' : '' )}>
-                <div className="nextStepTitle">{this.props.step.title}</div>
-                <div className="nextStepDueDate">
-                    {dateLabel} {this.formatDate(date)}
-                </div>
-                <div className="editButtons">
-                    <div className="btn-group btn-group-justified" role="group">
-                        <div className="btn-group" role="group">
-                            {doneButton}
-                        </div>
-                        <div className="btn-group" role="group">
-                            <button className="btn btn-sm btn-danger"
-                                onClick={this.doDelete} >
-                                Delete <i className="fa fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-
+    return (
+        <div className={"arrow-right NextStepItemContainer " + ( this.props.step.completedDate != null ? "complete" : "" )}>
+            <div className="nextStepTitle">{this.props.step.title}</div>
+            <div className="nextStepDueDate">
+                {dateLabel} {this.formatDate(date)}
             </div>
-        </div>);
-    }});
+            <div className="editButtons">
+                <div className="btn-group btn-group-justified" role="group">
+                    <div className="btn-group" role="group">
+                        {doneButton}
+                    </div>
+                    <div className="btn-group" role="group">
+                        <button className="btn btn-sm btn-danger"
+                            onClick={this.doDelete} >
+                            Delete <i className="fa fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>);
+}});

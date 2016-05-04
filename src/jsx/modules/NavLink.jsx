@@ -1,10 +1,10 @@
-import React from 'react'
-import activeComponent from 'react-router-active-component'
+import React from "react"
+import activeComponent from "react-router-active-component"
 
 export default React.createClass({
     getDefaultProps: function(){
         return {
-            tag: 'li'
+            tag: "li"
         }
     },
     render() {

@@ -54,6 +54,6 @@ $timestampTextColor: gray;
 #addCommentInput{
     resize: none;
     &:not(:focus){
-        background-color: material-color('yellow', 'a100');
+        background-color: material-color("yellow", "a100");
     }
 }

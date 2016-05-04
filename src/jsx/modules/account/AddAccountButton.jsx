@@ -1,17 +1,18 @@
-import React, { PropTypes } from 'react'
-import ModalButton from './../util/ModalButton';
-import CreateAccountForm from './CreateAccountForm';
+import React, { PropTypes } from "react"
+import ModalButton from "./../util/ModalButton";
+import CreateAccountForm from "./CreateAccountForm";
 
 const AddAccountButton = React.createClass({
     openModal: function(){
         this.refs.modal.openModal()
     },
     propTypes: {
-        onSuccess: React.PropTypes.func.isRequired
+        onSuccess: PropTypes.func,
+        btnClassName: PropTypes.string
     },
     getDefaultProps: function(){
         return {
-            btnClassName: 'btn-outline-success',
+            btnClassName: "btn-outline-success",
             onSuccess: function(){ console.log("this is the default function from AddAccountButton"); }
         }
     },
