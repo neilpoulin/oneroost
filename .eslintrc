@@ -48,7 +48,7 @@
                 "consistent-return": 0,
                 "no-magic-numbers": 0,
                 "no-multi-spaces": 1,
-                "no-unused-vars": [1, {"vars": "local", "args": "none"}],
+                "no-unused-vars": [1, {"vars": "local", "args": "none", "varsIgnorePattern": "Bootstrap"}],
                 "no-mixed-requires": 1,
                 "no-use-before-define": [1, {"functions": false, "classes": true}],
                 "no-undef": 2

@@ -1,8 +1,9 @@
+/*global Bootstrap*/
 import React from "react"
 import Parse from "parse";
 import AnonymousLinks from "./AnonymousLinks";
 import LoggedInLinks from "./LoggedInLinks";
-import Bootstrap from 'bootstrap';
+import Bootstrap from "bootstrap";
 
 const TopNav = React.createClass({
     isLoggedIn: function () {
