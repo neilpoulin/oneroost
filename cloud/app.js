@@ -18,7 +18,6 @@ app.use("/static", express.static(__dirname + "./../public"));
 app.set("views", "cloud/views");
 
 var port = envUtil.getParsePort();
-
 app.locals.formatTime = function(time) {
     return moment(time).format("MMMM Do YYYY, h:mm a");
 };

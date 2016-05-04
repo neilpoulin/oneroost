@@ -14,6 +14,8 @@ var less = require("gulp-less");
 var merge = require("merge-stream");
 var file = require("gulp-file");
 var eslint = require("gulp-eslint");
+var nodemon = require("gulp-nodemon");
+var nodeInspector = require("gulp-node-inspector");
 
 var bootstrapRoot = "./node_modules/bootstrap-sass/";
 var bootstrapPaths = {
@@ -156,6 +158,7 @@ var sassOpts = {
     gulp.task("watch", ["clean", "build"], function () {
         gulp.watch(paths.src.styles, ["sass"]);
         gulp.watch(paths.src.scripts, ["bundle"]);
+        gulp.watch(paths.src.cloud, ["lint"]);
         gulp.watch(paths.src.fonts, ["fonts"]);
     });
 
@@ -163,7 +166,37 @@ var sassOpts = {
         return file("npm-debug.log", "", {src: true}).pipe(gulp.dest("./"));
     });
 
+    gulp.task("inspect", function () {
+        gulp.src([]).pipe(nodeInspector({  // You'll need to tweak these settings per your setup
+            debugPort: 5858,
+            webHost: "localhost",
+            webPort: "8085",
+            preload: false
+        }));
+    });
+
+    gulp.task("start", ["clean", "watch"], function(){
+        nodemon({
+            script: "main.js",
+            watch: ["public", "cloud"]
+        })
+        .on("restart", function () {
+            console.log("nodemon restarted the node server!")
+        })
+    });
+
+    gulp.task("debug", ["clean", "watch", "inspect"], function(){
+        nodemon({
+            script: "main.js",
+            watch: ["public", "cloud"],
+            nodeArgs: ["--debug"]
+        })
+        .on("restart", function () {
+            console.log("nodemon restarted the node server!")
+        })
+    });
+
+
 
     gulp.task("eb-deploy", ["clean:npm-log", "build"], shell.task("eb deploy"));
-
     gulp.task("deploy-aws", ["clean", "build", "eb-deploy"]);

@@ -22,7 +22,6 @@ Parse.$ = $;
 const browserHistory = useRouterHistory(createHistory)({
             basename: "/"
         });
-
 render(
     <Router history={browserHistory}>
       <Route path="/" component={App}>
