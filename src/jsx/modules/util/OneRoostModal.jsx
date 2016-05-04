@@ -1,11 +1,11 @@
-import React, { PropTypes } from 'react'
-import Modal from 'react-bootstrap-modal';
+import React, { PropTypes } from "react"
+import Modal from "react-bootstrap-modal";
 
 const OneRoostModal = React.createClass({
     propTypes: {
-        onSave: React.PropTypes.func,
-        title: React.PropTypes.string.isRequired,
-        show: React.PropTypes.bool
+        onSave: PropTypes.func,
+        title: PropTypes.string.isRequired,
+        show: PropTypes.bool
     },
     getInitialState: function(){
         return {
@@ -44,7 +44,7 @@ const OneRoostModal = React.createClass({
     },
     render () {
         var form = React.cloneElement(React.Children.only(this.props.children), {
-            ref: 'form'
+            ref: "form"
         });
 
         return (
@@ -55,14 +55,14 @@ const OneRoostModal = React.createClass({
                 backdrop="static"
                 >
                 <Modal.Header closeButton>
-                    <Modal.Title id='ModalHeader'>{this.props.title}</Modal.Title>
+                    <Modal.Title id="ModalHeader">{this.props.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {form}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Modal.Dismiss className='btn btn-default'>{this.props.cancelText}</Modal.Dismiss>
-                    <button className='btn btn-primary' onClick={this.saveAndClose}>
+                    <Modal.Dismiss className="btn btn-default">{this.props.cancelText}</Modal.Dismiss>
+                    <button className="btn btn-primary" onClick={this.saveAndClose}>
                         {this.props.saveText}
                     </button>
                 </Modal.Footer>

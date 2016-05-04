@@ -1,8 +1,6 @@
-import React from 'react';
-import Parse from 'parse';
-
-import ModalButton from './../util/ModalButton';
-import NextStepForm from './NextStepForm';
+import React from "react";
+import ModalButton from "./../util/ModalButton";
+import NextStepForm from "./NextStepForm";
 
 export default React.createClass({
     getInitialState: function(){
@@ -10,8 +8,8 @@ export default React.createClass({
     },
     getDefaultProps: function(){
         return {
-            btnClassName: 'btn-outline-secondary',
-            modalTitle: 'Add Next Step'
+            btnClassName: "btn-outline-secondary",
+            modalTitle: "Add Next Step"
         }
     },
     openModal: function(){

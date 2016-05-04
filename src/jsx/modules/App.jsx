@@ -1,14 +1,13 @@
-import React from 'react'
-import { Link } from 'react-router'
-import TopNav from './navigation/TopNav';
+import React from "react"
+import TopNav from "./navigation/TopNav";
 
 export default React.createClass({
     render() {
-        return (
-            <div >
-                <TopNav/>
-                {this.props.children}
-            </div>
-        )
+        var app =
+        <div >
+            <TopNav/>
+            {this.props.children}
+        </div>
+        return app;
     }
 })

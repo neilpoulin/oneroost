@@ -1,14 +1,18 @@
-import React, { PropTypes } from 'react'
-import AccountSidebar from './../account/AccountSidebar';
+import React, { PropTypes } from "react"
+import AccountSidebar from "./../account/AccountSidebar";
 
 const DealDashboard = React.createClass({
+    propTypes: {
+        children: PropTypes.object.isRequired
+    },
     render () {
-        return (
-            <div>
-                <AccountSidebar/>
-                {this.props.children}
-            </div>
-        )
+        var dashboard =
+        <div>
+            <AccountSidebar/>
+            {this.props.children}
+        </div>
+
+        return dashboard;
     }
 })
 

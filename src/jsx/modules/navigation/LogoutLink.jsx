@@ -1,6 +1,6 @@
-import React, { PropTypes } from 'react'
-import { browserHistory } from 'react-router'
-import Parse from 'parse'
+import React from "react"
+// import { browserHistory } from "react-router"
+import Parse from "parse"
 
 const LogoutLink = React.createClass({
     doLogout: function( e ){
@@ -13,7 +13,7 @@ const LogoutLink = React.createClass({
                 https://github.com/ParsePlatform/ParseReact/issues/161
             */
             localStorage.removeItem("Parse/" + OneRoost.Config.applicationId + "/currentUser");
-            // browserHistory.push('/');
+            // browserHistory.push("/");
             window.location = "/";
         }).fail(function(error){
             console.log("failed to log out");

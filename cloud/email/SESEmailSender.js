@@ -1,4 +1,4 @@
-var AWS = require('aws-sdk');
+var AWS = require("aws-sdk");
 
 var ses = new AWS.SES({region: "us-east-1"});
 
@@ -43,11 +43,11 @@ function getTemplate(to, text){
     return {
         Destination: { /* required */
             // BccAddresses: [
-            //     'STRING_VALUE'
+            //     "STRING_VALUE"
             //     /* more items */
             // ],
             // CcAddresses: [
-            //     'STRING_VALUE'
+            //     "STRING_VALUE"
             //     /* more items */
             // ],
             ToAddresses: [
@@ -64,16 +64,16 @@ function getTemplate(to, text){
                 }
             },
             Subject: { /* required */
-                Data: 'test subject: ' + text /* required */
+                Data: "test subject: " + text /* required */
             }
         },
-        Source: 'notifications@oneroost.com', /* required */
+        Source: "notifications@oneroost.com", /* required */
         ReplyToAddresses: [
-            'notifications@oneroost.com'
+            "notifications@oneroost.com"
             /* more items */
         ]
-        // ReturnPath: 'STRING_VALUE',
-        // ReturnPathArn: 'STRING_VALUE',
-        // SourceArn: 'STRING_VALUE'
+        // ReturnPath: "STRING_VALUE",
+        // ReturnPathArn: "STRING_VALUE",
+        // SourceArn: "STRING_VALUE"
     };
 }
