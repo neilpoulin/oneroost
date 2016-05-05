@@ -107,9 +107,7 @@ var sassOpts = {
         return del(["./public/bundle", paths.build.root]);
     });
 
-    gulp.task("clean", ["clean:js", "clean:css"], function () {
-        return del(["./npm-debug.log"]);
-    });
+    gulp.task("clean", ["clean:js", "clean:css", "clean:npm-log"]);
 
     gulp.task("lint", function () {
         return gulp.src(paths.src.all)
@@ -165,7 +163,8 @@ var sassOpts = {
         gulp.watch(paths.src.cloud, ["lint"]);
     });
 
-    gulp.task("clean:npm-log", ["clean"], function () {
+    gulp.task("clean:npm-log", function () {
+        del(["./npm-debug.log"]);
         return file("npm-debug.log", "", {src: true}).pipe(gulp.dest("./"));
     });
 
@@ -199,5 +198,5 @@ var sassOpts = {
         })
     });
 
-    gulp.task("eb-deploy", ["clean:npm-log", "build"], shell.task("eb deploy"));
-    gulp.task("deploy-aws", ["clean", "build", "eb-deploy"]);
+    gulp.task("eb-deploy", ["clean:npm-log", "build"], shell.task("eb deploy oneroost"));
+    gulp.task("deploy-aws", ["build", "eb-deploy"]);

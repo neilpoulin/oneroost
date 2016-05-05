@@ -46,3 +46,4 @@ logs/
 parse-server/
 gulpfile.js
 src/
+.eslintrc
