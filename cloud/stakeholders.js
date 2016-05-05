@@ -1,4 +1,7 @@
-
+var envUtil = require("./util/envUtil.js");
+var ParseCloud = require("parse-cloud-express");
+var Parse = ParseCloud.Parse;
+Parse.serverURL = envUtil.serverURL;
 exports.initialize = function()
 {
     console.log("initializing stakeholder triggers");
@@ -13,15 +16,7 @@ exports.initialize = function()
                     success: function( user ){
                         if ( user != null)
                         {
-                            console.log( "found user with email = " + user.get("email") );
-                            var callback = new function( message ){
-                                var responseObject = {
-                                    deal: deal,
-                                    user: user,
-                                    message: message,
-                                };
-                                response.success( responseObject );
-                            };
+                            console.log( "found user with email = " + user.get("email") );                            
                         }
                         else
                         {

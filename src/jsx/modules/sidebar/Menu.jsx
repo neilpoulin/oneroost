@@ -1,7 +1,6 @@
-import $ from 'jquery';
-import React from 'react';
-import LinkedStateMixin from 'react-addons-linked-state-mixin'
-import MenuItem from './MenuItem';
+import $ from "jquery";
+import React from "react";
+import LinkedStateMixin from "react-addons-linked-state-mixin"
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
@@ -41,7 +40,7 @@ export default React.createClass({
                 <div className="form-group">
                     <div className="inner-addon left-addon">
                         <div className="inner-addon {this.props.side}-addon"><i className="fa fa-search"></i></div>
-                        <input type="text" className="form-control" placeholder="search" onKeyUp={this.doFilter} valueLink={this.linkState('filterTerm')} />
+                        <input type="text" className="form-control" placeholder="search" onKeyUp={this.doFilter} valueLink={this.linkState("filterTerm")} />
                     </div>
                 </div>
             </div>

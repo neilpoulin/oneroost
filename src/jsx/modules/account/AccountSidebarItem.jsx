@@ -1,18 +1,19 @@
-import React from 'react'
-import { Link } from 'react-router'
-import activeComponent from 'react-router-active-component'
-import NavLink from './../NavLink';
+import React, {PropTypes} from "react"
+import NavLink from "./../NavLink";
 
 const AccountSidebarItem = React.createClass({
+    propTypes: {
+        deal: PropTypes.object.isRequired
+    },
     render () {
         var deal = this.props.deal;
+        var link =
+        <NavLink className="AccountSidebarItem" to={"/deals/" + deal.objectId} activeClassName="active">
+            <span className="dealName">{deal.dealName}</span>
+            <span className="accountName">{deal.account.accountName}</span>
+        </NavLink>
 
-        return (
-            <NavLink className="AccountSidebarItem" to={"/deals/" + deal.objectId} activeClassName="active">
-                <span className="dealName">{deal.dealName}</span>
-                <span className="accountName">{deal.account.accountName}</span>
-            </NavLink>
-        )
+        return link;
     }
 })
 

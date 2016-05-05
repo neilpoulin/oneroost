@@ -1,4 +1,4 @@
-var envUtil = require("cloud/util/envUtil.js");
+var envUtil = require("./../util/envUtil.js");
 
 var Template = function( templateName ){
     this.globalMergeVars = {};
@@ -145,12 +145,12 @@ Template.prototype.get = function()
     {
         if ( !this.mergeVars.hasOwnProperty( rcpt ) ) continue;
         var vars = [];
-        for ( var key in this.mergeVars[rcpt] )
+        for ( var rkey in this.mergeVars[rcpt] )
         {
-            if ( !this.mergeVars[rcpt].hasOwnProperty( key ) ) continue;
+            if ( !this.mergeVars[rcpt].hasOwnProperty( rkey ) ) continue;
             vars.push({
-                name: key,
-                content: this.mergeVars[rcpt][key]
+                name: rkey,
+                content: this.mergeVars[rcpt][rkey]
             });
         }
 

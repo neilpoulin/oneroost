@@ -1,6 +1,6 @@
-import React from 'react'
-import LoginComponent from './LoginComponent'
-import { browserHistory } from 'react-router'
+import React from "react"
+import LoginComponent from "./LoginComponent"
+import { browserHistory } from "react-router"
 
 export default React.createClass({
     handleLoginSuccess: function(){

@@ -1,5 +1,5 @@
-import React, { PropTypes } from 'react'
-import { render } from 'react-dom'
+import React from "react"
+import { render } from "react-dom"
 const RenderInBody = React.createClass({
     componentDidMount: function() {
         this.popup = document.createElement("div");

@@ -1,11 +1,10 @@
-import React from 'react';
-import Parse from 'parse';
-import ParseReact from 'parse-react';
-import NextStep from './../../models/NextStep';
-import LinkedStateMixin from 'react-addons-linked-state-mixin'
-var DatePicker = require('react-datepicker');
-var moment = require('moment');
-import Dropdown from './../stakeholder/Dropdown'
+import React from "react";
+import Parse from "parse";
+import ParseReact from "parse-react";
+import LinkedStateMixin from "react-addons-linked-state-mixin"
+var DatePicker = require("react-datepicker");
+var moment = require("moment");
+import Dropdown from "./../stakeholder/Dropdown"
 
 export default React.createClass({
   mixins: [LinkedStateMixin],
@@ -33,9 +32,9 @@ export default React.createClass({
       "dueDate": this.state.dueDate.toDate(),
       "assignedUser": this.state.assignedUser,
       "deal": this.state.deal,
-      "completedDate": ( this.state.completedDate != null ? new Date(this.state.completedDate) : null )
+      "completedDate": this.state.completedDate != null ? new Date(this.state.completedDate) : null
     };
-    ParseReact.Mutation.Create('NextStep', step)
+    ParseReact.Mutation.Create("NextStep", step)
       .dispatch()
       .then(function (step) {
         self.addStepCreatedComment(step);
@@ -51,7 +50,7 @@ export default React.createClass({
       author: null,
       username: "OneRoost Bot",
     };
-    ParseReact.Mutation.Create('DealComment', comment).dispatch();
+    ParseReact.Mutation.Create("DealComment", comment).dispatch();
   },
   clear: function () {
     this.setState(this.getInitialState());
@@ -79,14 +78,14 @@ export default React.createClass({
           <input id="nextStepTitle"
                  type="text"
                  className="form-control"
-                 valueLink={this.linkState('title')}/>
+                 valueLink={this.linkState("title")}/>
         </div>
         <div className="form-self">
           <label htmlFor="nextStepDescription">Description</label>
           <input id="nextStepDescription"
                  type="text"
                  className="form-control"
-                 valueLink={this.linkState('description')}/>
+                 valueLink={this.linkState("description")}/>
         </div>
         <div className="form-self">
           <label htmlFor="nextStepDueDate">Due Date</label>

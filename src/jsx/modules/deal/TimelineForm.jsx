@@ -1,13 +1,15 @@
-import React, { PropTypes } from 'react'
-import ParseReact from 'parse-react';
-import Parse from 'parse';
-var DatePicker = require('react-datepicker');
-var moment = require('moment');
+import React, { PropTypes } from "react"
+import ParseReact from "parse-react";
+var DatePicker = require("react-datepicker");
+var moment = require("moment");
 
 const TimelineForm = React.createClass({
   mixins: [ParseReact.Mixin],
   observe(){
     return {};
+  },
+  propTypes: {
+      timeline: PropTypes.string
   },
   getInitialState(){
     return {

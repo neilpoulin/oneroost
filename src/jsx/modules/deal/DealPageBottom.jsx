@@ -1,10 +1,11 @@
-import React, { PropTypes } from 'react'
-import Comments from './../deal/Comments';
-import DealProfile from './DealProfile';
-import FixedSidebar from './FixedSidebar';
-import $ from 'jquery';
+import React, { PropTypes } from "react"
+import Comments from "./../deal/Comments";
+import FixedSidebar from "./FixedSidebar";
 
 const DealPageBottom = React.createClass({
+    propTypes: {
+        deal: PropTypes.object.isRequired
+    },
     componentDidMount: function(props, state) {
         window.addEventListener("resize", this.updateDimensions);
         this.updateDimensions();
@@ -17,8 +18,6 @@ const DealPageBottom = React.createClass({
         this.updateDimensions();
     },
     updateDimensions: function(){
-        var cols = this.props.columns;
-
         var container = this.refs.DealPageBottom;
         var dealBoundingRect = container.getBoundingClientRect();
         var fixedContainer = this.refs.fixedContainer;
@@ -30,24 +29,25 @@ const DealPageBottom = React.createClass({
         var deal = this.props.deal;
         var totalColumns = 12;
         var commentsColumns = 12;
-        var sidebar = (null);
+        var sidebar = null;
         if ( this.props.children )
         {
             commentsColumns = 8;
-            sidebar = (
-                <FixedSidebar ref="sidebar" columns={totalColumns - commentsColumns}>
-                    {this.props.children}
-                </FixedSidebar>
-            );
+            sidebar =
+            <FixedSidebar ref="sidebar" columns={totalColumns - commentsColumns}>
+                {this.props.children}
+            </FixedSidebar>;
         }
-        return (
-            <div className="DealPageBottom" ref="DealPageBottom">
-                <div className="fixedContainer" ref="fixedContainer">
-                    <Comments ref="comments" deal={deal} columns={commentsColumns} />
-                    {sidebar}
-                </div>
+
+        var pageBottom =
+        <div className="DealPageBottom" ref="DealPageBottom">
+            <div className="fixedContainer" ref="fixedContainer">
+                <Comments ref="comments" deal={deal} columns={commentsColumns} />
+                {sidebar}
             </div>
-        )
+        </div>;
+
+        return pageBottom;
     }
 })
 

@@ -1,11 +1,10 @@
-import React from 'react'
-import Parse from 'parse';
-import ParseReact from 'parse-react';
-import Deal from './../../models/Deal';
-import Account from './../../models/Account';
-import AccountSidebarList from './AccountSidebarList';
-import AddAccountButton from './AddAccountButton'
-
+import React from "react"
+// import {Parse} from "./../../config/OneRoost";
+import Parse from "parse";
+import ParseReact from "parse-react";
+import Deal from "./../../models/Deal";
+import AccountSidebarList from "./AccountSidebarList";
+import AddAccountButton from "./AddAccountButton"
 
 export default React.createClass({
     mixins: [ParseReact.Mixin],
@@ -13,27 +12,24 @@ export default React.createClass({
         var user = Parse.User.current();
         var dealQuery = new Parse.Query(Deal);
         dealQuery.include("account");
-        dealQuery.ascending('dealName');
+        dealQuery.ascending("dealName");
 
         var stakeholders = new Parse.Query("Stakeholder");
         stakeholders.include("deal");
         stakeholders.include(["deal.account"]);
         stakeholders.equalTo("user", user );
-
         return {
             stakeholders: stakeholders
         }
     },
     onSuccess: function(){
         console.log("refreshing stakeholder queries");
-        this.refreshQueries(['stakeholders']);
+        this.refreshQueries(["stakeholders"]);
     },
     render () {
         var contents;
         if ( this.pendingQueries().length > 0 ){
-            contents = (
-                <div>Loading....</div>
-            )
+            contents = <div>Loading....</div>;            
         }
         else {
             var deals = this.data.stakeholders.map(function(stakeholder){

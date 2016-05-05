@@ -41,17 +41,8 @@ node_modules
 
 #parse
 
-/public/out/
-/public/css/
-/public/bundle/
-
-data/
 build/
 logs/
 parse-server/
-
-# Elastic Beanstalk Files
-.elasticbeanstalk
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
+gulpfile.js
+src/

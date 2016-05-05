@@ -1,12 +1,16 @@
-import React, { PropTypes } from 'react'
-import ParseReact from 'parse-react';
-import Parse from 'parse';
-import BudgetForm from './../BudgetForm';
+import React, { PropTypes } from "react"
+import ParseReact from "parse-react";
+import Parse from "parse";
+import BudgetForm from "./../BudgetForm";
 
 const TimelineSidebar = React.createClass({
   mixins: [ParseReact.Mixin],
+  propTypes: {
+    params: PropTypes.shape({dealId: PropTypes.any}).isRequired,
+
+  },
   observe(){
-    var dealQuery = (new Parse.Query("Deal")).equalTo('objectId', this.props.params.dealId);
+    var dealQuery = (new Parse.Query("Deal")).equalTo("objectId", this.props.params.dealId);
     return {
       deal: dealQuery
     };

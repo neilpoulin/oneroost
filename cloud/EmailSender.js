@@ -1,9 +1,14 @@
-var Mandrill = require('mandrill');
-var envUtil = require("cloud/util/envUtil.js");
-var MandrillEmailTemplate = require("cloud/email/MandrillEmailTemplate.js");
+var mandrill = require("mandrill-api/mandrill");
+
+var envUtil = require("./util/envUtil.js");
 var env = envUtil.getEnv();
 console.log("registering mandrill with appId = " + envUtil.getEnv().mandrillAppId );
-Mandrill.initialize(envUtil.getEnv().mandrillAppId);
+
+var Mandrill = new mandrill.Mandrill(envUtil.getEnv().mandrillAppId);
+
+var ParseCloud = require("parse-cloud-express");
+var Parse = ParseCloud.Parse;
+Parse.serverURL = envUtil.serverURL;
 
 function getActualRecipients( original, config )
 {
@@ -47,11 +52,11 @@ exports.sendMandrillTemplate = function( template )
 function sendTemplateRequest( template )
 {
     Parse.Cloud.httpRequest({
-        method: 'POST',
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
         },
-        url: 'https://mandrillapp.com/api/1.0/messages/send-template.json',
+        url: "https://mandrillapp.com/api/1.0/messages/send-template.json",
         body: template.get(),
         success: function(){
             console.log("Email template sent succesfully");

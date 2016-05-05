@@ -1,16 +1,19 @@
-var envUtil = require("cloud/util/envUtil.js");
-var EmailSender = require("cloud/EmailSender.js");
-var Template = require("cloud/email/MandrillEmailTemplate.js").Template;
-var EmailUtil = require("cloud/util/EmailUtil.js");
+var envUtil = require("./../util/envUtil.js");
+var EmailSender = require("./../EmailSender.js");
+var Template = require("./../email/MandrillEmailTemplate.js").Template;
+
+var ParseCloud = require("parse-cloud-express");
+var Parse = ParseCloud.Parse;
+Parse.serverURL = envUtil.serverURL;
 
 exports.afterSave = function(){
-    Parse.Cloud.afterSave( 'NextStep', function( req, resp ){
+    Parse.Cloud.afterSave( "NextStep", function( req ){
         console.log("Next Step afterSave was triggered... ");
         var stepQuery = new Parse.Query("NextStep");
         stepQuery.include("deal");
-        // stepQuery.include("createdBy"); //this fixed the issue where it didn't know the properties of the author
+        // stepQuery.include("createdBy"); //this fixed the issue where it didn"t know the properties of the author
         stepQuery.get( req.object.id).then( function( step ){
-            var status = 'Not Done';
+            var status = "Not Done";
             var templateName = "next-step-created";
             if ( step.get("completedDate") != null )
             {
@@ -31,7 +34,7 @@ exports.afterSave = function(){
             console.log("sending Next Step after Save Email...");
             EmailSender.sendMandrillTemplate( template );
         }).then( function( error ){
-            console.error( "failed to retrieve the next step" );
+            console.error( "failed to retrieve the next step: " + error );
         });
     });
 }

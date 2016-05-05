@@ -1,22 +1,28 @@
-import React from 'react'
-import { render } from 'react-dom'
-import Parse from 'parse'
-import { Router, Route, browserHistory, IndexRoute } from 'react-router'
-import Home from './modules/Home'
-import App from './modules/App'
-import $ from 'jquery'
-import UserHomePage from './modules/UserHomePage';
-import Deal from './modules/deal/Deal';
-import DealDashboard from './modules/deal/DealDashboard';
-import StakeholderSidebar from './modules/deal/sidebar/StakeholderSidebar';
-import TimelineSidebar from './modules/deal/sidebar/TimelineSidebar';
-import BudgetSidebar from './modules/deal/sidebar/BudgetSidebar';
+/*global OneRoost*/
+/*global document*/
+import { render } from "react-dom"
+import Parse from "parse";
+import React from "react";
+import { Router, Route, useRouterHistory, IndexRoute } from "react-router"
+import { createHistory } from "history"
+import $ from "jquery"
+import Home from "./modules/Home"
+import App from "./modules/App"
+import UserHomePage from "./modules/UserHomePage";
+import Deal from "./modules/deal/Deal";
+import DealDashboard from "./modules/deal/DealDashboard";
+import StakeholderSidebar from "./modules/deal/sidebar/StakeholderSidebar";
+import TimelineSidebar from "./modules/deal/sidebar/TimelineSidebar";
+import BudgetSidebar from "./modules/deal/sidebar/BudgetSidebar";
 
-Parse.$ = $;
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
+Parse.serverURL = OneRoost.Config.serverURL;
+Parse.$ = $;
 
+const browserHistory = useRouterHistory(createHistory)({
+            basename: "/"
+        });
 render(
-  (
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={Home}/>
@@ -30,6 +36,5 @@ render(
         </Route>
       </Route>
     </Router>
-  )
-  , document.getElementById('app')
+  , document.getElementById("app")
 );
