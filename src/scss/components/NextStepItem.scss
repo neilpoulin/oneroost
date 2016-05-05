@@ -9,7 +9,7 @@ $completedTextColor: #80848f;
     position: relative;
     margin: 0 10px 0 0;
     text-decoration: none;
-    color: #fff;
+    color: $mainColor;
     padding-left: $borderHeight;
     &:after {
         content: "";
@@ -66,14 +66,12 @@ $completedTextColor: #80848f;
         font-weight: bold;
     }
     .nextStepDescription{
-        color: gray;
+        color: $secondaryColor;
     }
     .nextStepDueDate{
         font-size: .8em;
     }
-    &.complete{
-        color: $completedTextColor;
-    }
+
     .editButtons{
         display: none;
         @include vertical-align();
@@ -98,7 +96,7 @@ $completedTextColor: #80848f;
     }
 
     .width-0{
-        width: 0px;        
+        width: 0px;
     }
 
 }

@@ -49,10 +49,7 @@ const Deal = React.createClass({
                     id="dealPageContainer">
                     <div className="dealContainer col-md-10 col-md-offset-2 container-fluid">
                         <div className="row-fluid">
-                            <div className="deal-top">
-                                <h1>
-                                    {deal.dealName}
-                                </h1>
+                            <div className="deal-top">                                
                                 <DealProfile deal={deal} />
                                 <NextStepsBanner deal={deal} />
                             </div>

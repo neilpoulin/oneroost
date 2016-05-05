@@ -1,5 +1,5 @@
-$backgroundColor: #0e69a0;
-$textColor: #8fb9cf;
+$backgroundColor: $sidebarBg;
+$activeTexstColor: $mainColor;
 #accountSidebarContainer{
 
 }
@@ -10,10 +10,10 @@ $textColor: #8fb9cf;
     bottom: 0px;
     overflow: auto;
     background-color: $backgroundColor;
-    color: $textColor;
+    color: $activeTexstColor;
     padding: 0px 0px 0px 0px;
     font-family: AlrightSans,Helvetica Neue,Helvetica,Arial,sans-serif;
-
+    border-right: $borderWeightThick solid $borderColorThick;
     .AddAccountButton{
         text-align: center;
         padding: 10px;
@@ -31,13 +31,13 @@ $textColor: #8fb9cf;
         $hoverTextColor: #FFF;
 
         background-color: $backgroundColor;
-        // border-top: 1px solid $textColor;
+        // border-top: 1px solid $activeTexstColor;
         font-weight: 300;
         a{
             padding: 10px 5px 10px 5px;
             text-decoration: none;
             display: block;
-            color: $textColor;
+            color: $activeTexstColor;
             background-color: inherit;
         }
         &:hover a{

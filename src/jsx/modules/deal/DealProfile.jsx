@@ -47,8 +47,8 @@ const DealProfile = React.createClass({
     },
     render () {
         var deal = this.props.deal;
-        var widgetClassName = "col-xs-4 widget";
-        var iconSizeClassname = "fa-2x";
+        var widgetClassName = "col-xs-3 widget";
+        var iconSizeClassname = "fa-lg";
         var budget = this.getBudgetString();
 
         var stakeholderCount = "";
@@ -60,28 +60,47 @@ const DealProfile = React.createClass({
         <div className="DealProfile container-fluid">
             <div className="row">
                 <div className={widgetClassName}>
+                    <h1>
+                        {deal.dealName}
+                    </h1>
+                </div>
+                <div className={widgetClassName}>
                     <div className="row text-center">
-                        <NavLink tag="span" to={"/deals/" + deal.objectId + "/budget" } className="widgetLink">
-                            <i className={"fa fa-usd " + iconSizeClassname}></i>
-                            &nbsp;
-                            <span className="title">{budget}</span>
+                        <NavLink tag="div" to={"/deals/" + deal.objectId + "/budget" } className="widgetLink">
+                            <div>
+                                <i className={"fa fa-usd " + iconSizeClassname}></i>
+                                &nbsp; Budget
+                            </div>
+                            <div>
+                                <span className="title">{budget}</span>
+                            </div>
                         </NavLink>
                     </div>
                 </div>
                 <div className={widgetClassName}>
                     <div className={"row text-center " + (deal.profile.timeline ? "" : "invisible")}>
-                        <NavLink tag="span" to={"/deals/" + deal.objectId + "/timeline" } className="widgetLink">
-                            <i className={"fa fa-calendar " + iconSizeClassname}></i>
-                            &nbsp;
-                            <span className="title">{this.formatDate(deal.profile.timeline)}</span>
+                        <NavLink tag="div" to={"/deals/" + deal.objectId + "/timeline" } className="widgetLink">
+                            <div>
+                                <i className={"fa fa-calendar " + iconSizeClassname}></i>
+                                &nbsp; Timeline
+                            </div>
+                            <div>
+                                <span className="title">{this.formatDate(deal.profile.timeline)}</span>
+                            </div>
+
                         </NavLink>
                     </div>
                 </div>
                 <div className={widgetClassName}>
                     <div className="row text-center">
-                        <NavLink tag="span" to={"/deals/" + deal.objectId + "/participants" } className="widgetLink">
-                            <i data-badge={stakeholderCount} className={"fa icon-badge fa-user " + iconSizeClassname}></i>
-                            <span className="title">&nbsp;Participants</span>
+                        <NavLink tag="div" to={"/deals/" + deal.objectId + "/participants" } className="widgetLink">
+                            <div>
+                                <i data-badge={stakeholderCount} className={"fa icon-badge fa-user " + iconSizeClassname}></i>
+                                    &nbsp; Participants
+                            </div>
+                            <div>
+                                <span className="title">{stakeholderCount}</span>
+                            </div>
                         </NavLink>
                     </div>
                 </div>

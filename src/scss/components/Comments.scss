@@ -1,6 +1,5 @@
-$msgBg: white;
-$systemMsgBg: #66637a;
-$timestampTextColor: gray;
+@import "./../variables";
+$timestampTextColor: $systemMsgColor;
 
 .comment{
     padding: 5px 5px 5px 5px;
@@ -27,7 +26,7 @@ $timestampTextColor: gray;
 
     &.system{
         background-color: $systemMsgBg;
-        color: white;
+        color: $systemMsgColor;
         .postTime{
             color: lighten($timestampTextColor, 20%);;
         }
