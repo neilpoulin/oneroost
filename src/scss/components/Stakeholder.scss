@@ -1,0 +1,33 @@
+.StakeholderSidebar
+{
+    .Stakeholder{
+        text-decoration: none;
+        padding: 2.5px;
+        @include visible-hover;
+
+        &:hover{
+            background-color: material-color('cyan', '700');
+        }
+
+        .roleName{
+            font-size: .8em;
+            display: inline-block;
+            min-width: 60px;
+            text-transform: uppercase;
+            margin-right: 10px;
+            &.label{
+                background-color: material-color('grey', '500');
+                color: #fff;
+                &.buyer{
+                    background-color: material-color('teal', '500');
+                    color: #fff
+                }
+                &.seller{
+                    background-color: material-color('indigo', '500');
+                    color: #fff
+                }
+            }
+        }
+    }
+
+}

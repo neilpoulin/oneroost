@@ -1,0 +1,10 @@
+.FixedSidebar {
+  background-color: $fixedSidebarBg;
+  .close {
+    margin-top: 10px;
+    i {
+      color: #fff;
+    }
+  }
+  color: #fff;
+}

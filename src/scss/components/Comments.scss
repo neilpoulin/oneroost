@@ -1,0 +1,59 @@
+$msgBg: white;
+$systemMsgBg: #66637a;
+$timestampTextColor: gray;
+
+.comment{
+    padding: 5px 5px 5px 5px;
+    position: relative;
+
+    .username{
+        font-weight: bold;
+    }
+
+    .message{
+        margin-left: 30px;
+    }
+
+    .postTime{
+        color: $timestampTextColor;
+    }
+
+    &.repeatAuthor{
+        .authorRow{
+            display:none;
+        }
+        padding-top: 0px;
+    }
+
+    &.system{
+        background-color: $systemMsgBg;
+        color: white;
+        .postTime{
+            color: lighten($timestampTextColor, 20%);;
+        }
+        &:nth-child(2n+1){
+            // background-color: darken($systemMsgBg, 5%);
+        }
+    }
+    &:not(.system):nth-child(2n+1){
+        // background: darken($msgBg, 5%);
+    }
+}
+
+.loadingComments, .emptyComments{
+    margin-top: 50px;
+    padding: 35px;
+    text-align: center;
+}
+
+.emptyComments{
+    border: 2px dashed gray;
+    border-radius: 20px;
+}
+
+#addCommentInput{
+    resize: none;
+    &:not(:focus){
+        background-color: material-color('yellow', 'a100');
+    }
+}

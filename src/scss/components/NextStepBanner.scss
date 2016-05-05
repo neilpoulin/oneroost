@@ -1,0 +1,22 @@
+$nextStepBannerHeight: 60px;
+@import "NextStepItem";
+
+
+
+#NextStepsBannerContainer{
+    overflow-x: auto;
+    height: $nextStepBannerHeight;
+    margin-bottom: 5px;
+}
+
+.AddNextStepButton{
+    height: 100%;
+    width: 20%;
+    float:left;
+    position: relative;
+    .btn{
+        margin-left: 10px;
+        margin-top: 15px;
+        // @include vertical-align();
+    }
+}

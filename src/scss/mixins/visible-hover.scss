@@ -1,0 +1,11 @@
+@mixin visible-hover {
+    .visible-hover{
+        display:none;
+    }
+
+    &:hover{
+        .visible-hover{
+            display: inline-block;
+        }
+    }
+}
