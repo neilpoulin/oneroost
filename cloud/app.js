@@ -17,12 +17,23 @@ app.locals.formatTime = function(time) {
   return moment(time).format('MMMM Do YYYY, h:mm a');
 };
 
+<<<<<<< HEAD
 app.get("*", function( request, response ){
+=======
+var parseConfig = Parse.Config.current();
+
+// app.get("/", usersController.index);
+app.get("/", function( request, response ){
+<<<<<<< HEAD
+  response.render("construction.ejs");
+=======
+>>>>>>> master
     var env = envUtil.getEnv();
     var homePage = env.isDev ? "index.ejs" : "construction.ejs";
     var params = env.json;
 
     response.render( homePage, params);
+>>>>>>> develop
 });
 
 Notifications.initialize();
