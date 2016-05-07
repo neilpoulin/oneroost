@@ -1,7 +1,37 @@
 @import "sass-material-colors";
-$dealPageContainerBg: #094162;
-$fixedSidebarBg: #0c5582;
 
+
+//globals
+$mainColor: #135176;
+$globalBg: #FFFFFF;
 $navbarHeight: 50px;
+
+$activeBg: #ECF6FF;
+$activeColor: #3A91D5;
+$activeBorderColor: #5DA9DF;
+
+$secondaryColor: #B0B0B0;
+$largeClickableBg: #EEEFF1;
+
+//borders
+$borderColorThick: #D3D3D3;
+$borderWeightThick: 2px;
+$borderThick: $borderWeightThick solid $borderColorThick;
+$borderWeightThin: 1px;
+$borderColorThin: #EAEAEA;
+$borderThin: $borderWeightThin solid $borderColorThin;
+
+//sidebar
+$sidebarBg: #F9FAFC;
+$fixedSidebarBg: $sidebarBg;
+
+//Deal Profile
+$dealPageContainerBg: $globalBg;
 $nextStepsContainerBg: $dealPageContainerBg;
-$nextStepsBg: material-color("amber", "700");
+$nextStepsBg: $largeClickableBg;
+
+// Comments
+$msgBg: $globalBg;
+$systemMsgBg: #F5F5F5;
+$systemMsgColor: #C9C9C9;
+//commment

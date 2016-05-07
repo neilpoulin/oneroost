@@ -3,8 +3,10 @@
   .close {
     margin-top: 10px;
     i {
-      color: #fff;
+      color: $mainColor;
     }
   }
-  color: #fff;
+  color: $mainColor;
+  border-top: $borderWeightThick solid $borderColorThick;
+  border-left: $borderWeightThick solid $borderColorThick;
 }

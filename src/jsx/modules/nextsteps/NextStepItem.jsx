@@ -1,12 +1,14 @@
 import Parse from "parse";
 import React from "react";
 import ParseReact from "parse-react";
+import NavLink from "./../NavLink";
 
 export default React.createClass({
     getInitialState: function(){
         return {
             deal: this.props.deal,
-            user: Parse.User.current()
+            user: Parse.User.current(),
+            active: false
         };
     },
     markAsDone: function(){
@@ -75,7 +77,7 @@ export default React.createClass({
 
         var month = date.getMonth() + 1;
         return month + "/" + date.getDate() + "/" + date.getFullYear()
-    },
+    },    
     render: function(){
         var doneButton =
         <button className="btn btn-sm btn-success"
@@ -97,25 +99,27 @@ export default React.createClass({
         date = this.props.step.completedDate;
     }
 
-    return (
-        <div className={"arrow-right NextStepItemContainer " + ( this.props.step.completedDate != null ? "complete" : "" )}>
-            <div className="nextStepTitle">{this.props.step.title}</div>
-            <div className="nextStepDueDate">
-                {dateLabel} {this.formatDate(date)}
-            </div>
-            <div className="editButtons">
-                <div className="btn-group btn-group-justified" role="group">
-                    <div className="btn-group" role="group">
-                        {doneButton}
-                    </div>
-                    <div className="btn-group" role="group">
-                        <button className="btn btn-sm btn-danger"
-                            onClick={this.doDelete} >
-                            Delete <i className="fa fa-trash"></i>
+    var stepItem =
+
+    <NavLink tag="div" to={"/deals/" + this.props.deal.objectId + "/steps/" + this.props.step.objectId }
+        className={"arrow-right NextStepItemContainer " + ( this.props.step.completedDate != null ? "complete " : "" ) + (this.state.active ? "active " : "")} >
+        <div className="nextStepTitle">{this.props.step.title}</div>
+        <div className="nextStepDueDate">
+            {dateLabel} {this.formatDate(date)}
+        </div>
+        <div className="editButtons">
+            <div className="btn-group btn-group-justified" role="group">
+                <div className="btn-group" role="group">
+                    {doneButton}
+                </div>
+                <div className="btn-group" role="group">
+                    <button className="btn btn-sm btn-danger" onClick={this.doDelete} >
+                        Delete
+                        <i className="fa fa-trash"></i>
                     </button>
                 </div>
             </div>
-
         </div>
-    </div>);
+    </NavLink>
+    return stepItem;
 }});

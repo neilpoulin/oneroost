@@ -1,0 +1,17 @@
+.NextStepSidebarForm{
+    .fieldLabel{
+        color: $mainColor;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .field{
+        color: $secondaryColor;
+        margin-bottom: 20px;
+    }
+    .actionsBar{
+        text-align: right;
+        button:not(:last-child){
+            margin-right: 10px;
+        }
+    }
+}

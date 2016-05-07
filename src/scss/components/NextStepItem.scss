@@ -9,8 +9,11 @@ $completedTextColor: #80848f;
     position: relative;
     margin: 0 10px 0 0;
     text-decoration: none;
-    color: #fff;
+    color: $mainColor;
     padding-left: $borderHeight;
+    &.active:after{
+        border-left-color: $activeBg;
+    }
     &:after {
         content: "";
         border-top: $borderHeight solid transparent;
@@ -28,16 +31,23 @@ $completedTextColor: #80848f;
     }
 
     &:first-child {
-        border-top-left-radius: 10px; border-bottom-left-radius: 10px;
-        padding-left: $endPadding;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        padding-left: 0px;
+        a{
+            padding-left: $endPadding;
+        }
+
     }
     &:first-child:before {
         display: none;
     }
 
     &:nth-last-child(2) {
-        padding-right: $endPadding;
         border-top-right-radius: 10px; border-bottom-right-radius: 10px;
+        a {
+            padding-right: $endPadding;
+        }
     }
     &:nth-last-child(2):after {
         display: none;
@@ -59,21 +69,25 @@ $completedTextColor: #80848f;
     width: 19%;
     float:left;
     position: relative;
-    padding-top: .5em;
-    padding-bottom: .5em;
+    a {
+        text-decoration: none;
+        color: inherit;
+        padding-top: .5em;
+        padding-bottom: .5em;
+        display: block;
+        height: 100%;
+    }
     .nextStepTitle{
         font-size: 1.2em;
         font-weight: bold;
     }
     .nextStepDescription{
-        color: gray;
+        color: $secondaryColor;
     }
     .nextStepDueDate{
         font-size: .8em;
     }
-    &.complete{
-        color: $completedTextColor;
-    }
+
     .editButtons{
         display: none;
         @include vertical-align();
@@ -81,9 +95,15 @@ $completedTextColor: #80848f;
         left: $borderHeight + $endPadding;
         right: $endPadding;
     }
+    &.active{
+        background-color: $activeBg;
+        color: $activeColor;
+    }
     &:hover{
+        color: $activeColor;
+        cursor: pointer;
         .editButtons{
-            display: inline-block;
+            // display: inline-block;
         }
     }
     &:first-of-type{
@@ -98,7 +118,7 @@ $completedTextColor: #80848f;
     }
 
     .width-0{
-        width: 0px;        
+        width: 0px;
     }
 
 }

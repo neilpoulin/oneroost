@@ -1,35 +1,53 @@
-$msgBg: white;
-$systemMsgBg: #66637a;
-$timestampTextColor: gray;
+@import "./../variables";
+$timestampTextColor: $systemMsgColor;
+
+#commentsList{
+    .dateSeparator{
+        $height: 2.2em;
+        font-weight: bold;
+        margin-top: 0px;
+        margin-bottom: $height;
+        border-bottom: $borderThin;
+        overflow:visible;
+        height: $height;
+
+        .dateLabel{
+            background-color: $globalBg;
+            padding: 0px 15px 0px 15px;
+            position: relative;
+            line-height: $height;
+            display:inline-block;
+            top: 50%;
+        }
+    }
+}
 
 .comment{
     padding: 5px 5px 5px 5px;
     position: relative;
-
+    margin-top: 10px;
     .username{
         font-weight: bold;
+        color: $mainColor;
     }
-
-    .message{
-        margin-left: 30px;
-    }
-
     .postTime{
         color: $timestampTextColor;
     }
-
     &.repeatAuthor{
-        .authorRow{
-            display:none;
-        }
         padding-top: 0px;
+        margin-top: 0px;
+        .authorRow{
+            display: none;
+        }
     }
-
     &.system{
         background-color: $systemMsgBg;
-        color: white;
-        .postTime{
-            color: lighten($timestampTextColor, 20%);;
+        color: $systemMsgColor;
+        .authorRow {
+            display: none;
+        }
+        .message{
+            padding-left: 5px;
         }
         &:nth-child(2n+1){
             // background-color: darken($systemMsgBg, 5%);
@@ -54,6 +72,6 @@ $timestampTextColor: gray;
 #addCommentInput{
     resize: none;
     &:not(:focus){
-        background-color: material-color("yellow", "a100");
+        // background-color: material-color("yellow", "a100");
     }
 }

@@ -76,12 +76,12 @@ var sassOpts = {
         "./src/scss/**/*.scss"]
     };
 
-    gulp.task("fonts", function () {
+    gulp.task("fonts", ["sass"], function () {
         return gulp.src(paths.src.fonts)
         .pipe(gulp.dest(paths.dest.fonts));
     });
 
-    gulp.task("sass", ["clean", "fonts"], function () {
+    gulp.task("sass", ["clean:css"], function () {
         var scssStream = gulp.src(paths.src.styleEntry)
         .pipe(sourcemaps.init())
         .pipe(sass(sassOpts).on("error", sass.logError))
@@ -99,13 +99,15 @@ var sassOpts = {
         return mergedStream;
     });
 
-    gulp.task("clean", function () {
-        return del([paths.build.root, "./npm-debug.log"]);
+    gulp.task("clean:css", function(){
+        return del(["./public/css"]);
     });
 
-    gulp.task("clean:all", ["clean"], function () {
-        return del(["./public/bundle", "./public/css"]);
+    gulp.task("clean:js", function(){
+        return del(["./public/bundle", paths.build.root]);
     });
+
+    gulp.task("clean", ["clean:js", "clean:css", "clean:npm-log"]);
 
     gulp.task("lint", function () {
         return gulp.src(paths.src.all)
@@ -113,7 +115,7 @@ var sassOpts = {
         .pipe(eslint.format());
     });
 
-    gulp.task("transpile", ["clean", "lint"], function () {
+    gulp.task("transpile", ["clean:js", "lint"], function () {
         return gulp.src(paths.src.scripts)
         .pipe(plumber())
         .pipe(sourcemaps.init({loadMaps: true}))
@@ -127,7 +129,7 @@ var sassOpts = {
         .pipe(gulp.dest(paths.build.js));
     });
 
-    gulp.task("bundle", ["clean", "transpile"], function () {
+    gulp.task("bundle", ["clean:js", "transpile"], function () {
         var b = browserify({
             entries: paths.build.sourceFile,
             debug: true
@@ -153,16 +155,16 @@ var sassOpts = {
         .pipe(gulp.dest(paths.dest.js));
     });
 
-    gulp.task("build", ["clean", "bundle", "sass"]);
+    gulp.task("build", ["bundle", "sass", "fonts"]);
 
-    gulp.task("watch", ["clean", "build"], function () {
-        gulp.watch(paths.src.styles, ["sass"]);
+    gulp.task("watch", ["build"], function () {
+        gulp.watch(paths.src.styles, ["sass", "fonts"]);
         gulp.watch(paths.src.scripts, ["bundle"]);
         gulp.watch(paths.src.cloud, ["lint"]);
-        gulp.watch(paths.src.fonts, ["fonts"]);
     });
 
-    gulp.task("clean:npm-log", ["clean"], function () {
+    gulp.task("clean:npm-log", function () {
+        del(["./npm-debug.log"]);
         return file("npm-debug.log", "", {src: true}).pipe(gulp.dest("./"));
     });
 
@@ -196,7 +198,5 @@ var sassOpts = {
         })
     });
 
-
-
-    gulp.task("eb-deploy", ["clean:npm-log", "build"], shell.task("eb deploy"));
-    gulp.task("deploy-aws", ["clean", "build", "eb-deploy"]);
+    gulp.task("eb-deploy", ["clean:npm-log", "build"], shell.task("eb deploy oneroost"));
+    gulp.task("deploy-aws", ["build", "eb-deploy"]);

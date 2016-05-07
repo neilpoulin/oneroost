@@ -9,14 +9,14 @@ const TimelineSidebar = React.createClass({
     params: PropTypes.shape({dealId: PropTypes.any}).isRequired,
 
   },
-  observe(){
-    var dealQuery = (new Parse.Query("Deal")).equalTo("objectId", this.props.params.dealId);
+  observe(props, state){
+    var dealQuery = (new Parse.Query("Deal")).equalTo("objectId", props.params.dealId);
     return {
       deal: dealQuery
     };
   },
   render(){
-    if (this.pendingQueries() > 0) {
+    if (this.pendingQueries().length > 0) {
       return (
         <i className="fa fa-spin fa-spinner">Loading Deal</i>
       );

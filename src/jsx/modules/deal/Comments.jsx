@@ -3,6 +3,7 @@ import Parse from "parse";
 import ParseReact from "parse-react";
 import AddComment from "./AddComment";
 import CommentItem from "./CommentItem";
+import CommentDateSeparator from "./CommentDateSeparator";
 import $ from "jquery";
 
 export default React.createClass({
@@ -33,6 +34,22 @@ export default React.createClass({
         var $commentContainer = $(this.refs.messagesContainer);
         $commentContainer.scrollTop( $commentContainer.prop("scrollHeight") );
     },
+    isSameDate(nextDate, previousDate)
+    {
+        var dateToCheck = nextDate;
+        var actualDate = previousDate;
+        var isSameDay = actualDate != null
+        && dateToCheck.getDate() == actualDate.getDate()
+        && dateToCheck.getMonth() == actualDate.getMonth()
+        && dateToCheck.getFullYear() == actualDate.getFullYear();
+        return isSameDay;
+    },
+    forceShowUsername: function( currentDate, previousDate )
+    {
+        var isSameDate = this.isSameDate( currentDate, previousDate );
+        var elapsedMinutes = ( currentDate.getTime() - ( previousDate != null ? previousDate.getTime() : 0) ) / 1000 / 60;
+        return !isSameDate || elapsedMinutes > 30;
+    },
     render: function(){
         var component = this;
         var deal = this.props.deal;
@@ -59,15 +76,37 @@ export default React.createClass({
             var comments = this.data.dealComments.sort(function(a, b){
                 return a.createdAt.getTime() > b.createdAt.getTime();
             });
+            var items = [];
+
+            comments.forEach(function(comment){
+                var currentDate = comment.createdAt
+                var previousDate = previousComment != null ? previousComment.createdAt : null;
+                var isSameDate = component.isSameDate( currentDate, previousDate );
+
+                if ( !isSameDate )
+                {
+                    var separator =
+                    <CommentDateSeparator
+                        key={"dateSeparator_comment_" + comment.objectId }
+                        previousDate={previousComment != null ? previousComment.createdAt : null}
+                        nextDate={comment.createdAt}
+                        />
+                    items.push( separator );
+                }
+                var forceShowUsername = component.forceShowUsername(currentDate, previousDate);
+                var item =
+                <CommentItem key={"commentItem_" + comment.objectId}
+                    comment={comment}
+                    previousComment={previousComment}
+                    forceShowUsername={forceShowUsername}
+                    />;
+                items.push(item);
+                previousComment = comment;
+            })
+
             commentsSection =
             <ul className="list-unstyled" id="commentsList" ref="commentList">
-                {comments.map(function(comment){
-                    var item =
-                    <CommentItem key={"commentItem_" + comment.objectId}
-                        comment={comment}
-                        previousComment={previousComment}
-                        />;
-                    previousComment = comment;
+                {items.map(function(item){
                     return item;
                 })}
             </ul>;
