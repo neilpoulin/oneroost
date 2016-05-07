@@ -11,6 +11,9 @@ $completedTextColor: #80848f;
     text-decoration: none;
     color: $mainColor;
     padding-left: $borderHeight;
+    &.active:after{
+        border-left-color: $activeBg;
+    }
     &:after {
         content: "";
         border-top: $borderHeight solid transparent;
@@ -61,6 +64,10 @@ $completedTextColor: #80848f;
     position: relative;
     padding-top: .5em;
     padding-bottom: .5em;
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
     .nextStepTitle{
         font-size: 1.2em;
         font-weight: bold;
@@ -79,9 +86,15 @@ $completedTextColor: #80848f;
         left: $borderHeight + $endPadding;
         right: $endPadding;
     }
+    &.active{
+        background-color: $activeBg;
+        color: $activeColor;
+    }
     &:hover{
+        color: $activeColor;
+        cursor: pointer;
         .editButtons{
-            display: inline-block;
+            // display: inline-block;
         }
     }
     &:first-of-type{

@@ -48,6 +48,7 @@ const DealProfile = React.createClass({
     render () {
         var deal = this.props.deal;
         var widgetClassName = "col-xs-3 widget";
+        var titleClassName = "col-xs-2 widget";
         var iconSizeClassname = "fa-lg";
         var budget = this.getBudgetString();
 
@@ -55,53 +56,68 @@ const DealProfile = React.createClass({
         if (this.pendingQueries().length == 0) {
             stakeholderCount = this.data.stakeholders.length > 0 ? this.data.stakeholders.length : "";
         }
-
+        var documentCount = 0;
         var dealProfile =
         <div className="DealProfile container-fluid">
             <div className="row">
-                <div className={widgetClassName}>
+                <div className={titleClassName}>
                     <h1>
                         {deal.dealName}
                     </h1>
                 </div>
-                <div className={widgetClassName}>
-                    <div className="row text-center">
-                        <NavLink tag="div" to={"/deals/" + deal.objectId + "/budget" } className="widgetLink">
-                            <div>
-                                <i className={"fa fa-usd " + iconSizeClassname}></i>
-                                &nbsp; Budget
-                            </div>
-                            <div>
-                                <span className="title">{budget}</span>
-                            </div>
-                        </NavLink>
+                <div className="widgetContainer container-fluid col-xs-10">
+                    <div className={widgetClassName}>
+                        <div className="row text-center">
+                            <NavLink tag="div" to={"/deals/" + deal.objectId + "/budget" } className="widgetLink">
+                                <div>
+                                    <i className={"fa fa-usd " + iconSizeClassname}></i>
+                                    &nbsp; Budget
+                                </div>
+                                <div>
+                                    <span className="title">{budget}</span>
+                                </div>
+                            </NavLink>
+                        </div>
                     </div>
-                </div>
-                <div className={widgetClassName}>
-                    <div className={"row text-center " + (deal.profile.timeline ? "" : "invisible")}>
-                        <NavLink tag="div" to={"/deals/" + deal.objectId + "/timeline" } className="widgetLink">
-                            <div>
-                                <i className={"fa fa-calendar " + iconSizeClassname}></i>
-                                &nbsp; Timeline
-                            </div>
-                            <div>
-                                <span className="title">{this.formatDate(deal.profile.timeline)}</span>
-                            </div>
+                    <div className={widgetClassName}>
+                        <div className={"row text-center " + (deal.profile.timeline ? "" : "invisible")}>
+                            <NavLink tag="div" to={"/deals/" + deal.objectId + "/timeline" } className="widgetLink">
+                                <div>
+                                    <i className={"fa fa-calendar " + iconSizeClassname}></i>
+                                    &nbsp; Timeline
+                                </div>
+                                <div>
+                                    <span className="title">{this.formatDate(deal.profile.timeline)}</span>
+                                </div>
 
-                        </NavLink>
+                            </NavLink>
+                        </div>
                     </div>
-                </div>
-                <div className={widgetClassName}>
-                    <div className="row text-center">
-                        <NavLink tag="div" to={"/deals/" + deal.objectId + "/participants" } className="widgetLink">
-                            <div>
-                                <i data-badge={stakeholderCount} className={"fa icon-badge fa-user " + iconSizeClassname}></i>
-                                    &nbsp; Participants
-                            </div>
-                            <div>
-                                <span className="title">{stakeholderCount}</span>
-                            </div>
-                        </NavLink>
+                    <div className={widgetClassName}>
+                        <div className="row text-center">
+                            <NavLink tag="div" to={"/deals/" + deal.objectId + "/participants" } className="widgetLink">
+                                <div>
+                                    <i className={"fa fa-user " + iconSizeClassname}></i>
+                                        &nbsp; Participants
+                                </div>
+                                <div>
+                                    <span className="title">{stakeholderCount}</span>
+                                </div>
+                            </NavLink>
+                        </div>
+                    </div>
+                    <div className={widgetClassName}>
+                        <div className="row text-center">
+                            <NavLink tag="div" to={"/deals/" + deal.objectId + "/documents" } className="widgetLink">
+                                <div>
+                                    <i className={"fa fa-file " + iconSizeClassname}></i>
+                                        &nbsp; Documents
+                                </div>
+                                <div>
+                                    <span className="title">{documentCount}</span>
+                                </div>
+                            </NavLink>
+                        </div>
                     </div>
                 </div>
             </div>

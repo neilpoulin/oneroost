@@ -31,12 +31,14 @@ $textColor: $mainColor;
         }
 
         .widgetLink{
+            padding: 0px 5px 0px 5px;
             > a{
                 background-color: $largeClickableBg;
                 border: $borderWeightThick solid $borderColorThick;
                 border-radius: 10px;
-                padding: 20px;
+                padding: 10px;
                 display: inline-block;
+                width: 100%;
                 &:hover{
                     color:  $activeColor;
                     border-color: $activeBorderColor;

@@ -3,8 +3,8 @@ import Parse from "Parse";
 import ParseReact from "parse-react";
 
 export default React.createClass({
-    mixins: [ParseReact.Mixin],    
-    observe: function(){
+    mixins: [ParseReact.Mixin],
+    observe: function(props, state){
         console.log("observing");
         return {
             users: (new Parse.Query(Parse.User)).ascending("createdAt").limit(10)

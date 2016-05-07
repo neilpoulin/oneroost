@@ -16,7 +16,10 @@ $largeClickableBg: #EEEFF1;
 //borders
 $borderColorThick: #D3D3D3;
 $borderWeightThick: 2px;
+$borderThick: $borderWeightThick solid $borderColorThick;
+$borderWeightThin: 1px;
 $borderColorThin: #EAEAEA;
+$bordereThin: $borderWeightThin solid $borderColorThin;
 
 //sidebar
 $sidebarBg: #F9FAFC;

@@ -4,7 +4,7 @@ import ParseReact from "parse-react";
 
 const UserDashboard = React.createClass({
     mixins: [ParseReact.Mixin],
-    observe: function(){
+    observe: function(props, state){
         var user = Parse.User.current();
         var dealQuery = new Parse.Query("Deal");
         dealQuery.include("account");
