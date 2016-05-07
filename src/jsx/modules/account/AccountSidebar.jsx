@@ -29,7 +29,7 @@ export default React.createClass({
     render () {
         var contents;
         if ( this.pendingQueries().length > 0 ){
-            contents = <div>Loading....</div>;            
+            contents = <div>Loading....</div>;
         }
         else {
             var deals = this.data.stakeholders.map(function(stakeholder){
@@ -44,7 +44,7 @@ export default React.createClass({
         return (
             <div id="accountSidebar" className="col-md-2 container-fluid hidden-sm hidden-xs">
                 <AddAccountButton
-                    btnClassName="btn-success"
+                    btnClassName="btn-outline-primary btn-block"
                     onSuccess={this.onSuccess}
                 >
                     <i className="fa fa-plus">Create Account</i>

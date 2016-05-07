@@ -1,21 +1,40 @@
-import React from "react";
+import React, {PropTypes} from "react";
+import moment from "moment";
 
 export default React.createClass({
+    propTypes: {
+        comment: PropTypes.shape({
+            author: PropTypes.object,
+            createdAt: PropTypes.instanceOf(Date).isRequired
+        }).isRequired,
+        previousComment: PropTypes.shape({
+            author: PropTypes.object
+        }),
+        forceShowUsername: PropTypes.bool.isRequired
+    },
+    getDefaultProps: function(){
+        return {
+            forceShowUsername: false
+        }
+    },
     formatCommentDate: function( comment )
     {
         var date = comment.createdAt;
-        return date.toLocaleString();
+        return moment(date).format("h:m a");
     },
     render: function(){
         var comment = this.props.comment;
-        var isSystem = comment.author == null;
-        var commentId = comment.author != null ? comment.author.objectId : null;
-        var hasPreviousCommentAuthor = this.props.previousComment != null && this.props.previousComment.author != null;
-        var previousCommentAuthorId = hasPreviousCommentAuthor ? this.props.previousComment.author.objectId : null;
+        var commentId = comment.author != null ? comment.author.objectId || comment.author.id : null;
 
-        var sameAuthorAsPrevious = commentId == previousCommentAuthorId;
+        var previousComment = this.props.previousComment;
+        var previousCommentAuthor = previousComment != null ? previousComment.author : null;
+
+        var previousCommentAuthorId = previousCommentAuthor != null ? previousComment.author.objectId || previousComment.author.id : null;
+        var isSystem = comment.author == null;
+
+        var sameAuthorAsPrevious = commentId == previousCommentAuthorId && commentId != null;
         var result =
-        <li className={"comment " + (isSystem ? "system " : "") + (sameAuthorAsPrevious ? "repeatAuthor " : "") }>
+        <li className={"comment " + (isSystem ? "system " : "") + (!this.props.forceShowUsername && sameAuthorAsPrevious ? "repeatAuthor " : "") }>
             <div className="container-fluid">
                 <div className="row authorRow">
                     <span className="username">{comment.username}</span>
