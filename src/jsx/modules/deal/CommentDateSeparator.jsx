@@ -17,7 +17,7 @@ const CommentDateSeparator = React.createClass({
     },
     getFormattedDate( date )
     {
-        return moment(date).format("MMM Do, YYYY");
+        return moment(date).format("dddd, MMM Do, YYYY");
     },
     render () {
 

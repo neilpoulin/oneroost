@@ -20,7 +20,7 @@ export default React.createClass({
     formatCommentDate: function( comment )
     {
         var date = comment.createdAt;
-        return moment(date).format("h:m a");
+        return moment(date).format("h:mm a");
     },
     render: function(){
         var comment = this.props.comment;

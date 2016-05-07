@@ -13,7 +13,7 @@ const NextStepSidebar = React.createClass({
     },
     observe( props, state ){
         var dealQuery = (new Parse.Query("Deal")).equalTo("objectId", props.params.dealId);
-        var stepQuery = (new Parse.Query("NextStep")).equalTo("objectId", props.params.stepId);
+        var stepQuery = (new Parse.Query("NextStep")).equalTo("objectId", props.params.stepId).include("assignedUser");
         return {
             deal: dealQuery,
             step: stepQuery
@@ -28,7 +28,7 @@ const NextStepSidebar = React.createClass({
         var step = this.data.step[0];
         var sidebar =
         <div className="NextStepSidebar" key={"step_" + step.objectId}>
-            <h3 className="title">Next Step Details</h3>
+            <h3 className="title">{step.title}</h3>
             <NextStepForm
                 key={"stepForm_" + step.objectId}
                 step={step}

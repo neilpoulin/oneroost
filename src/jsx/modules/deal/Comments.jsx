@@ -44,6 +44,12 @@ export default React.createClass({
         && dateToCheck.getFullYear() == actualDate.getFullYear();
         return isSameDay;
     },
+    forceShowUsername: function( currentDate, previousDate )
+    {
+        var isSameDate = this.isSameDate( currentDate, previousDate );
+        var elapsedMinutes = ( currentDate.getTime() - ( previousDate != null ? previousDate.getTime() : 0) ) / 1000 / 60;
+        return !isSameDate || elapsedMinutes > 30;
+    },
     render: function(){
         var component = this;
         var deal = this.props.deal;
@@ -73,7 +79,10 @@ export default React.createClass({
             var items = [];
 
             comments.forEach(function(comment){
-                var isSameDate = component.isSameDate( comment.createdAt, previousComment != null ? previousComment.createdAt : null )
+                var currentDate = comment.createdAt
+                var previousDate = previousComment != null ? previousComment.createdAt : null;
+                var isSameDate = component.isSameDate( currentDate, previousDate );
+
                 if ( !isSameDate )
                 {
                     var separator =
@@ -84,12 +93,12 @@ export default React.createClass({
                         />
                     items.push( separator );
                 }
-
+                var forceShowUsername = component.forceShowUsername(currentDate, previousDate);
                 var item =
                 <CommentItem key={"commentItem_" + comment.objectId}
                     comment={comment}
                     previousComment={previousComment}
-                    forceShowUsername={!isSameDate}
+                    forceShowUsername={forceShowUsername}
                     />;
                 items.push(item);
                 previousComment = comment;
