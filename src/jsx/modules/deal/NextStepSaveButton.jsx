@@ -1,5 +1,4 @@
 import React, { PropTypes } from "react"
-import ParseReact from "parse-react"
 
 const NextStepSaveButton = React.createClass({
     propTypes: {
