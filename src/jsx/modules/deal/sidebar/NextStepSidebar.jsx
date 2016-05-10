@@ -1,7 +1,7 @@
 import React, { PropTypes } from "react"
 import ParseReact from "parse-react";
 import Parse from "parse";
-import NextStepForm from "./../NextStepForm";
+import NextStepDetailForm from "./../NextStepDetailForm";
 
 const NextStepSidebar = React.createClass({
     mixins: [ParseReact.Mixin],
@@ -26,14 +26,26 @@ const NextStepSidebar = React.createClass({
         }
         // var deal = this.data.deal[0];
         var step = this.data.step[0];
-        var sidebar =
-        <div className="NextStepSidebar" key={"step_" + step.objectId}>
-            <h3 className="title">{step.title}</h3>
-            <NextStepForm
-                key={"stepForm_" + step.objectId}
-                step={step}
-                />
-        </div>
+        var sidebar;
+        if ( step )
+        {
+            sidebar =
+            <div className="NextStepSidebar" key={"step_" + step.objectId}>
+                <h3 className="title">{step.title}</h3>
+                <NextStepDetailForm
+                    key={"stepForm_" + step.objectId}
+                    step={step}
+                    deal={this.data.deal[0]}
+                    />
+            </div>
+        }
+        else{
+            sidebar =
+            <div className="NextStepSidebar" key={"step_not_found" }>
+                <h3 className="title">No Step Selected</h3>
+            </div>
+        }
+
         return sidebar;
     }
 });
