@@ -71,40 +71,40 @@ export default React.createClass({
         });
     },
     render: function () {
-        return (
-            <div className="NextStepsFormContainer">
-                <div className="form-self">
-                    <label htmlFor="nextStepTitle">Title</label>
-                    <input id="nextStepTitle"
-                        type="text"
-                        className="form-control"
-                        valueLink={this.linkState("title")}/>
-                </div>
-                <div className="form-self">
-                    <label htmlFor="nextStepDescription">Description</label>
-                    <input id="nextStepDescription"
-                        type="text"
-                        className="form-control"
-                        valueLink={this.linkState("description")}/>
-                </div>
-                <div className="form-self">
-                    <label htmlFor="nextStepDueDate">Due Date</label>
-
-                    <DatePicker
-                        selected={this.state.dueDate}
-                        onChange={this.handleDateChange}
-                        className="form-control"
-                        id="nextStepDueDate"
-                        />
-
-                </div>
-                <div className="form-self">
-                    <label htmlFor="nextStepAssignedUser">Assigned User</label>
-
-                    <Dropdown deal={this.props.deal} handleChange={this.handleUserChange}/>
-
-                </div>
+        var form =
+        <div className="NextStepsFormContainer">
+            <div className="form-group">
+                <label htmlFor="nextStepTitle">Title</label>
+                <input id="nextStepTitle"
+                    type="text"
+                    className="form-control"
+                    valueLink={this.linkState("title")}/>
             </div>
-        );
+            <div className="form-group">
+                <label htmlFor="nextStepDescription">Description</label>
+                <input id="nextStepDescription"
+                    type="text"
+                    className="form-control"
+                    valueLink={this.linkState("description")}/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="nextStepDueDate">Due Date</label>
+
+                <DatePicker
+                    selected={this.state.dueDate}
+                    onChange={this.handleDateChange}
+                    className="form-control"
+                    id="nextStepDueDate"
+                    />
+
+            </div>
+            <div className="form-group">
+                <label htmlFor="nextStepAssignedUser">Assigned User</label>
+
+                <Dropdown deal={this.props.deal} handleChange={this.handleUserChange}/>
+
+            </div>
+        </div>
+        return form;
     }
 });

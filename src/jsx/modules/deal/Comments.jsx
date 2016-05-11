@@ -73,9 +73,11 @@ export default React.createClass({
         }
         else
         {
-            var comments = this.data.dealComments.sort(function(a, b){
-                return a.createdAt.getTime() > b.createdAt.getTime();
-            });
+            // var comments = this.data.dealComments.sort(function(a, b){
+            //     return a.createdAt.getTime() > b.createdAt.getTime();
+            // });
+            var comments = this.data.dealComments.slice(0);
+            comments.reverse();
             var items = [];
 
             comments.forEach(function(comment){

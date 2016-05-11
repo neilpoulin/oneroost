@@ -8,7 +8,7 @@ exports.initialize = function()
     Parse.Cloud.define("addStakeholder", function(request, response) {
         var dealId = request.params.dealId;
         var stakeholder = request.params.stakeholder;
-
+        var currentUser = request.user;
         new Parse.Query("Deal").get( dealId , {
             success: function( deal ){
                 console.log("deal found..trying to find the user with email = " + stakeholder.email );
@@ -16,12 +16,14 @@ exports.initialize = function()
                     success: function( user ){
                         if ( user != null)
                         {
-                            console.log( "found user with email = " + user.get("email") );                            
+                            console.log( "found user with email = " + user.get("email") );
+                            response.success({user: user});
                         }
                         else
                         {
                             console.log( "no user found with email = " + stakeholder.email );
-                            createStakeholderUser( stakeholder, deal, Parse.User.current(), response );
+
+                            createStakeholderUser( stakeholder, deal, currentUser, response );
                         }
                     },
                     error: function(error){

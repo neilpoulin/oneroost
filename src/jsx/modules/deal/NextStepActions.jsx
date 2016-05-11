@@ -3,6 +3,7 @@ import NextStepDeleteButton from "./NextStepDeleteButton"
 import NextStepSaveButton from "./NextStepSaveButton"
 import NextStepEditButton from "./NextStepEditButton"
 import NextStepStatusChangeButton from "./NextStepStatusChangeButton"
+import NextStepCancelButton from "./NextStepCancelButton"
 
 const NextStepActions = React.createClass({
     propTypes: {
@@ -10,7 +11,8 @@ const NextStepActions = React.createClass({
         isEdit: PropTypes.bool.isRequired,
         handleSave: PropTypes.func,
         handleEdit: PropTypes.func,
-        afterDelete: PropTypes.func
+        afterDelete: PropTypes.func,
+        handleCancel: PropTypes.func
     },
     getDefaultProps(){
         return {
@@ -24,6 +26,9 @@ const NextStepActions = React.createClass({
             },
             handleEdit: function(){
                 console.log("no handleEdit function specified");
+            },
+            handleCancel: function(){
+                console.log("no handleCancel was specified");
             }
         }
     },
@@ -39,10 +44,14 @@ const NextStepActions = React.createClass({
     getDeleteButton(){
         return <NextStepDeleteButton step={this.props.step} afterDelete={this.props.afterDelete} key={"next_step_action_delete_" + this.props.step.objectId}/>
     },
+    getCancelButton(){
+        return <NextStepCancelButton handleCancel={this.props.handleCancel} key={"next_step_action_cancel_" + this.props.step.objectId} />
+    },
     render () {
         var actions = [];
 
         if ( this.props.isEdit ){
+            actions.push( this.getCancelButton() );
             actions.push( this.getDeleteButton() );
             actions.push( this.getSaveButton() );
         }

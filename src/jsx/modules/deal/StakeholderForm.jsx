@@ -1,16 +1,21 @@
-import React from "react";
+import React, {PropTypes} from "react";
 import Parse from "parse";
 import ParseReact from "parse-react";
 import LinkedStateMixin from "react-addons-linked-state-mixin"
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
+    propTypes: {
+        deal: PropTypes.shape({
+            objectId: PropTypes.string.isRequired
+        })
+    },
     getInitialState: function(){
         return {
             firstName: null,
             lastName: null,
             email: null,
-            role: null,
+            role: "BUYER",
             deal: this.props.deal,
             user: Parse.User.current()
         };
@@ -62,40 +67,41 @@ export default React.createClass({
         });
     },
     render: function(){
-        return (
-            <div className="StakeholderFormContainer">
-                <div className="form-group">
-                    <label htmlFor="firstNameInput">First Name</label>
-                    <input id="firstNameInput"
-                        type="text"
-                        className="form-control"
-                        valueLink={this.linkState("firstName")} />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="lastNameInput">Last Name</label>
-                    <input id="lastNameInput"
-                        type="text"
-                        className="form-control"
-                        valueLink={this.linkState("lastName")} />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="stakeholderEmailInput">Email</label>
-                    <input id="stakeholderEmailInput"
-                        type="text"
-                        className="form-control"
-                        valueLink={this.linkState("email")} />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="userRoleInput">User Role</label>
-                    <select id="userRoleInput"
-                        type="text"
-                        className="form-control"
-                        valueLink={this.linkState("role")} >
-                        <option value="BUYER" defaultValue>Buyer</option>
-                        <option value="SELLER">Seller</option>
-                    </select>
-                </div>
+        var form =
+        <div className="StakeholderFormContainer">
+            <div className="form-group">
+                <label htmlFor="firstNameInput">First Name</label>
+                <input id="firstNameInput"
+                    type="text"
+                    className="form-control"
+                    valueLink={this.linkState("firstName")} />
             </div>
-        );
+            <div className="form-group">
+                <label htmlFor="lastNameInput">Last Name</label>
+                <input id="lastNameInput"
+                    type="text"
+                    className="form-control"
+                    valueLink={this.linkState("lastName")} />
+            </div>
+            <div className="form-group">
+                <label htmlFor="stakeholderEmailInput">Email</label>
+                <input id="stakeholderEmailInput"
+                    type="text"
+                    className="form-control"
+                    valueLink={this.linkState("email")} />
+            </div>
+            <div className="form-group">
+                <label htmlFor="userRoleInput">User Role</label>
+                <select id="userRoleInput"
+                    type="text"
+                    className="form-control"
+                    valueLink={this.linkState("role")}
+                    defaultValue={this.state.role} >
+                    <option value="BUYER" defaultValue>Buyer</option>
+                    <option value="SELLER">Seller</option>
+                </select>
+            </div>
+        </div>
+        return form;
     }
 });

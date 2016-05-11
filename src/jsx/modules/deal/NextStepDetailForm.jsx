@@ -18,6 +18,9 @@ const NextStepDetailForm = React.createClass({
     handleEdit: function(){
         this.setState({isEdit: true});
     },
+    handleCancel: function(){
+        this.setState({isEdit: false});
+    },
     afterSave: function(){
         this.setState({isEdit: false});
     },
@@ -45,6 +48,7 @@ const NextStepDetailForm = React.createClass({
                 deal={this.props.deal}
                 afterSave={this.afterSave}
                 afterDelete={this.afterDelete}
+                handleCancel={this.handleCancel}
                 />
         }
         else {

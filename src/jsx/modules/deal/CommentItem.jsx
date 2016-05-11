@@ -1,5 +1,7 @@
 import React, {PropTypes} from "react";
 import moment from "moment";
+import SystemComment from "./SystemComment"
+import UserComment from "./UserComment"
 
 export default React.createClass({
     propTypes: {
@@ -24,28 +26,20 @@ export default React.createClass({
     },
     render: function(){
         var comment = this.props.comment;
-        var commentId = comment.author != null ? comment.author.objectId || comment.author.id : null;
+        var isSystem = comment.author == null;
+        if ( isSystem )
+        {
+            return <SystemComment comment={comment}/>
+        }
 
+        var commentAuthorId = comment.author != null ? comment.author.objectId || comment.author.id : null;
         var previousComment = this.props.previousComment;
         var previousCommentAuthor = previousComment != null ? previousComment.author : null;
-
         var previousCommentAuthorId = previousCommentAuthor != null ? previousComment.author.objectId || previousComment.author.id : null;
-        var isSystem = comment.author == null;
+        var sameAuthorAsPrevious = commentAuthorId == previousCommentAuthorId && commentAuthorId != null;
+        var showAuthor = this.props.forceShowUsername || !sameAuthorAsPrevious;
 
-        var sameAuthorAsPrevious = commentId == previousCommentAuthorId && commentId != null;
-        var result =
-        <li className={"comment " + (isSystem ? "system " : "") + (!this.props.forceShowUsername && sameAuthorAsPrevious ? "repeatAuthor " : "") }>
-            <div className="container-fluid">
-                <div className="row authorRow">
-                    <span className="username">{comment.username}</span>
-                    &nbsp;
-                    <span className="postTime">{this.formatCommentDate(comment)}</span>
-                </div>
-                <div className="row">
-                    <span className="message">{comment.message}</span>
-                </div>
-            </div>
-        </li>
+        var result = <UserComment comment={comment} showAuthor={showAuthor}/>
         return result;
     }
 });

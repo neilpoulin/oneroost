@@ -12,7 +12,8 @@ const NextStepDetailEdit = React.createClass({
         step: PropTypes.object.isRequired,
         deal: PropTypes.object.isRequired,
         afterSave: PropTypes.func.isRequired,
-        afterDelete: PropTypes.func.isRequired
+        afterDelete: PropTypes.func.isRequired,
+        handleCancel: PropTypes.func.isRequired
     },
     mixins: [LinkedStateMixin],
     getInitialState: function () {
@@ -79,21 +80,21 @@ const NextStepDetailEdit = React.createClass({
     render () {
         var form =
         <div>
-            <div className="form-self">
+            <div className="form-group">
                 <label htmlFor="nextStepTitle">Title</label>
                 <input id="nextStepTitle"
                     type="text"
                     className="form-control"
                     valueLink={this.linkState("title")}/>
             </div>
-            <div className="form-self">
+            <div className="form-group">
                 <label htmlFor="nextStepDescription">Description</label>
                 <input id="nextStepDescription"
                     type="text"
                     className="form-control"
                     valueLink={this.linkState("description")}/>
             </div>
-            <div className="form-self">
+            <div className="form-group">
                 <label htmlFor="nextStepDueDate">Due Date</label>
 
                 <DatePicker
@@ -103,14 +104,16 @@ const NextStepDetailEdit = React.createClass({
                     id="nextStepDueDate"
                     />
             </div>
-            <div className="form-self">
+            <div className="form-group">
                 <label htmlFor="nextStepAssignedUser">Assigned User</label>
                 <Dropdown deal={this.props.deal} handleChange={this.handleUserChange} value={this.assignedUser != null ? this.assignedUser.objectId : null}/>
             </div>
             <NextStepActions step={this.props.step}
                 isEdit={true}
                 handleSave={this.handleSave}
-                afterDelete={this.props.afterDelete}/>
+                afterDelete={this.props.afterDelete}
+                handleCancel={this.props.handleCancel}
+                />
         </div>
         return form;
     }
