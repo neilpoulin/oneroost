@@ -89,10 +89,11 @@ const NextStepDetailEdit = React.createClass({
             </div>
             <div className="form-group">
                 <label htmlFor="nextStepDescription">Description</label>
-                <input id="nextStepDescription"
+                <textarea id="nextStepDescription"
                     type="text"
                     className="form-control"
-                    valueLink={this.linkState("description")}/>
+                    rows="4"
+                    valueLink={this.linkState("description")}></textarea>
             </div>
             <div className="form-group">
                 <label htmlFor="nextStepDueDate">Due Date</label>
