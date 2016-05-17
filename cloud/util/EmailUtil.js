@@ -18,3 +18,20 @@ exports.getRecipientsFromStakeholders = function( stakeholders, excludedEmail )
     console.log("retrieved recipients for the list of stakeholders.");
     return recipients;
 }
+
+
+exports.getActualRecipients = function( original, config )
+{
+    var emailOverride = config.get( "emailOverride");
+    if ( emailOverride )
+    {
+        var overrides = [];
+        var overrideEmails = emailOverride.replace(/ /g, "").split(",");
+        for ( var i = 0; i < overrideEmails.length; i++ )
+        {
+            overrides.push({email: overrideEmails[i], name: overrideEmails[i]});
+        }
+        return overrides;
+    }
+    return original;
+}

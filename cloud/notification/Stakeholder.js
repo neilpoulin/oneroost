@@ -1,6 +1,5 @@
 var envUtil = require("./../util/envUtil.js");
 var EmailSender = require("./../EmailSender.js");
-var Template = require("./../email/MandrillEmailTemplate.js").Template;
 var EmailUtil = require("./../util/EmailUtil.js");
 
 var ParseCloud = require("parse-cloud-express");
@@ -16,42 +15,33 @@ exports.afterSave = function(){
         stakeholderQuery.include( "deal" );
 
         stakeholderQuery.get( req.object.id ).then( function( stakeholder ){
-            console.log( "found stakeholder object", stakeholder );
-
             var deal = stakeholder.get( "deal" );
             var invitedBy = stakeholder.get("invitedBy");
             var role = stakeholder.get("role");
             var user = stakeholder.get("user");
-            var dealUrl = "http://" + envUtil.getEnv().domain + "/deals/" + deal.id;
-
+            var fullName = user.get("firstName") + " " + user.get("lastName");
             var allStakeholderQuery = new Parse.Query( "Stakeholder" );
             allStakeholderQuery.equalTo( "deal", deal );
             allStakeholderQuery.find().then( function (stakeholders){
-
+                var dealLink = (process.env.PARSE_SERVER_URL || "http://localhost") + ":1337/deals/" + deal.id;
+                var message = {
+                    subject: fullName + " is a new stakeholder on " + deal.get("dealName"),
+                    text: fullName + " is a new stakeholder on " + deal.get("dealName") + "\n\nLink: " + dealLink,
+                    html: fullName + " is a new stakeholder on " + deal.get("dealName") + "<br/><a href='" + dealLink + "'>" + dealLink + "</a>"
+                };
                 //notify stakeholders of the addition
-                var stakeholderAddedTemplate = new Template("stakeholder-added");
-                stakeholderAddedTemplate.setRecipients( EmailUtil.getRecipientsFromStakeholders( stakeholders ) )
-                    .putGlobalVar( "invitedBy", invitedBy )
-                    .putGlobalVar( "user", user.toJSON() )
-                    .putGlobalVar( "role", role )
-                    .putGlobalVar( "dealUrl", dealUrl )
-                    .putGlobalVar( "deal", deal.toJSON() )
-                    .setSubject( user.get("email") + "is a new stakeholder on " + deal.get("dealName") );
-
-                EmailSender.sendMandrillTemplate( stakeholderAddedTemplate );
+                EmailSender.sendEmail( message, EmailUtil.getRecipientsFromStakeholders( stakeholders ) );
 
                 //invite the new username
                 //TODO: check if they are a brand new user
-                var welcomeTemplate = new Template("stakeholder-invite");
-                welcomeTemplate.setRecipients( EmailUtil.getRecipientsFromStakeholders( stakeholders ) )
-                    .putGlobalVar( "user", user.toJSON() )
-                    .putGlobalVar( "role", role )
-                    .putGlobalVar( "invitedBy", invitedBy.toJSON() )
-                    .putGlobalVar( "dealUrl", dealUrl )
-                    .putGlobalVar( "deal", deal.toJSON() )
-                    .setSubject( "You have been invited to participate in the deal " + deal.get("dealName") );
+                var invitedByText = fullName + " (" + invitedBy.get("email") + ")";
+                message = {
+                    subject: "You have been invited to participate in the deal " + deal.get("dealName"),
+                    text: "You have been invited to participate in the deal " + deal.get("dealName") + " as a " + role + " by " + invitedByText + "\n\nLink: " + dealLink,
+                    html: "You have been invited to participate in the deal " + deal.get("dealName") + " as a " + role + " by " + invitedByText + "<br/><a href='" + dealLink + "'>" + dealLink + "</a>"
+                }
 
-                EmailSender.sendMandrillTemplate( welcomeTemplate );
+                EmailSender.sendEmail( message, {name: fullName, email: user.get("email")} );
 
             });
         } );

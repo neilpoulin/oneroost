@@ -1,6 +1,7 @@
 $borderHeight: ($nextStepBannerHeight )/2;
 $endPadding: 10px;
 $completedTextColor: #80848f;
+$border-radius: 10px;
 .arrow-right{
     display: block;
     float: left;
@@ -31,8 +32,8 @@ $completedTextColor: #80848f;
     }
 
     &:first-child {
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
+        border-top-left-radius: $border-radius;
+        border-bottom-left-radius: $border-radius;
         padding-left: 0px;
         a{
             padding-left: $endPadding;
@@ -62,11 +63,45 @@ $completedTextColor: #80848f;
 
 }
 
+.CompletedNextStepItemContainer{
+
+    .nextStepTitle{
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    .nextStepDescription{
+        color: $secondaryColor;
+    }
+    .nextStepDueDate{
+        font-size: .8em;
+    }
+    &:hover{
+        color: $activeColor;
+        cursor: pointer;
+        background-color: $activeBg;
+        .editButtons{
+            // display: inline-block;
+        }
+    }
+    a{
+        text-decoration: none;
+        color: inherit;
+        padding: .5em;
+        display: block;
+        height: 100%;
+    }
+}
 .NextStepItemContainer{
+    width: 19%;
+}
+
+.CompletedStepsContainer{
+    border-radius: $border-radius;
+}
+.NextStepItemContainer, .CompletedStepsContainer{
     text-align: center;
     min-width: 50px;
     height: 100%;
-    width: 19%;
     float:left;
     position: relative;
     a {
@@ -80,20 +115,15 @@ $completedTextColor: #80848f;
     .nextStepTitle{
         font-size: 1.2em;
         font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .nextStepDescription{
         color: $secondaryColor;
     }
     .nextStepDueDate{
         font-size: .8em;
-    }
-
-    .editButtons{
-        display: none;
-        @include vertical-align();
-        position: absolute;
-        left: $borderHeight + $endPadding;
-        right: $endPadding;
     }
     &.active{
         background-color: $activeBg;
@@ -104,16 +134,6 @@ $completedTextColor: #80848f;
         cursor: pointer;
         .editButtons{
             // display: inline-block;
-        }
-    }
-    &:first-of-type{
-        .editButtons{
-            left: $endPadding;
-        }
-    }
-    &:nth-last-child(2){
-        .editButtons{
-            right: $endPadding;
         }
     }
 
