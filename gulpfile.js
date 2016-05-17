@@ -180,7 +180,10 @@ var sassOpts = {
     gulp.task("start", ["clean", "watch"], function(){
         nodemon({
             script: "main.js",
-            watch: ["public", "cloud"]
+            watch: ["public", "cloud"],
+            env: {
+                AWS_PROFILE: "oneroost"
+            }
         })
         .on("restart", function () {
             console.log("nodemon restarted the node server!")

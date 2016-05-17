@@ -15,6 +15,7 @@ import StakeholderSidebar from "./modules/deal/sidebar/StakeholderSidebar";
 import TimelineSidebar from "./modules/deal/sidebar/TimelineSidebar";
 import BudgetSidebar from "./modules/deal/sidebar/BudgetSidebar";
 import NextStepSidebar from "./modules/deal/sidebar/NextStepSidebar";
+import NextStepCompletedSidebar from "./modules/deal/sidebar/NextStepCompletedSidebar";
 import DocumentsSidebar from "./modules/deal/sidebar/DocumentsSidebar";
 
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
@@ -35,7 +36,8 @@ render(
             <Route path="/deals/:dealId/timeline" component={TimelineSidebar}/>
             <Route path="/deals/:dealId/budget" component={BudgetSidebar}/>
             <Route path="/deals/:dealId/documents" component={DocumentsSidebar}/>
-            <Route path="/deals/:dealId/steps/:stepId" component={NextStepSidebar}/>
+            <Route path="/deals/:dealId/steps/completed" component={NextStepCompletedSidebar}/>
+            <Route path="/deals/:dealId/steps/:stepId" component={NextStepSidebar}/>            
           </Route>
         </Route>
       </Route>

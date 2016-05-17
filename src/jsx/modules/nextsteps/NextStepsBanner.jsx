@@ -1,6 +1,7 @@
 import React from "react";
 import Parse from "parse";
 import ParseReact from "parse-react";
+import NavLink from "./../NavLink";
 import AddNextStepButton from "./AddNextStepButton";
 import NextStepItem from "./NextStepItem";
 
@@ -23,12 +24,7 @@ export default React.createClass({
 
         if ( this.pendingQueries().length > 0 )
         {
-            return <div><i className="fa fa-spin fa-spinner"></i>Loading Steps... </div>
-        }
-
-        if ( this.data.nextSteps.length < 5 )
-        {
-            addButton = <AddNextStepButton deal={self.state.deal} />;
+            return <div id="NextStepsBannerContainer"><i className="fa fa-spin fa-spinner"></i>Loading Steps... </div>
         }
 
         var completedSteps = [];
@@ -43,21 +39,37 @@ export default React.createClass({
             }
         });
 
+        if ( nextSteps.length < 5 )
+        {
+            addButton = <AddNextStepButton deal={self.state.deal} />;
+        }
+
+        var completedStepsItem = null
+        if ( completedSteps.length > 0 )
+        {
+            completedStepsItem =
+            <NavLink tag="div" to={"/deals/" + this.props.deal.objectId + "/steps/completed" }
+                className={"NextStepBannerItem CompletedStepsContainer col-sm-2" + (this.state.active ? "active " : "")} >
+                <div className="nextStepTitle">Completed Steps</div>
+                <div className="nextStepDueDate">{completedSteps.length}</div>
+            </NavLink>
+        }
+
         var banner =
-        <div id="NextStepsBannerContainer" className="">
-            <div className="CompletedStepsContainer">
-                Completed Steps: {completedSteps.length}
+        <div id="NextStepsBannerContainer" className="row">
+            {completedStepsItem}
+            <div className="NextStepBannerItem col-sm-10">
+                {nextSteps.map(function(step){
+                    var item =
+                    <NextStepItem
+                        step={step}
+                        deal={self.state.deal}
+                        key={"deal_" + self.state.deal.objectId + "step_" + step.objectId} >
+                    </NextStepItem>
+                    return item;
+                })}
+                {addButton}
             </div>
-            {nextSteps.map(function(step){
-                var item =
-                <NextStepItem
-                    step={step}
-                    deal={self.state.deal}
-                    key={"deal_" + self.state.deal.objectId + "step_" + step.objectId} >
-                </NextStepItem>
-                return item;
-            })}
-            {addButton}
         </div>
 
 
