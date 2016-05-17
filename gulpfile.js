@@ -191,7 +191,10 @@ var sassOpts = {
         nodemon({
             script: "main.js",
             watch: ["public", "cloud"],
-            nodeArgs: ["--debug"]
+            nodeArgs: ["--debug"],
+            env: {
+                AWS_PROFILE: "oneroost"
+            }
         })
         .on("restart", function () {
             console.log("nodemon restarted the node server!")

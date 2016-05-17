@@ -1,6 +1,5 @@
 var EmailUtil = require("./../util/EmailUtil.js");
 var EmailSender = require("./../EmailSender.js");
-var Template = require("./../email/MandrillEmailTemplate.js").Template;
 var envUtil = require("./../util/envUtil.js");
 var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
@@ -15,25 +14,16 @@ function sendCommentEmail( comment ){
     stakeholderQuery.include( "user" );
     stakeholderQuery.equalTo( "deal", deal );
     stakeholderQuery.find().then( function( stakeholders ){
-        console.log( "building MandrillEmailTemplate " );
         var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, authorEmail );
-
-        console.log( "successfully parsed recipients");
-        var template = new Template( "commentnotification" );
-
-        console.log( "setting up template");
-        console.log( JSON.stringify( deal.toJSON() ) );
-        template.setRecipients( recipients )
-            .putGlobalVar( "deal", deal.toJSON() )
-            .putGlobalVar( "author", author.toJSON() )
-            .putGlobalVar( "comment", comment.toJSON() )
-            .setSubject( deal.dealName + " - New Comment from " + comment.get("username") );
-
-        console.log("attempting to send via templates");
-        EmailSender.sendMandrillTemplate( template );
+        var dealLink = (process.env.PARSE_SERVER_URL || "http://localhost") + ":1337/deals/" + deal.id;
+        var message = {
+            subject: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName"),
+            text: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName") + "\n\nmessage: " + comment.get("message") + "\nLink: " + dealLink,
+            html: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName") + "<br/><br/>message: " + comment.get("message") + "<br/><a href='" + dealLink + "'>" + dealLink + "</a>"
+        }
+        EmailSender.sendEmail( message, recipients );
     });
 }
-
 
 exports.afterSave = function(){
     Parse.Cloud.afterSave( "DealComment", function( req, res ){
