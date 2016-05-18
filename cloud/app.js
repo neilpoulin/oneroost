@@ -4,7 +4,7 @@ var ejs = require("ejs");
 var ParseServer = require("parse-server").ParseServer;
 var S3Adapter = require("parse-server").S3Adapter;
 var bodyParser = require("body-parser")
-
+var favicon = require("serve-favicon");
 var Notifications = require("./notification/Notifications.js");
 var envUtil = require("./util/envUtil.js");
 var Stakeholders = require("./stakeholders.js");
@@ -15,6 +15,7 @@ app.engine("ejs", ejs.__express);
 app.use(bodyParser.json());
 app.use("/parse", getParseServer());
 app.use("/static", express.static(__dirname + "./../public"));
+app.use(favicon(__dirname + "./../public/favicon.ico"));
 app.set("views", "cloud/views");
 
 var port = envUtil.getParsePort();
