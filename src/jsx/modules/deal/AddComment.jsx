@@ -26,8 +26,9 @@ export default React.createClass({
     saveComment: function( comment )
     {
         console.log("submitting comment: " + this.state.message);
+        var msg = this.formatMessage( this.state.message )
         var comment = {
-            message: this.state.message,
+            message: msg,
             author: this.state.user,
             username: this.state.user.get("username"),
             deal: this.props.deal
@@ -35,6 +36,11 @@ export default React.createClass({
 
         ParseReact.Mutation.Create("DealComment", comment).dispatch();
         this.setState({message: ""});
+    },
+    formatMessage(msg)
+    {
+        msg = msg.replace(/\n\n+/g,"\n\n");
+        return msg.trim();
     },
     handleKeyDown: function( event )
     {
@@ -45,18 +51,10 @@ export default React.createClass({
         // }
     },
     onTextAreaResize(height){
-        this.refs.addButton.style.height = height + 'px';
-        this.props.onHeightChange();        
+        this.refs.addButton.style.height = height + "px";
+        this.props.onHeightChange();
     },
     render: function(){
-        var oldInput =
-        <input type="text" className="form-control custom-control"
-            id="addCommentInput"
-            placeholder="Write your message..."
-            rows="1"
-            valueLink={this.linkState("message")}
-            onKeyDown={this.handleKeyDown} />
-
         var addComment =
         <div className="addCommentContainer row-fluid">
             <div className="input-group input-group-lg">
