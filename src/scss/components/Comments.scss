@@ -27,7 +27,7 @@ $timestampTextColor: $systemMsgColor;
     position: relative;
     margin-top: 10px;
     .message{
-        white-space: pre;
+        white-space: pre-wrap;
     }
     .username{
         font-weight: bold;
