@@ -1,4 +1,5 @@
-import React from "react";
+import React, {PropTypes} from "react";
+import ReactDOM from "react-dom"
 import Parse from "parse";
 import ParseReact from "parse-react";
 import AddComment from "./AddComment";
@@ -8,6 +9,13 @@ import $ from "jquery";
 
 export default React.createClass({
     mixins: [ParseReact.Mixin],
+    propTypes: {
+        deal: PropTypes.object.isRequired
+    },
+    getDefaultProps: function(){
+        return{
+        }
+    },
     getInitialState: function(){
         return {
             commentLimit: 100
@@ -33,6 +41,11 @@ export default React.createClass({
     {
         var $commentContainer = $(this.refs.messagesContainer);
         $commentContainer.scrollTop( $commentContainer.prop("scrollHeight") );
+    },
+    calculateDimensions: function(){        
+        var addCommentBounding = ReactDOM.findDOMNode( this.refs.addComment ).getBoundingClientRect();
+        this.refs.messagesContainer.style.bottom = addCommentBounding.height + "px";
+        this.scrollToBottom();
     },
     isSameDate(nextDate, previousDate)
     {
@@ -123,7 +136,8 @@ export default React.createClass({
             </div>
             <AddComment
                 ref="addComment"
-                deal={deal} >
+                deal={deal}
+                onHeightChange={this.calculateDimensions} >
             </AddComment>
         </div>
 
