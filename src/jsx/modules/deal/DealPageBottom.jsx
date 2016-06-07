@@ -18,6 +18,7 @@ const DealPageBottom = React.createClass({
         this.updateDimensions();
     },
     updateDimensions: function(){
+        console.log("updating dimensions");
         var container = this.refs.DealPageBottom;
         var dealBoundingRect = container.getBoundingClientRect();
         var fixedContainer = this.refs.fixedContainer;
@@ -42,7 +43,10 @@ const DealPageBottom = React.createClass({
         var pageBottom =
         <div className="DealPageBottom" ref="DealPageBottom">
             <div className="fixedContainer" ref="fixedContainer">
-                <Comments ref="comments" deal={deal} columns={commentsColumns} />
+                <Comments
+                    ref="comments"
+                    deal={deal}
+                    columns={commentsColumns} />
                 {sidebar}
             </div>
         </div>;
