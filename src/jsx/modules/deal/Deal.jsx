@@ -42,27 +42,29 @@ const Deal = React.createClass({
                 <div>ERROR</div>
             )
         }
-        return (
-            <div className="Deal">
-                <div
-                    className="container-fluid"
-                    id="dealPageContainer">
-                    <div className="dealContainer col-md-10 col-md-offset-2 container-fluid">
-                        <div className="row-fluid">
-                            <div className="deal-top">                                
-                                <DealProfile deal={deal} />
-                                <NextStepsBanner deal={deal} />
-                            </div>
+
+        var dealPage =
+        <div className="Deal">
+            <div
+                className="container-fluid"
+                id="dealPageContainer">
+                <div className="dealContainer col-md-10 col-md-offset-2 container-fluid">
+                    <div className="row-fluid">
+                        <div className="deal-top hidden-xs">
+                            <DealProfile deal={deal} />
+                            <NextStepsBanner deal={deal} />
                         </div>
-                        <div className="row-fluid">
-                            <DealPageBottom ref="dealPageBottom" deal={deal}>
-                                {this.props.children}
-                            </DealPageBottom>
-                        </div>
+                    </div>
+                    <div className="row-fluid">
+                        <DealPageBottom ref="dealPageBottom" deal={deal}>
+                            {this.props.children}
+                        </DealPageBottom>
                     </div>
                 </div>
             </div>
-        )
+        </div>
+
+        return dealPage;
     }
 })
 
