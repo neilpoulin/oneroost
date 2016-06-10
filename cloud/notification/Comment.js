@@ -25,7 +25,12 @@ function sendCommentEmail( comment ){
     });
 }
 
-exports.afterSave = function(){
+function broadcast( comment )
+{
+
+}
+
+exports.afterSave = function(io){
     Parse.Cloud.afterSave( "DealComment", function( req, res ){
         console.log("DealComment afterSave triggered");
         var comment = req.object;
@@ -36,7 +41,9 @@ exports.afterSave = function(){
             query.include("deal");
             query.get( comment.id, {
                 success: function( comment ){
-                    sendCommentEmail( comment );
+                    console.log("not sending comment email - turned off for now");
+                    broadcast(comment);
+                    // sendCommentEmail( comment );
                 },
                 error: function(){
                     console.error("failed to get the deal from the comment.");

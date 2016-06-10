@@ -7,9 +7,10 @@ var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
 Parse.serverURL = envUtil.serverURL;
 
-exports.initialize = function()
+exports.initialize = function(io)
 {
     // CommentNotification.afterSave();
-    NextStepNotification.afterSave();
-    StakeholderNotification.afterSave();
+
+    NextStepNotification.afterSave(io);
+    StakeholderNotification.afterSave(io);
 }

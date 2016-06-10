@@ -37,3 +37,9 @@ For information on the library used in this project: [Sass Material Colors Githu
 ### Twitter Bootstrap v3.X
 [Twitter Bootstrap Github](https://github.com/twbs/bootstrap-sass)
 [Documentation](http://getbootstrap.com/)
+
+## SSH
+to ssh run this command:
+```
+ssh -i ~/.ssh/oneroost-aws-eb ec2-user@52.73.58.128
+```

@@ -2,6 +2,8 @@ var express = require("express");
 var moment = require("moment");
 var ejs = require("ejs");
 var ParseServer = require("parse-server").ParseServer;
+var ParseDashboard = require('parse-dashboard');
+var ParseDashboardConfig = require("./parse-dashboard-config.json");
 var S3Adapter = require("parse-server").S3Adapter;
 var bodyParser = require("body-parser")
 var favicon = require("serve-favicon");
@@ -9,14 +11,19 @@ var Notifications = require("./notification/Notifications.js");
 var envUtil = require("./util/envUtil.js");
 var Stakeholders = require("./stakeholders.js");
 var SES = require("./email/SESEmailSender.js");
+var http = require("http");
+var io = require("socket.io")(http);
 
 var app = express();
+var server = http.Server(app);
 app.engine("ejs", ejs.__express);
 app.use(bodyParser.json());
 app.use("/parse", getParseServer());
+app.use('/dashboard', getParseDashboard());
 app.use("/static", express.static(__dirname + "./../public"));
 app.use(favicon(__dirname + "./../public/favicon.ico"));
 app.set("views", "cloud/views");
+
 
 var port = envUtil.getParsePort();
 app.locals.formatTime = function(time) {
@@ -37,14 +44,28 @@ app.post("/email", function(req, resp){
     resp.send(JSON.stringify(status));
 });
 
-Notifications.initialize();
+io.on('connection', function(socket){
+  console.log('a user connected');
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
+
+Notifications.initialize(io);
 Stakeholders.initialize();
 
+// http.listen(3000, function(){
+//   console.log("listening on *:3000");
+// });
 
-app.listen(port, function() {
+server.listen(port, function() {
     console.log("parse-server OneRoost running on port " + port + ".");
 });
-// app.listen();
+
+function getParseDashboard()
+{
+    return new ParseDashboard(ParseDashboardConfig);
+}
 
 function getParseServer()
 {
