@@ -23,7 +23,7 @@ exports.afterSave = function(){
             var allStakeholderQuery = new Parse.Query( "Stakeholder" );
             allStakeholderQuery.equalTo( "deal", deal );
             allStakeholderQuery.find().then( function (stakeholders){
-                var dealLink = (process.env.PARSE_SERVER_URL || "http://localhost") + ":1337/deals/" + deal.id;
+                var dealLink = envUtil.getHost() + "/deals/" + deal.id;
                 var message = {
                     subject: fullName + " is a new stakeholder on " + deal.get("dealName"),
                     text: fullName + " is a new stakeholder on " + deal.get("dealName") + "\n\nLink: " + dealLink,

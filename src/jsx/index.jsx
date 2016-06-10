@@ -17,14 +17,11 @@ import BudgetSidebar from "./modules/deal/sidebar/BudgetSidebar";
 import NextStepSidebar from "./modules/deal/sidebar/NextStepSidebar";
 import NextStepCompletedSidebar from "./modules/deal/sidebar/NextStepCompletedSidebar";
 import DocumentsSidebar from "./modules/deal/sidebar/DocumentsSidebar";
-import io from "socket.io-client"
 
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
 Parse.serverURL = OneRoost.Config.serverURL;
 Parse.$ = $;
 
-
-window.socket = io();
 const browserHistory = useRouterHistory(createHistory)({
             basename: "/"
         });

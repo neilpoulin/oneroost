@@ -6,6 +6,7 @@ import AddComment from "./AddComment";
 import CommentItem from "./CommentItem";
 import CommentDateSeparator from "./CommentDateSeparator";
 import $ from "jquery";
+import io from "socket.io-client"
 
 export default React.createClass({
     mixins: [ParseReact.Mixin],
@@ -27,8 +28,19 @@ export default React.createClass({
             dealComments: (new Parse.Query("DealComment")).equalTo( "deal", self.props.deal ).descending("createdAt").limit( self.state.commentLimit )
         }
     },
-    componentDidMount: function(props, state) {
+    componentDidMount: function() {
         window.addEventListener("resize", this.scrollToBottom);
+        var self = this;
+        var socket = io("/DealComment");
+        socket.on("connect", function() {
+            // Connected, let's sign-up for to receive messages for this room
+           socket.emit("deal", self.props.deal.objectId);
+        });
+
+        socket.on("comment", function(comment){
+            console.log("recieved message");
+            self.refreshQueries(["dealComments"]);
+        });
     },
     componentWillUnmount: function(props, state) {
         window.removeEventListener("resize", this.scrollToBottom);
@@ -42,7 +54,7 @@ export default React.createClass({
         var $commentContainer = $(this.refs.messagesContainer);
         $commentContainer.scrollTop( $commentContainer.prop("scrollHeight") );
     },
-    calculateDimensions: function(){        
+    calculateDimensions: function(){
         var addCommentBounding = ReactDOM.findDOMNode( this.refs.addComment ).getBoundingClientRect();
         this.refs.messagesContainer.style.bottom = addCommentBounding.height + "px";
         this.scrollToBottom();
@@ -69,7 +81,7 @@ export default React.createClass({
         var previousComment = null;
 
         var commentsSection = null;
-        if (component.pendingQueries().length > 0)
+        if (component.pendingQueries().length > 0 && this.data.dealComments.length == 0)
         {
             commentsSection =
             <div className="loadingComments lead">

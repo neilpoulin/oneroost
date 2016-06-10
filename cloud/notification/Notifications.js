@@ -9,8 +9,7 @@ Parse.serverURL = envUtil.serverURL;
 
 exports.initialize = function(io)
 {
-    // CommentNotification.afterSave();
-
+    CommentNotification.afterSave(io);
     NextStepNotification.afterSave(io);
     StakeholderNotification.afterSave(io);
 }

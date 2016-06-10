@@ -4,10 +4,11 @@ var APP_ID = process.env.PARSE_APP_ID || "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJW
 var MASTER_KEY = process.env.PARSE_MASTER_KEY || "RQ50598LZUsDXzgnz6HgnGSwlCuv6XrZ3h7Li13P";
 var DATABASE_URL = process.env.DATABASE_URL || "mongodb://oneroost:oneroost@ds013941.mlab.com:13941/oneroost-db";
 var PARSE_MOUNT = process.env.PARSE_MOUNT || "/parse";
-var PARSE_PORT = process.env.PARSE_PORT || 1337;
+var PARSE_PORT = process.env.PARSE_PORT || 8081;
 var AWS_ID = process.env.AWS_ID || "AKIAIJI2VKVQPR4V4JYA";
 var AWS_SECRET_ID = process.env.AWS_SECRET_ID || "HYS3LqjQV/0Ej6COtVAow7M0xhe6GV3h7fWPkR9K";
 var SERVER_URL = process.env.PARSE_SERVER_URL || "http://localhost"
+var HOSTNAME = process.env.HOSTNAME || "http://localhost:" + PARSE_PORT
 
 if ( SERVER_URL.trim().indexOf("http:") != 0 )
 {
@@ -57,6 +58,10 @@ exports.getAwsId = function(){
 
 exports.getAwsSecretId = function(){
     return AWS_SECRET_ID;
+}
+
+exports.getHost = function(){
+    return HOSTNAME;
 }
 
 exports.getEnv = function(){
