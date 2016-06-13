@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dashboard": "parse-dashboard --config parse-dashboard-config.json",
-    "debug": "AWS_PROFILE=oneroost touch npm-debug.log & node debug main.js",
-    "start": "AWS_PROFILE=oneroost touch npm-debug.log & node main.js & parse-dashboard --config parse-dashboard-config.json --allowInsecureHTTP=1"
+    "debug": "AWS_PROFILE=oneroost node debug main.js",
+    "start": "AWS_PROFILE=oneroost node main.js"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,7 @@
   "dependencies": {
     "aws-sdk": "^2.3.5",
     "body-parser": "^1.15.0",
+    "console-stamp": "^0.2.2",
     "ejs": "^2.4.1",
     "express": "~4.13.3",
     "mandrill-api": "^1.0.45",
@@ -47,6 +48,7 @@
     "parse-dashboard": "^1.0.10",
     "parse-server": "^2.2.7",
     "serve-favicon": "^2.3.0",
+    "socket.io": "^1.4.6",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

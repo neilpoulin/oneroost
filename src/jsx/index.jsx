@@ -37,7 +37,7 @@ render(
             <Route path="/deals/:dealId/budget" component={BudgetSidebar}/>
             <Route path="/deals/:dealId/documents" component={DocumentsSidebar}/>
             <Route path="/deals/:dealId/steps/completed" component={NextStepCompletedSidebar}/>
-            <Route path="/deals/:dealId/steps/:stepId" component={NextStepSidebar}/>            
+            <Route path="/deals/:dealId/steps/:stepId" component={NextStepSidebar}/>
           </Route>
         </Route>
       </Route>
