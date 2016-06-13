@@ -19,7 +19,11 @@ if ( SERVER_URL.trim().indexOf("http:") != 0 )
     SERVER_URL = "http:" + SERVER_URL;
 }
 
-SERVER_URL += ":" + PARSE_PORT + PARSE_MOUNT;
+if ( SERVER_URL.indexOf("localhost") != -1 )
+{
+    SERVER_URL += ":" + PARSE_PORT;
+}
+SERVER_URL += PARSE_MOUNT;
 
 console.log("APP_ID: " + APP_ID);
 console.log("MASTER_KEY: " + MASTER_KEY);

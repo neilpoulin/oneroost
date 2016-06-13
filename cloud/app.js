@@ -54,9 +54,14 @@ app.post("/email", function(req, resp){
 
 io.on("connection", function(socket){
   console.log("a user connected");
+  console.log("connection headers: \n", socket.request.headers );
   socket.on("disconnect", function(){
-    console.log("user disconnected");
+    //no op
   });
+});
+
+io.on("error", function(error){
+    console.log("recieved a websocket error: ", error);
 });
 
 Notifications.initialize(io);
