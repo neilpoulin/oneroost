@@ -77,7 +77,8 @@ server.listen(port, function() {
 
 function getParseDashboard()
 {
-    return new ParseDashboard(ParseDashboardConfig);
+    var dashboardSecure = false;
+    return new ParseDashboard(ParseDashboardConfig, dashboardSecure);
 }
 
 function getParseServer()
