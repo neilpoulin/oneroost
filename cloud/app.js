@@ -53,7 +53,7 @@ app.post("/email", function(req, resp){
 });
 
 io.on("connection", function(socket){
-  console.log("a user connected");  
+  console.log("a user connected");
   socket.on("disconnect", function(){
     //no op
   });
@@ -76,8 +76,8 @@ server.listen(port, function() {
 
 function getParseDashboard()
 {
-    var dashboardSecure = false;
-    return new ParseDashboard(ParseDashboardConfig, dashboardSecure);
+    var allowInsecure = true;
+    return new ParseDashboard(ParseDashboardConfig, allowInsecure);
 }
 
 function getParseServer()
