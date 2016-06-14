@@ -58,7 +58,7 @@ function createStakeholderUser( stakeholder, deal, invitedBy, response ){
             response.success({user: created});
         },
         error: function( created, error ){
-            console.error( "failed to create stakeholder user." );
+            console.error( "failed to create stakeholder user.", error );
             response.error( {error: "failed to create stakeholder user."} );
         }
     });

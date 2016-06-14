@@ -6,9 +6,11 @@ Parse.serverURL = envUtil.serverURL;
 
 function getActualRecipients( original, config )
 {
-    var emailOverride = config.get( "emailOverride");
-    if ( emailOverride )
+
+    if ( config.get("emailOverrideEnabled") )
     {
+        var emailOverride = config.get( "emailOverride");
+        console.log("email override is on - original recipients: ", original );
         var overrides = [];
         var overrideEmails = emailOverride.replace(/ /g, "").split(",");
         for ( var i = 0; i < overrideEmails.length; i++ )
@@ -16,6 +18,9 @@ function getActualRecipients( original, config )
             overrides.push({email: overrideEmails[i], name: overrideEmails[i]});
         }
         return overrides;
+    }
+    else {
+        console.log("emailOverride is disabled");
     }
     return original;
 }

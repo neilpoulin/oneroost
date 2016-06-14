@@ -25,11 +25,8 @@ function sendCommentEmail( comment ){
 }
 
 exports.afterSave = function(io){
-    var self = this;
     var namespace = io.of("/DealComment");
-
     namespace.on("connection", function(socket){
-        console.log( "socket connection headers: \n", socket.request.headers);
         socket.on("deal", function(deal){
             console.log("joining deal room: " + deal);
             socket.join(deal);
