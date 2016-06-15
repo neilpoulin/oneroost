@@ -8,7 +8,7 @@ const AccountSidebarItem = React.createClass({
     render () {
         var deal = this.props.deal;
         var link =
-        <NavLink className="AccountSidebarItem" to={"/deals/" + deal.objectId} activeClassName="active">
+        <NavLink className="AccountSidebarItem" to={"/roosts/" + deal.objectId} activeClassName="active">
             <span className="dealName">{deal.dealName}</span>
             <span className="accountName">{deal.account.accountName}</span>
         </NavLink>

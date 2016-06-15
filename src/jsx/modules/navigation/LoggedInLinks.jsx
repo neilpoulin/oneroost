@@ -10,7 +10,7 @@ const LoggedInLinks = React.createClass({
         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul className="nav navbar-nav">
                 <NavLink to="/" onlyActiveOnIndex>Home</NavLink>
-                <NavLink to="/deals">Deals</NavLink>
+                <NavLink to="/roosts">Roosts</NavLink>
             </ul>
 
             <ul className="nav navbar-nav navbar-right">
@@ -20,7 +20,7 @@ const LoggedInLinks = React.createClass({
                         <i className="fa fa-user"></i> {user.get("username")} <span className="caret"></span>
                     </a>
                     <ul className="dropdown-menu">
-                        <NavLink to="/deals">Deals</NavLink>
+                        <NavLink to="/roosts">Roosts</NavLink>
                         <li role="separator" className="divider"></li>
                         <li><LogoutLink/></li>
                     </ul>

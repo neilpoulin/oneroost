@@ -14,7 +14,7 @@ function sendCommentEmail( comment ){
     stakeholderQuery.equalTo( "deal", deal );
     stakeholderQuery.find().then( function( stakeholders ){
         var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, authorEmail );
-        var dealLink = envUtil.getHost() + "/deals/" + deal.id;
+        var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
         var message = {
             subject: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName"),
             text: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName") + "\n\nmessage: " + comment.get("message") + "\nLink: " + dealLink,

@@ -1,9 +1,9 @@
 import React, { PropTypes } from "react"
 import ParseReact from "parse-react";
 import Parse from "parse";
-import BudgetForm from "./../BudgetForm";
+import InvestmentForm from "./../InvestmentForm";
 
-const TimelineSidebar = React.createClass({
+const InvestmentSidebar = React.createClass({
   mixins: [ParseReact.Mixin],
   propTypes: {
     params: PropTypes.shape({dealId: PropTypes.any}).isRequired,
@@ -26,11 +26,11 @@ const TimelineSidebar = React.createClass({
 
     return (
       <div className="TimelineSidebar">
-        <h3 className="title">Budget</h3>
-        <BudgetForm deal={deal}/>
+        <h3 className="title">Investment</h3>
+        <InvestmentForm deal={deal}/>
       </div>
     )
   }
 });
 
-export default TimelineSidebar
+export default InvestmentSidebar

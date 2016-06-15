@@ -48,7 +48,7 @@ export default React.createClass({
         if ( completedSteps.length > 0 )
         {
             completedStepsItem =
-            <NavLink tag="div" to={"/deals/" + this.props.deal.objectId + "/steps/completed" }
+            <NavLink tag="div" to={"/roosts/" + this.props.deal.objectId + "/steps/completed" }
                 className={"NextStepBannerItem CompletedStepsContainer col-sm-2" + (this.state.active ? "active " : "")} >
                 <div className="nextStepTitle">Completed Steps</div>
                 <div className="nextStepDueDate">{completedSteps.length}</div>

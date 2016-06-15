@@ -26,11 +26,11 @@ const DealProfile = React.createClass({
 
         if (budget.low == budget.high) {
             if (budget.low > 0) {
-                return this.formatMoney(budget.low, false);
+                return this.formatMoney(budget.low, true);
             }
             return "Not Quoted";
         }
-        return this.formatMoney(budget.low, false) + " - " + this.formatMoney(budget.high, false);
+        return this.formatMoney(budget.low, true) + " - " + this.formatMoney(budget.high, false);
     },
     formatMoney(amount, includeSymbol){
         var format = "($0[.]0a)";
@@ -68,10 +68,10 @@ const DealProfile = React.createClass({
                 <div className="widgetContainer container-fluid col-xs-10">
                     <div className={widgetClassName}>
                         <div className="row text-center">
-                            <NavLink tag="div" to={"/deals/" + deal.objectId + "/budget" } className="widgetLink">
+                            <NavLink tag="div" to={"/roosts/" + deal.objectId + "/budget" } className="widgetLink">
                                 <div>
-                                    <i className={"fa fa-usd " + iconSizeClassname}></i>
-                                    &nbsp; Budget
+                                    <i className={"fa fa-money " + iconSizeClassname}></i>
+                                    &nbsp; Investment
                                 </div>
                                 <div>
                                     <span className="title">{budget}</span>
@@ -81,7 +81,7 @@ const DealProfile = React.createClass({
                     </div>
                     <div className={widgetClassName}>
                         <div className={"row text-center " + (deal.profile.timeline ? "" : "invisible")}>
-                            <NavLink tag="div" to={"/deals/" + deal.objectId + "/timeline" } className="widgetLink">
+                            <NavLink tag="div" to={"/roosts/" + deal.objectId + "/timeline" } className="widgetLink">
                                 <div>
                                     <i className={"fa fa-calendar " + iconSizeClassname}></i>
                                     &nbsp; Timeline
@@ -95,9 +95,9 @@ const DealProfile = React.createClass({
                     </div>
                     <div className={widgetClassName}>
                         <div className="row text-center">
-                            <NavLink tag="div" to={"/deals/" + deal.objectId + "/participants" } className="widgetLink">
+                            <NavLink tag="div" to={"/roosts/" + deal.objectId + "/participants" } className="widgetLink">
                                 <div>
-                                    <i className={"fa fa-user " + iconSizeClassname}></i>
+                                    <i className={"fa fa-users " + iconSizeClassname}></i>
                                         &nbsp; Participants
                                 </div>
                                 <div>
@@ -108,9 +108,9 @@ const DealProfile = React.createClass({
                     </div>
                     <div className={widgetClassName}>
                         <div className="row text-center">
-                            <NavLink tag="div" to={"/deals/" + deal.objectId + "/documents" } className="widgetLink">
+                            <NavLink tag="div" to={"/roosts/" + deal.objectId + "/documents" } className="widgetLink">
                                 <div>
-                                    <i className={"fa fa-file " + iconSizeClassname}></i>
+                                    <i className={"fa fa-files-o " + iconSizeClassname}></i>
                                         &nbsp; Documents
                                 </div>
                                 <div>

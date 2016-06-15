@@ -6,6 +6,7 @@ import NextStepActions from "./NextStepActions";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import Dropdown from "./../stakeholder/Dropdown"
+import AutosizeTextarea from "react-textarea-autosize";
 
 const NextStepDetailEdit = React.createClass({
     propTypes: {
@@ -89,11 +90,14 @@ const NextStepDetailEdit = React.createClass({
             </div>
             <div className="form-group">
                 <label htmlFor="nextStepDescription">Description</label>
-                <textarea id="nextStepDescription"
-                    type="text"
+                <AutosizeTextarea
                     className="form-control"
-                    rows="4"
-                    valueLink={this.linkState("description")}></textarea>
+                    maxRows={15}
+                    minRows={4}
+                    onChange={e => this.setState({description: e.target.value})}
+                    value={this.state.description}
+                    >
+                </AutosizeTextarea>
             </div>
             <div className="form-group">
                 <label htmlFor="nextStepDueDate">Due Date</label>

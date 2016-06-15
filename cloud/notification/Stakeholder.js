@@ -27,7 +27,7 @@ exports.afterSave = function(){
             allStakeholderQuery.equalTo( "deal", deal );
             allStakeholderQuery.include("user");
             allStakeholderQuery.find().then( function (stakeholders){
-                var dealLink = envUtil.getHost() + "/deals/" + deal.id;
+                var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
                 var message = {
                     subject: deal.get("dealName") + " has a new stakeholder: " + fullName,
                     text: fullName + " (" + userEmail + ") is a new " + role + " on " + dealName + "\n\nInvited by " + invitedByName + "\n\nLink to the Roost: " + dealLink,

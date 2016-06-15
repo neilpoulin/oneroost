@@ -65,7 +65,7 @@ export default React.createClass({
         var stakeholder = {
             "user": user,
             "deal": deal,
-            "role": "OWNER",
+            "role": "CREATOR",
             "inviteAccepted": true,
             "invitedBy": user
         };

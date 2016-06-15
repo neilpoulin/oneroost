@@ -15,7 +15,7 @@ export default React.createClass({
             firstName: null,
             lastName: null,
             email: null,
-            role: "BUYER",
+            role: "VENDOR",
             deal: this.props.deal,
             user: Parse.User.current()
         };
@@ -97,8 +97,8 @@ export default React.createClass({
                     className="form-control"
                     valueLink={this.linkState("role")}
                     defaultValue={this.state.role} >
-                    <option value="BUYER" defaultValue>Buyer</option>
-                    <option value="SELLER">Seller</option>
+                    <option value="CLIENT" defaultValue>Client</option>
+                    <option value="VENDOR">Vendor</option>
                 </select>
             </div>
         </div>

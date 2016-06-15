@@ -23,7 +23,7 @@ const AddAccountButton = React.createClass({
                 buttonIcon="plus"
                 containerClass="AddAccountButton"
                 buttonClass={this.props.btnClassName}
-                modalTitle="Create Account"
+                modalTitle="Add an Opportunity"
                 >
                 <CreateAccountForm
                     onSuccess={this.props.onSuccess}

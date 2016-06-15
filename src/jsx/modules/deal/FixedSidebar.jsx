@@ -14,7 +14,7 @@ const FixedSidebar = React.createClass({
         var sidebar =
         <div className={"FixedSidebar container-fluid col-xs-12 col-md-" + this.props.columns}>
             <div className="close">
-                <Link to={"/deals/" + this.props.children.props.params.dealId}
+                <Link to={"/roosts/" + this.props.children.props.params.dealId}
                     className="" >
                     <i className="fa fa-times fa-lg"></i>
                 </Link>

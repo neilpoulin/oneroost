@@ -13,7 +13,7 @@ import Deal from "./modules/deal/Deal";
 import DealDashboard from "./modules/deal/DealDashboard";
 import StakeholderSidebar from "./modules/deal/sidebar/StakeholderSidebar";
 import TimelineSidebar from "./modules/deal/sidebar/TimelineSidebar";
-import BudgetSidebar from "./modules/deal/sidebar/BudgetSidebar";
+import InvestmentSidebar from "./modules/deal/sidebar/InvestmentSidebar";
 import NextStepSidebar from "./modules/deal/sidebar/NextStepSidebar";
 import NextStepCompletedSidebar from "./modules/deal/sidebar/NextStepCompletedSidebar";
 import DocumentsSidebar from "./modules/deal/sidebar/DocumentsSidebar";
@@ -29,15 +29,15 @@ render(
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={Home}/>
-        <Route path="/deals" component={DealDashboard}>
+        <Route path="/roosts" component={DealDashboard}>
           <IndexRoute component={UserHomePage}/>
-          <Route path="/deals/:dealId" component={Deal}>
-            <Route path="/deals/:dealId/participants" component={StakeholderSidebar}/>
-            <Route path="/deals/:dealId/timeline" component={TimelineSidebar}/>
-            <Route path="/deals/:dealId/budget" component={BudgetSidebar}/>
-            <Route path="/deals/:dealId/documents" component={DocumentsSidebar}/>
-            <Route path="/deals/:dealId/steps/completed" component={NextStepCompletedSidebar}/>
-            <Route path="/deals/:dealId/steps/:stepId" component={NextStepSidebar}/>
+          <Route path="/roosts/:dealId" component={Deal}>
+            <Route path="/roosts/:dealId/participants" component={StakeholderSidebar}/>
+            <Route path="/roosts/:dealId/timeline" component={TimelineSidebar}/>
+            <Route path="/roosts/:dealId/budget" component={InvestmentSidebar}/>
+            <Route path="/roosts/:dealId/documents" component={DocumentsSidebar}/>
+            <Route path="/roosts/:dealId/steps/completed" component={NextStepCompletedSidebar}/>
+            <Route path="/roosts/:dealId/steps/:stepId" component={NextStepSidebar}/>
           </Route>
         </Route>
       </Route>

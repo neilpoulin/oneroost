@@ -38,7 +38,7 @@ const StakeholderSidebar = React.createClass({
 
     return (
       <div className="StakeholderSidebar">
-        <h3 className="title">Stakeholders</h3>
+        <h3 className="title">Participants</h3>
         {this.data.stakeholders.map(function (stakeholder) {
           return (
             <Stakeholder key={"stakeholder_" + stakeholder.objectId} stakeholder={stakeholder}/>

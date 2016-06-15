@@ -26,7 +26,7 @@ const NextStepDetailForm = React.createClass({
     },
     afterDelete: function(){
         this.addStepDeletedComment();
-        browserHistory.push("/deals/" + this.props.deal.objectId );
+        browserHistory.push("/roosts/" + this.props.deal.objectId );
     },
     addStepDeletedComment: function( ){
         var self = this;

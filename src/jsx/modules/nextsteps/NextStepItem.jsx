@@ -31,7 +31,7 @@ export default React.createClass({
 
         var stepItem =
 
-        <NavLink tag="div" to={"/deals/" + this.props.deal.objectId + "/steps/" + this.props.step.objectId }
+        <NavLink tag="div" to={"/roosts/" + this.props.deal.objectId + "/steps/" + this.props.step.objectId }
             className={"arrow-right NextStepItemContainer " + ( this.props.step.completedDate != null ? "complete " : "" ) + (this.state.active ? "active " : "")} >
             <div className="nextStepTitle">{this.props.step.title}</div>
             <div className="nextStepDueDate">
