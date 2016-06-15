@@ -35,7 +35,7 @@ var GoogleMaterialColors = {
 };
 
 var reactModalBootstrap = {
-    stylesheets: "./node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less"
+    stylesheets: "./node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less"   
 };
 
 var paths = {
@@ -83,11 +83,8 @@ var sassOpts = {
 
     gulp.task("sass", ["clean:css"], function () {
         var scssStream = gulp.src(paths.src.styleEntry)
-        .pipe(sourcemaps.init())
         .pipe(sass(sassOpts).on("error", sass.logError))
-        .pipe(sourcemaps.write("./maps"))
         .pipe(concat(paths.dest.styleName));
-
         var lessStream = gulp.src(reactModalBootstrap.stylesheets)
         .pipe(less())
         .pipe(concat("less-files.less"));
@@ -204,5 +201,5 @@ var sassOpts = {
         })
     });
 
-    gulp.task("eb-deploy", ["clean:npm-log", "build"], shell.task("eb deploy oneroost"));
+    gulp.task("eb-deploy", ["clean:npm-log", "build"], shell.task("eb deploy oneroost -v --timeout 20"));
     gulp.task("deploy-aws", ["build", "eb-deploy"]);

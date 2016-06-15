@@ -57,7 +57,7 @@ export default React.createClass({
     render: function(){
         var addComment =
         <div className="addCommentContainer row-fluid">
-            <div className="input-group input-group-lg">
+            <div className="input-group">
                 <AutosizeTextarea
                     className="form-control custom-control"
                     maxRows={10}

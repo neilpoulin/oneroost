@@ -2,7 +2,7 @@ var appEnv = null;
 
 var APP_ID = process.env.PARSE_APP_ID || "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq";
 var MASTER_KEY = process.env.PARSE_MASTER_KEY || "RQ50598LZUsDXzgnz6HgnGSwlCuv6XrZ3h7Li13P";
-var DATABASE_URL = process.env.DATABASE_URL || "mongodb://oneroost:oneroost@ds013941.mlab.com:13941/oneroost-db";
+var DATABASE_URL = process.env.DATABASE_URL || "mongodb://localhost:27017/oneroost-db";
 var PARSE_MOUNT = process.env.PARSE_MOUNT || "/parse";
 var PARSE_PORT = process.env.PARSE_PORT || 8081;
 var AWS_ID = process.env.AWS_ID || "AKIAIJI2VKVQPR4V4JYA";

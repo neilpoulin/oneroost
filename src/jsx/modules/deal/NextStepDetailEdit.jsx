@@ -107,7 +107,7 @@ const NextStepDetailEdit = React.createClass({
             </div>
             <div className="form-group">
                 <label htmlFor="nextStepAssignedUser">Assigned User</label>
-                <Dropdown deal={this.props.deal} handleChange={this.handleUserChange} value={this.assignedUser != null ? this.assignedUser.objectId : null}/>
+                <Dropdown deal={this.props.deal} handleChange={this.handleUserChange} value={this.props.step.assignedUser != null ? this.props.step.assignedUser.objectId : null}/>
             </div>
             <NextStepActions step={this.props.step}
                 isEdit={true}
