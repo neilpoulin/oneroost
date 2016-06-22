@@ -24,13 +24,6 @@ const Deal = React.createClass({
         if ( this.pendingQueries().length > 0 )
         {
             var message = "Loading...";
-            if ( this.pendingQueries().indexOf( "deal" ) == -1 )
-            {
-                var dealName = this.data.deal[0].dealName;
-                message = "Loading " + dealName;
-                document.title = "OneRoost Deal Page - " + dealName ;
-            }
-
             return (
                 <LoadingTakeover size="3x" message={message} />
             );
@@ -42,6 +35,8 @@ const Deal = React.createClass({
                 <div>ERROR</div>
             )
         }
+        var dealName = this.data.deal[0].dealName;
+        document.title = "OneRoost - " + dealName;
 
         var dealPage =
         <div className="Deal">

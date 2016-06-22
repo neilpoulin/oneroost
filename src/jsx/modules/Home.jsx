@@ -1,11 +1,18 @@
 import React from "react"
 import LoginComponent from "./LoginComponent"
-import { browserHistory } from "react-router"
+import { browserHistory, withRouter } from "react-router"
 
-export default React.createClass({
+const Home = withRouter( React.createClass({
     handleLoginSuccess: function(){
-        browserHistory.push("/roosts");
-        window.location = window.location;
+        // browserHistory.push("/roosts");
+        debugger;
+        const { location } = this.props;
+        if (location.state && location.state.nextPathname) {
+            this.props.router.replace(location.state.nextPathname)
+        } else {
+            this.props.router.replace('/roosts')
+        }
+        // window.location = window.location;
     },
     handleLogoutSuccess: function(){
         browserHistory.push("/");
@@ -31,4 +38,6 @@ export default React.createClass({
             </div>
         );
     }
-})
+}) );
+
+export default Home;

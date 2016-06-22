@@ -28,10 +28,9 @@ exports.afterSave = function(io){
     var namespace = io.of("/DealComment");
     namespace.on("connection", function(socket){
         socket.on("deal", function(deal){
-            console.log("joining deal room: " + deal);
             socket.join(deal);
         });
-        socket.emit("comment", "test comment");
+        // socket.emit("comment", "test comment"); //no longer needed?
     });
 
     var broadcast = function( comment )
@@ -40,10 +39,14 @@ exports.afterSave = function(io){
         namespace.in(dealId).emit("comment", "new message");
     }
 
-    Parse.Cloud.afterSave( "DealComment", function( req, res ){
-        console.log("DealComment afterSave triggered");
+    Parse.Cloud.afterSave( "DealComment", function( req, res ){        
         var comment = req.object;
         broadcast(comment);
+
+        /*
+            this block is to send an email... TBD if we want to send these or not.
+        */
+
         // if ( comment.get("author") != null )
         // {
         //     var query = new Parse.Query( "DealComment" );

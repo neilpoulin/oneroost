@@ -25,11 +25,33 @@ Parse.$ = $;
 const browserHistory = useRouterHistory(createHistory)({
             basename: "/"
         });
+function requireAuth(nextState, replace) {
+    var user = Parse.User.current();
+    if (!user) {
+        replace({
+            pathname: '/login',
+            state: { nextPathname: nextState.location.pathname }
+        })
+    }
+}
+
+function requireAnonymous(nextState, replace){  
+    var user = Parse.User.current();
+    if ( user )
+    {
+        replace({
+            pathname: '/roosts',
+            state: { nextPathname: nextState.location.pathname }
+        });
+    }
+}
+
 render(
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={Home}/>
-        <Route path="/roosts" component={DealDashboard}>
+        <Route path="/login" component={Home} onEnter={requireAnonymous}></Route>
+        <Route path="/roosts" component={DealDashboard} onEnter={requireAuth}>
           <IndexRoute component={UserHomePage}/>
           <Route path="/roosts/:dealId" component={Roost}>
             <Route path="/roosts/:dealId/participants" component={StakeholderSidebar}/>

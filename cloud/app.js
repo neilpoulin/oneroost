@@ -53,22 +53,16 @@ app.post("/email", function(req, resp){
 });
 
 io.on("connection", function(socket){
-  console.log("a user connected");
+    //no op here - will join namespaced rooms later
   socket.on("disconnect", function(){
     //no op
   });
-});
-
-io.on("error", function(error){
+}).on("error", function(error){
     console.log("recieved a websocket error: ", error);
 });
 
 Notifications.initialize(io);
 Stakeholders.initialize();
-
-// http.listen(3000, function(){
-//   console.log("listening on *:3000");
-// });
 
 server.listen(port, function() {
     console.log("parse-server OneRoost running on port " + port + ".");
