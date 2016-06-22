@@ -4,15 +4,12 @@ import { browserHistory, withRouter } from "react-router"
 
 const Home = withRouter( React.createClass({
     handleLoginSuccess: function(){
-        // browserHistory.push("/roosts");
-        debugger;
         const { location } = this.props;
         if (location.state && location.state.nextPathname) {
             this.props.router.replace(location.state.nextPathname)
         } else {
             this.props.router.replace('/roosts')
         }
-        // window.location = window.location;
     },
     handleLogoutSuccess: function(){
         browserHistory.push("/");
