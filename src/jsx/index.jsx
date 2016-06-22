@@ -9,7 +9,7 @@ import $ from "jquery"
 import Home from "./modules/Home"
 import App from "./modules/App"
 import UserHomePage from "./modules/UserHomePage";
-import Deal from "./modules/deal/Deal";
+import Roost from "./modules/deal/Roost";
 import DealDashboard from "./modules/deal/DealDashboard";
 import StakeholderSidebar from "./modules/deal/sidebar/StakeholderSidebar";
 import TimelineSidebar from "./modules/deal/sidebar/TimelineSidebar";
@@ -31,7 +31,7 @@ render(
         <IndexRoute component={Home}/>
         <Route path="/roosts" component={DealDashboard}>
           <IndexRoute component={UserHomePage}/>
-          <Route path="/roosts/:dealId" component={Deal}>
+          <Route path="/roosts/:dealId" component={Roost}>
             <Route path="/roosts/:dealId/participants" component={StakeholderSidebar}/>
             <Route path="/roosts/:dealId/timeline" component={TimelineSidebar}/>
             <Route path="/roosts/:dealId/budget" component={InvestmentSidebar}/>

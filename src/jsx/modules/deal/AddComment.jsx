@@ -68,7 +68,6 @@ export default React.createClass({
                     onHeightChange={this.onTextAreaResize}
                     ></AutosizeTextarea>
 
-
                 <div className="input-group-btn" >
                     <button
                         ref="addButton"

@@ -5,6 +5,7 @@ import { browserHistory } from "react-router"
 export default React.createClass({
     handleLoginSuccess: function(){
         browserHistory.push("/roosts");
+        window.location = window.location;
     },
     handleLogoutSuccess: function(){
         browserHistory.push("/");

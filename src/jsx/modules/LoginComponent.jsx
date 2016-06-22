@@ -5,7 +5,6 @@
 /*global clearTimeout*/
 /*global setTimeout*/
 import React from "react"
-// import {Parse} from "./../config/OneRoost"
 import Parse from "parse";
 Parse.serverURL = OneRoost.Config.parseSeverURL;
 import LinkedStateMixin from "react-addons-linked-state-mixin"
@@ -102,9 +101,9 @@ export default React.createClass({
         });
         if ( this.props.success )
         {
-            this.props.success();
+            return this.props.success();
         }
-        return this.render();
+        // return this.render();
     },
     handleLogoutSuccess: function()
     {

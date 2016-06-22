@@ -1,4 +1,6 @@
 import React, { PropTypes } from "react"
+import NavLink from "./../NavLink";
+import Parse from "parse";
 import AccountSidebar from "./../account/AccountSidebar";
 
 const DealDashboard = React.createClass({

@@ -5,6 +5,7 @@ import LinkedStateMixin from "react-addons-linked-state-mixin"
 var DatePicker = require("react-datepicker");
 var moment = require("moment");
 import Dropdown from "./../stakeholder/Dropdown"
+import AutosizeTextarea from "react-textarea-autosize";
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
@@ -82,10 +83,14 @@ export default React.createClass({
             </div>
             <div className="form-group">
                 <label htmlFor="nextStepDescription">Description</label>
-                <input id="nextStepDescription"
-                    type="text"
-                    className="form-control"
-                    valueLink={this.linkState("description")}/>
+                    <AutosizeTextarea
+                        className="form-control"
+                        maxRows={10}
+                        minRows={4}
+                        onChange={e => this.setState({description: e.target.value})}
+                        value={this.state.description}
+                        >
+                    </AutosizeTextarea>
             </div>
             <div className="form-group">
                 <label htmlFor="nextStepDueDate">Due Date</label>
