@@ -18,13 +18,11 @@ const DealPageBottom = React.createClass({
         this.updateDimensions();
     },
     updateDimensions: function(){
-        console.log("updating dimensions");
         var container = this.refs.DealPageBottom;
         var dealBoundingRect = container.getBoundingClientRect();
         var fixedContainer = this.refs.fixedContainer;
         fixedContainer.style.left = dealBoundingRect.left + "px";
         fixedContainer.style.top = dealBoundingRect.top + "px";
-        // fixedContainer.style.width = dealBoundingRect.width + "px";
     },
     render: function() {
         var deal = this.props.deal;

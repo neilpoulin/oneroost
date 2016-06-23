@@ -10,7 +10,7 @@ const AnonymousLinks = React.createClass({
             </ul>
 
             <ul className="nav navbar-nav navbar-right">
-                <NavLink to="/">Log In</NavLink>
+                <NavLink to="/login">Log In</NavLink>
             </ul>
         </div>
 

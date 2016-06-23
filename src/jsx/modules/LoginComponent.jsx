@@ -57,6 +57,7 @@ export default React.createClass({
             user.set("password", this.state.password);
             user.set("firstName", this.state.firstName);
             user.set("lastName", this.state.lastName);
+            user.set("passwordChangeRequired", false);
             user.signUp( null, {
                 success: component.handleLoginSuccess,
                 error: component.handleLoginError
@@ -93,6 +94,7 @@ export default React.createClass({
         this.hideLoading();
     },
     handleLoginSuccess: function(user){
+        console.log("successfully logged in");
         this.setState({
             isLoggedIn: true,
             username: user.get("username"),

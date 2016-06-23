@@ -10,10 +10,6 @@ export default React.createClass({
     mixins: [ParseReact.Mixin],
     observe: function(props, state){
         var user = Parse.User.current();
-        var dealQuery = new Parse.Query(Deal);
-        dealQuery.include("account");
-        dealQuery.ascending("dealName");
-
         var stakeholders = new Parse.Query("Stakeholder");
         stakeholders.include("deal");
         stakeholders.include(["deal.account"]);

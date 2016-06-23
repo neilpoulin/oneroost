@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react"
-// import {Parse} from "./../../config/OneRoost";
+import {withRouter} from "react-router"
 import Parse from "parse";
 Parse.serverURL = OneRoost.Config.parseSeverURL;
 import ParseReact from "parse-react";
@@ -8,16 +8,47 @@ import NextStepsBanner from "./../nextsteps/NextStepsBanner";
 import DealProfile from "./DealProfile";
 import DealPageBottom from "./DealPageBottom";
 
-const Deal = React.createClass({
+const Deal = withRouter( React.createClass({
     mixins: [ParseReact.Mixin],
     propTypes: {
         params: PropTypes.shape({
             dealId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
         })
     },
+    handleUnauthorized()
+    {
+        const { location } = this.props;
+        if (location.state && location.state.nextPathname) {
+            this.props.router.replace(location.state.nextPathname)
+        }
+        else if ( location.query && location.query.accept ){
+
+        }
+        else {
+            this.props.router.replace('/roosts/unauthorized')
+        }
+    },
     observe: function(props, state){
+        var user = Parse.User.current();
+        var stakeholders = new Parse.Query("Stakeholder");
+        stakeholders.include("deal");
+        stakeholders.include(["deal.account"]);
+        stakeholders.equalTo("user", user );
         return {
-            deal: new Parse.Query("Deal").equalTo("objectId", props.params.dealId )
+            deal: new Parse.Query("Deal").equalTo("objectId", props.params.dealId ),
+            myStakeholders: stakeholders
+        }
+    },
+    componentWillUpdate(nextProps, nextState)
+    {
+        var dealId = nextProps.params.dealId;
+        if ( this.pendingQueries().length == 0 )
+        {
+            var stakeholders = this.data.myStakeholders;
+            if (!stakeholders || !stakeholders.find( s => s.deal.objectId == dealId ) )
+            {
+                this.handleUnauthorized();
+            }
         }
     },
     render () {
@@ -61,6 +92,6 @@ const Deal = React.createClass({
 
         return dealPage;
     }
-})
+}) )
 
 export default Deal

@@ -17,6 +17,8 @@ import InvestmentSidebar from "./modules/deal/sidebar/InvestmentSidebar";
 import NextStepSidebar from "./modules/deal/sidebar/NextStepSidebar";
 import NextStepCompletedSidebar from "./modules/deal/sidebar/NextStepCompletedSidebar";
 import DocumentsSidebar from "./modules/deal/sidebar/DocumentsSidebar";
+import Unauthorized from "./modules/Unauthorized";
+import Invitation from "./modules/Invitation";
 
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
 Parse.serverURL = OneRoost.Config.serverURL;
@@ -25,25 +27,62 @@ Parse.$ = $;
 const browserHistory = useRouterHistory(createHistory)({
             basename: "/"
         });
-function requireAuth(nextState, replace) {
+function requireAuth(nextState, replace, callback) {
+    console.log("requireAuth");
     var user = Parse.User.current();
     if (!user) {
         replace({
-            pathname: '/login',
+            pathname: "/login",
+            state: { nextPathname: nextState.location.pathname }
+        })
+    }
+
+    callback(nextState, replace);
+}
+
+function requireAuthOrParam( nextState, replace ){
+    console.log("auth or param");
+    console.log("requireAuth");
+    var user = Parse.User.current();
+    let {accept} = nextState.location.query;
+    if (!user && !!accept )
+    {
+        replace({
+            pathname: "/invitations/" + accept,
+            state: { nextPathname: nextState.location.pathname }
+        })
+    }
+    else if (!user) {
+        replace({
+            pathname: "/login",
+            state: { nextPathname: nextState.location.pathname }
+        })
+    }
+    else if ( !!accept ){
+        replace({
+            pathname: nextState.location.pathname,
             state: { nextPathname: nextState.location.pathname }
         })
     }
 }
 
-function requireAnonymous(nextState, replace){  
+function requireAnonymous(nextState, replace){
     var user = Parse.User.current();
     if ( user )
     {
         replace({
-            pathname: '/roosts',
+            pathname: "/roosts",
             state: { nextPathname: nextState.location.pathname }
         });
     }
+}
+
+function doLogout(nextState, replace){
+    Parse.User.logOut()
+        .done(replace({
+            pathname: "/login",
+            state: { nextPathname: "/roosts" }
+        }));
 }
 
 render(
@@ -51,8 +90,10 @@ render(
       <Route path="/" component={App}>
         <IndexRoute component={Home}/>
         <Route path="/login" component={Home} onEnter={requireAnonymous}></Route>
-        <Route path="/roosts" component={DealDashboard} onEnter={requireAuth}>
+        <Route path="/logout" component={Home} onEnter={doLogout}></Route>
+        <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
           <IndexRoute component={UserHomePage}/>
+          <Route path="/roosts/unauthorized" component={Unauthorized}/>
           <Route path="/roosts/:dealId" component={Roost}>
             <Route path="/roosts/:dealId/participants" component={StakeholderSidebar}/>
             <Route path="/roosts/:dealId/timeline" component={TimelineSidebar}/>
@@ -62,6 +103,7 @@ render(
             <Route path="/roosts/:dealId/steps/:stepId" component={NextStepSidebar}/>
           </Route>
         </Route>
+        <Route path="/invitations/:stakeholderId" component={Invitation}/>
       </Route>
     </Router>
   , document.getElementById("app")

@@ -10,17 +10,7 @@ export default React.createClass({
     {
         return Parse.User.current();
     },
-    logoutSuccess: function(){
-        browserHistory.push("/");
-    },
-    render: function(){
-        if ( !this.getCurrentUser() )
-        {
-            // document.location = "/";
-            browserHistory.push("/");
-            return null;
-        }
-
+    render: function(){        
         var homePage =
         <div className="container UserHomePage">
             <div className="col-md-10 col-md-offset-1">

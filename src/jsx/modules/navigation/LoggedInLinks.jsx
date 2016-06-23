@@ -22,7 +22,7 @@ const LoggedInLinks = React.createClass({
                     <ul className="dropdown-menu">
                         <NavLink to="/roosts">Roosts</NavLink>
                         <li role="separator" className="divider"></li>
-                        <li><LogoutLink/></li>
+                        <NavLink to="/logout">Logout</NavLink>
                     </ul>
                 </li>
             </ul>

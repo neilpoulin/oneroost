@@ -40,6 +40,27 @@ exports.initialize = function()
             }
         });
     });
+
+    Parse.Cloud.define("saveNewPassword", function(request, response) {
+        var password = request.params.password;
+        var userId = request.params.userId;
+        var stakeholderId = request.params.stakeholderId;
+        new Parse.Query(Parse.User).get(userId).then(function(user){
+            console.log("saveNewPassword: found user: " + userId);
+            if ( user.get("passwordChangeRequired") )
+            {
+                //we can change the password
+                user.set("password", password);
+                user.set("passwordChangeRequired", false);
+                Parse.Cloud.useMasterKey();
+                user.save().then(function(user){
+                    console.log("successfully changed password");
+                    response.success({message: "succesfully saved the user's password"})
+                });
+            }
+        })
+
+    });
 }
 
 function createStakeholderUser( stakeholder, deal, invitedBy, response ){
@@ -52,6 +73,8 @@ function createStakeholderUser( stakeholder, deal, invitedBy, response ){
     user.set( "password", deal.id );
     user.set( "sourceDeal", deal );
     user.set( "invitedBy", invitedBy );
+    user.set( "passwordChangeRequired", true );
+    user.setACL();
     user.signUp( null, {
         success: function(created){
             console.log( "successfully created a user to be added as a stakeholder." );

@@ -35,7 +35,7 @@ var GoogleMaterialColors = {
 };
 
 var reactModalBootstrap = {
-    stylesheets: "./node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less"   
+    stylesheets: "./node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less"
 };
 
 var paths = {
@@ -114,14 +114,19 @@ var sassOpts = {
 
     gulp.task("transpile", ["clean:js", "lint"], function () {
         return gulp.src(paths.src.scripts)
-        .pipe(plumber())
-        .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(plumber({
+            handleError: function (err) {
+                console.log(err);
+                this.emit("end");
+            }
+        }))
+        // .pipe(sourcemaps.init({loadMaps: true}))
         .pipe(babel())
         .on("error", function (err) {
             gutil.log(gutil.colors.red("[Task \"transpile\"][Babel Error]"));
             gutil.log(gutil.colors.red(err.message));
         })
-        .pipe(sourcemaps.write())
+        // .pipe(sourcemaps.write())
         .pipe(plumber.stop())
         .pipe(gulp.dest(paths.build.js));
     });
@@ -132,7 +137,12 @@ var sassOpts = {
             debug: true
         });
 
-        return plumber()
+        return plumber({
+            handleError: function (err) {
+                console.log(err);
+                this.emit("end");
+            }
+        })
         .pipe(b.bundle()
         .on("error", function (err) {
             gutil.log(gutil.colors.red("[Task \"bundle\"][Browserify.bundle() Error]"));
@@ -166,7 +176,7 @@ var sassOpts = {
     });
 
     gulp.task("inspect", function () {
-        gulp.src([]).pipe(nodeInspector({  // You'll need to tweak these settings per your setup
+        gulp.src([]).pipe(nodeInspector({  // You"ll need to tweak these settings per your setup
             debugPort: 5858,
             webHost: "localhost",
             webPort: "8085",
