@@ -27,18 +27,19 @@ Parse.$ = $;
 const browserHistory = useRouterHistory(createHistory)({
             basename: "/"
         });
-function requireAuth(nextState, replace, callback) {
-    console.log("requireAuth");
-    var user = Parse.User.current();
-    if (!user) {
-        replace({
-            pathname: "/login",
-            state: { nextPathname: nextState.location.pathname }
-        })
-    }
 
-    callback(nextState, replace);
-}
+// function requireAuth(nextState, replace, callback) {
+//     console.log("requireAuth");
+//     var user = Parse.User.current();
+//     if (!user) {
+//         replace({
+//             pathname: "/login",
+//             state: { nextPathname: nextState.location.pathname }
+//         })
+//     }
+//
+//     callback(nextState, replace);
+// }
 
 function requireAuthOrParam( nextState, replace ){
     console.log("auth or param");

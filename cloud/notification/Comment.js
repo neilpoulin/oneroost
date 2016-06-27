@@ -39,7 +39,7 @@ exports.afterSave = function(io){
         namespace.in(dealId).emit("comment", "new message");
     }
 
-    Parse.Cloud.afterSave( "DealComment", function( req, res ){        
+    Parse.Cloud.afterSave( "DealComment", function( req, res ){
         var comment = req.object;
         broadcast(comment);
 
@@ -47,24 +47,24 @@ exports.afterSave = function(io){
             this block is to send an email... TBD if we want to send these or not.
         */
 
-        // if ( comment.get("author") != null )
-        // {
-        //     var query = new Parse.Query( "DealComment" );
-        //     query.include("author");
-        //     query.include("deal");
-        //     query.get( comment.id, {
-        //         success: function( comment ){
-        //             console.log("not sending comment email - turned off for now");
-        //             // broadcast(comment);
-        //             // sendCommentEmail( comment );
-        //         },
-        //         error: function(){
-        //             console.error("failed to get the deal from the comment.");
-        //         }
-        //     } );
-        // }
-        // else {
-        //     console.log("not sending deal comment email as the author was null");
-        // }
+        if ( comment.get("author") != null )
+        {
+            var query = new Parse.Query( "DealComment" );
+            query.include("author");
+            query.include("deal");
+            query.get( comment.id, {
+                success: function( comment ){
+                    console.log("not sending comment email - turned off for now");
+                    // broadcast(comment);
+                    sendCommentEmail( comment );
+                },
+                error: function(){
+                    console.error("failed to get the deal from the comment.");
+                }
+            } );
+        }
+        else {
+            console.log("not sending deal comment email as the author was null");
+        }
     });
 }

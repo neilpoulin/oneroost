@@ -6,6 +6,9 @@ import LinkedStateMixin from "react-addons-linked-state-mixin"
 
 const Invitation = withRouter( React.createClass({
     mixins: [ParseReact.Mixin,LinkedStateMixin],
+    propTypes: {
+        router: PropTypes.object.isRequired
+    },
     observe: function(props, state){
         var stakeholderQuery = new Parse.Query("Stakeholder");
         stakeholderQuery.include("user");
@@ -24,15 +27,36 @@ const Invitation = withRouter( React.createClass({
         }
     },
     componentWillUpdate(props, state){
-        if ( this.pendingQueries().length == 0 && (Parse.User.current() ||
-                !this.data.stakeholder[0].user.passwordChangeRequired ||
-                !this.data.stakeholder[0].inviteAccepted) )
+        if ( this.pendingQueries().length == 0 ) //stakeholder loaded
         {
-            debugger;
-            this.props.router.replace("/roosts/" + this.data.stakeholder[0].deal.objectId )
+            var stakeholder = this.data.stakeholder[0];
+            var stakeholderUser = stakeholder.user;
+            var currentUser = Parse.User.current();
+            var dealId = stakeholder.deal.objectId;
+
+            if ( stakeholder.inviteAccepted //if the invite is accepted
+                || ( !currentUser && !stakeholderUser.passwordChangeRequired))  // OR the user needs to log in
+            {
+                this.sendToRoost( dealId );
+            }
+            // else if( stakeholder.inviteAccepted  && ( currentUser || !stakeholderUser.passwordChangeRequired))
+            // {
+            //     this.sendToRoost( dealId );
+            // }
+            //else render the page
         }
     },
-    submit: function(){
+    sendToRoost( roostId )
+    {
+        this.props.router.replace("/roosts/" + roostId )
+    },
+    acceptInvite: function(){
+        console.log("invite accepted - already has a password")
+        var stakeholder = this.data.stakeholder[0];
+        var user = stakeholder.user;
+        ParseReact.Mutation.Set(stakeholder, {inviteAccepted: true}).dispatch();
+    },
+    submitPassword: function(){
         console.log("saving password...");
         var self = this;
         var stakeholder = this.data.stakeholder[0];
@@ -76,6 +100,42 @@ const Invitation = withRouter( React.createClass({
             return <div>No invites found for that ID</div>
         }
         var stakeholder = this.data.stakeholder[0];
+        var currentUser = Parse.User.current();
+
+        var form = (null)
+        if ( stakeholder.user.passwordChangeRequired )
+        {
+
+            form =
+                <div className="row">
+                    <div className="form-group">
+                        <label htmlFor="nextStepTitle">Crate a Password</label>
+                        <input id="createPassword"
+                            type="password"
+                            className="form-control"
+                            valueLink={this.linkState("password")}/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="nextStepTitle">Confirm Password</label>
+                        <input id="confirmPassword"
+                            type="password"
+                            className="form-control"
+                            valueLink={this.linkState("confirmPassword")}/>
+                    </div>
+                    <div className="form-group">
+                        <button className="btn btn-success" onClick={this.submitPassword}>Accept</button>
+                    </div>
+                </div>
+        }
+        else if( currentUser && !currentUser.passwordChangeRequired ){
+            form =
+            <div className = "form">
+                <div className="form-group">
+                    <button className="btn btn-success" onClick={this.acceptInvite}>Accept</button>
+                </div>
+            </div>
+        }
+
         var result =
         <div className="container">
             <div className="row">
@@ -83,27 +143,11 @@ const Invitation = withRouter( React.createClass({
                 <br/>
                 {stakeholder.invitedBy.firstName} {stakeholder.invitedBy.lastName} has invited to you join {stakeholder.deal.dealName} on OneRoost
             </div>
-            <div className="row">
-                <div className="form-group">
-                    <label htmlFor="nextStepTitle">Crate a Password</label>
-                    <input id="createPassword"
-                        type="text"
-                        className="form-control"
-                        valueLink={this.linkState("password")}/>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="nextStepTitle">Confirm Password</label>
-                    <input id="confirmPassword"
-                        type="text"
-                        className="form-control"
-                        valueLink={this.linkState("confirmPassword")}/>
-                </div>
-                <div className="form-group">
-                    <button className="btn btn-success" onClick={this.submit}>Accept</button>
-                </div>
-            </div>
-
+            {form}
         </div>
+
+
+
         return result;
     }
 }) )

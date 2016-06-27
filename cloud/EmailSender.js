@@ -27,20 +27,14 @@ function getActualRecipients( original, config )
 
 exports.sendEmail = function( message, recipients ){
     Parse.Config.get().then( function(config){
-        console.log("retrieved config");
         if ( config.get( "emailEnabled" ) ){
-            console.log( "the config says email is enabled...preparing to send email." );
             var actualRecipients = getActualRecipients( recipients, config );
 
             var email = new SESEmailSender.Mail();
             email.setRecipients( actualRecipients );
             email.subject = message.subject;
             email.text = message.text;
-            email.html = message.html;
-
-            console.log("email message: " + JSON.stringify( email ) );
-            console.log( "sending email to " + JSON.stringify( actualRecipients ) );
-
+            email.html = message.html;            
             SESEmailSender.sendEmail( email );
         }
         else {

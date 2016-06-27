@@ -1,7 +1,6 @@
 import React from "react"
 import NavLink from "./../NavLink";
 import Parse from "parse";
-import LogoutLink from "./LogoutLink";
 
 const LoggedInLinks = React.createClass({
     render () {

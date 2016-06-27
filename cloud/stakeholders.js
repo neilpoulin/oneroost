@@ -44,7 +44,7 @@ exports.initialize = function()
     Parse.Cloud.define("saveNewPassword", function(request, response) {
         var password = request.params.password;
         var userId = request.params.userId;
-        var stakeholderId = request.params.stakeholderId;
+        // var stakeholderId = request.params.stakeholderId;
         new Parse.Query(Parse.User).get(userId).then(function(user){
             console.log("saveNewPassword: found user: " + userId);
             if ( user.get("passwordChangeRequired") )

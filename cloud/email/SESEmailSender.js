@@ -54,7 +54,6 @@ exports.sendEmail = function( mail )
     var response = {message: "not set"};
     try {
         var template = getTemplate(mail.recipients, mail.subject, mail.html, mail.text);
-        console.log("sending mail with SES {}", template);
         ses.sendEmail( template, function(err, data){
             if (err) { // an error occurred
                 return handleSendError( err, response )
@@ -67,12 +66,11 @@ exports.sendEmail = function( mail )
         response.message = "failed to send";
         return response;
     }
-    console.log("exiting from the sendEmail function");
 }
 
 function handleSendError( error, response )
 {
-    console.log("email failed to send", error);
+    console.error("email failed to send", error);
     response.error = error;
     response.message = "Failed to send";
     return response;

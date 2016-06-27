@@ -95,12 +95,12 @@ export default React.createClass({
     },
     handleLoginSuccess: function(user){
         console.log("successfully logged in");
-        this.setState({
-            isLoggedIn: true,
-            username: user.get("username"),
-            password: user.get("password"),
-            email: user.get("email")
-        });
+        // this.setState({
+        //     isLoggedIn: true,
+        //     username: user.get("username"),
+        //     password: user.get("password"),
+        //     email: user.get("email")
+        // });
         if ( this.props.success )
         {
             return this.props.success();

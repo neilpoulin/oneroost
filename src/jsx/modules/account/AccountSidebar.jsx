@@ -1,8 +1,6 @@
 import React from "react"
-// import {Parse} from "./../../config/OneRoost";
 import Parse from "parse";
 import ParseReact from "parse-react";
-import Deal from "./../../models/Deal";
 import AccountSidebarList from "./AccountSidebarList";
 import AddAccountButton from "./AddAccountButton"
 

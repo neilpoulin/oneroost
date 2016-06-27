@@ -22,10 +22,11 @@ const Deal = withRouter( React.createClass({
             this.props.router.replace(location.state.nextPathname)
         }
         else if ( location.query && location.query.accept ){
-
+            //what to do here...
+            console.log("unauthorized - has accept query params though.");
         }
         else {
-            this.props.router.replace('/roosts/unauthorized')
+            this.props.router.replace("/roosts/unauthorized")
         }
     },
     observe: function(props, state){
@@ -45,9 +46,15 @@ const Deal = withRouter( React.createClass({
         if ( this.pendingQueries().length == 0 )
         {
             var stakeholders = this.data.myStakeholders;
-            if (!stakeholders || !stakeholders.find( s => s.deal.objectId == dealId ) )
+
+            var foundStakeholder = stakeholders.find( s => s.deal.objectId == dealId );
+            if (!stakeholders || !foundStakeholder )
             {
                 this.handleUnauthorized();
+            }
+            else if ( !foundStakeholder.inviteAccepted )
+            {
+                this.props.router.replace("/invitations/" + foundStakeholder.objectId)
             }
         }
     },
