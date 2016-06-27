@@ -24,8 +24,8 @@ bundle
 ```
 
 
-
-You can then test your changes at [dev.oneroost.com](http://dev.oneroost.com)
+Live application:
+[http://aws.oneroost.com](http://aws.oneroost.com)
 
 ## Stylesheet Libraries
 We depend on several libraries for styles
