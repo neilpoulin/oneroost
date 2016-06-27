@@ -21,13 +21,19 @@ export default React.createClass({
         }
 
         var roleClass = stakeholder.role.toLowerCase();
+        var pendingText = null;
+        if ( !stakeholder.inviteAccepted )
+        {
+            pendingText = <span className="penidng">(Invite Pending)</span>
+        }
 
-        var stakeholder =
+
+        var result =
         <div data-name={firstName + " " + lastName} data-email={email} className="Stakeholder row">
             <div className="col-xs-10 container-fluid">
                 <span className={"roleName label " + roleClass}>{stakeholder.role}</span>
-                <a href={"mailto:" + email} target="_blank">
-                    {firstName}&nbsp;{lastName}
+                <a href={"#"}>
+                    {firstName}&nbsp;{lastName} {pendingText}
                 </a>
             </div>
             <div className="col-xs-2 container-fluid">
@@ -35,6 +41,6 @@ export default React.createClass({
             </div>
         </div>
 
-        return stakeholder;
+        return result;
     }
 });

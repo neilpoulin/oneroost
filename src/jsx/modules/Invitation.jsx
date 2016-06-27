@@ -35,7 +35,7 @@ const Invitation = withRouter( React.createClass({
             var dealId = stakeholder.deal.objectId;
 
             if ( stakeholder.inviteAccepted //if the invite is accepted
-                || ( !currentUser && !stakeholderUser.passwordChangeRequired))  // OR the user needs to log in
+                || !currentUser && !stakeholderUser.passwordChangeRequired )  // OR the user needs to log in
             {
                 this.sendToRoost( dealId );
             }
@@ -53,7 +53,6 @@ const Invitation = withRouter( React.createClass({
     acceptInvite: function(){
         console.log("invite accepted - already has a password")
         var stakeholder = this.data.stakeholder[0];
-        var user = stakeholder.user;
         ParseReact.Mutation.Set(stakeholder, {inviteAccepted: true}).dispatch();
     },
     submitPassword: function(){
@@ -102,7 +101,7 @@ const Invitation = withRouter( React.createClass({
         var stakeholder = this.data.stakeholder[0];
         var currentUser = Parse.User.current();
 
-        var form = (null)
+        var form = null
         if ( stakeholder.user.passwordChangeRequired )
         {
 
