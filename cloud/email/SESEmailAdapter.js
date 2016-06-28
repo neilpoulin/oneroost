@@ -9,7 +9,6 @@ var SESEMailAdapter = sesOptions => {
             html: mail.text
         };
         return new Promise((resolve, reject) => {
-            debugger;
             EmailSender.sendEmail(message, [mail.to]);
             resolve(null);
         });

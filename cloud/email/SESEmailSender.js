@@ -50,7 +50,7 @@ exports.sendEmail = function( mail )
     if ( !(mail instanceof Mail) ) throw "The email message was not of type Mail";
 
     if ( !mail.isValid() ) throw JSON.stringify( mail.getErrors() );
-
+debugger;
     var response = {message: "not set"};
     try {
         var template = getTemplate(mail.recipients, mail.subject, mail.html, mail.text);
@@ -87,7 +87,7 @@ function handleSendSuccess( data, response )
 function formatAddresses( to ){
     var addresses = [];
     to.forEach( function( addr ){
-        addresses.push( addr.name + " <" + (envUtil.isDev() ? "dev@oneroost.com" : addr.email) + ">" );
+        addresses.push( addr.name + " <" + addr.email + ">" );
     } )
     return addresses;
 }
@@ -97,7 +97,7 @@ function getTemplate(to, subject, html, text){
         to = [to];
     }
 
-    var source = envUtil.isDev() ? "Dev OneRoost <dev@oneroost.com>" : "OneRoost Notifications <dev@oneroost.com>";
+    var source = envUtil.isDev() ? "Dev OneRoost <dev@oneroost.com>" : "OneRoost Notifications <notifications@oneroost.com>";
 
     return {
         Destination: { /* required */

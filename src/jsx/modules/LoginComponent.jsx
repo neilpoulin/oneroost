@@ -131,185 +131,197 @@ export default React.createClass({
             emailValidation: null,
             passwordValidation: null,
             error: null});
-        },
-        setIsLogin: function(e){
-            this.setState({isLogin: true,
-                emailValidation: null,
-                passwordValidation: null,
-                error: null});
-            },
-            resetPassword: function(){
-                if ( this.state.email != null )
-                {
-                    Parse.User.requestPasswordReset(this.state.email, {
-                        success: function() {
-                            // Password reset request was sent successfully
-                            alert("reset request successful");
-                        },
-                        error: function(error) {
-                            // Show the error message somewhere
-                            alert("Error: " + error.code + " " + error.message);
-                        }
-                    });
-                }
-                else {
-                    //todo: tell the use to enter an email
-                }
-            },
-            emailKeyUp: function(){
-                var self = this;
-                if ( this.emailTypingTimeout != null )
-                {
-                    clearTimeout( self.emailTypingTimeout );
-                }
-                if ( self.state.emailValidation != null && self.isValidEmail() )
-                {
-                    self.doEmailValidation();
-                }
-                else
-                {
-                    self.emailTypingTimeout = setTimeout( function(){
-                        self.doEmailValidation();
-                    } , 500 );
-                }
-            },
-            doEmailValidation: function()
+    },
+    setIsLogin: function(e){
+        this.setState({
+            isLogin: true,
+            emailValidation: null,
+            passwordValidation: null,
+            error: null
+        });
+    },
+    resetPassword: function(){
+        var self = this;
+        if ( self.state.email )
+        {
+            if ( !self.isValidEmail() )
             {
-                var email = this.state.email;
-                if ( email && email.length > 2 && !this.isValidEmail() )
-                {
-                    this.setState({emailValidation: {
-                        message: "Please enter a valid email",
-                        level: "error"
-                    }});
-                }
-                else
-                {
-                    this.setState({emailValidation: null});
-                }
-            },
-            isValidEmail: function(){
-                var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                return re.test(this.state.email);
-            },
-            emailTypingTimeout: null,
-            passwordKeyUp: function(){
-                var self = this;
-                if ( self.passwordTypingTimeout != null )
-                {
-                    clearTimeout( self.passwordTypingTimeout );
-                }
-                if ( self.state.passwordValidation != null && self.isValidPassword() )
-                {
-                    self.doPasswordValidation();
-                }
-                else {
-                    this.passwordTypingTimeout = setTimeout( function(){
-                        self.doPasswordValidation();
-                    }, 500 );
-                }
-            },
-            doPasswordValidation: function(){
-                var password = this.state.password;
-                if ( password && password.length > 1 && !this.isValidPassword() )
-                {
-                    this.setState({passwordValidation: {
-                        message: "Your password must be at least 4 characters long",
-                        level: "error"
-                    }});
-                }
-                else
-                {
-                    this.setState({passwordValidation: null});
-                }
-            },
-            passwordTypingTimeout: null,
-            isValidPassword: function(){
-                var password = this.state.password || "";
-                return password.length > 3;
-            },
-            render: function(){
-                if ( this.state.isLoggedIn )
-                {
-                    return false;
-                }
+                self.setState({error: {message:"Please enter your email and try again."}});
+                return
+            }
 
-                var btnText = this.state.isLogin ? "Log In" : "Sign Up";
-
-                var tabs =
-                <ul className="nav nav-tabs nav-justified" >
-                    <li role="presentation " className={"pointer " + ( this.state.isLogin ? "" : "active" )} >
-                        <a onClick={this.setIsRegister}>Sign Up</a>
-                    </li>
-                    <li role="presentation" className={"pointer " + ( this.state.isLogin ? "active" : "" )} >
-                        <a onClick={this.setIsLogin}>Login</a>
-                    </li>
-                </ul>;
-
-                var error = <div></div>
-                if ( this.state.error )
-                {
-                    error =
-                    <div className="errorMessage alert alert-danger">
-                        {this.state.error.message}
-                    </div>;
+            Parse.User.requestPasswordReset(self.state.email, {
+                success: function() {
+                    // Password reset request was sent successfully
+                    alert("reset request successful");
+                    self.setState({error: null});
+                },
+                error: function(error) {
+                    // Show the error message somewhere
+                    self.setState({error: {message:"Please enter your email and try again."}});
                 }
+            });
+        }
+        else
+        {
+            //todo: tell the use to enter an email
+            self.setState({error: {message:"Please enter your email and try again."}});
+        }
+    },
+    emailKeyUp: function(){
+        var self = this;
+        if ( this.emailTypingTimeout != null )
+        {
+            clearTimeout( self.emailTypingTimeout );
+        }
+        if ( self.state.emailValidation != null && self.isValidEmail() )
+        {
+            self.doEmailValidation();
+        }
+        else
+        {
+            self.emailTypingTimeout = setTimeout( function(){
+                self.doEmailValidation();
+            } , 500 );
+        }
+    },
+    doEmailValidation: function()
+    {
+        var email = this.state.email;
+        if ( email && email.length > 2 && !this.isValidEmail() )
+        {
+            this.setState({emailValidation: {
+                message: "Please enter a valid email",
+                level: "error"
+            }});
+        }
+        else
+        {
+            this.setState({emailValidation: null});
+        }
+    },
+    isValidEmail: function(){
+        var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(this.state.email);
+    },
+    emailTypingTimeout: null,
+    passwordKeyUp: function(){
+        var self = this;
+        if ( self.passwordTypingTimeout != null )
+        {
+            clearTimeout( self.passwordTypingTimeout );
+        }
+        if ( self.state.passwordValidation != null && self.isValidPassword() )
+        {
+            self.doPasswordValidation();
+        }
+        else {
+            this.passwordTypingTimeout = setTimeout( function(){
+                self.doPasswordValidation();
+            }, 500 );
+        }
+    },
+    doPasswordValidation: function(){
+        var password = this.state.password;
+        if ( password && password.length > 1 && !this.isValidPassword() )
+        {
+            this.setState({passwordValidation: {
+                message: "Your password must be at least 4 characters long",
+                level: "error"
+            }});
+        }
+        else
+        {
+            this.setState({passwordValidation: null});
+        }
+    },
+    passwordTypingTimeout: null,
+    isValidPassword: function(){
+        var password = this.state.password || "";
+        return password.length > 3;
+    },
+    render: function(){
+        if ( this.state.isLoggedIn )
+        {
+            return false;
+        }
 
-                var emailHelpBlock = "";
-                var emailValidationClass = "";
+        var btnText = this.state.isLogin ? "Log In" : "Sign Up";
 
-                var passwordHelpBlock = "";
-                var passwordValidationClass = "";
+        var tabs =
+        <ul className="nav nav-tabs nav-justified" >
+            <li role="presentation " className={"pointer " + ( this.state.isLogin ? "" : "active" )} >
+                <a onClick={this.setIsRegister}>Sign Up</a>
+            </li>
+            <li role="presentation" className={"pointer " + ( this.state.isLogin ? "active" : "" )} >
+                <a onClick={this.setIsLogin}>Login</a>
+            </li>
+        </ul>;
+
+        var error = <div></div>
+        if ( this.state.error )
+        {
+            error =
+            <div className="errorMessage alert alert-danger">
+                {this.state.error.message}
+            </div>;
+        }
+
+        var emailHelpBlock = "";
+        var emailValidationClass = "";
+
+        var passwordHelpBlock = "";
+        var passwordValidationClass = "";
 
 
-                if ( this.state.emailValidation )
-                {
-                    emailHelpBlock = this.state.emailValidation.message;
-                    emailValidationClass = "has-" + this.state.emailValidation.level;
-                }
+        if ( this.state.emailValidation )
+        {
+            emailHelpBlock = this.state.emailValidation.message;
+            emailValidationClass = "has-" + this.state.emailValidation.level;
+        }
 
-                if ( this.state.passwordValidation )
-                {
-                    passwordHelpBlock = this.state.passwordValidation.message;
-                    passwordValidationClass = "has-" + this.state.passwordValidation.level;
-                }
+        if ( this.state.passwordValidation )
+        {
+            passwordHelpBlock = this.state.passwordValidation.message;
+            passwordValidationClass = "has-" + this.state.passwordValidation.level;
+        }
 
-                var result =
-                <div className="LoginComponent">
-                    <div className="">
-                        {tabs}
-                    </div>
-                    <form className="container-fluid">
-                        {error}
-                        <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
-                            <label htmlFor="loginLastNameInput" className="control-label">First Name</label>
-                            <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("firstName")} placeholder="" aria-describedby="firstNameHelpBlock"/>
-                        </div>
-                        <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
-                            <label htmlFor="loginLastNameInput" className="control-label">Last Name</label>
-                            <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("lastName")} placeholder="" aria-describedby="firstNameHelpBlock"/>
-                        </div>
-
-                        <div className={"form-group " + emailValidationClass}>
-                            <label htmlFor="loginUsernameInput" className="control-label">Email</label>
-                            <input type="email" id="loginEmailInput" className="form-control" valueLink={this.linkState("email")} onKeyUp={this.emailKeyUp} placeholder="" aria-describedby="emailHelpBlock"/>
-                            <span className="help-block" id="emailHelpBlock">{emailHelpBlock}</span>
-                        </div>
-                        <div className={"form-group " + passwordValidationClass}>
-                            <label htmlFor="loginPasswordInput" className="control-label">Password</label>
-                            <input type="password" id="loginPasswordInput" className="form-control" valueLink={this.linkState("password")} onKeyUp={this.passwordKeyUp} aria-describedby="passwordHelpBlock"/>
-                            <span className="help-block" id="passwordHelpBlock">{passwordHelpBlock}</span>
-                        </div>
-                        <div className="form-group">
-                            <br/>
-                            <button className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doLogin}>{btnText} <SpinnerIcon ref="spinner"></SpinnerIcon></button>
-                        </div>
-                        <div className={"forgotPassword " + (this.state.isLogin ? "" : "hidden")}>
-                            Forgot your password? <a href="#" onClick={this.resetPassword}>Click here</a> to reset it.
-                        </div>
-                    </form>
+        var result =
+        <div className="LoginComponent">
+            <div className="">
+                {tabs}
+            </div>
+            <form className="container-fluid">
+                {error}
+                <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
+                    <label htmlFor="loginLastNameInput" className="control-label">First Name</label>
+                    <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("firstName")} placeholder="" aria-describedby="firstNameHelpBlock"/>
+                </div>
+                <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
+                    <label htmlFor="loginLastNameInput" className="control-label">Last Name</label>
+                    <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("lastName")} placeholder="" aria-describedby="firstNameHelpBlock"/>
                 </div>
 
-                return result;
-            }
-        });
+                <div className={"form-group " + emailValidationClass}>
+                    <label htmlFor="loginUsernameInput" className="control-label">Email</label>
+                    <input type="email" id="loginEmailInput" className="form-control" valueLink={this.linkState("email")} onKeyUp={this.emailKeyUp} placeholder="" aria-describedby="emailHelpBlock"/>
+                    <span className="help-block" id="emailHelpBlock">{emailHelpBlock}</span>
+                </div>
+                <div className={"form-group " + passwordValidationClass}>
+                    <label htmlFor="loginPasswordInput" className="control-label">Password</label>
+                    <input type="password" id="loginPasswordInput" className="form-control" valueLink={this.linkState("password")} onKeyUp={this.passwordKeyUp} aria-describedby="passwordHelpBlock"/>
+                    <span className="help-block" id="passwordHelpBlock">{passwordHelpBlock}</span>
+                </div>
+                <div className="form-group">
+                    <br/>
+                    <button className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doLogin}>{btnText} <SpinnerIcon ref="spinner"></SpinnerIcon></button>
+                </div>
+                <div className={"forgotPassword " + (this.state.isLogin ? "" : "hidden")}>
+                    Forgot your password? <a href="#" onClick={this.resetPassword}>Click here</a> to reset it.
+                </div>
+            </form>
+        </div>
+
+        return result;
+    }
+});
