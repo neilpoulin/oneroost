@@ -5,6 +5,8 @@ var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
 Parse.serverURL = envUtil.serverURL;
 
+var socketProvider = null;
+
 function sendCommentEmail( comment ){
     var deal = comment.get("deal");
     var author = comment.get("author");
@@ -25,12 +27,12 @@ function sendCommentEmail( comment ){
 }
 
 exports.afterSave = function(io){
+    socketProvider = io;
     var namespace = io.of("/DealComment");
     namespace.on("connection", function(socket){
         socket.on("deal", function(deal){
             socket.join(deal);
         });
-        // socket.emit("comment", "test comment"); //no longer needed?
     });
 
     var broadcast = function( comment )

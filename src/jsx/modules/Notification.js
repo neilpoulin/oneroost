@@ -19,11 +19,9 @@ function setupPermissions()
     {
         switch (checkPermission()) {
             case "granted":
-                console.log("granted permissions... continuing");
                 canSend = true;
                 break;
             case "default":
-                console.log("default permissions, requesting then initializing");
                 Notification.requestPermission().then(setupPermissions);
                 break;
             case "none":
@@ -37,7 +35,6 @@ function setupPermissions()
 
 exports.requestPermission = function()
 {
-    console.log("requesting permissions");
     if ( window.Notification )
     {
         Notification.requestPermission().then(setupPermissions);
@@ -48,10 +45,8 @@ exports.sendNotification = function( opts )
 {
     if ( document.hasFocus() )
     {
-        console.log("not sending notification, window has focus.")
         return;
     }
-    console.log("sending notification", opts);
     if ( canSend )
     {
         var notification = new Notification( opts.title, {

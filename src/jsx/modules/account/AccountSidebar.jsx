@@ -17,7 +17,6 @@ export default React.createClass({
         }
     },
     onSuccess: function(){
-        console.log("refreshing stakeholder queries");
         this.refreshQueries(["stakeholders"]);
     },
     render () {

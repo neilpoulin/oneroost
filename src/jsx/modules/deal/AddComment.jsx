@@ -25,7 +25,6 @@ export default React.createClass({
     },
     saveComment: function( comment )
     {
-        console.log("submitting comment: " + this.state.message);
         var msg = this.formatMessage( this.state.message )
         var comment = {
             message: msg,

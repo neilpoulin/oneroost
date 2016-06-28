@@ -43,8 +43,6 @@ export default React.createClass({
         this.showLoading();
         if ( this.state.isLogin )
         {
-            console.log("logging in for email: " + this.state.email + ", password: " + this.state.password);
-
             Parse.User.logIn(this.state.email, this.state.password, {
                 success: component.handleLoginSuccess,
                 error: component.handleLoginError
@@ -94,18 +92,10 @@ export default React.createClass({
         this.hideLoading();
     },
     handleLoginSuccess: function(user){
-        console.log("successfully logged in");
-        // this.setState({
-        //     isLoggedIn: true,
-        //     username: user.get("username"),
-        //     password: user.get("password"),
-        //     email: user.get("email")
-        // });
         if ( this.props.success )
         {
             return this.props.success();
         }
-        // return this.render();
     },
     handleLogoutSuccess: function()
     {

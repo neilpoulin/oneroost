@@ -39,7 +39,6 @@ export default React.createClass({
         });
 
         socket.on("comment", function(comment){
-            console.log("recieved message", comment);
             var deal = self.props.deal;
             var senderName = comment.author.firstName + " " + comment.author.lastName;
             Notification.sendNotification({

@@ -53,8 +53,6 @@ export default React.createClass({
         ParseReact.Mutation.Create( "Deal", deal )
         .dispatch()
         .then(function( newDeal ){
-            console.log( "saved new deal" );
-            console.log(newDeal);
             self.createStakeholder(newDeal);
         });
     },

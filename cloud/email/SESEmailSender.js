@@ -50,7 +50,6 @@ exports.sendEmail = function( mail )
     if ( !(mail instanceof Mail) ) throw "The email message was not of type Mail";
 
     if ( !mail.isValid() ) throw JSON.stringify( mail.getErrors() );
-debugger;
     var response = {message: "not set"};
     try {
         var template = getTemplate(mail.recipients, mail.subject, mail.html, mail.text);

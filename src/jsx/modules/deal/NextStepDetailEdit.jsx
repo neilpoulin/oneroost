@@ -29,7 +29,6 @@ const NextStepDetailEdit = React.createClass({
         };
     },
     handleSave: function(){
-        console.log("saving step");
         var self = this;
         var changes = {
             "title": this.state.title,

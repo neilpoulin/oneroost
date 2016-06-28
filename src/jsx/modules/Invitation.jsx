@@ -46,14 +46,12 @@ const Invitation = withRouter( React.createClass({
         this.props.router.replace("/roosts/" + roostId )
     },
     acceptInvite: function(){
-        console.log("invite accepted - already has a password")
         var self = this;
 
         ParseReact.Mutation.Set(this.data.stakeholder[0], {inviteAccepted: true}).dispatch();
         self.sendToRoost( self.data.stakeholder[0].deal.objectId );
     },
     submitPassword: function(){
-        console.log("saving password...");
         var self = this;
         var stakeholder = this.data.stakeholder[0];
         var user = stakeholder.user;
@@ -65,11 +63,9 @@ const Invitation = withRouter( React.createClass({
                 userId: user.objectId
             })
             .then( function(result) {
-                    console.log("Password changed", result);
                     ParseReact.Mutation.Set(stakeholder, {inviteAccepted: true}).dispatch();
                     Parse.User.logIn(user.email, self.state.password, {
                         success: function(){
-                            console.log("logged in after creating new password, user: ", Parse.User.current());
                             self.sendToRoost( self.data.stakeholder[0].deal.objectId )
                         },
                         error: function(){

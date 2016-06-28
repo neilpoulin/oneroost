@@ -41,9 +41,7 @@ const browserHistory = useRouterHistory(createHistory)({
 //     callback(nextState, replace);
 // }
 
-function requireAuthOrParam( nextState, replace ){
-    console.log("auth or param");
-    console.log("requireAuth");
+function requireAuthOrParam( nextState, replace ){    
     var user = Parse.User.current();
     let {accept} = nextState.location.query;
     if (!user && !!accept )
