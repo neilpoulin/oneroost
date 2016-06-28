@@ -1,6 +1,6 @@
 var AWS = require("aws-sdk");
 var ses = new AWS.SES({region: "us-east-1"});
-
+var envUtil = require("./../util/envUtil");
 
 var Mail = function(){
     this.recipients = [];
@@ -87,7 +87,7 @@ function handleSendSuccess( data, response )
 function formatAddresses( to ){
     var addresses = [];
     to.forEach( function( addr ){
-        addresses.push( addr.name + " <" + addr.email + ">" );
+        addresses.push( addr.name + " <" + (envUtil.getEnv().isDev ? "dev@oneroost.com" : addr.email) + ">" );
     } )
     return addresses;
 }
@@ -96,6 +96,9 @@ function getTemplate(to, subject, html, text){
     if ( !(to instanceof Array ) ){
         to = [to];
     }
+
+    var source = envUtil.getEnv().isDev ? "Dev OneRoost <dev@oneroost.com>" : "OneRoost Notifications <dev@oneroost.com>";
+
     return {
         Destination: { /* required */
             // BccAddresses: [
@@ -121,9 +124,9 @@ function getTemplate(to, subject, html, text){
                 Data: subject /* required */
             }
         },
-        Source: "notifications@oneroost.com", /* required */
+        Source: source, /* required */
         ReplyToAddresses: [
-            "OneRoost Notifications <notifications@oneroost.com>"
+            source
             /* more items */
         ]
         // ReturnPath: "STRING_VALUE",

@@ -39,11 +39,6 @@ const Invitation = withRouter( React.createClass({
             {
                 this.sendToRoost( dealId );
             }
-            // else if( stakeholder.inviteAccepted  && ( currentUser || !stakeholderUser.passwordChangeRequired))
-            // {
-            //     this.sendToRoost( dealId );
-            // }
-            //else render the page
         }
     },
     sendToRoost( roostId )
@@ -52,8 +47,10 @@ const Invitation = withRouter( React.createClass({
     },
     acceptInvite: function(){
         console.log("invite accepted - already has a password")
-        var stakeholder = this.data.stakeholder[0];
-        ParseReact.Mutation.Set(stakeholder, {inviteAccepted: true}).dispatch();
+        var self = this;
+
+        ParseReact.Mutation.Set(this.data.stakeholder[0], {inviteAccepted: true}).dispatch();
+        self.sendToRoost( self.data.stakeholder[0].deal.objectId );
     },
     submitPassword: function(){
         console.log("saving password...");
@@ -73,7 +70,7 @@ const Invitation = withRouter( React.createClass({
                     Parse.User.logIn(user.email, self.state.password, {
                         success: function(){
                             console.log("logged in after creating new password, user: ", Parse.User.current());
-                            self.props.router.replace("/roosts/" + self.data.stakeholder[0].deal.objectId )
+                            self.sendToRoost( self.data.stakeholder[0].deal.objectId )
                         },
                         error: function(){
                             console.log("failed to log in after changing password");

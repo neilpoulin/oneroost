@@ -36,13 +36,11 @@ exports.afterSave = function(io){
     var broadcast = function( comment )
     {
         var dealId = comment.get("deal").id;
-        namespace.in(dealId).emit("comment", "new message");
+        namespace.in(dealId).emit("comment", comment);
     }
 
     Parse.Cloud.afterSave( "DealComment", function( req, res ){
         var comment = req.object;
-        broadcast(comment);
-
         /*
             this block is to send an email... TBD if we want to send these or not.
         */
@@ -54,8 +52,7 @@ exports.afterSave = function(io){
             query.include("deal");
             query.get( comment.id, {
                 success: function( comment ){
-                    console.log("not sending comment email - turned off for now");
-                    // broadcast(comment);
+                    broadcast(comment);
                     sendCommentEmail( comment );
                 },
                 error: function(){

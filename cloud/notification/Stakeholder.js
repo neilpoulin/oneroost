@@ -39,7 +39,7 @@ exports.afterSave = function(){
                 //invite the new user
                 //TODO: check if they are a brand new user
                 var invitedByText = invitedByName + " (" + invitedBy.get("email") + ")";
-                var inviteLink = dealLink + "?accept=" + req.object.id;
+                var inviteLink = envUtil.getHost() + "/invitations/" + req.object.id;
                 message = {
                     subject: "You have been invited to participate in the deal " + deal.get("dealName"),
                     text: "You have been invited to participate in the deal " + deal.get("dealName") + " as a " + role + " by " + invitedByText + "\n\nLink: " + inviteLink,
