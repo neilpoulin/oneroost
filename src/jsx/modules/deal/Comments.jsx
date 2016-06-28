@@ -5,6 +5,7 @@ import ParseReact from "parse-react";
 import AddComment from "./AddComment";
 import CommentItem from "./CommentItem";
 import CommentDateSeparator from "./CommentDateSeparator";
+import Notification from "./../Notification";
 import $ from "jquery";
 import io from "socket.io-client"
 
@@ -38,7 +39,14 @@ export default React.createClass({
         });
 
         socket.on("comment", function(comment){
-            console.log("recieved message");
+            console.log("recieved message", comment);
+            var deal = self.props.deal;
+            var senderName = comment.author.firstName + " " + comment.author.lastName;
+            Notification.sendNotification({
+                title: deal.dealName + " - New Message",
+                body: senderName + ":\n" + comment.message,
+                tag: deal.objectId
+            });
             self.refreshQueries(["dealComments"]);
         });
     },
