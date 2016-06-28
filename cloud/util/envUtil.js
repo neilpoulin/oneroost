@@ -68,6 +68,10 @@ exports.getHost = function(){
     return HOSTNAME;
 }
 
+exports.isDev = function(){
+    return HOSTNAME.indexOf("localhost") != -1
+}
+
 exports.getEnv = function(){
     if ( appEnv == null )
     {

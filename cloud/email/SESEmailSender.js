@@ -87,7 +87,7 @@ function handleSendSuccess( data, response )
 function formatAddresses( to ){
     var addresses = [];
     to.forEach( function( addr ){
-        addresses.push( addr.name + " <" + (envUtil.getEnv().isDev ? "dev@oneroost.com" : addr.email) + ">" );
+        addresses.push( addr.name + " <" + (envUtil.isDev() ? "dev@oneroost.com" : addr.email) + ">" );
     } )
     return addresses;
 }
@@ -97,7 +97,7 @@ function getTemplate(to, subject, html, text){
         to = [to];
     }
 
-    var source = envUtil.getEnv().isDev ? "Dev OneRoost <dev@oneroost.com>" : "OneRoost Notifications <dev@oneroost.com>";
+    var source = envUtil.isDev() ? "Dev OneRoost <dev@oneroost.com>" : "OneRoost Notifications <dev@oneroost.com>";
 
     return {
         Destination: { /* required */
