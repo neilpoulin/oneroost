@@ -88,6 +88,8 @@ function getParseServer()
             classNames: ["DealComment"]
         },
         serverURL: envUtil.getParseServerUrl(),
+        publicServerURL: envUtil.getParseServerUrl(),
+        appName: "One Roost",
         filesAdapter:  new S3Adapter(
             envUtil.getAwsId(),
             envUtil.getAwsSecretId(),

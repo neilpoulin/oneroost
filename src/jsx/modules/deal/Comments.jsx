@@ -26,7 +26,7 @@ export default React.createClass({
     observe: function(props, state){
         var self = this;
         return {
-            dealComments: (new Parse.Query("DealComment")).equalTo( "deal", self.props.deal ).descending("createdAt").limit( self.state.commentLimit )
+            dealComments: (new Parse.Query("DealComment")).include("author").equalTo( "deal", self.props.deal ).descending("createdAt").limit( self.state.commentLimit )
         }
     },
     componentDidMount: function() {

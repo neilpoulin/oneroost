@@ -18,10 +18,10 @@ const UserComment = React.createClass({
         var comment = this.props.comment;
         var result =
         <li className={"comment " + (!this.props.showAuthor ? "repeatAuthor " : "")}
-            key={"dealComment_" + comment.objectId }>            
+            key={"dealComment_" + comment.objectId }>
             <div className="container-fluid">
                 <div className="row authorRow">
-                    <span className="username">{comment.username}</span>
+                    <span className="username" title={comment.author.email}>{comment.author.firstName + " " + comment.author.lastName}</span>
                     &nbsp;
                     <span className="postTime">{this.formatCommentDate(comment)}</span>
                 </div>
