@@ -48,7 +48,11 @@ const Invitation = withRouter( React.createClass({
     acceptInvite: function(){
         var self = this;
 
-        ParseReact.Mutation.Set(this.data.stakeholder[0], {inviteAccepted: true}).dispatch();
+        var toSave = this.data.stakeholder[0].id;
+
+        ParseReact.Mutation
+            .Set(toSave, {inviteAccepted: true})
+            .dispatch({waitForServer: true});
         self.sendToRoost( self.data.stakeholder[0].deal.objectId );
     },
     submitPassword: function(){

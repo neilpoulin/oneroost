@@ -22,7 +22,6 @@ function getActualRecipients( original, config )
     else {
         console.log("emailOverride is disabled");
     }
-    debugger;
     var processedEmails = [];
     if ( original instanceof Array )
     {
@@ -30,29 +29,35 @@ function getActualRecipients( original, config )
         for ( var j=0; j<original.length; j++)
         {
             var entry = original[j];
-            if ( entry instanceof Object )
-            {
-                if ( !entry["email"] )
-                {
-                    throw "You must provide an email in your recipients";
-                }
-                if ( !entry["name"] )
-                {
-                    entry["name"] = entry.email;
-                }
-                processedEmails.push(entry);
-            }
-            else if ( typeof(entry) == "string" )
-            {
-                processedEmails.push({email: entry, name: entry});
-            }
+            processedEmails.push(processEmailInput(entry));
         }
     }
     else {
-        processedEmails.push({email: original, name: original});
+        processedEmails.push(processEmailInput(original));
     }
 
     return processedEmails;
+}
+
+function processEmailInput( original )
+{
+    var result = null;
+    if ( typeof(original) == "string"){
+        result ={email: original, name: original};
+    }
+    else if ( original instanceof Object )
+    {
+        if ( !original["email"] )
+        {
+            throw "You must provide an email in your recipients";
+        }
+        if ( !original["name"] )
+        {
+            original["name"] = original.email;
+        }
+        result = original;
+    }
+    return result;
 }
 
 exports.sendEmail = function( message, recipients ){
