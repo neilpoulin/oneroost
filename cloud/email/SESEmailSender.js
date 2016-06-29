@@ -53,6 +53,7 @@ exports.sendEmail = function( mail )
     var response = {message: "not set"};
     try {
         var template = getTemplate(mail.recipients, mail.subject, mail.html, mail.text);
+        console.log("sending email temlate: ", template);
         ses.sendEmail( template, function(err, data){
             if (err) { // an error occurred
                 return handleSendError( err, response )

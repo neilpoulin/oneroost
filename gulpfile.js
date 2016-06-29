@@ -211,5 +211,5 @@ var sassOpts = {
         })
     });
 
-    gulp.task("eb-deploy", ["clean:npm-log", "build"], shell.task("eb deploy oneroost -v --timeout 20"));
+    gulp.task("eb-deploy", ["clean:npm-log", "build"], shell.task("eb deploy oneroost --timeout 25"));
     gulp.task("deploy-aws", ["build", "eb-deploy"]);

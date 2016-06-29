@@ -14,7 +14,7 @@ var ParseDashboard = require("parse-dashboard");
 var ParseDashboardConfig = require("./parse-dashboard-config.json");
 var S3Adapter = require("parse-server").S3Adapter;
 var bodyParser = require("body-parser");
-var SESEMailAdapter = require("./email/SESEMailAdapter.js");
+var SESParseAdapter = require("./email/SESParseAdapter.js");
 var favicon = require("serve-favicon");
 var Notifications = require("./notification/Notifications.js");
 var envUtil = require("./util/envUtil.js");
@@ -91,7 +91,7 @@ function getParseServer()
         serverURL: envUtil.getParseServerUrl(),
         publicServerURL: envUtil.getParseServerUrl(),
         appName: "One Roost",
-        emailAdapter: SESEMailAdapter({}),
+        emailAdapter: SESParseAdapter({}),
         filesAdapter:  new S3Adapter(
             envUtil.getAwsId(),
             envUtil.getAwsSecretId(),

@@ -22,19 +22,49 @@ function getActualRecipients( original, config )
     else {
         console.log("emailOverride is disabled");
     }
-    return original;
+    debugger;
+    var processedEmails = [];
+    if ( original instanceof Array )
+    {
+
+        for ( var j=0; j<original.length; j++)
+        {
+            var entry = original[j];
+            if ( entry instanceof Object )
+            {
+                if ( !entry["email"] )
+                {
+                    throw "You must provide an email in your recipients";
+                }
+                if ( !entry["name"] )
+                {
+                    entry["name"] = entry.email;
+                }
+                processedEmails.push(entry);
+            }
+            else if ( typeof(entry) == "string" )
+            {
+                processedEmails.push({email: entry, name: entry});
+            }
+        }
+    }
+    else {
+        processedEmails.push({email: original, name: original});
+    }
+
+    return processedEmails;
 }
 
 exports.sendEmail = function( message, recipients ){
     Parse.Config.get().then( function(config){
         if ( config.get( "emailEnabled" ) ){
             var actualRecipients = getActualRecipients( recipients, config );
-
+            console.log("actual recipients: ", actualRecipients);
             var email = new SESEmailSender.Mail();
             email.setRecipients( actualRecipients );
             email.subject = message.subject;
             email.text = message.text;
-            email.html = message.html;            
+            email.html = message.html;
             SESEmailSender.sendEmail( email );
         }
         else {
