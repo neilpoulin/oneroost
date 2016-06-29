@@ -36,37 +36,37 @@ const Invitation = withRouter( React.createClass({
 
             if ( stakeholder.inviteAccepted //if the invite is accepted
                 || !currentUser && !stakeholderUser.passwordChangeRequired )  // OR the user needs to log in
-            {
-                this.sendToRoost( dealId );
+                {
+                    this.sendToRoost( dealId );
+                }
             }
-        }
-    },
-    sendToRoost( roostId )
-    {
-        this.props.router.replace("/roosts/" + roostId )
-    },
-    acceptInvite: function(){
-        var self = this;
+        },
+        sendToRoost( roostId )
+        {
+            this.props.router.replace("/roosts/" + roostId )
+        },
+        acceptInvite: function(){
+            var self = this;
 
-        var toSave = this.data.stakeholder[0].id;
+            var toSave = this.data.stakeholder[0].id;
 
-        ParseReact.Mutation
+            ParseReact.Mutation
             .Set(toSave, {inviteAccepted: true})
             .dispatch({waitForServer: true});
-        self.sendToRoost( self.data.stakeholder[0].deal.objectId );
-    },
-    submitPassword: function(){
-        var self = this;
-        var stakeholder = this.data.stakeholder[0];
-        var user = stakeholder.user;
-        if ( user.passwordChangeRequired )
-        {
-            Parse.Cloud.run("saveNewPassword", {
-                password: self.state.password,
-                stakeholderId: stakeholder.objectId,
-                userId: user.objectId
-            })
-            .then( function(result) {
+            self.sendToRoost( self.data.stakeholder[0].deal.objectId );
+        },
+        submitPassword: function(){
+            var self = this;
+            var stakeholder = this.data.stakeholder[0];
+            var user = stakeholder.user;
+            if ( user.passwordChangeRequired )
+            {
+                Parse.Cloud.run("saveNewPassword", {
+                    password: self.state.password,
+                    stakeholderId: stakeholder.objectId,
+                    userId: user.objectId
+                })
+                .then( function(result) {
                     ParseReact.Mutation.Set(stakeholder, {inviteAccepted: true}).dispatch();
                     Parse.User.logIn(user.email, self.state.password, {
                         success: function(){
@@ -103,9 +103,15 @@ const Invitation = withRouter( React.createClass({
         {
 
             form =
-                <div className="row">
+            <div className="row-fluid">
+                <div className="container-fluid">
+                    <p>
+                        To get started with One Roost, just create a password below
+                    </p>
+                </div>
+                <div className="container-fluid">
                     <div className="form-group">
-                        <label htmlFor="nextStepTitle">Crate a Password</label>
+                        <label htmlFor="nextStepTitle">Create a Password</label>
                         <input id="createPassword"
                             type="password"
                             className="form-control"
@@ -119,25 +125,32 @@ const Invitation = withRouter( React.createClass({
                             valueLink={this.linkState("confirmPassword")}/>
                     </div>
                     <div className="form-group">
-                        <button className="btn btn-success" onClick={this.submitPassword}>Accept</button>
+                        <button className="btn btn-success btn-block" onClick={this.submitPassword}>Accept Invite</button>
                     </div>
                 </div>
+
+            </div>
         }
         else if( currentUser && !currentUser.passwordChangeRequired ){
             form =
             <div className = "form">
                 <div className="form-group">
-                    <button className="btn btn-success" onClick={this.acceptInvite}>Accept</button>
+                    <button className="btn btn-success btn-block" onClick={this.acceptInvite}>Accept Invite</button>
                 </div>
             </div>
         }
 
         var result =
-        <div className="container">
-            <div className="row">
-                {stakeholder.user.firstName} {stakeholder.user.lastName},
-                <br/>
-                {stakeholder.invitedBy.firstName} {stakeholder.invitedBy.lastName} has invited to you join {stakeholder.deal.dealName} on OneRoost
+        <div className="container col-md-6 col-md-offset-3">
+            <div className="row-fluid">
+                <div className="container-fluid">
+                    <h2>Invitation to OneRoost</h2>
+                    <p className="lead">
+                        <span className="">{stakeholder.user.firstName} {stakeholder.user.lastName},</span>
+                        <br/>
+                        {stakeholder.invitedBy.firstName} {stakeholder.invitedBy.lastName} ({stakeholder.invitedBy.email}) has invited to you join {stakeholder.deal.dealName} on OneRoost
+                    </p>
+                </div>
             </div>
             {form}
         </div>
