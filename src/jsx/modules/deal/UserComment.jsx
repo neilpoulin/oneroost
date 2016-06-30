@@ -1,4 +1,5 @@
 import React, { PropTypes } from "react"
+import Linkify from "react-linkify"
 import moment from "moment";
 
 const UserComment = React.createClass({
@@ -16,6 +17,7 @@ const UserComment = React.createClass({
     },
     render () {
         var comment = this.props.comment;
+
         var result =
         <li className={"comment " + (!this.props.showAuthor ? "repeatAuthor " : "")}
             key={"dealComment_" + comment.objectId }>
@@ -26,7 +28,7 @@ const UserComment = React.createClass({
                     <span className="postTime">{this.formatCommentDate(comment)}</span>
                 </div>
                 <div className="row">
-                    <span className="message">{comment.message}</span>
+                    <Linkify properties={{target: '_blank'}}><span className="message">{comment.message}</span></Linkify>
                 </div>
             </div>
         </li>

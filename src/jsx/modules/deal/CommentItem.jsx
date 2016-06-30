@@ -23,7 +23,7 @@ export default React.createClass({
     {
         var date = comment.createdAt;
         return moment(date).format("h:mm a");
-    },
+    },    
     render: function(){
         var comment = this.props.comment;
         var isSystem = comment.author == null;
