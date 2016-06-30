@@ -1,4 +1,5 @@
 import React, { PropTypes } from "react"
+import Parse from "parse";
 import ParseReact from "parse-react";
 var DatePicker = require("react-datepicker");
 var moment = require("moment");
@@ -26,7 +27,20 @@ const TimelineForm = React.createClass({
     deal.profile.timeline = this.state.timeline.format();
 
     var setter = ParseReact.Mutation.Set(deal, {profile: deal.profile});
-    setter.dispatch();
+    setter.dispatch().then(this.sendComment);
+  },
+  sendComment( deal )
+  {
+      var user = Parse.User.current();
+      var message = user.get("firstName") + " " + user.get("lastName") + " updated the Timeline";
+      var comment = {
+          deal: deal,
+          message: message,
+          author: null,
+          username: "OneRoost Bot",
+          navLink: {type: "timeline"}
+      };
+      ParseReact.Mutation.Create("DealComment", comment).dispatch();
   },
   render(){
     return (

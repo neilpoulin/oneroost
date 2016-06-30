@@ -1,4 +1,5 @@
 import React, { PropTypes } from "react"
+import Parse from "parse"
 import ParseReact from "parse-react";
 import LinkedStateMixin from "react-addons-linked-state-mixin";
 import AutosizeTextarea from "react-textarea-autosize";
@@ -22,7 +23,20 @@ const TimelineSidebar = React.createClass({
             budget: budget,
             description: this.state.description
         });
-        setter.dispatch();
+        setter.dispatch().then(this.sendComment);
+    },
+    sendComment( deal )
+    {
+        var user = Parse.User.current();
+        var message = user.get("firstName") + " " + user.get("lastName") + " updated the Investment Details";
+        var comment = {
+            deal: deal,
+            message: message,
+            author: null,
+            username: "OneRoost Bot",
+            navLink: {type: "investment"}
+        };
+        ParseReact.Mutation.Create("DealComment", comment).dispatch();
     },
     render(){
         var timelineSidebar =

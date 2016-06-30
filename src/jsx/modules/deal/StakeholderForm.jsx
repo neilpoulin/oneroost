@@ -36,6 +36,9 @@ export default React.createClass({
             stakeholder: stakeholderRequest
         }).then(function( result ) {
             var createdUser = result.user;
+            createdUser.firstName = createdUser.get("firstName");
+            createdUser.lastName = createdUser.get("lastName");
+            createdUser.email = createdUser.get("email");
             var stakeholder = {
                 "user": createdUser,
                 "deal": self.state.deal,
@@ -46,7 +49,7 @@ export default React.createClass({
 
             ParseReact.Mutation.Create("Stakeholder", stakeholder).dispatch();
 
-            var message = self.state.user.get("username") + " added a stakeholder: "
+            var message = self.state.user.get("firstName") + " " + self.state.user.get("lastName") + " added a stakeholder: "
             + createdUser.get("firstName") + " " + createdUser.get("lastName") + " (" + createdUser.get("email") + ")";
 
             var comment = {
@@ -54,6 +57,7 @@ export default React.createClass({
                 message: message,
                 author: null,
                 username: "OneRoost Bot",
+                navLink: {type:"participant"}
             };
             ParseReact.Mutation.Create("DealComment", comment).dispatch();
 

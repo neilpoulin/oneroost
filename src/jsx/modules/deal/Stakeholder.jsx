@@ -1,12 +1,33 @@
 import React from "react";
+import Parse from "parse";
 import ParseReact from "parse-react";
 import LinkedStateMixin from "react-addons-linked-state-mixin"
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
     deleteStakeholder: function (stakeholder) {
+        var self = this;
         var stakeholder = this.props.stakeholder;
-        ParseReact.Mutation.Destroy(stakeholder).dispatch();
+        ParseReact.Mutation.Destroy(stakeholder)
+        .dispatch()
+        .then(function(){
+            self.sendComment(stakeholder)
+        });
+    },
+    sendComment(stakeholder)
+    {
+        var user = Parse.User.current();
+        var message = user.get("firstName") + " " + user.get("lastName") + " removed a stakeholder: "
+        + stakeholder.user.firstName + " " + stakeholder.user.lastName + " (" + stakeholder.user.email + ")";
+
+        var comment = {
+            deal: stakeholder.deal,
+            message: message,
+            author: null,
+            username: "OneRoost Bot",
+            navLink: {type:"participant"}
+        };
+        ParseReact.Mutation.Create("DealComment", comment).dispatch();
     },
     render: function () {
         var stakeholder = this.props.stakeholder;

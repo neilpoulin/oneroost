@@ -29,6 +29,11 @@ $timestampTextColor: $systemMsgColor;
     .message{
         white-space: pre-wrap;
         word-wrap: break-word;
+        &.messageLink{
+            a:hover{
+                text-decoration: none;
+            }
+        }
     }
     .username{
         font-weight: bold;

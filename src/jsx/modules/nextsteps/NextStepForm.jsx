@@ -44,12 +44,13 @@ export default React.createClass({
     },
     addStepCreatedComment: function (step) {
         var self = this;
-        var message = self.state.user.get("username") + " created Next Step: " + step.title;
+        var message = self.state.user.get("firstName") + " " + self.state.user.get("lastName") + " created Next Step: " + step.title;
         var comment = {
             deal: self.state.deal,
             message: message,
             author: null,
             username: "OneRoost Bot",
+            navLink: {type: "step", id: step.objectId }
         };
         ParseReact.Mutation.Create("DealComment", comment).dispatch();
     },

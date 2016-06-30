@@ -49,12 +49,13 @@ const NextStepDetailEdit = React.createClass({
     addStepSavedComment: function (step) {
         var self = this;
         var user = Parse.User.current()
-        var message = user.get("username") + " updated the details of Next Step: " + step.title;
+        var message = user.get("firstName") + " " + user.get("lastName") + " updated the details of Next Step: " + step.title;
         var comment = {
             deal: self.props.deal,
             message: message,
             author: null,
             username: "OneRoost Bot",
+            navLink: {type: "step", id: step.objectId}
         };
         ParseReact.Mutation.Create("DealComment", comment).dispatch();
     },

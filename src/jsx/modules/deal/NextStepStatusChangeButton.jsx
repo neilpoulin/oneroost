@@ -39,13 +39,14 @@ const NextStepStatusChangeButton = React.createClass({
         var self = this;
         var status = self.props.step.completedDate != null ? "Complete" : "Not Complete";
         var user = Parse.User.current();
-        var message = user.get("username") + " marked " + step.title + " as \"" + status + "\".";
+        var message = user.get("firstName") + " "+ user.get("lastName") + " marked " + step.title + " as \"" + status + "\"";
 
         var comment = {
             deal: self.props.step.deal,
             message: message,
             author: null,
             username: "OneRoost Bot",
+            navLink: {type: "step", id: step.objectId}
         };
         ParseReact.Mutation.Create("DealComment", comment).dispatch();
     },

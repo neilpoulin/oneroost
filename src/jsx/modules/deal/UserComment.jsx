@@ -28,7 +28,7 @@ const UserComment = React.createClass({
                     <span className="postTime">{this.formatCommentDate(comment)}</span>
                 </div>
                 <div className="row">
-                    <Linkify properties={{target: '_blank'}}><span className="message">{comment.message}</span></Linkify>
+                    <Linkify properties={{target: "_blank"}}><span className="message">{comment.message}</span></Linkify>
                 </div>
             </div>
         </li>
