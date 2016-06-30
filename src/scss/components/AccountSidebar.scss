@@ -26,10 +26,14 @@ $activeTextColor: $mainColor;
     padding-left: 0px;
     .AccountSidebarItem{
         $activeBackgroundColor: $largeClickableBg;
+        background-color: $backgroundColor;
+    }
+    .AccountSidebarItem, .UserHomeListItem{
+        $activeBackgroundColor: $largeClickableBg;
         $darkenPct: 10%;
         $hoverTextColor: $activeColor;
 
-        background-color: $backgroundColor;
+
         font-weight: 300;
         a{
             padding: 10px 5px 10px 5px;
@@ -50,7 +54,7 @@ $activeTextColor: $mainColor;
             border-top: $borderThick;
             border-bottom: $borderThick;
             &:hover{
-                
+
             }
         }
         .dealName, .accountName{

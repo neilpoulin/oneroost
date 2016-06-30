@@ -16,6 +16,11 @@ export default React.createClass({
             stakeholders: stakeholders
         }
     },
+    getDefaultProps: function(){
+        return {
+            isMobile: false
+        }
+    },
     onSuccess: function(){
         this.refreshQueries(["stakeholders"]);
     },
@@ -34,8 +39,10 @@ export default React.createClass({
             contents = <AccountSidebarList deals={deals} />
         }
 
+
+
         return (
-            <div id="accountSidebar" className="col-md-2 container-fluid hidden-sm hidden-xs">
+            <div id={"accountSidebar" + (this.props.isMobile ? "Mobile" : "")} className="col-md-2 container-fluid hidden-sm hidden-xs">
                 <AddAccountButton
                     btnClassName="btn-outline-primary btn-block"
                     onSuccess={this.onSuccess}

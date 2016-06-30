@@ -1,6 +1,7 @@
 import Parse from "parse";
 import React from "react";
 import { browserHistory } from "react-router";
+import UserHomePageMobile from "./UserHomePageMobile";
 
 export default React.createClass({
     handleLoginSuccess: function(){
@@ -10,10 +11,10 @@ export default React.createClass({
     {
         return Parse.User.current();
     },
-    render: function(){        
+    render: function(){
         var homePage =
         <div className="container UserHomePage">
-            <div className="col-md-10 col-md-offset-1">
+            <div className="col-md-10 col-md-offset-1 hidden-xs">
                 <div className="row text-center">
                     <h1>Welcome to OneRoost!</h1>
                 </div>
@@ -28,6 +29,7 @@ export default React.createClass({
                     </div>
                 </div>
             </div>
+            <UserHomePageMobile/>
         </div>;
 
         return homePage;
