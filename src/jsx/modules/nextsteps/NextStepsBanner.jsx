@@ -41,7 +41,7 @@ export default React.createClass({
 
         if ( nextSteps.length < 5 )
         {
-            addButton = <AddNextStepButton deal={self.state.deal} />;
+            addButton = <AddNextStepButton deal={self.state.deal} containerClass="AddNextStepButton"/>;
         }
 
         var completedStepsItem = null

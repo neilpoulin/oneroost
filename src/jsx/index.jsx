@@ -15,6 +15,7 @@ import StakeholderSidebar from "./modules/deal/sidebar/StakeholderSidebar";
 import TimelineSidebar from "./modules/deal/sidebar/TimelineSidebar";
 import InvestmentSidebar from "./modules/deal/sidebar/InvestmentSidebar";
 import NextStepSidebar from "./modules/deal/sidebar/NextStepSidebar";
+import AllStepsSidebar from "./modules/deal/sidebar/AllStepsSidebar";
 import NextStepCompletedSidebar from "./modules/deal/sidebar/NextStepCompletedSidebar";
 import DocumentsSidebar from "./modules/deal/sidebar/DocumentsSidebar";
 import Unauthorized from "./modules/Unauthorized";
@@ -25,8 +26,8 @@ Parse.serverURL = OneRoost.Config.serverURL;
 Parse.$ = $;
 
 const browserHistory = useRouterHistory(createHistory)({
-            basename: "/"
-        });
+    basename: "/"
+});
 
 // function requireAuth(nextState, replace, callback) {
 //     console.log("requireAuth");
@@ -41,7 +42,7 @@ const browserHistory = useRouterHistory(createHistory)({
 //     callback(nextState, replace);
 // }
 
-function requireAuthOrParam( nextState, replace ){    
+function requireAuthOrParam( nextState, replace ){
     var user = Parse.User.current();
     let {accept} = nextState.location.query;
     if (!user && !!accept )
@@ -78,32 +79,34 @@ function requireAnonymous(nextState, replace){
 
 function doLogout(nextState, replace){
     Parse.User.logOut()
-        .done(replace({
-            pathname: "/login",
-            state: { nextPathname: "/roosts" }
-        }));
+    .done(replace({
+        pathname: "/login",
+        state: { nextPathname: "/roosts" }
+    }));
 }
 
 render(
     <Router history={browserHistory}>
-      <Route path="/" component={App}>
-        <IndexRoute component={Home}/>
-        <Route path="/login" component={Home} onEnter={requireAnonymous}></Route>
-        <Route path="/logout" component={Home} onEnter={doLogout}></Route>
-        <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
-          <IndexRoute component={UserHomePage}/>
-          <Route path="/roosts/unauthorized" component={Unauthorized}/>
-          <Route path="/roosts/:dealId" component={Roost}>
-            <Route path="/roosts/:dealId/participants" component={StakeholderSidebar}/>
-            <Route path="/roosts/:dealId/timeline" component={TimelineSidebar}/>
-            <Route path="/roosts/:dealId/budget" component={InvestmentSidebar}/>
-            <Route path="/roosts/:dealId/documents" component={DocumentsSidebar}/>
-            <Route path="/roosts/:dealId/steps/completed" component={NextStepCompletedSidebar}/>
-            <Route path="/roosts/:dealId/steps/:stepId" component={NextStepSidebar}/>
-          </Route>
+        <Route path="/" component={App}>
+            <IndexRoute component={Home}/>
+            <Route path="/login" component={Home} onEnter={requireAnonymous}></Route>
+            <Route path="/logout" component={Home} onEnter={doLogout}></Route>
+            <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
+                <IndexRoute component={UserHomePage}/>
+                <Route path="/roosts/unauthorized" component={Unauthorized}/>
+                <Route path="/roosts/:dealId" component={Roost}>
+                    <Route path="/roosts/:dealId/messages"/>
+                    <Route path="/roosts/:dealId/participants" component={StakeholderSidebar}/>
+                    <Route path="/roosts/:dealId/timeline" component={TimelineSidebar}/>
+                    <Route path="/roosts/:dealId/budget" component={InvestmentSidebar}/>
+                    <Route path="/roosts/:dealId/documents" component={DocumentsSidebar}/>
+                    <Route path="/roosts/:dealId/steps" component={AllStepsSidebar}/>
+                    <Route path="/roosts/:dealId/steps/completed" component={NextStepCompletedSidebar}/>
+                    <Route path="/roosts/:dealId/steps/:stepId" component={NextStepSidebar}/>
+                </Route>
+            </Route>
+            <Route path="/invitations/:stakeholderId" component={Invitation}/>
         </Route>
-        <Route path="/invitations/:stakeholderId" component={Invitation}/>
-      </Route>
     </Router>
-  , document.getElementById("app")
+    , document.getElementById("app")
 );

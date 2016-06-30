@@ -6,6 +6,7 @@ import ParseReact from "parse-react";
 import LoadingTakeover from "./../util/LoadingTakeover";
 import NextStepsBanner from "./../nextsteps/NextStepsBanner";
 import DealProfile from "./DealProfile";
+import DealNavMobile from "./DealNavMobile";
 import DealPageBottom from "./DealPageBottom";
 
 const Deal = withRouter( React.createClass({
@@ -82,11 +83,12 @@ const Deal = withRouter( React.createClass({
                 className="container-fluid"
                 id="dealPageContainer">
                 <div className="dealContainer col-md-10 col-md-offset-2 container-fluid">
-                    <div className="row-fluid">
-                        <div className="deal-top hidden-xs">
+                    <div className="row-fluid deal-top">
+                        <div className="hidden-xs">
                             <DealProfile deal={deal} />
                             <NextStepsBanner deal={deal} />
                         </div>
+                        <DealNavMobile deal={deal}></DealNavMobile>
                     </div>
                     <div className="row-fluid">
                         <DealPageBottom ref="dealPageBottom" deal={deal}>

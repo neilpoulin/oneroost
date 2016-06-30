@@ -21,7 +21,7 @@ export default React.createClass({
             <ModalButton
                 buttonText="Add Next Step"
                 buttonIcon="plus"
-                containerClass="AddNextStepButton"
+                containerClass={this.props.containerClass}
                 buttonClass={this.props.btnClassName}
                 modalTitle={this.props.modalTitle}
                 >

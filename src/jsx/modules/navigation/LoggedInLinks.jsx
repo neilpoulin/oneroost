@@ -19,8 +19,6 @@ const LoggedInLinks = React.createClass({
                         <i className="fa fa-user"></i> {user.get("username")} <span className="caret"></span>
                     </a>
                     <ul className="dropdown-menu">
-                        <NavLink to="/roosts">Roosts</NavLink>
-                        <li role="separator" className="divider"></li>
                         <NavLink to="/logout">Logout</NavLink>
                     </ul>
                 </li>

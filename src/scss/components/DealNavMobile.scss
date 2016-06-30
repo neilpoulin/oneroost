@@ -1,0 +1,9 @@
+.DealNavMobile{
+    height: 60px;
+    .title{
+        font-size: .8em;
+    }
+    .active, .active a, .active div{
+        color: $activeColorAlt;
+    }
+}
