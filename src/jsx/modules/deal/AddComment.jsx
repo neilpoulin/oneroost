@@ -26,9 +26,18 @@ export default React.createClass({
     saveComment: function( comment )
     {
         var msg = this.formatMessage( this.state.message )
+        var parseUser = Parse.User.current();
+        var user = {
+            firstName: parseUser.get("firstName"),
+            lastName: parseUser.get("lastName"),
+            email: parseUser.get("email"),
+            className: "_User",
+            objectId: parseUser.id
+        };
+
         var comment = {
             message: msg,
-            author: this.state.user,
+            author: user,
             username: this.state.user.get("username"),
             deal: this.props.deal
         };
