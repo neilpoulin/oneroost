@@ -42,7 +42,7 @@ function getActualRecipients( original, config )
 function processEmailInput( original )
 {
     var result = null;
-    if ( typeof(original) == "string"){
+    if ( typeof original == "string"){
         result ={email: original, name: original};
     }
     else if ( original instanceof Object )

@@ -6,6 +6,20 @@
     }
 }
 
+.RoostNav{
+    .roost-title, .account-link{
+        color: $navbar-default-link-color;
+        a {
+            color: $navbar-default-link-color;
+        }
+    }
+    .roost-title{
+        &:hover {
+            color: $navbar-default-link-color;
+        }
+    }
+}
+
 #dealPageContainer{
     border-bottom: $borderWeightThick solid $borderColorThick;
 }

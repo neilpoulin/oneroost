@@ -8,6 +8,8 @@ import NextStepsBanner from "./../nextsteps/NextStepsBanner";
 import DealProfile from "./DealProfile";
 import DealNavMobile from "./DealNavMobile";
 import DealPageBottom from "./DealPageBottom";
+import AccountSidebar from "./../account/AccountSidebar";
+import RoostNav from "./../navigation/RoostNav";
 
 const Deal = withRouter( React.createClass({
     mixins: [ParseReact.Mixin],
@@ -78,26 +80,31 @@ const Deal = withRouter( React.createClass({
         document.title = "OneRoost - " + dealName;
 
         var dealPage =
-        <div className="Deal">
-            <div
-                className="container-fluid"
-                id="dealPageContainer">
-                <div className="dealContainer col-md-10 col-md-offset-2 container-fluid">
-                    <div className="row-fluid deal-top">
-                        <div className="hidden-xs">
-                            <DealProfile deal={deal} />
-                            <NextStepsBanner deal={deal} />
+        <div>
+            <RoostNav deal={deal}/>
+            <AccountSidebar/>
+            <div className="Deal">
+                <div
+                    className="container-fluid"
+                    id="dealPageContainer">
+                    <div className="dealContainer col-md-10 col-md-offset-2 container-fluid">
+                        <div className="row-fluid deal-top">
+                            <div className="visible-lg visible-md">
+                                <DealProfile deal={deal} />
+                                <NextStepsBanner deal={deal} />
+                            </div>
+                            <DealNavMobile deal={deal}></DealNavMobile>
                         </div>
-                        <DealNavMobile deal={deal}></DealNavMobile>
-                    </div>
-                    <div className="row-fluid">
-                        <DealPageBottom ref="dealPageBottom" deal={deal}>
-                            {this.props.children}
-                        </DealPageBottom>
+                        <div className="row-fluid">
+                            <DealPageBottom ref="dealPageBottom" deal={deal}>
+                                {this.props.children}
+                            </DealPageBottom>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
 
         return dealPage;
     }

@@ -1,5 +1,4 @@
 import React, { PropTypes } from "react"
-import AccountSidebar from "./../account/AccountSidebar";
 
 const DealDashboard = React.createClass({
     propTypes: {
@@ -8,7 +7,6 @@ const DealDashboard = React.createClass({
     render () {
         var dashboard =
         <div>
-            <AccountSidebar/>
             {this.props.children}
         </div>
 

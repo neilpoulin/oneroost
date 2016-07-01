@@ -27,6 +27,12 @@ $activeTextColor: $mainColor;
     .AccountSidebarItem{
         $activeBackgroundColor: $largeClickableBg;
         background-color: $backgroundColor;
+        a{
+            color: $secondaryColor;
+        }
+    }
+    .UserHomeListItem{
+        
     }
     .AccountSidebarItem, .UserHomeListItem{
         $activeBackgroundColor: $largeClickableBg;
@@ -40,7 +46,7 @@ $activeTextColor: $mainColor;
             text-decoration: none;
             display: block;
             background-color: inherit;
-            color: $secondaryColor;
+
         }
         &:hover a{
             color: $hoverTextColor;
