@@ -72,7 +72,7 @@ function requireAnonymous(nextState, replace){
     {
         replace({
             pathname: "/roosts",
-            state: { nextPathname: nextState.location.pathname }
+            state: { nextPathname: nextState.location.pathname || "/roosts" }
         });
     }
 }
@@ -88,7 +88,7 @@ function doLogout(nextState, replace){
 render(
     <Router history={browserHistory}>
         <Route path="/" component={App}>
-            <IndexRoute component={Home}/>
+            <IndexRoute component={Home} onEnter={requireAnonymous}/>
             <Route path="/login" component={Home} onEnter={requireAnonymous}></Route>
             <Route path="/logout" component={Home} onEnter={doLogout}></Route>
             <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>

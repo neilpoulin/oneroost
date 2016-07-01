@@ -11,7 +11,7 @@ const AllStepsSidebar = React.createClass({
         var deal = new Deal();
         deal.id = props.params.dealId;
         return {
-            nextSteps: new Parse.Query("NextStep").equalTo( "deal", deal).ascending("dueDate")
+            nextSteps: new Parse.Query("NextStep").equalTo( "deal", deal)
         };
     },
     formatDate: function( date )

@@ -1,11 +1,12 @@
 import Parse from "parse";
 import React from "react";
 import ParseReact from "parse-react";
-import { browserHistory } from "react-router";
+import { withRouter } from "react-router";
 import NavLink from "./NavLink";
+import RoostNav from "./navigation/RoostNav";
+import AddAccountButton from "./account/AddAccountButton";
 
-
-export default React.createClass({
+export default withRouter( React.createClass({
     mixins: [ParseReact.Mixin],
     observe: function(props, state){
         var user = Parse.User.current();
@@ -17,12 +18,12 @@ export default React.createClass({
             stakeholders: stakeholders
         }
     },
-    handleLoginSuccess: function(){
-        browserHistory.push("/my/home");
-    },
     getCurrentUser: function()
     {
         return Parse.User.current();
+    },
+    afterAddAccount: function(stakeholder){
+        this.props.router.replace("/roosts/" + stakeholder.deal.objectId )
     },
     render: function(){
         var contents = null;
@@ -51,11 +52,17 @@ export default React.createClass({
 
 
             var homePage =
-            <div className="container UserHomePage ">
-                <h1>My Roosts</h1>
-                {contents}
-            </div>;
+            <div>
+                <RoostNav showHome={false}/>
+                <div className="container UserHomePage ">
+                    <h1>My Roosts</h1>
+                    <AddAccountButton
+                        onSuccess={this.afterAddAccount}
+                        />
+                    {contents}
+                </div>
+            </div>
 
             return homePage;
     }
-});
+}) );

@@ -69,7 +69,7 @@ export default React.createClass({
         };
 
         ParseReact.Mutation.Create("Stakeholder", stakeholder)
-        .dispatch()
+        .dispatch({waitForServer: true})
         .then( self.props.onSuccess );
     },
     render: function(){

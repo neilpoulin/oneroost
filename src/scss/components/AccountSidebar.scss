@@ -32,7 +32,10 @@ $activeTextColor: $mainColor;
         }
     }
     .UserHomeListItem{
-        
+        &:first-of-type{
+            border-top: 0px;
+        }
+        border-top: $borderThin;
     }
     .AccountSidebarItem, .UserHomeListItem{
         $activeBackgroundColor: $largeClickableBg;
