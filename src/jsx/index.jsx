@@ -3,7 +3,7 @@
 import { render } from "react-dom"
 import Parse from "parse";
 import React from "react";
-import { Router, Route, useRouterHistory, IndexRoute } from "react-router"
+import { Router, Route, useRouterHistory, IndexRoute, Redirect } from "react-router"
 import { createHistory } from "history"
 import $ from "jquery"
 import Home from "./modules/Home"
@@ -91,18 +91,23 @@ render(
             <IndexRoute component={Home} onEnter={requireAnonymous}/>
             <Route path="/login" component={Home} onEnter={requireAnonymous}></Route>
             <Route path="/logout" component={Home} onEnter={doLogout}></Route>
+            <Redirect from="/deals" to="/roosts" />
             <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
                 <IndexRoute component={UserHomePage}/>
-                <Route path="/roosts/unauthorized" component={Unauthorized}/>
-                <Route path="/roosts/:dealId" component={Roost}>
-                    <Route path="/roosts/:dealId/messages"/>
-                    <Route path="/roosts/:dealId/participants" component={StakeholderSidebar}/>
-                    <Route path="/roosts/:dealId/timeline" component={TimelineSidebar}/>
-                    <Route path="/roosts/:dealId/budget" component={InvestmentSidebar}/>
-                    <Route path="/roosts/:dealId/documents" component={DocumentsSidebar}/>
-                    <Route path="/roosts/:dealId/steps" component={AllStepsSidebar}/>
-                    <Route path="/roosts/:dealId/steps/completed" component={NextStepCompletedSidebar}/>
-                    <Route path="/roosts/:dealId/steps/:stepId" component={NextStepSidebar}/>
+                <Route path="unauthorized" component={Unauthorized}/>
+                <Redirect from=":dealId" to="/roosts/:dealId/messages" />
+                <Route path=":dealId" component={Roost}>
+                    <Redirect from="/deals/:dealId" to="/roosts/:dealId" />
+                    <Route path="messages"/>
+                    <Route path="participants" component={StakeholderSidebar}/>
+                    <Route path="timeline" component={TimelineSidebar}/>
+                    <Route path="budget" component={InvestmentSidebar}/>
+                    <Route path="documents" component={DocumentsSidebar}/>
+                    <Route path="steps" >
+                        <IndexRoute component={AllStepsSidebar}/>
+                        <Route path="completed" component={NextStepCompletedSidebar}/>
+                        <Route path=":stepId" component={NextStepSidebar}/>
+                    </Route>
                 </Route>
             </Route>
             <Route path="/invitations/:stakeholderId" component={Invitation}/>

@@ -72,6 +72,7 @@ export default React.createClass({
                     minRows={1}
                     ref="textInput"
                     onChange={e => this.setState({message: e.target.value})}
+                    onBlur={e => this.props.onHeightChange}
                     value={this.state.message}
                     onHeightChange={this.onTextAreaResize}
                     ></AutosizeTextarea>
