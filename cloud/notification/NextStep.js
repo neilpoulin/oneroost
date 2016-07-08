@@ -1,22 +1,19 @@
 var envUtil = require("./../util/envUtil.js");
 var EmailSender = require("./../EmailSender.js");
+var NotificationSettings = require("./NotificationSettings")
 
 var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
 Parse.serverURL = envUtil.serverURL;
 
-exports.afterSave = function(){
-    Parse.Cloud.afterSave( "NextStep", function( req ){
+function getSender( req ){
+    return function(){
         console.log("Next Step afterSave was triggered... ");
         var stepQuery = new Parse.Query("NextStep");
         stepQuery.include("deal");
-        // stepQuery.include("createdBy"); //this fixed the issue where it didn"t know the properties of the author
+        stepQuery.include("createdBy"); //this fixed the issue where it didn"t know the properties of the author
+        stepQuery.include("assignedUser");
         stepQuery.get( req.object.id).then( function( step ){
-            var status = "Not Done";
-            if ( step.get("completedDate") != null )
-            {                
-                status = "Completed";
-            }
             var author = step.get("createdBy");
             var deal = step.get("deal");
 
@@ -26,14 +23,74 @@ exports.afterSave = function(){
             }];
 
             var message = {
-                subject: deal.get("dealName") + " - Next Step " + step.get("title") + " marked as " + status,
-                text: deal.get("dealName") + " - Next Step " + step.get("title") + " marked as " + status,
-                html: deal.get("dealName") + " - Next Step " + step.get("title") + " marked as " + status
+                subject: deal.get("dealName") + " - Next Step " + step.get("title") + " has been updated",
+                text: getText(step),
+                html: getHtml(step)
             }
             console.log("sending Next Step after Save Email...");
             EmailSender.sendEmail( message, recipients );
         }).then( function( error ){
             console.error( "failed to retrieve the next step: " + error );
         });
+    }
+}
+
+function getText(step){
+    var author = step.get("createdBy");
+    var deal = step.get("deal");
+    var assignedUser = step.get("assignedUser");
+    var assignedUserName = null
+    if ( assignedUser )
+    {
+        assignedUserName = assignedUser.get("firstName") + " " + assignedUser.get("lastName");
+    }
+    var status = "Not Done";
+    if ( step.get("completedDate") != null )
+    {
+        status = "Completed";
+    }
+    var authorName = author.get("firstName") + " " + author.get("lastName");
+
+    var text = authorName + " marked the next step " + step.get("title") + " as " + status + " on the roost " + deal.get("dealName") + "\n\n";
+    text += step.get("description");
+    if ( assignedUserName ){
+        text += "\n\nAssigned To: " + assignedUserName
+    }
+    return text;
+}
+
+function getHtml(step){
+    var author = step.get("createdBy");
+    var deal = step.get("deal");
+    var assignedUser = step.get("assignedUser");
+    var assignedUserName = null
+    if ( assignedUser )
+    {
+        assignedUserName = assignedUser.get("firstName") + " " + assignedUser.get("lastName");
+    }
+    var status = "Not Done";
+    if ( step.get("completedDate") != null )
+    {
+        status = "Completed";
+    }
+    var authorName = author.get("firstName") + " " + author.get("lastName");
+
+    var html = "<div><b>" + deal.get("dealName") + "</b> - " + authorName + " updated the next step <i>" + step.get("title") + "</i></div>"
+        + "<div>Status: " + status + "<div/>";
+
+    if ( step.get("description") )
+    {
+        html += "<div>Description: <p style='white-space: pre-wrap;'>" + step.get("description") + "</p></div>";
+    }
+
+    if ( assignedUserName ){
+        html += "<div>Assigned To: " + assignedUserName+"</div>"
+    }
+    return html;
+}
+
+exports.afterSave = function(){
+    Parse.Cloud.afterSave( "NextStep", function( req ){
+        NotificationSettings.checkNotificationSettings(NotificationSettings.Settings.NEXT_STEP_EMAILS, true, getSender(req) )
     });
 }

@@ -3,27 +3,31 @@ var EmailSender = require("./../EmailSender.js");
 var envUtil = require("./../util/envUtil.js");
 var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
+var NotificationSettings = require("./notificationSettings");
 Parse.serverURL = envUtil.serverURL;
 
 var socketProvider = null;
 
 function sendCommentEmail( comment ){
-    var deal = comment.get("deal");
-    var author = comment.get("author");
-    var authorEmail = author.get("email");
-    var stakeholderQuery = new Parse.Query("Stakeholder");
-    stakeholderQuery.include( "user" );
-    stakeholderQuery.equalTo( "deal", deal );
-    stakeholderQuery.find().then( function( stakeholders ){
-        var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, authorEmail );
-        var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
-        var message = {
-            subject: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName"),
-            text: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName") + "\n\nmessage: " + comment.get("message") + "\nLink: " + dealLink,
-            html: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName") + "<br/><br/>message: " + comment.get("message") + "<br/><a href='" + dealLink + "'>" + dealLink + "</a>"
-        }
-        EmailSender.sendEmail( message, recipients );
-    });
+    var sender = function(){
+        var deal = comment.get("deal");
+        var author = comment.get("author");
+        var authorEmail = author.get("email");
+        var stakeholderQuery = new Parse.Query("Stakeholder");
+        stakeholderQuery.include( "user" );
+        stakeholderQuery.equalTo( "deal", deal );
+        stakeholderQuery.find().then( function( stakeholders ){
+            var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, authorEmail );
+            var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
+            var message = {
+                subject: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName"),
+                text: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName") + "\n\nmessage: " + comment.get("message") + "\nLink: " + dealLink,
+                html: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName") + "<br/><br/>message: " + comment.get("message") + "<br/><a href='" + dealLink + "'>" + dealLink + "</a>"
+            }
+            EmailSender.sendEmail( message, recipients );
+        });
+    }
+    NotificationSettings.checkNotificationSettings( NotificationSettings.Settings.COMMENT_EMAILS, true, sender );
 }
 
 exports.afterSave = function(io){
