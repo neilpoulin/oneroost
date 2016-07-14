@@ -3,7 +3,7 @@ var EmailSender = require("./../EmailSender.js");
 var envUtil = require("./../util/envUtil.js");
 var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
-var NotificationSettings = require("./notificationSettings");
+var NotificationSettings = require("./NotificationSettings");
 Parse.serverURL = envUtil.serverURL;
 
 var socketProvider = null;

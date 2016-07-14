@@ -1,4 +1,3 @@
-var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse
 
 exports.Settings = {
