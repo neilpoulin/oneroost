@@ -106,17 +106,15 @@ function formatAddresses( to ){
 }
 
 function getTemplate(mail){
-    debugger;
     var to = mail.recipients;
     var subject = mail.subject;
     var html = mail.html;
     var text = mail.text;
-    var fromEmail = mail.fromEmail;
 
     if ( !(to instanceof Array ) ){
         to = [to];
     }
-    var source =  mail.getFromAddress();
+    var source = mail.getFromAddress();
 
     return {
         Destination: { /* required */

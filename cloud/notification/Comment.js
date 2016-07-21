@@ -6,8 +6,6 @@ var Parse = ParseCloud.Parse;
 var NotificationSettings = require("./NotificationSettings");
 Parse.serverURL = envUtil.serverURL;
 
-var socketProvider = null;
-
 function sendCommentEmail( comment ){
     var sender = function(){
         var deal = comment.get("deal");
@@ -31,7 +29,6 @@ function sendCommentEmail( comment ){
 }
 
 exports.afterSave = function(io){
-    socketProvider = io;
     var namespace = io.of("/DealComment");
     namespace.on("connection", function(socket){
         socket.on("deal", function(deal){
