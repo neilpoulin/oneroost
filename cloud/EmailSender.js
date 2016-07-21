@@ -60,7 +60,7 @@ function processEmailInput( original )
     return result;
 }
 
-exports.sendEmail = function( message, recipients ){
+exports.sendEmail = function( message, recipients, messageId ){
     Parse.Config.get().then( function(config){
         if ( config.get( "emailEnabled" ) ){
             var actualRecipients = getActualRecipients( recipients, config );
@@ -70,6 +70,7 @@ exports.sendEmail = function( message, recipients ){
             email.subject = message.subject;
             email.text = message.text;
             email.html = message.html;
+            email.messageId = messageId;
             SESEmailSender.sendEmail( email );
         }
         else {

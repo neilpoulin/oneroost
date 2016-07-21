@@ -1,0 +1,18 @@
+{
+  "name": "lambda",
+  "version": "1.0.0",
+  "description": "Parent project for various One Roost Lambda functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Neil Poulin",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-eslint": "^6.1.2",
+    "gulp": "^3.9.1",
+    "gulp-awslambda": "^0.4.0",
+    "gulp-eslint": "^3.0.1",
+    "gulp-zip": "^3.2.0"
+  }
+}
