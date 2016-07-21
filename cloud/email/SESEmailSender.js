@@ -12,6 +12,19 @@ var Mail = function(){
     this.headers = {};
     this.text = "";
     this.html = "";
+    this.messageId = "";
+}
+
+Mail.prototype.getFromAddress = function( isDev ){
+    var addr = envUtil.isDev() ? "Dev OneRoost" : "OneRoost Notifications";
+    addr += " <roost";
+    if ( this.messageId )
+    {
+        addr += "+" + this.messageId;
+    }
+
+    addr += "@reply.oneroost.com>";
+    return addr;
 }
 
 Mail.prototype.setRecipients = function( recipients )
@@ -52,7 +65,7 @@ exports.sendEmail = function( mail )
     if ( !mail.isValid() ) throw JSON.stringify( mail.getErrors() );
     var response = {message: "not set"};
     try {
-        var template = getTemplate(mail.recipients, mail.subject, mail.html, mail.text);
+        var template = getTemplate(mail);
         console.log("sending email temlate: ", template);
         ses.sendEmail( template, function(err, data){
             if (err) { // an error occurred
@@ -92,24 +105,27 @@ function formatAddresses( to ){
     return addresses;
 }
 
-function getTemplate(to, subject, html, text){
+function getTemplate(mail){
+    debugger;
+    var to = mail.recipients;
+    var subject = mail.subject;
+    var html = mail.html;
+    var text = mail.text;
+    var fromEmail = mail.fromEmail;
+
     if ( !(to instanceof Array ) ){
         to = [to];
     }
-
-    var source = envUtil.isDev() ? "Dev OneRoost <dev@oneroost.com>" : "OneRoost Notifications <notifications@oneroost.com>";
+    var source =  mail.getFromAddress();
 
     return {
         Destination: { /* required */
-            // BccAddresses: [
-            //     "STRING_VALUE"
-            //     /* more items */
-            // ],
+            BccAddresses:  formatAddresses( to )
             // CcAddresses: [
             //     "STRING_VALUE"
             //     /* more items */
             // ],
-            ToAddresses: formatAddresses( to )
+            // ToAddresses: formatAddresses( to )
         },
         Message: { /* required */
             Body: { /* required */
@@ -124,7 +140,7 @@ function getTemplate(to, subject, html, text){
                 Data: subject /* required */
             }
         },
-        Source: source, /* required */
+        Source: "OneRoost <reply@oneroost.com>", /* required */
         ReplyToAddresses: [
             source
             /* more items */

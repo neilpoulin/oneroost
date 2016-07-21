@@ -1,0 +1,16 @@
+{
+  "name": "incoming-email-lambda",
+  "version": "1.0.0",
+  "description": "Lambda for email interoperability",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "author": "Neil Poulin",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "mailparser": "^0.6.1",
+    "node-rest-client": "^2.0.1"
+  }
+}

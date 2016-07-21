@@ -24,7 +24,7 @@ function sendCommentEmail( comment ){
                 text: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName") + "\n\nmessage: " + comment.get("message") + "\nLink: " + dealLink,
                 html: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName") + "<br/><br/>message: " + comment.get("message") + "<br/><a href='" + dealLink + "'>" + dealLink + "</a>"
             }
-            EmailSender.sendEmail( message, recipients );
+            EmailSender.sendEmail( message, recipients, deal.id );
         });
     }
     NotificationSettings.checkNotificationSettings( NotificationSettings.Settings.COMMENT_EMAILS, true, sender );
