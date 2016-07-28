@@ -4,6 +4,7 @@ var sass = require("gulp-sass");
 var concat = require("gulp-concat");
 var del = require("del");
 var shell = require("gulp-shell");
+var exec = require("child_process").exec;
 var plumber = require("gulp-plumber");
 var gutil = require("gulp-util");
 var sourcemaps = require("gulp-sourcemaps");
@@ -184,7 +185,9 @@ var sassOpts = {
         }));
     });
 
-    gulp.task("start", ["clean", "watch"], function(){
+
+    gulp.task("start", ["mongo-start","clean", "watch"], function(){
+        // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
         nodemon({
             script: "main.js",
             watch: ["public", "cloud"],
@@ -197,7 +200,8 @@ var sassOpts = {
         })
     });
 
-    gulp.task("debug", ["clean", "watch", "inspect"], function(){
+    gulp.task("debug", ["mongo-start", "clean", "watch", "inspect"], function(){
+        // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
         nodemon({
             script: "main.js",
             watch: ["public", "cloud"],
@@ -210,6 +214,26 @@ var sassOpts = {
             console.log("nodemon restarted the node server!")
         })
     });
+
+    gulp.task("mongo-start", function() {
+        var command = "mongod --dbpath=data/db";
+        runCommand(command);
+    });
+
+    gulp.task("mongo-stop", function() {
+        var command = "mongo admin --eval 'db.shutdownServer();'"
+        runCommand(command);
+    });
+
+    function runCommand(command) {
+        exec(command, function (err, stdout, stderr) {
+            console.log(stdout);
+            console.log(stderr);
+            if (err !== null) {
+                console.log("exec error: " + err);
+            }
+        });
+    }
 
     gulp.task("eb-deploy", ["clean:npm-log", "build"], shell.task("eb deploy oneroost --timeout 25"));
     gulp.task("deploy-aws", ["build", "eb-deploy"]);
