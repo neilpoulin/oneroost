@@ -1,6 +1,7 @@
 var Client = require("node-rest-client").Client;
 var aws = require("aws-sdk");
 var MailParser = require("mailparser").MailParser;
+var replyParser = require("./parse-reply");
 
 var PARSE_APP_ID = "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq";
 var PARSE_REST_KEY = "pXy1rBiEEAYEdkFSR0kHu8zUWLshXpX2KuRjmVBH";
@@ -58,7 +59,7 @@ function addMessage(mail, callback){
                     objectId: user.objectId,
                     className: "_User"
                 },
-                message: mail.text
+                message: replyParser.parseReply(mail.text)
             };
 
             var args = {
