@@ -29,7 +29,7 @@ function getSender( req ){
                     html: getHtml(step)
                 }
                 console.log("sending Next Step after Save Email...");
-                EmailSender.sendEmail( message, recipients );
+                EmailSender.sendEmail( message, recipients, deal.id );
             });
         });
     }
