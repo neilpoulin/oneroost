@@ -1,7 +1,7 @@
 exports.getRecipientsFromStakeholders = function( stakeholders, excludedEmail )
 {
     var recipients = [];
-    console.log("processing " + stakeholders.length + " stakeholder emails. Excluding = " + excludedEmail );
+    console.log("processing " + stakeholders.length + " stakeholder emails. Excluding = " + excludedEmail + ":", stakeholders );
     for ( var i = 0; i < stakeholders.length; i++ )
     {
         var user = stakeholders[i].get("user");
@@ -18,7 +18,7 @@ exports.getRecipientsFromStakeholders = function( stakeholders, excludedEmail )
             console.log( "excluding author from email");
         }
     }
-    console.log("retrieved recipients for the list of stakeholders.");
+    console.log("retrieved recipients for the list of stakeholders:", recipients);
     return recipients;
 }
 

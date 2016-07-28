@@ -1,5 +1,6 @@
 var envUtil = require("./../util/envUtil.js");
 var EmailSender = require("./../EmailSender.js");
+var EmailUtil = require("./../util/EmailUtil.js");
 var NotificationSettings = require("./NotificationSettings")
 
 var ParseCloud = require("parse-cloud-express");
@@ -16,21 +17,20 @@ function getSender( req ){
         stepQuery.get( req.object.id).then( function( step ){
             var author = step.get("createdBy");
             var deal = step.get("deal");
+            var stakeholderQuery = new Parse.Query("Stakeholder");
+            stakeholderQuery.include("user");
+            stakeholderQuery.equalTo( "deal", deal );
+            stakeholderQuery.find().then( function( stakeholders ){
+                var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, author.get("email") );
 
-            var recipients = [{
-                email: author.get("email"),
-                name: author.get("username")
-            }];
-
-            var message = {
-                subject: deal.get("dealName") + " - Next Step " + step.get("title") + " has been updated",
-                text: getText(step),
-                html: getHtml(step)
-            }
-            console.log("sending Next Step after Save Email...");
-            EmailSender.sendEmail( message, recipients );
-        }).then( function( error ){
-            console.error( "failed to retrieve the next step: " + error );
+                var message = {
+                    subject: deal.get("dealName") + " - Next Step " + step.get("title") + " has been updated",
+                    text: getText(step),
+                    html: getHtml(step)
+                }
+                console.log("sending Next Step after Save Email...");
+                EmailSender.sendEmail( message, recipients );
+            });
         });
     }
 }
