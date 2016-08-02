@@ -7,6 +7,8 @@ import { Router, Route, useRouterHistory, IndexRoute, Redirect } from "react-rou
 import { createHistory } from "history"
 import $ from "jquery"
 import Home from "./modules/Home"
+import LoginOnly from "./modules/LoginOnly"
+import Landing from "./modules/LandingPage"
 import App from "./modules/App"
 import UserHomePage from "./modules/UserHomePage";
 import Roost from "./modules/deal/Roost";
@@ -80,17 +82,17 @@ function requireAnonymous(nextState, replace){
 function doLogout(nextState, replace){
     Parse.User.logOut()
     .done(replace({
-        pathname: "/login",
-        state: { nextPathname: "/roosts" }
+        pathname: "/",
+        state: { nextPathname: "/" }
     }));
 }
 
 render(
     <Router history={browserHistory}>
         <Route path="/" component={App}>
-            <IndexRoute component={Home} onEnter={requireAnonymous}/>
-            <Route path="/login" component={Home} onEnter={requireAnonymous}></Route>
-            <Route path="/logout" component={Home} onEnter={doLogout}></Route>
+            <IndexRoute component={Landing} onEnter={requireAnonymous}/>
+            <Route path="/login" component={LoginOnly} onEnter={requireAnonymous}></Route>
+            <Route path="/logout" component={Landing} onEnter={doLogout}></Route>
             <Redirect from="/deals" to="/roosts" />
             <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
                 <IndexRoute component={UserHomePage}/>

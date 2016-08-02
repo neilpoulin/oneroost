@@ -13,6 +13,7 @@ $fa-font-path: "./fonts";
 @import "react-select/default";
 
 @import "components";
+@import "fonts";
 
 body {
   padding-top: 50px;
@@ -37,4 +38,8 @@ h1 {
 
 .pointer {
   cursor: pointer;
+}
+
+.cursive{
+    font-family: 'Grand Hotel';
 }
