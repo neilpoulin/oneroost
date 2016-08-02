@@ -4,8 +4,9 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background-image: url('/static/images/construction/mountain-lake-with-clear-water.jpg');
     background-position: center;
+    background-image: url('/static/images/roost/weather-603050_1920.jpg');
+    background-position-y: 0%;
     background-repeat: no-repeat;
     background-size: cover;
 
@@ -14,11 +15,24 @@
     line-height: 1.42857143;
     color: #333;
     background-color: #fff;
+    overflow-y: scroll;
+
+
+    &.weathervane{
+        background-image: url('/static/images/roost/weather-603050_1920.jpg');
+        background-position-y: 0%;
+    }
+    &.chickens{
+        background-image: url('/static/images/roost/chicken-918418_1920.jpg');
+    }
+    &.coop{
+        background-image: url('/static/images/roost/chicken-677048_1920.jpg');
+    }
 
     .loginLink{
         z-index: 5;
         color: white;
-        position: fixed;
+        position: absolute;
         top: 30px;
         right: 40px;
         font-size: 16px;
@@ -34,18 +48,49 @@
     .content{
         position: relative;
         z-index: 4;
-        h4{
-            font-weight: 400;
-        }
+
 
         .motto{
-            font-size: 28px;
-            color: #FFFFFF;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.33);
             text-align: center;
-            margin-top: 50px;
+            margin-top: 10px;
+            margin-bottom: 70px;
+            h4{
+                font-weight: 300;
+                font-size: 28px;
+                color: #FFFFFF;
+                text-shadow: 0 1px 4px rgba(0, 0, 0, 0.33);
+            }
+        }
+        .chart{
+            text-align: center;
+            color: #FFFFFF;
+            h4{
+                font-weight: 100;
+                font-size: 28px;
+                color: #FFFFFF;
+                text-shadow: 0 1px 4px rgba(0, 0, 0, 0.33);
+                margin-bottom: 30px;
+            }
+
+            .fa{
+                font-size: 9em;
+            }
+            .top-label{
+                margin-bottom: 15px;
+                font-size:1.5em;
+                text-transform: uppercase;
+            }
+            .details{
+
+            }
         }
         .subscribe{
+            margin-top: 100px;
+            padding-bottom: 50px;
+            text-align: center;
+            input{
+
+            }
             .info-text{
                 font-size: 18px;
                 margin-bottom: 30px;
@@ -72,12 +117,12 @@
 
     .logo{
         color: #FFFFFF;
-        font-size: 82px;
+        font-size: 100px;
         font-weight: 300;
         position: relative;
         text-align: center;
         text-shadow: 0 0 10px rgba(0, 0, 0, 0.33);
-        margin-top: 150px;
+        margin-top: 100px;
         z-index: 3;
     }
 

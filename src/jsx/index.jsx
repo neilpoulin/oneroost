@@ -82,15 +82,15 @@ function requireAnonymous(nextState, replace){
 function doLogout(nextState, replace){
     Parse.User.logOut()
     .done(replace({
-        pathname: "/",
-        state: { nextPathname: "/" }
+        pathname: "/login",
+        state: { nextPathname: "/login" }
     }));
 }
 
 render(
     <Router history={browserHistory}>
         <Route path="/" component={App}>
-            <IndexRoute component={Landing} onEnter={requireAnonymous}/>
+            <IndexRoute component={Landing}/>
             <Route path="/login" component={LoginOnly} onEnter={requireAnonymous}></Route>
             <Route path="/logout" component={Landing} onEnter={doLogout}></Route>
             <Redirect from="/deals" to="/roosts" />
