@@ -48,7 +48,7 @@ var paths = {
         styles: ["./src/scss/**/*.scss"],
         styleEntry: "./src/scss/index.scss",
         all: ["./src/**/*.js", "./src/**/*.jsx", "./cloud/**/*.js", "./gulpfile.js"],
-        fonts: [bootstrapPaths.fonts, fontAwesomePaths.fonts]
+        fonts: [bootstrapPaths.fonts, fontAwesomePaths.fonts, "./src/fonts/**/*"]
     },
     build: {
         root: "./build",

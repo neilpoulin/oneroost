@@ -37,7 +37,7 @@
         right: 40px;
         font-size: 16px;
         a{
-            color: rgba(238, 238, 238, 0.5);
+            color: rgba(255, 255, 255, 0.7);
             &:hover{
                 text-decoration: none;
                 color: #FFFFFF;
@@ -65,7 +65,7 @@
             text-align: center;
             color: #FFFFFF;
             h4{
-                font-weight: 100;
+                font-weight: 200;
                 font-size: 28px;
                 color: #FFFFFF;
                 text-shadow: 0 1px 4px rgba(0, 0, 0, 0.33);
@@ -81,7 +81,7 @@
                 text-transform: uppercase;
             }
             .details{
-
+                margin-bottom: 60px;
             }
         }
         .subscribe{
@@ -120,23 +120,23 @@
         font-size: 100px;
         font-weight: 300;
         position: relative;
+        z-index: 1040;
         text-align: center;
         text-shadow: 0 0 10px rgba(0, 0, 0, 0.33);
         margin-top: 100px;
-        z-index: 3;
     }
 
     .cover{
         position: fixed;
         opacity: 1;
-        background-color: rgba(0,0,0,.6);
+        background-color: rgba(0,0,0,.3);
         left: 0px;
         top: 0px;
         width: 100%;
         height: 100%;
         z-index: 1;
         .black{
-            background-color: rgba(0,0,0,.6);
+            background-color: rgba(0,0,0,.3);
         }
     }
 
