@@ -1,0 +1,14 @@
+.RoostNav{
+    .navbar-brand{
+        &:hover{
+            color: #fff;
+        }
+    }
+    .accountLink{
+        a{
+            &:hover{
+                text-decoration: none;
+            }
+        }
+    }
+}

@@ -1,4 +1,5 @@
 import React, {PropTypes} from "react"
+import {Link} from "react-router"
 import NavLink from "./../NavLink";
 import Parse from "parse";
 import Bootstrap from "bootstrap";
@@ -19,7 +20,7 @@ const RoostNav = React.createClass({
         var deal = this.props.deal ? <div className="roost-title hidden-lg hidden-md navbar-brand">{deal.dealName}</div> : null;
         var homeBtn = this.props.showHome ? <NavLink tag="div" to="/roosts" className="hidden-lg hidden-md navbar-brand account-link"><i className="fa fa-home fa-lg"></i></NavLink> : null;
 
-        var landingPage = <NavLink tag="div" to="/" className={"navbar-brand account-link " + (this.props.showHome ? "visible-lg visible-md" : "") }>OneRoost</NavLink>;
+        var landingPage = <Link to="/" className={"navbar-brand account-link " + (this.props.showHome ? "visible-lg visible-md" : "") }>OneRoost</Link>;
 
         var nav =
         <nav className="navbar navbar-default navbar-fixed-top RoostNav">
@@ -51,7 +52,7 @@ const RoostNav = React.createClass({
                     </ul>
                 </div>
             </div>
-        </nav>
+        </nav>;
 
 
 
