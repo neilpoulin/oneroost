@@ -26,7 +26,6 @@ const LandingPage = withRouter( React.createClass({
         var loginLink = this.getLoginLink();
         var page =
         <div className={"LandingPage " + query.bg} >
-            <div className="cover black" data-color="black"></div>
             <div className="container">
                 <NavLink className="loginLink" to={loginLink.path} activeClassName="active" tag="span">
                     {loginLink.name}
