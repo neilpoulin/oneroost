@@ -1,6 +1,7 @@
 var canSend = false;
 setupPermissions();
 
+var defaultIconUrl = "/static/images/apple/rooster-square-114-precomposed.png";
 
 function checkPermission()
 {
@@ -52,8 +53,9 @@ exports.sendNotification = function( opts )
         var notification = new Notification( opts.title, {
             tag: opts.tag,
             body: opts.body,
-            iconUrl: opts.icon,
-            icon: opts.icon
+            iconUrl: opts.icon || defaultIconUrl,
+            icon: opts.icon || defaultIconUrl,
+            requireInteraction: true
         } );
         notification.onclick = function(){
             notification.close()

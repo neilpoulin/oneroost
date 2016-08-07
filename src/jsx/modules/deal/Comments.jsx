@@ -42,9 +42,9 @@ export default React.createClass({
             var deal = self.props.deal;
             var senderName = comment.author.firstName + " " + comment.author.lastName;
             Notification.sendNotification({
-                title: deal.dealName + " - New Message",
-                body: senderName + ":\n" + comment.message,
-                tag: deal.objectId
+                title: senderName + " | " + deal.dealName,
+                body: comment.message,
+                tag: comment.objectId
             });
             self.refreshQueries(["dealComments"]);
         });
