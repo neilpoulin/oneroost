@@ -118,12 +118,12 @@ function getTemplate(mail){
 
     return {
         Destination: { /* required */
-            BccAddresses:  formatAddresses( to )
+            // BccAddresses:  formatAddresses( to )
             // CcAddresses: [
             //     "STRING_VALUE"
             //     /* more items */
             // ],
-            // ToAddresses: formatAddresses( to )
+            ToAddresses: formatAddresses( to )
         },
         Message: { /* required */
             Body: { /* required */

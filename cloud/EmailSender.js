@@ -65,13 +65,15 @@ exports.sendEmail = function( message, recipients, messageId ){
         if ( config.get( "emailEnabled" ) ){
             var actualRecipients = getActualRecipients( recipients, config );
             console.log("actual recipients: ", actualRecipients);
-            var email = new SESEmailSender.Mail();
-            email.setRecipients( actualRecipients );
-            email.subject = message.subject;
-            email.text = message.text;
-            email.html = message.html;
-            email.messageId = messageId;
-            SESEmailSender.sendEmail( email );
+            actualRecipients.forEach( function( to ){
+                var email = new SESEmailSender.Mail();
+                email.setRecipients( [to] );
+                email.subject = message.subject;
+                email.text = message.text;
+                email.html = message.html;
+                email.messageId = messageId;
+                SESEmailSender.sendEmail( email );
+            } );
         }
         else {
             console.log("the config does not allow sending email, not sending email");
