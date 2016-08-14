@@ -41,6 +41,7 @@
     "console-stamp": "^0.2.2",
     "ejs": "^2.4.1",
     "express": "~4.13.3",
+    "handlebars": "^4.0.5",
     "mandrill-api": "^1.0.45",
     "moment": "^2.11.2",
     "parse": "1.6.14",

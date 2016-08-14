@@ -1,3 +1,9 @@
+var TempalteUtil = require("./TemplateUtil");
+
+exports.renderEmail = function(name, data){
+    return TempalteUtil.renderEmail(name, data);
+}
+
 exports.getRecipientsFromStakeholders = function( stakeholders, excludedEmail )
 {
     var recipients = [];
