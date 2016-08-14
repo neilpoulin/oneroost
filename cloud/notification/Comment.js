@@ -23,8 +23,10 @@ function sendCommentEmail( comment ){
                 dealName: deal.get("dealName"),
                 dealLink: dealLink
             };
-            var body = EmailUtil.renderEmail("commentNotif", data );
-            EmailSender.sendEmail( body, recipients, deal.id );
+            EmailUtil.renderEmail("commentNotif", data ).then( function(results){
+                debugger;
+                EmailSender.sendTemplate( results, recipients, deal.id );
+            });
         });
     }
     NotificationSettings.checkNotificationSettings( NotificationSettings.Settings.COMMENT_EMAILS, true, sender );

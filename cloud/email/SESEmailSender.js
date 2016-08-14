@@ -2,11 +2,27 @@ var AWS = require("aws-sdk");
 var ses = new AWS.SES({region: "us-east-1"});
 var envUtil = require("./../util/envUtil");
 
+var RawMail = function(){
+    //http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SES.html#sendRawEmail-property
+    //AWS params
+    this.RawMessage = {
+        Data: null
+    }
+    this.Destinations = [];
+    this.FromArn = null;
+    this.ReturnPathArn = null;
+    this.Source = null;
+    this.SourceArn = null;
+
+    //additional params
+    this.headers = [];
+}
+
 var Mail = function(){
     this.recipients = [];
-    this.fromName = "OneRoost Notifications";
+    this.fromName = envUtil.isDev() ? "Dev OneRoost" : "OneRoost Notifications";
     this.fromEmail = "notifications@oneroost.com";
-    this.subject = "new Notification from OneRoost";
+    this.subject = null;
     this.bccAddress = null;
     this.attachments = [];
     this.headers = {};
@@ -161,6 +177,12 @@ function getTemplate(mail){
         // ReturnPathArn: "STRING_VALUE",
         // SourceArn: "STRING_VALUE"
     };
+}
+
+
+
+function buildRawEmail( email ){
+
 }
 
 exports.Mail = Mail;

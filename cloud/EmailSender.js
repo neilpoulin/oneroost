@@ -117,9 +117,16 @@ function appendUnsubscribe( mail ){
 
 function addFooterAndSend(email)
 {
-    appendUnsubscribe(email);
+    console.warn("Not appending a footer right now...should be taken care of by templates.");
+    // appendUnsubscribe(email);
     SESEmailSender.sendEmail( email );
 
+}
+
+exports.sendTemplate = function( templates, recipients, messageId ){
+    //TODO: process the templates
+    console.log("Processing results of the templates", templates);
+    this.sendEmail(templates, recipients, messageId);
 }
 
 exports.sendEmail = function( message, recipients, messageId ){
