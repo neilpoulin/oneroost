@@ -123,10 +123,11 @@ function addFooterAndSend(email)
 
 }
 
-exports.sendTemplate = function( templates, recipients, messageId ){
-    //TODO: process the templates
-    console.log("Processing results of the templates", templates);
-    this.sendEmail(templates, recipients, messageId);
+exports.sendTemplate = function( template, data, recipients, messageId ){
+    TempalteUtil.renderEmail(template, data).then(function(results){
+        console.log("Processing results of the templates", results);
+        this.sendEmail(results, recipients, messageId);
+    });
 }
 
 exports.sendEmail = function( message, recipients, messageId ){

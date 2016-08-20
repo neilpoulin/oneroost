@@ -22,14 +22,31 @@ function getSender( req ){
             stakeholderQuery.equalTo( "deal", deal );
             stakeholderQuery.find().then( function( stakeholders ){
                 var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, author.get("email") );
-
-                var message = {
-                    subject: deal.get("dealName") + " - Next Step " + step.get("title") + " has been updated",
-                    text: getText(step),
-                    html: getHtml(step)
+                var assignedUser = step.get("assignedUser");
+                var author = step.get("createdBy");
+                var assignedUserName = null
+                if ( assignedUser )
+                {
+                    assignedUserName = assignedUser.get("firstName") + " " + assignedUser.get("lastName");
                 }
-                console.log("sending Next Step after Save Email...");
-                EmailSender.sendEmail( message, recipients, deal.id );
+                var status = "Not Done";
+                if ( step.get("completedDate") != null )
+                {
+                    status = "Completed";
+                }
+                var data = {
+                    dealName: deal.get("dealName"),
+                    stepTitle: step.get("title"),
+                    authorName: author.get("firstName") + " " + author.get("lastName"),
+                    completedDate: step.get("completedDate"),
+                    stepStatus: status,
+                    assignedUserName: assignedUserName,
+                    dueDate: deal.get("dueDate"),
+                    description: deal.get("description")
+                }
+
+                console.log("sending Next Step after Save Email with data", data);
+                EmailSender.sendEmail( "nextStepNotif", data, recipients, deal.id );
             });
         });
     }
