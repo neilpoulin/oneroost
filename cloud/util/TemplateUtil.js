@@ -2,7 +2,7 @@ var path = require("path");
 var templateRoot = path.resolve(__dirname, "..", "email", "template");
 var Handlebars = require('handlebars');
 var EmailTemplate = require('email-templates').EmailTemplate
-var emailTemplates = ["commentNotif", "nextStepNotif"];
+var emailTemplates = ["commentNotif", "nextStepNotif", "invitedStakeholderNotif", "roostInvite"];
 var componentTemplates = ["footer"];
 var compiledTempaltes = {};
 var templates = {};
@@ -32,10 +32,14 @@ function renderTemplate( name, data ){
 
 function initializeHandlebars()
 {
-    var footerBase = "./../email/template/footer/";
+    var partialsBase = "./../email/template/_partials/"
+    var footerBase = partialsBase + "footer/";
+    Handlebars.registerPartial('footer-html', require(footerBase + "html.hbs"));
+    Handlebars.registerPartial('footer-text', require(footerBase + "text.hbs"));
 
-    Handlebars.registerPartial('footer-html', require(footerBase + "html.hbs"))
-    Handlebars.registerPartial('footer-text', require(footerBase + "text.hbs"))
+    var roostLinkBase = partialsBase + "roostLink/"
+    Handlebars.registerPartial('roost-link-html', require(roostLinkBase + "html.hbs"));
+    Handlebars.registerPartial('roost-link-text', require(roostLinkBase + "text.hbs"));
 }
 
 function initializeEmails(){
