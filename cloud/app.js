@@ -22,6 +22,7 @@ var Stakeholders = require("./stakeholders.js");
 var SES = require("./email/SESEmailSender.js");
 var http = require("http");
 var socket = require("socket.io");
+var TemplateUtil = require("./util/TemplateUtil");
 
 var app = express();
 var server = http.Server(app);
@@ -39,18 +40,21 @@ app.locals.formatTime = function(time) {
     return moment(time).format("MMMM Do YYYY, h:mm a");
 };
 
-app.get("*", function( request, response ){
-    var env = envUtil.getEnv();
-    var homePage = env.isDev ? "index.ejs" : "construction.ejs";
-    var params = env.json;
-    response.render( homePage, params);
+
+app.get("/emails/:templateName", function(req, resp){
+    debugger;
+    TemplateUtil.renderSample(req.params.templateName).then(function(templates){
+        // resp.send(templates.html);
+        resp.render("emailSample.ejs", templates);
+    });
+
 });
 
-app.post("/email", function(req, resp){
-    var email = req.body;
-    var status = SES.sendEmail( email );
-    resp.setHeader("Content-Type", "application/json");
-    resp.send(JSON.stringify(status));
+app.get("*", function( request, response ){
+    var env = envUtil.getEnv();
+    var homePage = "index.ejs";
+    var params = env.json;
+    response.render( homePage, params);
 });
 
 io.on("connection", function(socket){

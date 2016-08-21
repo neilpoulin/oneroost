@@ -2,17 +2,34 @@ var AWS = require("aws-sdk");
 var ses = new AWS.SES({region: "us-east-1"});
 var envUtil = require("./../util/envUtil");
 
+var RawMail = function(){
+    //http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SES.html#sendRawEmail-property
+    //AWS params
+    this.RawMessage = {
+        Data: null
+    }
+    this.Destinations = [];
+    this.FromArn = null;
+    this.ReturnPathArn = null;
+    this.Source = null;
+    this.SourceArn = null;
+
+    //additional params
+    this.headers = [];
+}
+
 var Mail = function(){
     this.recipients = [];
-    this.fromName = "OneRoost Notifications";
+    this.fromName = envUtil.isDev() ? "Dev OneRoost" : "OneRoost Notifications";
     this.fromEmail = "notifications@oneroost.com";
-    this.subject = "new Notification from OneRoost";
+    this.subject = null;
     this.bccAddress = null;
     this.attachments = [];
     this.headers = {};
     this.text = "";
     this.html = "";
     this.messageId = "";
+    this.emailRecipientId = null;
 }
 
 Mail.prototype.getFromAddress = function( isDev ){
@@ -49,7 +66,8 @@ Mail.prototype.getErrors = function(){
         "subject": this.subject != null,
         "fromName": this.fromName != null,
         "fromEmail": this.fromEmail != null,
-        "content": this.text != null || this.html != null
+        "content": this.text != null && this.html != null,
+        "emailRecipientId": this.emailRecipientId != null
     };
 
     var fields = Object.keys(validations);
@@ -60,6 +78,7 @@ Mail.prototype.getErrors = function(){
 
 exports.sendEmail = function( mail )
 {
+    console.log("sending email via SES");
     if ( !(mail instanceof Mail) ) throw "The email message was not of type Mail";
 
     if ( !mail.isValid() ) throw JSON.stringify( mail.getErrors() );
@@ -108,8 +127,19 @@ function formatAddresses( to ){
 function getTemplate(mail){
     var to = mail.recipients;
     var subject = mail.subject;
+
     var html = mail.html;
     var text = mail.text;
+
+    if ( html.toLowerCase().indexOf("unsubscribe") == -1 )
+    {
+        console.warn("You are missing an unsubscribe link in the HTML, you should probably add this.");
+    }
+
+    if ( text.toLowerCase().indexOf("unsubscribe") == -1 )
+    {
+        console.warn("You are missing an unsubscribe link in the TEXT, you should probably add this.");
+    }
 
     if ( !(to instanceof Array ) ){
         to = [to];
@@ -143,10 +173,16 @@ function getTemplate(mail){
             source
             /* more items */
         ]
-        // ReturnPath: "STRING_VALUE",
+        // ReturnPath: "bounce.reploy.oneroost.com"
         // ReturnPathArn: "STRING_VALUE",
         // SourceArn: "STRING_VALUE"
     };
+}
+
+
+
+function buildRawEmail( email ){
+
 }
 
 exports.Mail = Mail;

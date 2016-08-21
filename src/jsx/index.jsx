@@ -6,7 +6,6 @@ import React from "react";
 import { Router, Route, useRouterHistory, IndexRoute, Redirect } from "react-router"
 import { createHistory } from "history"
 import $ from "jquery"
-import Home from "./modules/Home"
 import LoginOnly from "./modules/LoginOnly"
 import Landing from "./modules/LandingPage"
 import App from "./modules/App"
@@ -22,6 +21,7 @@ import NextStepCompletedSidebar from "./modules/deal/sidebar/NextStepCompletedSi
 import DocumentsSidebar from "./modules/deal/sidebar/DocumentsSidebar";
 import Unauthorized from "./modules/Unauthorized";
 import Invitation from "./modules/Invitation";
+import Unsubscribe from "./modules/Unsubscribe";
 
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
 Parse.serverURL = OneRoost.Config.serverURL;
@@ -113,6 +113,9 @@ render(
                 </Route>
             </Route>
             <Route path="/invitations/:stakeholderId" component={Invitation}/>
+            <Route path="/unsubscribe">
+                <Route path=":emailRecipientId" component={Unsubscribe}></Route>
+            </Route>
         </Route>
     </Router>
     , document.getElementById("app")

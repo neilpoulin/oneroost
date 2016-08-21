@@ -1,12 +1,13 @@
 var envUtil = require("./util/envUtil.js");
 var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
+var TemplateUtil = require("./util/TemplateUtil");
 var SESEmailSender = require("./email/SESEmailSender");
+var EmailRecipient = Parse.Object.extend("EmailRecipient");
 Parse.serverURL = envUtil.serverURL;
 
 function getActualRecipients( original, config )
 {
-
     if ( config.get("emailOverrideEnabled") )
     {
         var emailOverride = config.get( "emailOverride");
@@ -25,7 +26,6 @@ function getActualRecipients( original, config )
     var processedEmails = [];
     if ( original instanceof Array )
     {
-
         for ( var j=0; j<original.length; j++)
         {
             var entry = original[j];
@@ -35,7 +35,6 @@ function getActualRecipients( original, config )
     else {
         processedEmails.push(processEmailInput(original));
     }
-
     return processedEmails;
 }
 
@@ -60,7 +59,68 @@ function processEmailInput( original )
     return result;
 }
 
-exports.sendEmail = function( message, recipients, messageId ){
+
+function createEmailRecipientAndSend( emailObject, email ){
+    var recipient = new EmailRecipient();
+    recipient.set("email", emailObject.email);
+    recipient.set("unsubscribe", false);
+    recipient.set("lastSendDate", new Date());
+    recipient.set("unsubscribeDate", null);
+    recipient.save().then(function(saved){
+        console.log("successfully saved new email recipient", saved);
+        email.emailRecipientId = saved.id;
+        addFooterAndSend(email);
+    });
+}
+
+function sendIfValid( email )
+{
+    email.recipients.forEach( function( recipient ) {
+        var query = new Parse.Query("EmailRecipient");
+        query.equalTo( "email", recipient.email );
+        query.find().then( function(emailRecipients){
+            if ( emailRecipients.length > 0 ){
+                var existing = emailRecipients[0];
+                if ( !existing.get("unsubscribe") ){
+                    existing.set("lastSendDate", new Date());
+                    existing.save();
+                    email.emailRecipientId = existing.id;
+                    addFooterAndSend(email);
+                }
+                else {
+                    console.log("not sending email since the user is unsubscribed", existing);
+                }
+            }
+            else { //create new one
+                createEmailRecipientAndSend( recipient, email );
+            }
+        });
+    });
+}
+
+function getUnsubscribeUrl( messageId ){
+    var path = "/unsubscribe/" + messageId;
+    var url = envUtil.getHost() + path;
+    return url;
+}
+function addFooterAndSend(email)
+{
+    console.warn("Not appending a footer right now...should be taken care of by templates.");
+    // appendUnsubscribe(email);
+    SESEmailSender.sendEmail( email );
+
+}
+
+exports.sendTemplate = function( template, data, recipients, messageId ){
+    data.unsubscribeLink = getUnsubscribeUrl(messageId);
+    data.host = envUtil.getHost();
+    TemplateUtil.renderEmail(template, data).then(function(results){
+        console.log("Processing results of the templates", results);
+        sendEmail(results, recipients, messageId);
+    });
+}
+
+function sendEmail( message, recipients, messageId ){
     Parse.Config.get().then( function(config){
         if ( config.get( "emailEnabled" ) ){
             var actualRecipients = getActualRecipients( recipients, config );
@@ -72,7 +132,7 @@ exports.sendEmail = function( message, recipients, messageId ){
                 email.text = message.text;
                 email.html = message.html;
                 email.messageId = messageId;
-                SESEmailSender.sendEmail( email );
+                sendIfValid( email );
             } );
         }
         else {

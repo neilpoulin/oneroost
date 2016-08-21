@@ -1,0 +1,9 @@
+{
+    "invitedByName": "Test Name",
+    "invitedByEmail": "testemail@test.com",
+    "invitePath": "/invitations/xxxxxxx",
+    "dealName": "Test Deal Name",
+    "role": "VENDOR",
+    "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing",
+    "dealLink": "http://dev.oneroost.com/roosts/testing"
+}

@@ -17,12 +17,13 @@ function sendCommentEmail( comment ){
         stakeholderQuery.find().then( function( stakeholders ){
             var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, authorEmail );
             var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
-            var message = {
-                subject: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName"),
-                text: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName") + "\n\nmessage: " + comment.get("message") + "\nLink: " + dealLink,
-                html: deal.get("dealName") + " - New Comment from " + author.get("firstName") + " " + author.get("lastName") + "<br/><br/>message: " + comment.get("message") + "<br/><a href='" + dealLink + "'>" + dealLink + "</a>"
-            }
-            EmailSender.sendEmail( message, recipients, deal.id );
+            var data = {
+                authorName: author.get("firstName") + " " + author.get("lastName"),
+                message: comment.get("message"),
+                dealName: deal.get("dealName"),
+                dealLink: dealLink
+            };
+            EmailSender.sendTemplate( "commentNotif", data, recipients, deal.id );
         });
     }
     NotificationSettings.checkNotificationSettings( NotificationSettings.Settings.COMMENT_EMAILS, true, sender );
