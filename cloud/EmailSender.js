@@ -98,23 +98,11 @@ function sendIfValid( email )
     });
 }
 
-
-function getUnsubscribeUrl( mail ){
-    var id = mail.emailRecipientId;
-    var path = "/unsubscribe/" + id;
+function getUnsubscribeUrl( messageId ){
+    var path = "/unsubscribe/" + messageId;
     var url = envUtil.getHost() + path;
     return url;
 }
-
-function appendUnsubscribe( mail ){
-    var url = getUnsubscribeUrl(mail);
-
-    var footer = TemplateUtil.renderComponent( "standardFooter", {unsubscribeLink: url} );
-
-    mail.html += footer.html;
-    mail.text += footer.text;
-}
-
 function addFooterAndSend(email)
 {
     console.warn("Not appending a footer right now...should be taken care of by templates.");
@@ -124,7 +112,8 @@ function addFooterAndSend(email)
 }
 
 exports.sendTemplate = function( template, data, recipients, messageId ){
-    TempalteUtil.renderEmail(template, data).then(function(results){
+    data.unsubscribeLink = getUnsubscribeUrl(messageId);
+    TemplateUtil.renderEmail(template, data).then(function(results){
         console.log("Processing results of the templates", results);
         this.sendEmail(results, recipients, messageId);
     });

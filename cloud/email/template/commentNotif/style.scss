@@ -1,7 +1,9 @@
-body{
-    background-color: blue;
-}
+@import "./../style/common.scss";
 
 div{
     color: red;
+}
+
+.message{
+    white-space: pre-line;
 }

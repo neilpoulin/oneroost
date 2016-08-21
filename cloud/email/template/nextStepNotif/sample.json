@@ -1,0 +1,10 @@
+{
+    "dealName": "Test Deal Name",
+    "stepTitle": "Sample Title",
+    "authorName": "Taylor Linnell",
+    "completedDate": null,
+    "stepStatus": "Completed (test)",
+    "assignedUserName": "Neil Poulin - Test",
+    "dueDate": "2016-05-26",
+    "description": "same description with \nnew lines\n\ntesting test test"
+}

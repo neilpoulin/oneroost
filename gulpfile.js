@@ -43,7 +43,7 @@ var paths = {
     src: {
         root: "./src",
         scripts: ["./src/**/*.jsx","./src/**/*.js"],
-        cloud: ["./cloud/**/*.js"],
+        cloud: ["./cloud/**/*.js", "./cloud/**/*.hbs", "./cloud/template/**/*.json"],
         gulpfile: ["./gulpfile.js"],
         styles: ["./src/scss/**/*.scss"],
         styleEntry: "./src/scss/index.scss",
@@ -190,7 +190,7 @@ var sassOpts = {
         // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
         nodemon({
             script: "main.js",
-            watch: ["public", "cloud"],
+            watch: ["public", "cloud", "cloud/**/*.hbs", "cloud/**/*.json"],
             env: {
                 AWS_PROFILE: "oneroost"
             }
@@ -204,7 +204,7 @@ var sassOpts = {
         // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
         nodemon({
             script: "main.js",
-            watch: ["public", "cloud"],
+            watch: ["public", "cloud", "cloud/**/*.hbs", "cloud/**/*.json"],
             nodeArgs: ["--debug"],
             env: {
                 AWS_PROFILE: "oneroost"
