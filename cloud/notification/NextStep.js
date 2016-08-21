@@ -21,7 +21,7 @@ function getSender( req ){
             stakeholderQuery.include("user");
             stakeholderQuery.equalTo( "deal", deal );
             stakeholderQuery.find().then( function( stakeholders ){
-                var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, author.get("email") );
+
                 var assignedUser = step.get("assignedUser");
                 var author = step.get("createdBy");
                 var assignedUserName = null
@@ -42,68 +42,15 @@ function getSender( req ){
                     stepStatus: status,
                     assignedUserName: assignedUserName,
                     dueDate: deal.get("dueDate"),
-                    description: deal.get("description")
+                    description: step.get("description"),
+                    dealLink: envUtil.getHost() + "/roosts/" + deal.id
                 }
-
                 console.log("sending Next Step after Save Email with data", data);
-                EmailSender.sendEmail( "nextStepNotif", data, recipients, deal.id );
+                var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, author.get("email") );
+                EmailSender.sendTemplate( "nextStepNotif", data, recipients, deal.id );
             });
         });
     }
-}
-
-function getText(step){
-    var author = step.get("createdBy");
-    var deal = step.get("deal");
-    var assignedUser = step.get("assignedUser");
-    var assignedUserName = null
-    if ( assignedUser )
-    {
-        assignedUserName = assignedUser.get("firstName") + " " + assignedUser.get("lastName");
-    }
-    var status = "Not Done";
-    if ( step.get("completedDate") != null )
-    {
-        status = "Completed";
-    }
-    var authorName = author.get("firstName") + " " + author.get("lastName");
-
-    var text = authorName + " marked the next step " + step.get("title") + " as " + status + " on the roost " + deal.get("dealName") + "\n\n";
-    text += step.get("description");
-    if ( assignedUserName ){
-        text += "\n\nAssigned To: " + assignedUserName
-    }
-    return text;
-}
-
-function getHtml(step){
-    var author = step.get("createdBy");
-    var deal = step.get("deal");
-    var assignedUser = step.get("assignedUser");
-    var assignedUserName = null
-    if ( assignedUser )
-    {
-        assignedUserName = assignedUser.get("firstName") + " " + assignedUser.get("lastName");
-    }
-    var status = "Not Done";
-    if ( step.get("completedDate") != null )
-    {
-        status = "Completed";
-    }
-    var authorName = author.get("firstName") + " " + author.get("lastName");
-
-    var html = "<div><b>" + deal.get("dealName") + "</b> - " + authorName + " updated the next step <i>" + step.get("title") + "</i></div>"
-        + "<div>Status: " + status + "<div/>";
-
-    if ( step.get("description") )
-    {
-        html += "<div>Description: <p style='white-space: pre-wrap;'>" + step.get("description") + "</p></div>";
-    }
-
-    if ( assignedUserName ){
-        html += "<div>Assigned To: " + assignedUserName+"</div>"
-    }
-    return html;
 }
 
 exports.afterSave = function(){

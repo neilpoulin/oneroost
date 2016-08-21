@@ -1,26 +1,29 @@
 {{!-- Next Step Email --}}
 <div>{{authorName}} upated the next step "{{stepTitle}}" on {{dealName}}
 </div>
-<div>
-    <table>
-        <tr>
-            <td>Assigned User</td>
-            <td>{{assignedUserName}}</td>
-        </tr>
-        <tr>
-            <td>dueDate</td>
-            <td>{{dueDate}}</td>
-        </tr>
-        <tr>
-            <td>Description</td>
-            <td class="description">{{description}}</td>
-        </tr>
-        <tr>
-            <td>Status</td>
-            <td>{{stepStatus}}</td>
-        </tr>
+<div class="table-container">
+    <table class="table table-condensed table-bordered">
+        <tbody>
+            <tr>
+                <th scope="row">Assigned User</th>
+                <td>{{assignedUserName}}</td>
+            </tr>
+            <tr>
+                <th scope="row">dueDate</th>
+                <td>{{dueDate}}</td>
+            </tr>
+            <tr>
+                <th scope="row">Description</th>
+                <td class="description">{{description}}</td>
+            </tr>
+            <tr>
+                <th scope="row">Status</th>
+                <td>{{stepStatus}}</td>
+            </tr>
+        </tbody>
     </table>
 </div>
 <div>
     {{>roost-link-html}}
 </div>
+{{>footer-html}}

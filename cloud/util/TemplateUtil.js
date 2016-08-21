@@ -1,11 +1,14 @@
 var path = require("path");
 var templateRoot = path.resolve(__dirname, "..", "email", "template");
-var Handlebars = require('handlebars');
-var EmailTemplate = require('email-templates').EmailTemplate
+var styleDir = path.resolve(__dirname, "..", "email", "template", "style");
+var Handlebars = require("handlebars");
+var EmailTemplate = require("email-templates").EmailTemplate
 var emailTemplates = ["commentNotif", "nextStepNotif", "invitedStakeholderNotif", "roostInvite"];
 var componentTemplates = ["footer"];
 var compiledTempaltes = {};
 var templates = {};
+
+var bootstrapSass = path.resolve(__dirname, "..", "..", "node_modules", "bootstrap-sass", "assets", "stylesheets");
 
 initializeHandlebars();
 initializeEmails();
@@ -34,18 +37,21 @@ function initializeHandlebars()
 {
     var partialsBase = "./../email/template/_partials/"
     var footerBase = partialsBase + "footer/";
-    Handlebars.registerPartial('footer-html', require(footerBase + "html.hbs"));
-    Handlebars.registerPartial('footer-text', require(footerBase + "text.hbs"));
+    Handlebars.registerPartial("footer-html", require(footerBase + "html.hbs"));
+    Handlebars.registerPartial("footer-text", require(footerBase + "text.hbs"));
 
     var roostLinkBase = partialsBase + "roostLink/"
-    Handlebars.registerPartial('roost-link-html', require(roostLinkBase + "html.hbs"));
-    Handlebars.registerPartial('roost-link-text', require(roostLinkBase + "text.hbs"));
+    Handlebars.registerPartial("roost-link-html", require(roostLinkBase + "html.hbs"));
+    Handlebars.registerPartial("roost-link-text", require(roostLinkBase + "text.hbs"));
 }
 
 function initializeEmails(){
     emailTemplates.forEach(function(name){
         var templateDir = path.join(templateRoot, name);
-        var template = new EmailTemplate(templateDir);
+        console.log("creating template", name);
+        var template = new EmailTemplate(templateDir, {sassOptions: {
+            includePaths: [bootstrapSass, styleDir]
+        }});
         templates[name] = template;
     });
 }

@@ -1,11 +1,17 @@
+@import "common";
+
 .description {
     white-space: pre-line;
 }
 
-table, td{
-    border: 1px solid lightgray;
+.table-container{
+    max-width: 450px;
 }
-td{
-    padding: 5px 10px 5px 10px;
-    vertical-align: top;
-}
+
+// table, td{
+//     border: 1px solid lightgray;
+// }
+// td{
+//     padding: 5px 10px 5px 10px;
+//     vertical-align: top;
+// }

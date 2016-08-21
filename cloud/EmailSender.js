@@ -116,11 +116,11 @@ exports.sendTemplate = function( template, data, recipients, messageId ){
     data.host = envUtil.getHost();
     TemplateUtil.renderEmail(template, data).then(function(results){
         console.log("Processing results of the templates", results);
-        this.sendEmail(results, recipients, messageId);
+        sendEmail(results, recipients, messageId);
     });
 }
 
-exports.sendEmail = function( message, recipients, messageId ){
+function sendEmail( message, recipients, messageId ){
     Parse.Config.get().then( function(config){
         if ( config.get( "emailEnabled" ) ){
             var actualRecipients = getActualRecipients( recipients, config );

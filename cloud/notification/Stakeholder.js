@@ -45,9 +45,7 @@ exports.afterSave = function(){
                 }
                 //notify stakeholders of the addition
                 var existingRecipients =  EmailUtil.getRecipientsFromStakeholders( stakeholders, userEmail );
-                // EmailSender.sendEmail( message, EmailUtil.getRecipientsFromStakeholders( stakeholders, userEmail ) );
                 EmailSender.sendTemplate( "invitedStakeholderNotif", notifData, existingRecipients, deal.id );
-
 
                 //invite the new user
                 //TODO: check if they are a brand new user
@@ -57,16 +55,10 @@ exports.afterSave = function(){
                     userName: fullName,
                     invitePath: "/invitations/" + req.object.id,
                     dealName: dealName,
-                    role, role
+                    role: role,
+                    dealLink: dealLink
                 }
-                //
-                // var invitedByText = invitedByName + " (" + invitedBy.get("email") + ")";
-                // var inviteLink = envUtil.getHost() + "/invitations/" + req.object.id;
-                // message = {
-                //     subject: "You have been invited to participate in the deal " + deal.get("dealName"),
-                //     text: "You have been invited to participate in the deal " + deal.get("dealName") + " as a " + role + " by " + invitedByText + "\n\nLink: " + inviteLink,
-                //     html: "You have been invited to participate in the deal " + deal.get("dealName") + " as a " + role + " by " + invitedByText + "<br/><a href='" + inviteLink + "'>Join the Roost</a>"
-                // }
+
                 var inviteEmail = {name: fullName, email: user.get("email")};
                 EmailSender.sendTemplate( "roostInvite", inviteData, inviteEmail, deal.id );
             });

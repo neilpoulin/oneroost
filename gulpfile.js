@@ -190,7 +190,7 @@ var sassOpts = {
         // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
         nodemon({
             script: "main.js",
-            watch: ["public", "cloud", "cloud/**/*.hbs", "cloud/**/*.json"],
+            watch: ["public", "cloud", "cloud/email/**/*", "cloud/**/*.json"],
             env: {
                 AWS_PROFILE: "oneroost"
             }
