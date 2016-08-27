@@ -8,11 +8,16 @@ export default React.createClass({
     deleteStakeholder: function (stakeholder) {
         var self = this;
         var stakeholder = this.props.stakeholder;
-        ParseReact.Mutation.Destroy(stakeholder)
-        .dispatch()
-        .then(function(){
-            self.sendComment(stakeholder)
-        });
+        var confirm = window.confirm("Are you sure you want to remove this user?" );
+
+        if ( confirm ){
+            ParseReact.Mutation.Destroy(stakeholder)
+            .dispatch()
+            .then(function(){
+                self.sendComment(stakeholder)
+            });
+        }
+
     },
     sendComment(stakeholder)
     {
@@ -51,14 +56,24 @@ export default React.createClass({
 
         var result =
         <div data-name={firstName + " " + lastName} data-email={email} className="Stakeholder row">
-            <div className="col-xs-10 container-fluid">
-                <span className={"roleName label " + roleClass}>{stakeholder.role}</span>
-                <a href={"#"}>
-                    {firstName}&nbsp;{lastName} {pendingText}
-                </a>
+            <div className="container-fluid">
+                <div>
+                    <span className="participantName">{firstName}&nbsp;{lastName}</span>
+                    <span className={"roleName label " + roleClass}>{stakeholder.role}</span>
+                </div>
+                <div>
+                    <span className="inviteStatus">{pendingText}</span>
+                </div>
+                <div>
+                    <span className="email">{email}</span>
+                </div>
             </div>
-            <div className="col-xs-2 container-fluid">
-                <i className="fa fa-times delete-icon pointer visible-hover text-center" onClick={this.deleteStakeholder}></i>
+            <div className="">
+                <button className="btn btn-block btn-outline-danger visible-hover"
+                    onClick={this.deleteStakeholder}>
+                        <i className="fa fa-trash delete-icon " ></i> Remove Stakeholder
+                </button>
+
             </div>
         </div>
 

@@ -1,28 +1,47 @@
 import React from "react";
-import StakeholderModal from "./StakeholderModal"
-import LinkedStateMixin from "react-addons-linked-state-mixin"
+import ModalButton from "./../util/ModalButton";
+import StakeholderForm from "./StakeholderForm";
 
 export default React.createClass({
-    mixins: [LinkedStateMixin],
+    getDefaultProps: function(){
+        return  {
+            btnClassName: "btn-outline-secondary"
+        }
+    },
     openModal: function(){
         this.refs.addStakeholderModal.openModal();
     },
     render: function(){
-        var btnClass = this.props.btnClassName || "btn-outline-secondary";
-        var btn =
-        <div className="AddStakeholderButton">
-            <div className="text-center">
-                <button className={"btn " + btnClass}
-                    onClick={this.openModal}>
-                    Add Stakeholder
-                </button>
-            </div>
-            <StakeholderModal
-                deal={this.props.deal}
-                onSuccess={this.props.onSuccess}
-                ref="addStakeholderModal">
-            </StakeholderModal>
-        </div>
+
+        // var btn =
+        // <div className="AddStakeholderButton">
+        //     <div className="text-center">
+        //         <button className={"btn " + btnClass}
+        //             onClick={this.openModal}>
+        //             Add Stakeholder
+        //         </button>
+        //     </div>
+        //     <StakeholderModal
+        //         deal={this.props.deal}
+        //         onSuccess={this.props.onSuccess}
+        //         ref="addStakeholderModal">
+        //     </StakeholderModal>
+        // </div>
+
+
+        var btn = <ModalButton
+            buttonText="Invite a Participant"
+            buttonIcon="plus"
+            containerClass="AddStakeholderButton"
+            buttonClass={this.props.btnClassName}
+            modalTitle="Invite a Participant"
+            >
+            <StakeholderForm
+                ref="addStakeholderForm"
+                deal={this.props.deal} />
+        </ModalButton>
+
+
         return btn;
     }
 });

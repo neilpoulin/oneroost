@@ -91,7 +91,6 @@ Mail.prototype.buildRawEmail = function(callback){
         // envelope: null
     }
     var raw = mailcomposer(opts)
-    console.log(raw);
     raw.build(function(err, buffer){
         if ( err ){
             console.error("Failed to generate email", err);
@@ -134,7 +133,7 @@ function sendRawMail( mail, buffer ){
             console.log(err, err.stack); // an error occurred
         }
         else{
-            console.log(data);           // successful response
+            console.log("successfully sent email");           // successful response
         }
     });
 }

@@ -63,7 +63,8 @@ $border-radius: 10px;
 
 }
 
-.CompletedNextStepItemContainer{
+.NextStepSidebarItemContainer{
+
 
     .nextStepTitle{
         font-size: 1.2em;
@@ -74,6 +75,9 @@ $border-radius: 10px;
     }
     .nextStepDueDate{
         font-size: .8em;
+    }
+    &:not(:last-child){
+        border-bottom: $borderThin;
     }
     &:hover{
         color: $activeColor;

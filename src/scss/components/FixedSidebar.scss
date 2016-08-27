@@ -1,11 +1,14 @@
 .FixedSidebar {
- 
+
   background-color: $fixedSidebarBg;
   .close {
     margin-top: 10px;
     i {
       color: $mainColor;
     }
+  }
+  & > :last-child{
+      margin-bottom: 100px;
   }
   color: $mainColor;
   border-top: $borderWeightThick solid $borderColorThick;

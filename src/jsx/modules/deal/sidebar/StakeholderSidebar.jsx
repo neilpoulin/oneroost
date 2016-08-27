@@ -45,7 +45,7 @@ const StakeholderSidebar = React.createClass({
           )
         })}
         <AddStakeholderButton deal={deal}
-                              btnClassName="btn-outline-success"
+                              btnClassName="btn-outline-primary btn-block"
                               onSuccess={this.refreshStakeholders}/>
       </div>
     )

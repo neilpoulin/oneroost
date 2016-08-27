@@ -1,11 +1,11 @@
 @mixin visible-hover {
     .visible-hover{
-        display:none;
+        visibility:hidden;        
     }
 
     &:hover{
         .visible-hover{
-            display: inline-block;
+            visibility: visible;
         }
     }
 }

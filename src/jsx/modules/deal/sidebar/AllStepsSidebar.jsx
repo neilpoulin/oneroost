@@ -48,40 +48,48 @@ const AllStepsSidebar = React.createClass({
             var Deal = Parse.Object.extend("Deal");
             var deal = new Deal();
             deal.id = this.props.params.dealId;
-            addStepsBtn = <AddNextStepButton deal={deal} containerClass=""/>
+            addStepsBtn = <AddNextStepButton deal={deal}
+                containerClass=""
+                btnClassName="btn-outline-primary btn-block"/>
         }
 
         var sidebar =
         <div>
             <h3>Active Steps</h3>
             <div>
+                {activeSteps.map(function(step){
+                    var step =
+                    <NavLink tag="div" to={"/roosts/" + dealId + "/steps/" + step.objectId }
+                            key={"deal_" + dealId + "_active_step_" + step.objectId}
+                        className={ "NextStepSidebarItemContainer active" } >
+                        <div className="nextStepTitle">{step.title}</div>
+                        <div className="nextStepDueDate">
+                            Due Date: {self.formatDate(step.dueDate)}
+                        </div>
+                    </NavLink>
+                    return step;
+                })}
+            </div>
+            <div>
                 {addStepsBtn}
             </div>
 
-            {activeSteps.map(function(step){
-                var step =
-                <NavLink tag="div" to={"/roosts/" + dealId + "/steps/" + step.objectId }
-                    className={ "CompletedNextStepItemContainer active" } >
-                    <div className="nextStepTitle">{step.title}</div>
-                    <div className="nextStepDueDate">
-                        Due Date: {self.formatDate(step.dueDate)}
-                    </div>
-                </NavLink>
-                return step;
-            })}
-
             <h3>Completed Steps</h3>
-            {completedSteps.map(function(step){
-                var step =
-                <NavLink tag="div" to={"/roosts/" + dealId + "/steps/" + step.objectId }
-                    className={ "CompletedNextStepItemContainer" } >
-                    <div className="nextStepTitle">{step.title}</div>
-                    <div className="nextStepDueDate">
-                        Completed Date: {self.formatDate(step.completedDate)}
-                    </div>
-                </NavLink>
-                return step;
-            })}
+            <div>
+                {completedSteps.map(function(step){
+                    var step =
+                    <NavLink tag="div"
+                        key={"deal_" + dealId + "_completed_step_" + step.objectId}
+                        to={"/roosts/" + dealId + "/steps/" + step.objectId }
+                        className={ "NextStepSidebarItemContainer" } >
+                        <div className="nextStepTitle">{step.title}</div>
+                        <div className="nextStepDueDate">
+                            Completed Date: {self.formatDate(step.completedDate)}
+                        </div>
+                    </NavLink>
+                    return step;
+                })}
+            </div>
         </div>
 
         return sidebar;

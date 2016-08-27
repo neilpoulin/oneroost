@@ -30,7 +30,7 @@ const NextStepSidebar = React.createClass({
         if ( step )
         {
             sidebar =
-            <div className="NextStepSidebar" key={"step_" + step.objectId}>
+            <div className="NextStepSidebar" key={"step_details_" + step.objectId}>
                 <h3 className="title">{step.title}</h3>
                 <NextStepDetailForm
                     key={"stepForm_" + step.objectId}

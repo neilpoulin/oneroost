@@ -42,7 +42,7 @@ const NextStepCompletedSidebar = React.createClass({
             {completedSteps.map(function(step){
                 var step =
                 <NavLink tag="div" to={"/roosts/" + dealId + "/steps/" + step.objectId }
-                    className={ "CompletedNextStepItemContainer" } >
+                    className={ "NextStepSidebarItemContainer" } >
                     <div className="nextStepTitle">{step.title}</div>
                     <div className="nextStepDueDate">
                         Completed Date: {self.formatDate(step.completedDate)}
