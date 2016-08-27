@@ -4,8 +4,6 @@ var styleDir = path.resolve(__dirname, "..", "email", "template", "style");
 var Handlebars = require("handlebars");
 var EmailTemplate = require("email-templates").EmailTemplate
 var emailTemplates = ["commentNotif", "nextStepNotif", "invitedStakeholderNotif", "roostInvite"];
-var componentTemplates = ["footer"];
-var compiledTempaltes = {};
 var templates = {};
 
 var bootstrapSass = path.resolve(__dirname, "..", "..", "node_modules", "bootstrap-sass", "assets", "stylesheets");
@@ -14,7 +12,6 @@ initializeHandlebars();
 initializeEmails();
 
 exports.renderEmail = function(templateName, data){
-    debugger;
     if ( emailTemplates.indexOf(templateName) == -1 ){
         throw "You must provide a vaild template";
     }
@@ -22,13 +19,11 @@ exports.renderEmail = function(templateName, data){
 }
 
 exports.renderSample = function( name ){
-    debugger;
     var template = templates[name];
     return template.render( getSampleData(name) );
 }
 
 function renderTemplate( name, data ){
-    debugger;
     var template = templates[name];
     return template.render(data);
 }

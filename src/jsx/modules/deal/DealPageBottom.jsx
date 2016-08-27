@@ -21,7 +21,7 @@ const DealPageBottom = React.createClass({
         var container = this.refs.DealPageBottom;
         var dealBoundingRect = container.getBoundingClientRect();
         var fixedContainer = this.refs.fixedContainer;
-        fixedContainer.style.left = (dealBoundingRect.left - 10) + "px";
+        fixedContainer.style.left = dealBoundingRect.left - 10 + "px";
         fixedContainer.style.top = dealBoundingRect.top + "px";
     },
     render: function() {
