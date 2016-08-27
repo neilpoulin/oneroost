@@ -36,11 +36,12 @@ exports.afterSave = function(){
                     invitedByEmail: invitedByEmail,
                     dealName: dealName,
                     role: role,
-                    dealLink: dealLink
+                    dealLink: dealLink,
+                    messageId: deal.id
                 }
                 //notify stakeholders of the addition
                 var existingRecipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, userEmail );
-                EmailSender.sendTemplate( "invitedStakeholderNotif", notifData, existingRecipients, deal.id );
+                EmailSender.sendTemplate( "invitedStakeholderNotif", notifData, existingRecipients );
 
                 //invite the new user
                 //TODO: check if they are a brand new user

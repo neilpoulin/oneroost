@@ -21,9 +21,10 @@ function sendCommentEmail( comment ){
                 authorName: author.get("firstName") + " " + author.get("lastName"),
                 message: comment.get("message"),
                 dealName: deal.get("dealName"),
-                dealLink: dealLink
+                dealLink: dealLink,
+                messageId: deal.id
             };
-            EmailSender.sendTemplate( "commentNotif", data, recipients, deal.id );
+            EmailSender.sendTemplate( "commentNotif", data, recipients );
         });
     }
     NotificationSettings.checkNotificationSettings( NotificationSettings.Settings.COMMENT_EMAILS, true, sender );

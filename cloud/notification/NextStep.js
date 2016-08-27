@@ -41,11 +41,12 @@ function getSender( req ){
                     assignedUserName: assignedUserName,
                     dueDate: deal.get("dueDate"),
                     description: step.get("description"),
-                    dealLink: envUtil.getHost() + "/roosts/" + deal.id
+                    dealLink: envUtil.getHost() + "/roosts/" + deal.id,
+                    messageId: deal.id
                 }
                 console.log("sending Next Step after Save Email with data", data);
                 var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, author.get("email") );
-                EmailSender.sendTemplate( "nextStepNotif", data, recipients, deal.id );
+                EmailSender.sendTemplate( "nextStepNotif", data, recipients );
             });
         });
     }

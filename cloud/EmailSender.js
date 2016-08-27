@@ -6,6 +6,59 @@ var SESEmailSender = require("./email/SESEmailSender");
 var EmailRecipient = Parse.Object.extend("EmailRecipient");
 Parse.serverURL = envUtil.serverURL;
 
+
+exports.sendTemplate = function( templateName, data, sendTo ){
+    data.host = envUtil.getHost();
+    var sender = templateSender(templateName, data);
+    sendTo.forEach( function(to){
+        findRecipient(to, sender, function(error){
+            console.log("something went wrong", error);
+        });
+    } );
+}
+
+function templateSender( templateName, data ){
+    return function(recipient, to){
+        if ( !recipient.get("unsubscribe") )
+        {
+            data.unsubscribeLink = getUnsubscribeUrl(recipient.id);
+            data.unsubscribeEmail = getUnsubscribeEmail(recipient.id);
+            data.recipientId = recipient.id;
+            TemplateUtil.renderEmail(templateName, data)
+            .then(function(templateResults){
+                sendEmail(templateResults, data, to);
+            });
+        } else {
+            console.log("User has unsubscribed, not sending email", recipient)
+        }
+    }
+}
+
+
+function findRecipient( to, callback, errorCallack )
+{
+    var query = new Parse.Query("EmailRecipient");
+    query.equalTo( "email", to.email );
+    query.find().then( function(emailRecipients){
+        if ( emailRecipients.length > 0 ){
+            var existing = emailRecipients[0];
+            if ( !existing.get("unsubscribe") ){
+                existing.set("lastSendDate", new Date());
+                existing.save();
+                callback(existing, to)
+            }
+            else {
+                // console.log("not sending email since the user is unsubscribed", existing.get("email"));
+                errorCallack( "not sending email since the user is unsubscribed", existing.get("email") );
+            }
+        }
+        else { //create new one
+            createEmailRecipient( to, callback );
+        }
+    });
+}
+
+
 function getActualRecipients( original, config )
 {
     if ( config.get("emailOverrideEnabled") )
@@ -59,92 +112,57 @@ function processEmailInput( original )
     return result;
 }
 
-
-function createEmailRecipientAndSend( emailObject, email ){
+function createEmailRecipient( to, callback ){
     var recipient = new EmailRecipient();
-    recipient.set("email", emailObject.email);
+    recipient.set("email", to.email);
     recipient.set("unsubscribe", false);
     recipient.set("lastSendDate", new Date());
     recipient.set("unsubscribeDate", null);
-    recipient.save().then(function(saved){
-        console.log("successfully saved new email recipient", saved);
-        email.emailRecipientId = saved.id;
-        addFooterAndSend(email);
+    recipient.save().then(function(savedRecipient){
+        console.log("successfully saved new email recipient", savedRecipient);
+        callback(savedRecipient, to)
     });
 }
 
-function sendIfValid( email )
-{
-    email.recipients.forEach( function( recipient ) {
-        var query = new Parse.Query("EmailRecipient");
-        query.equalTo( "email", recipient.email );
-        query.find().then( function(emailRecipients){
-            if ( emailRecipients.length > 0 ){
-                var existing = emailRecipients[0];
-                if ( !existing.get("unsubscribe") ){
-                    existing.set("lastSendDate", new Date());
-                    existing.save();
-                    email.emailRecipientId = existing.id;
-                    addFooterAndSend(email);
-                }
-                else {
-                    console.log("not sending email since the user is unsubscribed", existing);
-                }
-            }
-            else { //create new one
-                createEmailRecipientAndSend( recipient, email );
-            }
-        });
-    });
-}
-
-function getUnsubscribeUrl( messageId ){
-    var path = "/unsubscribe/" + messageId;
+function getUnsubscribeUrl( recipientId ){
+    var path = "/unsubscribe/" + recipientId;
     var url = envUtil.getHost() + path;
     return url;
 }
 
-function getUnsubscribeEmail( messageId ){
+function getUnsubscribeEmail( recipientId ){
     var domain = "reply.oneroost.com";
     if (envUtil.isDev()){
         domain = "dev." + domain;
     }
-    var address = "unsubscribe+" + messageId + "@" + domain;
+    var address = "unsubscribe+" + recipientId + "@" + domain;
     return address;
 }
 
-function addFooterAndSend(email)
-{
-    console.warn("Not appending a footer right now...should be taken care of by templates.");
-    // appendUnsubscribe(email);
-    SESEmailSender.sendEmail( email );
-
-}
-
-exports.sendTemplate = function( template, data, recipients, messageId ){
-    data.unsubscribeLink = getUnsubscribeUrl(messageId);
-    data.host = envUtil.getHost();
-    TemplateUtil.renderEmail(template, data).then(function(results){
-        console.log("Processing results of the templates", results);
-        sendEmail(results, recipients, messageId);
-    });
-}
-
-function sendEmail( message, recipients, messageId ){
+function sendEmail( templateResults, data, to ){
     Parse.Config.get().then( function(config){
         if ( config.get( "emailEnabled" ) ){
-            var actualRecipients = getActualRecipients( recipients, config );
+
+            var actualRecipients = getActualRecipients( to, config );
             console.log("actual recipients: ", actualRecipients);
-            actualRecipients.forEach( function( to ){
+            if ( !actualRecipients ){
+                console.log("No actual recpients found, not sending email.");
+                return false
+            }
+
+            actualRecipients.forEach( function( actualTo ){
+
                 var email = new SESEmailSender.Mail();
-                email.setRecipients( [to] );
-                email.subject = message.subject;
-                email.text = message.text;
-                email.html = message.html;
-                email.messageId = messageId;
-                email.unsubscribeLink = getUnsubscribeUrl(messageId);
-                email.unsubscribeEmail = getUnsubscribeEmail(messageId);
-                sendIfValid( email );
+                email.setRecipients( [actualTo] );
+                email.subject = templateResults.subject;
+                email.text = templateResults.text;
+                email.html = templateResults.html;
+                email.messageId = data.messageId;
+                email.unsubscribeLink = data.unsubscribeLink;
+                email.unsubscribeEmail = data.unsubscribeEmail;
+                email.emailRecipientId = data.recipientId;
+                email.headers = buildHeaders(data);
+                SESEmailSender.sendEmail( email );
             } );
         }
         else {
@@ -155,4 +173,32 @@ function sendEmail( message, recipients, messageId ){
         console.log("error... failed to get config");
         console.log(error);
     });
+}
+
+function buildHeaders( data ){
+    var headers = [];
+
+    headers.push( getUnsubscribeHeader(data) ) ;
+    return headers.filter( function (header){
+        return header != null;
+    });
+}
+
+function getUnsubscribeHeader(data){
+
+    var values = [];
+    if ( data.unsubscribeLink != null )
+    {
+        values.push( "<" + data.unsubscribeLink + ">" );
+    }
+    if ( data.unsubscribeEmail != null ){
+        values.push("<mailto:" + data.unsubscribeEmail + ">")
+    }
+    if ( values ){
+        return {
+            key: "List-Unsubscribe",
+            value: values.join(", ")
+        }
+    }
+    return null;
 }

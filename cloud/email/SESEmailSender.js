@@ -63,28 +63,10 @@ Mail.prototype.getErrors = function(){
     });
 }
 
-Mail.prototype.getUnsubscribeHeader = function(){
-    var values = [];
-    if ( this.unsubscribeLink != null )
-    {
-        values.push( "<" + this.unsubscribeLink + ">" );
-    }
-    if ( this.unsubscribeEmail != null ){
-        values.push("<mailto:" + this.unsubscribeEmail + ">")
-    }
-    if ( values ){
-        return {
-            key: "List-Unsubscribe",
-            value: values.join(", ")
-        }
-    }
-    return null;
-}
-
 Mail.prototype.buildRawEmail = function(callback){
     var mail = this;
-    var headers = [];
-    headers.push(mail.getUnsubscribeHeader());
+    var headers = mail.headers;
+    // headers.push(mail.getUnsubscribeHeader());
     var fromSender = {
         name: mail.fromName,
         address: mail.fromEmail
