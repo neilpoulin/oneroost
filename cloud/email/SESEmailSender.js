@@ -18,6 +18,10 @@ var RawMail = function(){
     this.headers = [];
 }
 
+RawMail.prototype.toString = function(){
+    return "";
+}
+
 var Mail = function(){
     this.recipients = [];
     this.fromName = envUtil.isDev() ? "Dev OneRoost" : "OneRoost Notifications";
@@ -74,6 +78,10 @@ Mail.prototype.getErrors = function(){
     return fields.filter( function( field ){
         return !validations[field]
     });
+}
+
+Mail.prototype.getRawMail = function(){
+    return new RawMail();
 }
 
 exports.sendEmail = function( mail )
@@ -177,12 +185,6 @@ function getTemplate(mail){
         // ReturnPathArn: "STRING_VALUE",
         // SourceArn: "STRING_VALUE"
     };
-}
-
-
-
-function buildRawEmail( email ){
-
 }
 
 exports.Mail = Mail;

@@ -18,12 +18,10 @@ function getSender( req ){
             var author = step.get("createdBy");
             var deal = step.get("deal");
             var stakeholderQuery = new Parse.Query("Stakeholder");
+            var assignedUser = step.get("assignedUser");
             stakeholderQuery.include("user");
             stakeholderQuery.equalTo( "deal", deal );
             stakeholderQuery.find().then( function( stakeholders ){
-
-                var assignedUser = step.get("assignedUser");
-                var author = step.get("createdBy");
                 var assignedUserName = null
                 if ( assignedUser )
                 {
