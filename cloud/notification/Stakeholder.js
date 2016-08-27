@@ -29,11 +29,6 @@ exports.afterSave = function(){
             allStakeholderQuery.include("user");
             allStakeholderQuery.find().then( function (stakeholders){
                 var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
-                var message = {
-                    subject: deal.get("dealName") + " has a new stakeholder: " + fullName,
-                    text: fullName + " (" + userEmail + ") is a new " + role + " on " + dealName + "\n\nInvited by " + invitedByName + "\n\nLink to the Roost: " + dealLink,
-                    html: fullName + " (" + userEmail + ") is a new " + role + " on " + dealName + "<br/><br/>Invited by " + invitedByName + "<br/><br/><a href='" + dealLink + "'>View the Roost</a>"
-                };
                 var notifData = {
                     userName: fullName,
                     userEmail: userEmail,
@@ -44,7 +39,7 @@ exports.afterSave = function(){
                     dealLink: dealLink
                 }
                 //notify stakeholders of the addition
-                var existingRecipients =  EmailUtil.getRecipientsFromStakeholders( stakeholders, userEmail );
+                var existingRecipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, userEmail );
                 EmailSender.sendTemplate( "invitedStakeholderNotif", notifData, existingRecipients, deal.id );
 
                 //invite the new user

@@ -1,9 +1,12 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
 import NavLink from "./NavLink"
-import { browserHistory, withRouter } from "react-router"
+import { withRouter } from "react-router"
 
 const LandingPage = withRouter( React.createClass({
+    PropTypes: {
+        location: PropTypes.object.isRequired
+    },
     getLoginLink(){
         var user = Parse.User.current();
         if ( !user )

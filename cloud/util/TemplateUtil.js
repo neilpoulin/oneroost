@@ -4,8 +4,6 @@ var styleDir = path.resolve(__dirname, "..", "email", "template", "style");
 var Handlebars = require("handlebars");
 var EmailTemplate = require("email-templates").EmailTemplate
 var emailTemplates = ["commentNotif", "nextStepNotif", "invitedStakeholderNotif", "roostInvite"];
-var componentTemplates = ["footer"];
-var compiledTempaltes = {};
 var templates = {};
 
 var bootstrapSass = path.resolve(__dirname, "..", "..", "node_modules", "bootstrap-sass", "assets", "stylesheets");

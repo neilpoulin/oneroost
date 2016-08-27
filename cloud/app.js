@@ -19,7 +19,6 @@ var favicon = require("serve-favicon");
 var Notifications = require("./notification/Notifications.js");
 var envUtil = require("./util/envUtil.js");
 var Stakeholders = require("./stakeholders.js");
-var SES = require("./email/SESEmailSender.js");
 var http = require("http");
 var socket = require("socket.io");
 var TemplateUtil = require("./util/TemplateUtil");
@@ -42,7 +41,6 @@ app.locals.formatTime = function(time) {
 
 
 app.get("/emails/:templateName", function(req, resp){
-    debugger;
     TemplateUtil.renderSample(req.params.templateName).then(function(templates){
         // resp.send(templates.html);
         resp.render("emailSample.ejs", templates);

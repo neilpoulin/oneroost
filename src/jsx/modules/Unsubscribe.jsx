@@ -1,9 +1,14 @@
-import React, { PropTypes } from 'react'
+import React, { PropTypes } from "react"
 import Parse from "parse";
 import ParseReact from "parse-react";
 
 const Unsubscribe = React.createClass({
     mixins: [ParseReact.Mixin],
+    propTypes:{
+        params: PropTypes.shape({
+            emailRecipientId: PropTypes.string.isRequired
+        })
+    },
     getInitialState()
     {
         return {

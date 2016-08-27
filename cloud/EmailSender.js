@@ -109,7 +109,7 @@ function getUnsubscribeEmail( messageId ){
     if (envUtil.isDev()){
         domain = "dev." + domain;
     }
-    var address =  "unsubscribe+" + messageId + "@" + domain;
+    var address = "unsubscribe+" + messageId + "@" + domain;
     return address;
 }
 
