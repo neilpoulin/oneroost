@@ -14,7 +14,6 @@ initializeHandlebars();
 initializeEmails();
 
 exports.renderEmail = function(templateName, data){
-    debugger;
     if ( emailTemplates.indexOf(templateName) == -1 ){
         throw "You must provide a vaild template";
     }
@@ -22,13 +21,11 @@ exports.renderEmail = function(templateName, data){
 }
 
 exports.renderSample = function( name ){
-    debugger;
     var template = templates[name];
     return template.render( getSampleData(name) );
 }
 
 function renderTemplate( name, data ){
-    debugger;
     var template = templates[name];
     return template.render(data);
 }

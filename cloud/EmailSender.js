@@ -103,6 +103,16 @@ function getUnsubscribeUrl( messageId ){
     var url = envUtil.getHost() + path;
     return url;
 }
+
+function getUnsubscribeEmail( messageId ){
+    var domain = "reply.oneroost.com";
+    if (envUtil.isDev()){
+        domain = "dev." + domain;
+    }
+    var address =  "unsubscribe+" + messageId + "@" + domain;
+    return address;
+}
+
 function addFooterAndSend(email)
 {
     console.warn("Not appending a footer right now...should be taken care of by templates.");
@@ -132,6 +142,8 @@ function sendEmail( message, recipients, messageId ){
                 email.text = message.text;
                 email.html = message.html;
                 email.messageId = messageId;
+                email.unsubscribeLink = getUnsubscribeUrl(messageId);
+                email.unsubscribeEmail = getUnsubscribeEmail(messageId);
                 sendIfValid( email );
             } );
         }

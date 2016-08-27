@@ -1,22 +1,7 @@
 var AWS = require("aws-sdk");
 var ses = new AWS.SES({region: "us-east-1"});
 var envUtil = require("./../util/envUtil");
-
-var RawMail = function(){
-    //http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SES.html#sendRawEmail-property
-    //AWS params
-    this.RawMessage = {
-        Data: null
-    }
-    this.Destinations = [];
-    this.FromArn = null;
-    this.ReturnPathArn = null;
-    this.Source = null;
-    this.SourceArn = null;
-
-    //additional params
-    this.headers = [];
-}
+var mailcomposer = require("mailcomposer");
 
 var Mail = function(){
     this.recipients = [];
@@ -30,6 +15,8 @@ var Mail = function(){
     this.html = "";
     this.messageId = "";
     this.emailRecipientId = null;
+    this.unsubscribeLink = null;
+    this.unsubscribeEmail = null;
 }
 
 Mail.prototype.getFromAddress = function( isDev ){
@@ -76,6 +63,62 @@ Mail.prototype.getErrors = function(){
     });
 }
 
+Mail.prototype.getUnsubscribeHeader = function(){
+    var values = [];
+    if ( this.unsubscribeLink != null )
+    {
+        values.push( "<" + this.unsubscribeLink + ">" );
+    }
+    if ( this.unsubscribeEmail != null ){
+        values.push("<mailto:" + this.unsubscribeEmail + ">")
+    }
+    if ( values ){
+        return {
+            key: "List-Unsubscribe",
+            value: values.join(", ")
+        }
+    }
+    return null;
+}
+
+Mail.prototype.buildRawEmail = function(callback){
+    var mail = this;
+    var headers = [];
+    headers.push(mail.getUnsubscribeHeader());
+    var fromSender = {
+        name: mail.fromName,
+        address: mail.fromEmail
+    }
+
+    var opts = {
+        from: fromSender,
+        sender: fromSender,
+        to: formatAddresses(mail.recipients),
+        replyTo: mail.getFromAddress(),
+        // cc: null,
+        // bcc: null,
+        // inReplyTo: null,
+        // references: null,
+        subject: mail.subject,
+        text: mail.text,
+        html: mail.html,
+        // watchHtml: null,
+        // icalEvent: null,
+        headers: headers,
+        attachments: []
+        // envelope: null
+    }
+    var raw = mailcomposer(opts)
+    console.log(raw);
+    raw.build(function(err, buffer){
+        if ( err ){
+            console.error("Failed to generate email", err);
+        } else {
+            callback(mail, buffer);
+        }
+    });
+}
+
 exports.sendEmail = function( mail )
 {
     console.log("sending email via SES");
@@ -85,19 +128,46 @@ exports.sendEmail = function( mail )
     var response = {message: "not set"};
     try {
         var template = getTemplate(mail);
-        console.log("sending email temlate: ", template);
-        ses.sendEmail( template, function(err, data){
-            if (err) { // an error occurred
-                return handleSendError( err, response )
-            } else {  // successful response
-                return handleSendSuccess( data, response );
-            }
-        } );
+        // console.log("sending email temlate: ", template);
+        // ses.sendEmail( template, function(err, data){
+        //     if (err) { // an error occurred
+        //         return handleSendError( err, response )
+        //     } else {  // successful response
+        //         return handleSendSuccess( data, response );
+        //     }
+        // } );
+        //
+        //
+        mail.buildRawEmail( sendRawMail );
     } catch (e) {
         console.log("failed to send", e);
         response.message = "failed to send";
         return response;
     }
+}
+
+function sendRawMail( mail, buffer ){
+    console.log("Retrieved raw mail");
+    var params = {
+        RawMessage: { /* required */
+            Data: buffer
+        },
+        Destinations: formatAddresses(mail.recipients)
+        // FromArn: 'STRING_VALUE',
+        // ReturnPathArn: 'STRING_VALUE',
+        // Source: 'STRING_VALUE',
+        // SourceArn: 'STRING_VALUE'
+    };
+    ses.sendRawEmail(params, function(err, data) {
+        if (err){
+            console.log(err, err.stack); // an error occurred
+        }
+        else{
+            console.log(data);           // successful response
+        }
+    });
+    //TODO: send raw mail;
+    // ses.sendRawMail()
 }
 
 function handleSendError( error, response )
@@ -117,6 +187,10 @@ function handleSendSuccess( data, response )
 }
 
 function formatAddresses( to ){
+    if ( !(to instanceof Array ) ){
+        to = [to];
+    }
+
     var addresses = [];
     to.forEach( function( addr ){
         addresses.push( addr.name + " <" + addr.email + ">" );
@@ -177,12 +251,6 @@ function getTemplate(mail){
         // ReturnPathArn: "STRING_VALUE",
         // SourceArn: "STRING_VALUE"
     };
-}
-
-
-
-function buildRawEmail( email ){
-
 }
 
 exports.Mail = Mail;

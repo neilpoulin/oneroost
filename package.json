@@ -44,6 +44,7 @@
     "email-templates": "^2.4.1",
     "express": "~4.13.3",
     "handlebars": "^4.0.5",
+    "mailcomposer": "^3.10.0",
     "mandrill-api": "^1.0.45",
     "moment": "^2.11.2",
     "node-sass": "^3.8.0",
