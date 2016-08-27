@@ -66,7 +66,14 @@ io.on("connection", function(socket){
 
 Notifications.initialize(io);
 Stakeholders.initialize();
-
+process.on("uncaughtException", function(err){
+    console.error(err.stack)
+    server.close();
+})
+process.on("SIGTERM", function(err){
+    console.error(err.stack)
+    server.close();
+})
 server.listen(port, function() {
     console.log("parse-server OneRoost running on port " + port + ".");
 });

@@ -1,26 +1,7 @@
 var AWS = require("aws-sdk");
 var ses = new AWS.SES({region: "us-east-1"});
 var envUtil = require("./../util/envUtil");
-
-var RawMail = function(){
-    //http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SES.html#sendRawEmail-property
-    //AWS params
-    this.RawMessage = {
-        Data: null
-    }
-    this.Destinations = [];
-    this.FromArn = null;
-    this.ReturnPathArn = null;
-    this.Source = null;
-    this.SourceArn = null;
-
-    //additional params
-    this.headers = [];
-}
-
-RawMail.prototype.toString = function(){
-    return "";
-}
+var mailcomposer = require("mailcomposer");
 
 var Mail = function(){
     this.recipients = [];
@@ -34,6 +15,8 @@ var Mail = function(){
     this.html = "";
     this.messageId = "";
     this.emailRecipientId = null;
+    this.unsubscribeLink = null;
+    this.unsubscribeEmail = null;
 }
 
 Mail.prototype.getFromAddress = function( isDev ){
@@ -80,8 +63,60 @@ Mail.prototype.getErrors = function(){
     });
 }
 
-Mail.prototype.getRawMail = function(){
-    return new RawMail();
+Mail.prototype.getUnsubscribeHeader = function(){
+    var values = [];
+    if ( this.unsubscribeLink != null )
+    {
+        values.push( "<" + this.unsubscribeLink + ">" );
+    }
+    if ( this.unsubscribeEmail != null ){
+        values.push("<mailto:" + this.unsubscribeEmail + ">")
+    }
+    if ( values ){
+        return {
+            key: "List-Unsubscribe",
+            value: values.join(", ")
+        }
+    }
+    return null;
+}
+
+Mail.prototype.buildRawEmail = function(callback){
+    var mail = this;
+    var headers = [];
+    headers.push(mail.getUnsubscribeHeader());
+    var fromSender = {
+        name: mail.fromName,
+        address: mail.fromEmail
+    }
+
+    var opts = {
+        from: fromSender,
+        sender: fromSender,
+        to: formatAddresses(mail.recipients),
+        replyTo: mail.getFromAddress(),
+        // cc: null,
+        // bcc: null,
+        // inReplyTo: null,
+        // references: null,
+        subject: mail.subject,
+        text: mail.text,
+        html: mail.html,
+        // watchHtml: null,
+        // icalEvent: null,
+        headers: headers,
+        attachments: []
+        // envelope: null
+    }
+    var raw = mailcomposer(opts)
+    console.log(raw);
+    raw.build(function(err, buffer){
+        if ( err ){
+            console.error("Failed to generate email", err);
+        } else {
+            callback(mail, buffer);
+        }
+    });
 }
 
 exports.sendEmail = function( mail )
@@ -92,15 +127,7 @@ exports.sendEmail = function( mail )
     if ( !mail.isValid() ) throw JSON.stringify( mail.getErrors() );
     var response = {message: "not set"};
     try {
-        var template = getTemplate(mail);
-        console.log("sending email temlate: ", template);
-        ses.sendEmail( template, function(err, data){
-            if (err) { // an error occurred
-                return handleSendError( err, response )
-            } else {  // successful response
-                return handleSendSuccess( data, response );
-            }
-        } );
+        mail.buildRawEmail( sendRawMail );
     } catch (e) {
         console.log("failed to send", e);
         response.message = "failed to send";
@@ -108,83 +135,38 @@ exports.sendEmail = function( mail )
     }
 }
 
-function handleSendError( error, response )
-{
-    console.error("email failed to send", error);
-    response.error = error;
-    response.message = "Failed to send";
-    return response;
-}
-
-function handleSendSuccess( data, response )
-{
-    console.log("email sent successfully");
-    response.message = "sent successfully!"
-    response.data = data;
-    return response;
+function sendRawMail( mail, buffer ){
+    console.log("Retrieved raw mail");
+    var params = {
+        RawMessage: { /* required */
+            Data: buffer
+        },
+        Destinations: formatAddresses(mail.recipients)
+        // FromArn: 'STRING_VALUE',
+        // ReturnPathArn: 'STRING_VALUE',
+        // Source: 'STRING_VALUE',
+        // SourceArn: 'STRING_VALUE'
+    };
+    ses.sendRawEmail(params, function(err, data) {
+        if (err){
+            console.log(err, err.stack); // an error occurred
+        }
+        else{
+            console.log(data);           // successful response
+        }
+    });
 }
 
 function formatAddresses( to ){
+    if ( !(to instanceof Array ) ){
+        to = [to];
+    }
+
     var addresses = [];
     to.forEach( function( addr ){
         addresses.push( addr.name + " <" + addr.email + ">" );
     } )
     return addresses;
-}
-
-function getTemplate(mail){
-    var to = mail.recipients;
-    var subject = mail.subject;
-
-    var html = mail.html;
-    var text = mail.text;
-
-    if ( html.toLowerCase().indexOf("unsubscribe") == -1 )
-    {
-        console.warn("You are missing an unsubscribe link in the HTML, you should probably add this.");
-    }
-
-    if ( text.toLowerCase().indexOf("unsubscribe") == -1 )
-    {
-        console.warn("You are missing an unsubscribe link in the TEXT, you should probably add this.");
-    }
-
-    if ( !(to instanceof Array ) ){
-        to = [to];
-    }
-    var source = mail.getFromAddress();
-
-    return {
-        Destination: { /* required */
-            // BccAddresses:  formatAddresses( to )
-            // CcAddresses: [
-            //     "STRING_VALUE"
-            //     /* more items */
-            // ],
-            ToAddresses: formatAddresses( to )
-        },
-        Message: { /* required */
-            Body: { /* required */
-                Html: {
-                    Data: html /* required */
-                },
-                Text: {
-                    Data: text /* required */
-                }
-            },
-            Subject: { /* required */
-                Data: subject /* required */
-            }
-        },
-        Source: "OneRoost <reply@oneroost.com>", /* required */
-        ReplyToAddresses: [
-            source
-            /* more items */
-        ]
-        // ReturnPath: "bounce.reploy.oneroost.com"
-        // ReturnPathArn: "STRING_VALUE",
-        // SourceArn: "STRING_VALUE"
-    };
 }
 
 exports.Mail = Mail;
