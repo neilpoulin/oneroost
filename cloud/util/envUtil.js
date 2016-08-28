@@ -10,6 +10,9 @@ var AWS_SECRET_ID = process.env.AWS_SECRET_ID || "HYS3LqjQV/0Ej6COtVAow7M0xhe6GV
 var SERVER_URL = process.env.PARSE_SERVER_URL || "http://localhost"
 var HOSTNAME = process.env.HOSTNAME || "http://localhost:" + PARSE_PORT
 
+var DOCUMENTS_S3_BUCKET = "oneroost-documents";
+var DOCUMENTS_PATH = "documents"
+
 if ( SERVER_URL.trim().indexOf("http:") != 0 )
 {
     if ( SERVER_URL.indexOf("//") != 0 )
@@ -70,6 +73,14 @@ exports.getHost = function(){
 
 exports.isDev = function(){
     return HOSTNAME.indexOf("localhost") != -1
+}
+
+exports.getDocumentsBucket = function(){
+    return DOCUMENTS_S3_BUCKET;
+}
+
+exports.getDocumentsPath = function(){
+    return DOCUMENTS_PATH;
 }
 
 exports.getEnv = function(){

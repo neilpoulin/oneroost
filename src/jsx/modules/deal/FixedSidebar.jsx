@@ -5,7 +5,8 @@ const FixedSidebar = React.createClass({
     propTypes: {
         children: PropTypes.shape({
             props: PropTypes.shape({
-                params: PropTypes.any.isRequired
+                params: PropTypes.any.isRequired,
+                deal: PropTypes.object.isRequired
             })
         }),
         columns: PropTypes.number.isRequired
