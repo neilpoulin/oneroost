@@ -32,6 +32,7 @@ const DealPageBottom = React.createClass({
         if ( this.props.children )
         {
             commentsColumns = 8;
+
             sidebar =
             <FixedSidebar ref="sidebar" columns={totalColumns - commentsColumns}>
                 {this.props.children}

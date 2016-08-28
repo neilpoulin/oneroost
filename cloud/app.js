@@ -22,6 +22,7 @@ var Stakeholders = require("./stakeholders.js");
 var http = require("http");
 var socket = require("socket.io");
 var TemplateUtil = require("./util/TemplateUtil");
+var Documents = require("./documents/Documents");
 
 var app = express();
 var server = http.Server(app);
@@ -65,6 +66,7 @@ io.on("connection", function(socket){
 });
 
 Notifications.initialize(io);
+Documents.initialize();
 Stakeholders.initialize();
 process.on("uncaughtException", function(err){
     console.error(err.stack)

@@ -78,7 +78,11 @@ const Deal = withRouter( React.createClass({
         }
         var dealName = this.data.deal[0].dealName;
         document.title = "OneRoost - " + dealName;
-
+        var childrenWithProps = null;
+        if ( this.props.children ){
+            childrenWithProps = React.cloneElement(this.props.children, {deal: deal});
+        }
+        
         var dealPage =
         <div>
             <RoostNav deal={deal}/>
@@ -97,7 +101,7 @@ const Deal = withRouter( React.createClass({
                         </div>
                         <div className="row-fluid">
                             <DealPageBottom ref="dealPageBottom" deal={deal}>
-                                {this.props.children}
+                                {childrenWithProps}
                             </DealPageBottom>
                         </div>
                     </div>

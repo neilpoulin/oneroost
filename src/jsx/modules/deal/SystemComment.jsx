@@ -32,6 +32,9 @@ const SystemComment = React.createClass({
                 case "timeline":
                     path = "/timeline"
                     break;
+                case "document":
+                    path = "/documents";
+                    break;
                 default:
                     break;
             }

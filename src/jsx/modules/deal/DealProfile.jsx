@@ -13,8 +13,10 @@ const DealProfile = React.createClass({
     observe(props, state){
         var stakeholderQuery = new Parse.Query("Stakeholder");
         stakeholderQuery.equalTo("deal", props.deal);
+
         return {
-            stakeholders: stakeholderQuery
+            stakeholders: stakeholderQuery,
+            documents: (new Parse.Query("Document")).equalTo( "deal", props.deal )
         }
     },
     getBudgetString(){
@@ -53,10 +55,12 @@ const DealProfile = React.createClass({
         var budget = this.getBudgetString();
 
         var stakeholderCount = "";
+        var documentCount = 0;
         if (this.pendingQueries().length == 0) {
             stakeholderCount = this.data.stakeholders.length > 0 ? this.data.stakeholders.length : "";
+            documentCount = this.data.documents.length;
         }
-        var documentCount = 0;
+
         var dealProfile =
         <div className="DealProfile container-fluid">
             <div className="row">

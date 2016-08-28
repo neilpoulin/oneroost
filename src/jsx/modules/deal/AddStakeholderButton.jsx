@@ -4,7 +4,7 @@ import StakeholderForm from "./StakeholderForm";
 
 export default React.createClass({
     getDefaultProps: function(){
-        return  {
+        return {
             btnClassName: "btn-outline-secondary"
         }
     },
