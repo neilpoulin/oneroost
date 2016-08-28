@@ -1,3 +1,4 @@
+var uuid = require("uuid");
 var AWS = require("aws-sdk");
 AWS.config.region = "us-east-1";
 var s3 = new AWS.S3({computeChecksums: true}); // this is the default setting
@@ -55,18 +56,21 @@ function registerPresignedUploadUrl(){
     Parse.Cloud.define("getPresignedUploadUrl", function(request, response) {
         var dealId = request.params.dealId;
         var fileName = request.params.fileName;
+        var bucket = envUtil.getDocumentsBucket();
         var s3Key = getS3Key(dealId, fileName);
-
-        var params = {Bucket: envUtil.getDocumentsBucket(), Key: s3Key};
+        console.log("dealId=", dealId, "filename=", fileName);
+        var params = {Bucket: bucket, Key: s3Key};
+        console.log("generating s3 key with params:", params);
         var url = s3.getSignedUrl("putObject", params);
-        console.log("the signed url is", url);
+        console.log("created signed url: ", url);
         response.success({
             url: url,
             key: s3Key,
+            bucket: bucket,
             fileName: fileName
         });
     });
 }
 function getS3Key( roostId, fileName ){
-    return envUtil.getDocumentsPath() + "/roosts/" + roostId + "/" + fileName;
+    return envUtil.getDocumentsPath() + "/roosts/" + roostId + "/" + uuid.v4() + "/" + fileName;
 }
