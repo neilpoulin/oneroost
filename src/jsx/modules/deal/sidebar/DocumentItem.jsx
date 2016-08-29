@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react'
+import React, { PropTypes } from "react"
 import Parse from "parse"
 import moment from "moment"
 
@@ -83,12 +83,9 @@ const DocumentItem = React.createClass({
     },
     render () {
         var doc = this.props.doc;
-        var downloadable = null;
-        if ( this.state.downloadUrl ){
-            downloadable = <iframe width="1" height="1" frameBorder="0" src={this.state.downloadUrl}></iframe>
-        }
+
         return (
-            <div className="DocumentItem" onClick={this.doDownload}>
+            <div className="DocumentItem pointer" onClick={this.doDownload}>
                 <div>
                     <div className="fileIcon pull-left">
                         <i className={"fa fa-2x " + this.getIconType()}></i>
@@ -104,8 +101,10 @@ const DocumentItem = React.createClass({
                     </div>
 
                 </div>
-
-                {downloadable}
+                <iframe width="1"
+                        height="1"
+                        frameBorder="0"
+                        src={this.state.downloadUrl}></iframe>
             </div>
         )
     }

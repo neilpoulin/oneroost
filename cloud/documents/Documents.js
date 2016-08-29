@@ -1,7 +1,7 @@
 var uuid = require("uuid");
 var AWS = require("aws-sdk");
 AWS.config.region = "us-east-1";
-var s3 = new AWS.S3({computeChecksums: true}); // this is the default setting
+var s3 = new AWS.S3({computeChecksums: true, signatureVersion: "v4"}); // this is the default setting
 
 var envUtil = require("./../util/envUtil.js");
 var ParseCloud = require("parse-cloud-express");
@@ -29,12 +29,14 @@ function registerPresignedGetUrl(){
                 if ( !doc ){
                     console.log("no document was found matching the query");
                     response.error({message: "the docuemnt was not found for the user and document ID."})
-                    return;
                 }
-                var deal = doc.get("deal");
                 var s3Key = doc.get("s3key");
-
-                var params = {Bucket: envUtil.getDocumentsBucket(), Key: s3Key};
+                var type = doc.get("type");
+                var params = {
+                    Bucket: envUtil.getDocumentsBucket(),
+                    Key: s3Key,
+                    ResponseContentDisposition: "attachemnt"
+                };
                 var url = s3.getSignedUrl("getObject", params);
 
                 console.log("successfully found document.");
@@ -45,6 +47,7 @@ function registerPresignedGetUrl(){
             },
             error: function(error){
                 console.log("somethign failed when fetching the document", error);
+                response.error({error: error});
             }
         });
     });
@@ -57,11 +60,19 @@ function registerPresignedUploadUrl(){
         var dealId = request.params.dealId;
         var fileName = request.params.fileName;
         var bucket = envUtil.getDocumentsBucket();
-        var s3Key = getS3Key(dealId, fileName);
+        var type = request.params.type;
         console.log("dealId=", dealId, "filename=", fileName);
-        var params = {Bucket: bucket, Key: s3Key};
+
+        var s3Key = getS3Key(dealId, fileName);
+        var params = {
+            Bucket: bucket,
+            Key: s3Key,
+            ContentType: type
+        };
+
         console.log("generating s3 key with params:", params);
         var url = s3.getSignedUrl("putObject", params);
+
         console.log("created signed url: ", url);
         response.success({
             url: url,
