@@ -162,6 +162,7 @@ function sendEmail( templateResults, data, to ){
                 email.unsubscribeEmail = data.unsubscribeEmail;
                 email.emailRecipientId = data.recipientId;
                 email.headers = buildHeaders(data);
+                email.attachments = data.attachments || [];
                 SESEmailSender.sendEmail( email );
             } );
         }

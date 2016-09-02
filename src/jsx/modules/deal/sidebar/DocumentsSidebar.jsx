@@ -55,8 +55,8 @@ const DocumentsSidebar = React.createClass({
         request.put(s3info.url)
             .set("Content-Type", file.type)
             .send(file)
-            .on('progress', function(e) {
-                console.log('Percentage done: ', e.percent);
+            .on("progress", function(e) {
+                console.log("Percentage done: ", e.percent);
                 self.setState({uploading: true, percent: e.percent});
             })
             .end(function(err, response){

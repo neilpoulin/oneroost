@@ -87,7 +87,7 @@ Mail.prototype.buildRawEmail = function(callback){
         // watchHtml: null,
         // icalEvent: null,
         headers: headers,
-        attachments: []
+        attachments: mail.attachments
         // envelope: null
     }
     var raw = mailcomposer(opts)
