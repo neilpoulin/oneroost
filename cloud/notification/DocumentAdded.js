@@ -4,6 +4,7 @@ var envUtil = require("./../util/envUtil.js");
 var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
 var NotificationSettings = require("./NotificationSettings");
+var Documents = require("./../documents/Documents.js");
 Parse.serverURL = envUtil.serverURL;
 
 
@@ -28,18 +29,31 @@ function getSender(req){
             stakeholderQuery.include("user");
             stakeholderQuery.equalTo( "deal", deal );
             stakeholderQuery.find().then( function( stakeholders ){
-                var data = {
-                    firstName: uploadedBy.get("firstName"),
-                    lastName: uploadedBy.get("lastName"),
-                    dealName: deal.get("dealName"),
-                    documentName: doc.get("fileName"),
-                    icon: null,
-                    dealLink: envUtil.getHost() + "/roosts/" + deal.id,
-                    messageId: deal.id,
-                };
-                console.log("sending Document after save email with data", data);
-                var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, uploadedBy.get("email") );
-                EmailSender.sendTemplate( "documentAddedNotif", data, recipients );
+                var sendEmailCallback = function( s3Object ){
+
+                    var attachment = {
+                        content: s3Object.Body,
+                        contentType: doc.get("type")
+                        // cid: doc.id //TODO:used if we want inline images (maybe we do someday)
+                    };
+
+                    var data = {
+                        firstName: uploadedBy.get("firstName"),
+                        lastName: uploadedBy.get("lastName"),
+                        dealName: deal.get("dealName"),
+                        documentName: doc.get("fileName"),
+                        icon: null,
+                        dealLink: envUtil.getHost() + "/roosts/" + deal.id,
+                        messageId: deal.id,
+                        attachments: [attachment]
+                    };
+                    console.log("sending Document after save email with data", data);
+                    var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, uploadedBy.get("email") );
+                    EmailSender.sendTemplate( "documentAddedNotif", data, recipients );
+                }
+
+                Documents.getS3Object(doc.get("s3key"), sendEmailCallback );
+
             });
         });
     }

@@ -31,7 +31,6 @@ function registerPresignedGetUrl(){
                     response.error({message: "the docuemnt was not found for the user and document ID."})
                 }
                 var s3Key = doc.get("s3key");
-                var type = doc.get("type");
                 var params = {
                     Bucket: envUtil.getDocumentsBucket(),
                     Key: s3Key,
@@ -53,6 +52,20 @@ function registerPresignedGetUrl(){
     });
 }
 
+exports.getS3Object = function( s3Key, callback ){
+    var bucket = envUtil.getDocumentsBucket();
+    var params = {
+        Bucket: bucket,
+        Key: s3Key
+    };
+    s3.getObject( params, function(err, data){
+        if ( err ){
+            console.error(err)
+        }else {
+            callback(data);
+        }
+    });
+}
 
 function registerPresignedUploadUrl(){
     console.log("Registering parse cloud getPresignedUploadUrl");
@@ -64,6 +77,7 @@ function registerPresignedUploadUrl(){
         console.log("dealId=", dealId, "filename=", fileName);
 
         var s3Key = getS3Key(dealId, fileName);
+        var bucket = envUtil.getDocumentsBucket();
         var params = {
             Bucket: bucket,
             Key: s3Key,
