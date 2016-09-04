@@ -28,7 +28,6 @@ const NextStepSidebar = React.createClass({
         }
         // var deal = this.data.deal[0];
         var step = this.data.step[0];
-        debugger;
         var sidebar;
         if ( step )
         {

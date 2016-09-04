@@ -70,7 +70,6 @@ const NextStepDetailEdit = React.createClass({
         });
     },
     handleUserChange(selections){
-        debugger;
         var user = null;
         var users = []
 

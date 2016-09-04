@@ -74,7 +74,7 @@ const DealProfile = React.createClass({
         }
 
         var formattedDurationDays = this.formatDurationAsDays( deal.stageUpdatedAt || deal.createdAt );
-        var stage = Stages.get(deal.currentStage).label || Stages.get("EXPLORE").label;
+        var stage = Stages.get(deal.currentStage) || Stages.get("EXPLORE");
         var dealProfile =
         <div className="DealProfile container-fluid">
             <div className="row">
@@ -105,7 +105,7 @@ const DealProfile = React.createClass({
                                     &nbsp; {formattedDurationDays}
                                 </div>
                                 <div>
-                                    <span className="title">{stage}</span>
+                                    <span className="title">{stage.label}</span>
                                 </div>
 
                             </NavLink>
