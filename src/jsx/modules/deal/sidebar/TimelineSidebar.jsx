@@ -21,7 +21,7 @@ const TimelineSidebar = React.createClass({
         var deal = this.data.deal[0];
         var sidebar =
         <div className="TimelineSidebar">
-            <h3 className="title">Timeline</h3>
+            <h3 className="title">Stage</h3>
             <TimelineForm timeline={deal.profile.timeline} deal={deal}/>
         </div>;
 

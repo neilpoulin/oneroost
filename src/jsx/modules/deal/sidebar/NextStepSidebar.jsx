@@ -14,9 +14,11 @@ const NextStepSidebar = React.createClass({
     observe( props, state ){
         var dealQuery = (new Parse.Query("Deal")).equalTo("objectId", props.params.dealId);
         var stepQuery = (new Parse.Query("NextStep")).equalTo("objectId", props.params.stepId).include("assignedUser");
+        // var assignedUsersQuery = (new Parse.Query("User")).
         return {
             deal: dealQuery,
-            step: stepQuery
+            step: stepQuery,
+            // assignedUsers:
         };
     },
     render(){
@@ -26,6 +28,7 @@ const NextStepSidebar = React.createClass({
         }
         // var deal = this.data.deal[0];
         var step = this.data.step[0];
+        debugger;
         var sidebar;
         if ( step )
         {

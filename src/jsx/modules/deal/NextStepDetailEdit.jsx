@@ -23,6 +23,7 @@ const NextStepDetailEdit = React.createClass({
             description: this.props.step.description,
             dueDate: moment(this.props.step.dueDate),
             assignedUser: this.props.step.assignedUser,
+            asignedUsers: this.props.step.assignedUsers,
             deal: this.props.deal,
             completedDate: this.props.step.completedDate,
             user: Parse.User.current()
@@ -35,6 +36,7 @@ const NextStepDetailEdit = React.createClass({
             "description": this.state.description,
             "dueDate": this.state.dueDate.toDate(),
             "assignedUser": this.state.assignedUser,
+            "assignedUsers": this.state.assignedUsers,
             "deal": this.state.deal,
             "completedDate": this.state.completedDate != null ? new Date(this.state.completedDate) : null
         };
@@ -67,15 +69,20 @@ const NextStepDetailEdit = React.createClass({
             dueDate: date
         });
     },
-    handleUserChange(val){
+    handleUserChange(selections){
+        debugger;
         var user = null;
-        if (val != null) {
-            var name = val.label.trim().split(" ");
-            user = {className: "_User", objectId: val.value, firstName: name[0] || "", lastName: name[1] || ""}
+        var users = []
 
-        }
+        selections.forEach(function(selection){
+            var user = new Parse.User();
+            user.id = selection.value;
+            users.push( user );
+        });
+
         this.setState({
-            assignedUser: user
+            // assignedUser: user
+            assignedUsers: users
         });
     },
     render () {

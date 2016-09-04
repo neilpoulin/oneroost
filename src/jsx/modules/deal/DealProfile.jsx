@@ -4,6 +4,7 @@ import ParseReact from "parse-react";
 import numeral from "numeral";
 import moment from "moment";
 import NavLink from "./../NavLink";
+import Stages from "./Stages";
 
 const DealProfile = React.createClass({
     mixins: [ParseReact.Mixin],
@@ -47,6 +48,16 @@ const DealProfile = React.createClass({
         }
         return null;
     },
+    formatDurationAsDays( past ){
+        var numDays =  Math.floor( moment.duration( moment().diff(past)).asDays() );
+        var formatted = numDays + " days ago";
+
+        if ( numDays <= 1 ){
+            formatted = "today";
+        }
+
+        return formatted;
+    },
     render () {
         var deal = this.props.deal;
         var widgetClassName = "col-xs-3 widget";
@@ -55,12 +66,15 @@ const DealProfile = React.createClass({
         var budget = this.getBudgetString();
 
         var stakeholderCount = "";
+
         var documentCount = 0;
         if (this.pendingQueries().length == 0) {
             stakeholderCount = this.data.stakeholders.length > 0 ? this.data.stakeholders.length : "";
             documentCount = this.data.documents.length;
         }
 
+        var formattedDurationDays = this.formatDurationAsDays( deal.stageUpdatedAt || deal.createdAt );
+        var stage = Stages.get(deal.currentStage).label || Stages.get("EXPLORE").label;
         var dealProfile =
         <div className="DealProfile container-fluid">
             <div className="row">
@@ -88,10 +102,10 @@ const DealProfile = React.createClass({
                             <NavLink tag="div" to={"/roosts/" + deal.objectId + "/timeline" } className="widgetLink">
                                 <div>
                                     <i className={"fa fa-calendar " + iconSizeClassname}></i>
-                                    &nbsp; Timeline
+                                    &nbsp; {formattedDurationDays}
                                 </div>
                                 <div>
-                                    <span className="title">{this.formatDate(deal.profile.timeline)}</span>
+                                    <span className="title">{stage}</span>
                                 </div>
 
                             </NavLink>
