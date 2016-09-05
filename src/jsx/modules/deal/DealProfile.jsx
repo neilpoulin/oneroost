@@ -49,7 +49,7 @@ const DealProfile = React.createClass({
         return null;
     },
     formatDurationAsDays( past ){
-        var numDays =  Math.floor( moment.duration( moment().diff(past)).asDays() );
+        var numDays = Math.floor( moment.duration( moment().diff(past)).asDays() );
         var formatted = numDays + " days ago";
 
         if ( numDays <= 1 ){

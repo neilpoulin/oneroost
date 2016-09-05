@@ -51,7 +51,6 @@ const Dropdown = React.createClass({
                 options={options}
                 value={this.state.value}
                 onChange={this.handleChange}
-                multi={true}
                 />
         )
     }

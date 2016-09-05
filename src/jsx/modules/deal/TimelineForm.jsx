@@ -1,7 +1,6 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
 import ParseReact from "parse-react"
-import DatePicker from "react-datepicker"
 import moment from "moment"
 import Select from "react-select"
 import Stages from "./Stages"
@@ -56,7 +55,7 @@ const TimelineForm = React.createClass({
         ParseReact.Mutation.Create("DealComment", comment).dispatch();
     },
     formatDurationAsDays( past ){
-        var numDays =  Math.floor( moment.duration( moment().diff(past)).asDays() );
+        var numDays = Math.floor( moment.duration( moment().diff(past)).asDays() );
         var formatted = numDays + " days ago";
 
         if ( numDays <= 1 ){
@@ -97,7 +96,7 @@ const TimelineForm = React.createClass({
         var age = this.getFormattedAge();
         var stages = this.getStageValues();
         var created = this.getFormattedCreatedDate();
-        var stageUpdated =  deal.stageUpdatedAt || deal.createdAt;
+        var stageUpdated = deal.stageUpdatedAt || deal.createdAt;
         var stageUpdatedFormatted = this.formatDate( stageUpdated );
         var stageUpdatedAge = this.formatDurationAsDays( stageUpdated );
         return (
