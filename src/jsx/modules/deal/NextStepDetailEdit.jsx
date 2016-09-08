@@ -36,7 +36,8 @@ const NextStepDetailEdit = React.createClass({
             "dueDate": this.state.dueDate.toDate(),
             "assignedUser": this.state.assignedUser,
             "deal": this.state.deal,
-            "completedDate": this.state.completedDate != null ? new Date(this.state.completedDate) : null
+            "completedDate": this.state.completedDate != null ? new Date(this.state.completedDate) : null,
+            "modifiedBy": this.state.user
         };
         ParseReact.Mutation.Set(this.props.step, changes)
         .dispatch()

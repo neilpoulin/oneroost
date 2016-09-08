@@ -14,11 +14,13 @@ function getSender( req ){
         stepQuery.include("deal");
         stepQuery.include("createdBy"); //this fixed the issue where it didn"t know the properties of the author
         stepQuery.include("assignedUser");
+        stepQuery.include("modifiedBy");
         stepQuery.get( req.object.id).then( function( step ){
             var author = step.get("createdBy");
             var deal = step.get("deal");
             var stakeholderQuery = new Parse.Query("Stakeholder");
             var assignedUser = step.get("assignedUser");
+            var modifiedBy = step.get("modifiedBy");
             stakeholderQuery.include("user");
             stakeholderQuery.equalTo( "deal", deal );
             stakeholderQuery.find().then( function( stakeholders ){
@@ -27,6 +29,12 @@ function getSender( req ){
                 {
                     assignedUserName = assignedUser.get("firstName") + " " + assignedUser.get("lastName");
                 }
+
+                var modifiedByName = null
+                if ( modifiedBy ){
+                    modifiedByName = modifiedBy.get("firstName") + " " + modifiedBy.get("lastName");
+                }
+
                 var status = "Not Done";
                 if ( step.get("completedDate") != null )
                 {
@@ -34,6 +42,7 @@ function getSender( req ){
                 }
                 var data = {
                     dealName: deal.get("dealName"),
+                    modifiedByName: modifiedByName,
                     stepTitle: step.get("title"),
                     authorName: author.get("firstName") + " " + author.get("lastName"),
                     completedDate: step.get("completedDate"),

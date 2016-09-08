@@ -18,7 +18,10 @@ const NextStepStatusChangeButton = React.createClass({
     markAsDone: function(){
         var self = this;
         var step = this.props.step;
-        ParseReact.Mutation.Set( step, {"completedDate": new Date()} )
+        ParseReact.Mutation.Set( step, {
+            "completedDate": new Date(),
+            "modifiedBy": Parse.User.current()
+        })
         .dispatch()
         .then(function( step ){
             self.addStepStatusChangeComment( step );
@@ -28,7 +31,10 @@ const NextStepStatusChangeButton = React.createClass({
     markAsNotDone: function(){
         var self = this;
         var step = this.props.step;
-        ParseReact.Mutation.Set( step, {"completedDate": null} )
+        ParseReact.Mutation.Set( step, {
+            "completedDate": null,
+            "modifiedBy": Parse.User.current()
+        })
         .dispatch()
         .then(function( step ){
             self.addStepStatusChangeComment( step );
