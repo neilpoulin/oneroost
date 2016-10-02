@@ -23,6 +23,9 @@ export default React.createClass({
     clear: function(){
         this.setState( this.getInitialState() );
     },
+    doSubmit(){
+        this.saveStakeholder();
+    },
     saveStakeholder: function(){
         var self = this;
         var stakeholderRequest = {

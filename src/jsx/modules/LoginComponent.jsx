@@ -277,7 +277,7 @@ export default React.createClass({
         }
 
         var result =
-        <div className="LoginComponent">
+        <div className="LoginComponent col-md-offset-4 col-md-4">
             <div className="">
                 {tabs}
             </div>

@@ -7,6 +7,7 @@ import { Router, Route, useRouterHistory, IndexRoute, Redirect } from "react-rou
 import { createHistory } from "history"
 import $ from "jquery"
 import LoginOnly from "./modules/LoginOnly"
+import LoginComponent from "./modules/LoginComponent"
 import Landing from "./modules/LandingPage"
 import App from "./modules/App"
 import UserHomePage from "./modules/UserHomePage";
@@ -92,6 +93,7 @@ render(
         <Route path="/" component={App}>
             <IndexRoute component={Landing}/>
             <Route path="/login" component={LoginOnly} onEnter={requireAnonymous}></Route>
+            <Route path="/beta/register" component={LoginComponent} onEnter={requireAnonymous}></Route>
             <Route path="/logout" component={Landing} onEnter={doLogout}></Route>
             <Redirect from="/deals" to="/roosts" />
             <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
