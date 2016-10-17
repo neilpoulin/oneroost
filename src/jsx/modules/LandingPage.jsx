@@ -19,32 +19,23 @@ const LandingPage = withRouter( React.createClass({
         }
     },
     render () {
-        var hiddenDivStyles = {
-            position: "absolute",
-            left: "-5000px"
-        };
-
-        var {query={bg:""}} = this.props.location;
-
         var loginLink = this.getLoginLink();
         var page =
-        <div className={"LandingPage "} >
-            <div className="mask">
-                <div className="container">
-                    <NavLink className="loginLink" to={loginLink.path} activeClassName="active" tag="span">
-                        {loginLink.name}
-                    </NavLink>
-                    <h1 className="logo cursive">
-                        OneRoost
-                    </h1>
-                    <div className="content text-center">
-                        Denver, Colorado
+         <div className={"LandingPage "} >
+                <div className="mask">
+                    <div className="container">
+                        <NavLink className="loginLink" to={loginLink.path} activeClassName="active" tag="span">
+                            {loginLink.name}
+                        </NavLink>
+                        <h1 className="logo cursive">
+                            OneRoost
+                        </h1>
+                        <div className="content text-center">
+                            Denver, Colorado
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-
             return page;
         }
     }) )

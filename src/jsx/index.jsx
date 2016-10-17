@@ -1,8 +1,8 @@
 /*global OneRoost*/
 /*global document*/
 import { render } from "react-dom"
-import Parse from "parse";
-import React from "react";
+import Parse from "parse"
+import React from "react"
 import { Router, Route, useRouterHistory, IndexRoute, Redirect } from "react-router"
 import { createHistory } from "history"
 import $ from "jquery"
@@ -10,19 +10,20 @@ import LoginOnly from "./modules/LoginOnly"
 import LoginComponent from "./modules/LoginComponent"
 import Landing from "./modules/LandingPage"
 import App from "./modules/App"
-import UserHomePage from "./modules/UserHomePage";
-import Roost from "./modules/deal/Roost";
-import DealDashboard from "./modules/deal/DealDashboard";
-import StakeholderSidebar from "./modules/deal/sidebar/StakeholderSidebar";
-import TimelineSidebar from "./modules/deal/sidebar/TimelineSidebar";
-import InvestmentSidebar from "./modules/deal/sidebar/InvestmentSidebar";
-import NextStepSidebar from "./modules/deal/sidebar/NextStepSidebar";
-import AllStepsSidebar from "./modules/deal/sidebar/AllStepsSidebar";
-import NextStepCompletedSidebar from "./modules/deal/sidebar/NextStepCompletedSidebar";
-import DocumentsSidebar from "./modules/deal/sidebar/DocumentsSidebar";
-import Unauthorized from "./modules/Unauthorized";
-import Invitation from "./modules/Invitation";
-import Unsubscribe from "./modules/Unsubscribe";
+import UserHomePage from "./modules/UserHomePage"
+import Roost from "./modules/deal/Roost"
+import DealDashboard from "./modules/deal/DealDashboard"
+import StakeholderSidebar from "./modules/deal/sidebar/StakeholderSidebar"
+import TimelineSidebar from "./modules/deal/sidebar/TimelineSidebar"
+import InvestmentSidebar from "./modules/deal/sidebar/InvestmentSidebar"
+import NextStepSidebar from "./modules/deal/sidebar/NextStepSidebar"
+import AllStepsSidebar from "./modules/deal/sidebar/AllStepsSidebar"
+import NextStepCompletedSidebar from "./modules/deal/sidebar/NextStepCompletedSidebar"
+import DocumentsSidebar from "./modules/deal/sidebar/DocumentsSidebar"
+import Unauthorized from "./modules/Unauthorized"
+import Invitation from "./modules/Invitation"
+import Unsubscribe from "./modules/Unsubscribe"
+import ProfilePage from "./modules/profile/ProfilePage"
 
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
 Parse.serverURL = OneRoost.Config.serverURL;
@@ -96,6 +97,9 @@ render(
             <Route path="/beta/register" component={LoginComponent} onEnter={requireAnonymous}></Route>
             <Route path="/logout" component={Landing} onEnter={doLogout}></Route>
             <Redirect from="/deals" to="/roosts" />
+            <Route path="/account" component={ProfilePage} onEnter={requireAuthOrParam}>
+
+            </Route>
             <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
                 <IndexRoute component={UserHomePage}/>
                 <Route path="unauthorized" component={Unauthorized}/>
