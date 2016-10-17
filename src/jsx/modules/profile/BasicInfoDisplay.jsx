@@ -25,6 +25,12 @@ const BasicInfoDisplay = React.createClass({
                 <b>Last Name:</b> {this.props.user.get("lastName")}
             </div>
             <div>
+                <b>Company:</b> {this.props.user.get("company")}
+            </div>
+            <div>
+                <b>Job Title:</b> {this.props.user.get("jobTitle")}
+            </div>
+            <div>
                 <button className="btn btn-primary" onClick={this.props.doEdit}>Edit</button>
             </div>
         </div>

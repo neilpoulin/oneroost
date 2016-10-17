@@ -23,7 +23,9 @@ const BasicInfoForm = React.createClass({
         return {
             email: user.get("email"),
             firstName: user.get("firstName"),
-            lastName: user.get("lastName")
+            lastName: user.get("lastName"),
+            jobTitle: user.get("jobTitle"),
+            company: user.get("company")
         }
     },
     doSave(){
@@ -31,6 +33,8 @@ const BasicInfoForm = React.createClass({
         this.props.user.set("email", this.state.email)
         this.props.user.set("firstName", this.state.firstName)
         this.props.user.set("lastName", this.state.lastName)
+        this.props.user.set("company", this.state.company)
+        this.props.user.set("jobTitle", this.state.jobTitle)
         this.props.user.save()
         this.props.doSave()
     },
@@ -53,6 +57,14 @@ const BasicInfoForm = React.createClass({
             <div className="formt-group">
                 Last Name:
                 <input type="text" className="form-control" valueLink={this.linkState("lastName")}/>
+            </div>
+            <div className="formt-group">
+                Company:
+                <input type="text" className="form-control" valueLink={this.linkState("company")}/>
+            </div>
+            <div className="formt-group">
+                Job Title:
+                <input type="text" className="form-control" valueLink={this.linkState("jobTitle")}/>
             </div>
             <div>
                 <button className="btn btn-link pull-left" onClick={this.doCancel}>Cancel</button> <button className="btn btn-primary pull-right" onClick={this.doSave}>Save</button>
