@@ -216,13 +216,17 @@ var sassOpts = {
     });
 
     gulp.task("mongo-start", function() {
-        var command = "mongod --dbpath=data/db";
+        var command = "mongod";
         runCommand(command);
     });
 
     gulp.task("mongo-stop", function() {
         var command = "mongo admin --eval 'db.shutdownServer();'"
         runCommand(command);
+    });
+
+    gulp.task("db-scripts", function(){
+
     });
 
     function runCommand(command) {

@@ -41,6 +41,7 @@ node_modules
 #parse
 
 build/
+db/
 logs/
 parse-server/
 gulpfile.js

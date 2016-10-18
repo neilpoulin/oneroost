@@ -45,7 +45,7 @@ node_modules
 /public/css/
 /public/bundle/
 
-data/
+db/data/*
 build/
 logs/
 parse-server/
