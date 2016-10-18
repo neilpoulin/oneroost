@@ -52,8 +52,11 @@ const DealProfile = React.createClass({
         var numDays = Math.floor( moment.duration( moment().diff(past)).asDays() );
         var formatted = numDays + " days ago";
 
-        if ( numDays <= 1 ){
-            formatted = "today";
+        if ( numDays < 1 ){
+            formatted = "Today";
+        }
+        else if ( numDays < 2){
+            formatted = "Yesterday";
         }
 
         return formatted;
@@ -74,7 +77,7 @@ const DealProfile = React.createClass({
         }
 
         var formattedDurationDays = this.formatDurationAsDays( deal.stageUpdatedAt || deal.createdAt );
-        var stage = Stages.get(deal.currentStage) || Stages.get("EXPLORE");
+        // var stage = Stages.get(deal.currentStage) || Stages.get("EXPLORE");
         var dealProfile =
         <div className="DealProfile container-fluid">
             <div className="row">
@@ -102,10 +105,10 @@ const DealProfile = React.createClass({
                             <NavLink tag="div" to={"/roosts/" + deal.objectId + "/timeline" } className="widgetLink">
                                 <div>
                                     <i className={"fa fa-calendar " + iconSizeClassname}></i>
-                                    &nbsp; {formattedDurationDays}
+                                    &nbsp; Opportunity Created
                                 </div>
                                 <div>
-                                    <span className="title">{stage.label}</span>
+                                    <span className="title">{formattedDurationDays}</span>
                                 </div>
 
                             </NavLink>
