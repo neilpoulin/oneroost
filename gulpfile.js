@@ -186,7 +186,7 @@ var sassOpts = {
     });
 
 
-    gulp.task("start", ["mongo-start","clean", "watch"], function(){
+    gulp.task("start", ["mongo-start","clean", "update-config", "watch"], function(){
         // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
         nodemon({
             script: "main.js",
@@ -200,7 +200,7 @@ var sassOpts = {
         })
     });
 
-    gulp.task("debug", ["mongo-start", "clean", "watch", "inspect"], function(){
+    gulp.task("debug", ["mongo-start", "clean", "update-config", "watch", "inspect"], function(){
         // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
         nodemon({
             script: "main.js",
@@ -216,17 +216,13 @@ var sassOpts = {
     });
 
     gulp.task("mongo-start", function() {
-        var command = "mongod";
+        var command = "mongod --dbpath db/data";
         runCommand(command);
     });
 
     gulp.task("mongo-stop", function() {
         var command = "mongo admin --eval 'db.shutdownServer();'"
         runCommand(command);
-    });
-
-    gulp.task("db-scripts", function(){
-
     });
 
     function runCommand(command) {
@@ -241,3 +237,8 @@ var sassOpts = {
 
     gulp.task("eb-deploy", ["clean:npm-log", "build"], shell.task("eb deploy oneroost --timeout 25"));
     gulp.task("deploy-aws", ["build", "eb-deploy"]);
+
+    gulp.task("update-config", ["mongo-start"], function(){
+        var command = "mongo localhost:27017/oneroost-db db/scripts/update_configs.js";
+        runCommand(command);
+    })
