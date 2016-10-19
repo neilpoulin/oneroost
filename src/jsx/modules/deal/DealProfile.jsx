@@ -1,10 +1,9 @@
 import React, { PropTypes } from "react"
 import Parse from "parse";
 import ParseReact from "parse-react";
-import numeral from "numeral";
 import moment from "moment";
 import NavLink from "./../NavLink";
-import Stages from "./Stages";
+import RoostUtil from "./../util/RoostUtil"
 
 const DealProfile = React.createClass({
     mixins: [ParseReact.Mixin],
@@ -26,57 +25,29 @@ const DealProfile = React.createClass({
         if (!budget) {
             return "Not Quoted";
         }
-
         if (budget.low == budget.high) {
             if (budget.low > 0) {
-                return this.formatMoney(budget.low, true);
+                return RoostUtil.formatMoney(budget.low, true);
             }
             return "Not Quoted";
         }
-        return this.formatMoney(budget.low, true) + " - " + this.formatMoney(budget.high, false);
-    },
-    formatMoney(amount, includeSymbol){
-        var format = "($0[.]0a)";
-        if (!includeSymbol) {
-            format = "(0[.]0a)"
-        }
-        return numeral(amount).format(format);
-    },
-    formatDate(dateString){
-        if (dateString != null && dateString != undefined) {
-            return moment(dateString).format("MMM D, YYYY");
-        }
-        return null;
-    },
-    formatDurationAsDays( past ){
-        var numDays = Math.floor( moment.duration( moment().diff(past)).asDays() );
-        var formatted = numDays + " days ago";
-
-        if ( numDays < 1 ){
-            formatted = "Today";
-        }
-        else if ( numDays < 2){
-            formatted = "Yesterday";
-        }
-
-        return formatted;
+        return RoostUtil.formatMoney(budget.low, true) + " - " + RoostUtil.formatMoney(budget.high, false);
     },
     render () {
-        var deal = this.props.deal;
-        var widgetClassName = "col-xs-3 widget";
-        var titleClassName = "col-xs-2 widget";
-        var iconSizeClassname = "fa-lg";
-        var budget = this.getBudgetString();
+        var deal = this.props.deal
+        var widgetClassName = "col-xs-3 widget"
+        var titleClassName = "col-xs-2 widget"
+        var iconSizeClassname = "fa-lg"
+        var budget = this.getBudgetString()
 
-        var stakeholderCount = "";
-
-        var documentCount = 0;
+        var stakeholderCount = ""
+        var documentCount = 0
         if (this.pendingQueries().length == 0) {
-            stakeholderCount = this.data.stakeholders.length > 0 ? this.data.stakeholders.length : "";
-            documentCount = this.data.documents.length;
+            stakeholderCount = this.data.stakeholders.length > 0 ? this.data.stakeholders.length : ""
+            documentCount = this.data.documents.length
         }
 
-        var formattedDurationDays = this.formatDurationAsDays( deal.stageUpdatedAt || deal.createdAt );
+        var formattedRoostAge = RoostUtil.formatDurationAsDays( deal.createdAt )
         // var stage = Stages.get(deal.currentStage) || Stages.get("EXPLORE");
         var dealProfile =
         <div className="DealProfile container-fluid">
@@ -108,7 +79,7 @@ const DealProfile = React.createClass({
                                     &nbsp; Opportunity Created
                                 </div>
                                 <div>
-                                    <span className="title">{formattedDurationDays}</span>
+                                    <span className="title">{formattedRoostAge}</span>
                                 </div>
 
                             </NavLink>
