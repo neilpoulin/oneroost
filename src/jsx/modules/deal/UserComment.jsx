@@ -5,8 +5,8 @@ import moment from "moment";
 const UserComment = React.createClass({
     propTypes: {
         comment: PropTypes.shape({
-            author: PropTypes.object,
-            createdAt: PropTypes.instanceOf(Date).isRequired
+            author: PropTypes.object
+            // createdAt: PropTypes.instanceOf(Date).isRequired
         }).isRequired,
         showAuthor: PropTypes.bool.isRequired
     },

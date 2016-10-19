@@ -39,3 +39,22 @@ exports.formatDurationAsDays = function( past ){
 
     return formatted;
 }
+
+exports.isSameDate = function(nextDate, previousDate)
+{
+    if (nextDate != null && !(nextDate instanceof Date ) )
+    {
+        nextDate = new Date( nextDate )
+    }
+    if ( previousDate != null && !(previousDate instanceof Date) )
+    {
+        previousDate = new Date(previousDate)
+    }
+    var dateToCheck = nextDate;
+    var actualDate = previousDate;
+    var isSameDay = actualDate != null
+    && dateToCheck.getDate() == actualDate.getDate()
+    && dateToCheck.getMonth() == actualDate.getMonth()
+    && dateToCheck.getFullYear() == actualDate.getFullYear();
+    return isSameDay;
+}
