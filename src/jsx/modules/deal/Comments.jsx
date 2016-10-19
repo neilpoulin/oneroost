@@ -21,7 +21,7 @@ export default React.createClass({
     },
     getInitialState: function(){
         return {
-            commentLimit: 10,
+            commentLimit: 100,
             additionalComments: [],
             page: 0,
             lastFetchCount: null
