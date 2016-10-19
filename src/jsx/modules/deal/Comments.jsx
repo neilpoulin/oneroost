@@ -83,10 +83,10 @@ export default React.createClass({
     },
     componentDidUpdate: function(props, state)
     {
-        if (this.state.currentPage == 0)
-        {
+        // if (state.currentPage == 0)
+        // {
             this.scrollToBottom();
-        }
+        // }
     },
     scrollToBottom: function()
     {
