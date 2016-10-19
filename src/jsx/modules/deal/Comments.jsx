@@ -8,6 +8,7 @@ import CommentDateSeparator from "./CommentDateSeparator";
 import Notification from "./../Notification";
 import $ from "jquery";
 import io from "socket.io-client"
+import RoostUtil from "./../util/RoostUtil"
 
 export default React.createClass({
     mixins: [ParseReact.Mixin],
@@ -20,7 +21,10 @@ export default React.createClass({
     },
     getInitialState: function(){
         return {
-            commentLimit: 100
+            commentLimit: 10,
+            additionalComments: [],
+            page: 0,
+            lastFetchCount: null
         }
     },
     observe: function(props, state){
@@ -28,6 +32,31 @@ export default React.createClass({
         return {
             dealComments: (new Parse.Query("DealComment")).include("author").equalTo( "deal", self.props.deal ).descending("createdAt").limit( self.state.commentLimit )
         }
+    },
+    getNextPage(){
+        var self = this;
+        var currentPage = this.state.page;
+        var nextPage = currentPage + 1;
+        var additionalComments = this.state.additionalComments
+        var query = new Parse.Query("DealComment")
+        query.include("author")
+        query.equalTo( "deal", this.props.deal )
+        query.descending("createdAt")
+        query.skip( this.state.commentLimit * nextPage )
+        query.limit( this.state.commentLimit );
+
+        query.find()
+        .then( function(results){
+            results.forEach( function(comment){
+                additionalComments.push( comment.toJSON() )
+            })
+            if ( results.length == 0)
+            {
+                nextPage = currentPage
+            }
+            self.setState( {additionalComments: additionalComments, page: nextPage, lastFetchCount: results.length} )
+        });
+
     },
     componentDidMount: function() {
         window.addEventListener("resize", this.scrollToBottom);
@@ -54,7 +83,10 @@ export default React.createClass({
     },
     componentDidUpdate: function(props, state)
     {
-        this.scrollToBottom();
+        if (this.state.currentPage == 0)
+        {
+            this.scrollToBottom();
+        }
     },
     scrollToBottom: function()
     {
@@ -66,19 +98,17 @@ export default React.createClass({
         this.refs.messagesContainer.style.bottom = addCommentBounding.height + "px";
         this.scrollToBottom();
     },
-    isSameDate(nextDate, previousDate)
-    {
-        var dateToCheck = nextDate;
-        var actualDate = previousDate;
-        var isSameDay = actualDate != null
-        && dateToCheck.getDate() == actualDate.getDate()
-        && dateToCheck.getMonth() == actualDate.getMonth()
-        && dateToCheck.getFullYear() == actualDate.getFullYear();
-        return isSameDay;
-    },
     forceShowUsername: function( currentDate, previousDate )
     {
-        var isSameDate = this.isSameDate( currentDate, previousDate );
+        if ( currentDate != null & !(currentDate instanceof Date) ){
+            currentDate = new Date(currentDate);
+        }
+        if ( previousDate != null && !(previousDate instanceof Date) )
+        {
+            previousDate = new Date(previousDate)
+        }
+
+        var isSameDate = RoostUtil.isSameDate( currentDate, previousDate );
         var elapsedMinutes = ( currentDate.getTime() - ( previousDate != null ? previousDate.getTime() : 0) ) / 1000 / 60;
         return !isSameDate || elapsedMinutes > 30;
     },
@@ -108,14 +138,14 @@ export default React.createClass({
             // var comments = this.data.dealComments.sort(function(a, b){
             //     return a.createdAt.getTime() > b.createdAt.getTime();
             // });
-            var comments = this.data.dealComments.slice(0);
+            var comments = this.data.dealComments.slice(0).concat(this.state.additionalComments);
             comments.reverse();
             var items = [];
 
             comments.forEach(function(comment){
                 var currentDate = comment.createdAt
                 var previousDate = previousComment != null ? previousComment.createdAt : null;
-                var isSameDate = component.isSameDate( currentDate, previousDate );
+                var isSameDate = RoostUtil.isSameDate( currentDate, previousDate );
 
                 if ( !isSameDate )
                 {
@@ -146,10 +176,17 @@ export default React.createClass({
             </ul>;
         }
 
+        var moreButton = null
+        if ( this.state.lastFetchCount == null && this.data.dealComments || this.state.lastFetchCount === this.state.commentLimit )
+        {
+            moreButton = <button className="btn btn-outline-primary" onClick={this.getNextPage}>Load More</button>
+        }
+
         var result =
         <div className={"commentsSection container-fluid col-xs-12 col-md-" + this.props.columns}>
             <div className="messagesContainer" ref="messagesContainer">
                 <div className="">
+                    {moreButton}
                     {commentsSection}
                 </div>
             </div>

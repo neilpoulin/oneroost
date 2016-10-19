@@ -1,19 +1,10 @@
 import React, { PropTypes } from "react";
 import moment from "moment";
+import RoostUtil from "./../util/RoostUtil"
 const CommentDateSeparator = React.createClass({
     propTypes: {
-        nextDate: PropTypes.instanceOf(Date).isRequired,
-        previousDate: PropTypes.instanceOf(Date)
-    },
-    isSameDate()
-    {
-        var dateToCheck = this.props.nextDate;
-        var actualDate = this.props.previousDate;
-        var isSameDay = actualDate != null
-        && dateToCheck.getDate() == actualDate.getDate()
-        && dateToCheck.getMonth() == actualDate.getMonth()
-        && dateToCheck.getFullYear() == actualDate.getFullYear();
-        return isSameDay;
+        nextDate: PropTypes.any.isRequired,
+        previousDate: PropTypes.any
     },
     getFormattedDate( date )
     {
@@ -22,7 +13,7 @@ const CommentDateSeparator = React.createClass({
     render () {
 
         var separator = null;
-        if ( !this.isSameDate() )
+        if ( !RoostUtil.isSameDate( this.props.nextDate, this.props.previousDate ) )
         {
             separator =
             <li className="dateSeparator text-center">

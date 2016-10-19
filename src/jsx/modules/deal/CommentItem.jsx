@@ -6,8 +6,8 @@ import UserComment from "./UserComment"
 export default React.createClass({
     propTypes: {
         comment: PropTypes.shape({
-            author: PropTypes.object,
-            createdAt: PropTypes.instanceOf(Date).isRequired
+            author: PropTypes.object
+            // createdAt: PropTypes.instanceOf(Date).isRequired
         }).isRequired,
         previousComment: PropTypes.shape({
             author: PropTypes.object
@@ -23,7 +23,7 @@ export default React.createClass({
     {
         var date = comment.createdAt;
         return moment(date).format("h:mm a");
-    },    
+    },
     render: function(){
         var comment = this.props.comment;
         var isSystem = comment.author == null;
