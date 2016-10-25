@@ -80,7 +80,7 @@ export default React.createClass({
                 <div className="input-group-btn" >
                     <button
                         ref="addButton"
-                        className="btn btn-primary"
+                        className="btn btn-secondary"
                         onClick={this.saveComment} >Send</button>
                 </div>
             </div>

@@ -6,4 +6,11 @@
     .active, .active a, .active div{
         color: $activeColorAlt;
     }
+    a{
+        color:  $nav-mobile-default-color;
+        &:hover{
+            text-decoration: none;
+            color: $activeColorAlt;
+        }
+    }
 }

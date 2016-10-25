@@ -1,18 +1,22 @@
 @import "sass-material-colors";
 
+//colors
+$roostOrange: #ef5b25;
+$roostDarkGray: #464646;
+$white: #FFFFFF;
 
 //globals
-$mainColor: #135176;
-$globalBg: #FFFFFF;
+$mainColor: $roostDarkGray;
+$globalBg: $white;
 $navbarHeight: 50px;
 
-$activeBg: #ECF6FF;
-$activeColor: #3A91D5;
-$activeBorderColor: #5DA9DF;
+$activeBg: lighten($roostOrange, 40%);
+$activeColor: $roostOrange;
+$activeBorderColor: $roostOrange;
 
 $activeColorAlt: #FF6F00;
 
-$secondaryColor: #B0B0B0;
+$secondaryColor: $roostDarkGray;
 $largeClickableBg: #EEEFF1;
 
 //borders
@@ -40,3 +44,6 @@ $systemMsgColor: #C9C9C9;
 
 //overlay
 $overlayBg: #1A6383;
+
+//nav-mobile
+$nav-mobile-default-color: #464646;

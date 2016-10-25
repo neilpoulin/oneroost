@@ -43,3 +43,10 @@ h1 {
 *{
     -webkit-overflow-scrolling: touch;
 }
+
+a{
+    color: $activeColor;
+    &:hover{
+        color: $mainColor;
+    }
+}

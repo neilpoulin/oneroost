@@ -12,7 +12,7 @@ const AddAccountButton = React.createClass({
     },
     getDefaultProps: function(){
         return {
-            btnClassName: "btn-outline-success",
+            btnClassName: "btn-outline-primary",
             onSuccess: function(){ console.log("this is the default function from AddAccountButton"); }
         }
     },
