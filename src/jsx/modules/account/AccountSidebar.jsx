@@ -43,13 +43,14 @@ export default React.createClass({
 
         return (
             <div id={"accountSidebar" + (this.props.isMobile ? "Mobile" : "")} className="col-md-2 container-fluid hidden-sm hidden-xs">
+                {contents}
                 <AddAccountButton
-                    btnClassName="btn-outline-primary btn-block"
+                    btnClassName="btn-outline-secondary btn-block"
                     onSuccess={this.onSuccess}
                 >
                     <i className="fa fa-plus">Create Account</i>
                 </AddAccountButton>
-                {contents}
+
             </div>
         )
     }

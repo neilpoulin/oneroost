@@ -1,7 +1,7 @@
 .RoostNav{
     .navbar-brand{
         &:hover{
-            color: #fff;
+            color: $navbar-default-link-hover-color;
         }
     }
     .accountLink{

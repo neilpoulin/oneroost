@@ -1,5 +1,5 @@
 $backgroundColor: $sidebarBg;
-$activeTextColor: $mainColor;
+$activeTextColor: $activeColor;
 #accountSidebarContainer{
 
 }
@@ -43,12 +43,13 @@ $activeTextColor: $mainColor;
         $hoverTextColor: $activeColor;
 
 
-        font-weight: 300;
+        font-weight: 400;
         a{
             padding: 10px 5px 10px 5px;
             text-decoration: none;
             display: block;
             background-color: inherit;
+            color: $mainColor;
 
         }
         &:hover a{
@@ -58,10 +59,11 @@ $activeTextColor: $mainColor;
             border-top: 0px solid black;
         }
         &.active a{
-            background: $activeBackgroundColor;
-            color: $activeTextColor;
-            border-top: $borderThick;
-            border-bottom: $borderThick;
+            // background: $activeBackgroundColor;
+            color: $activeColor;
+            // border-top: $borderThick;
+            // border-bottom: $borderThick;
+            border-right: 4px solid $activeColor;
             &:hover{
 
             }

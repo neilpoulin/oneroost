@@ -9,15 +9,7 @@ const DealNavMobile = React.createClass({
         var dealId = this.props.deal.objectId;
         var colSize = "col-xs-3";
         var mobileNav =
-        <div {...this.props} className="conatiner-fluid text-center hidden-lg hidden-md DealNavMobile">
-            <NavLink tag="div" to={"/roosts/" + dealId + "/messages" } className={colSize}>
-                <div>
-                    <i className="fa fa-comments fa-2x"></i>
-                </div>
-                <div className="title">
-                    Messages
-                </div>
-            </NavLink>
+        <div {...this.props} className="conatiner-fluid text-center hidden-lg hidden-md DealNavMobile">            
             <NavLink tag="div" to={"/roosts/" + dealId + "/steps" } className={colSize}>
                 <div>
                     <i className="fa fa-map-signs fa-2x"></i>
@@ -40,6 +32,14 @@ const DealNavMobile = React.createClass({
                 </div>
                 <div className="title">
                     Investment
+                </div>
+            </NavLink>
+            <NavLink tag="div" to={"/roosts/" + dealId + "/documents" } className={colSize}>
+                <div>
+                    <i className="fa fa-file fa-2x"></i>
+                </div>
+                <div className="title">
+                    Documents
                 </div>
             </NavLink>
         </div>

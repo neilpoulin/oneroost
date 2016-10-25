@@ -82,7 +82,7 @@ const Deal = withRouter( React.createClass({
         if ( this.props.children ){
             childrenWithProps = React.cloneElement(this.props.children, {deal: deal});
         }
-        
+
         var dealPage =
         <div>
             <RoostNav deal={deal}/>
@@ -94,8 +94,8 @@ const Deal = withRouter( React.createClass({
                     <div className="dealContainer col-md-10 col-md-offset-2 container-fluid">
                         <div className="row-fluid deal-top">
                             <div className="visible-lg visible-md">
-                                <DealProfile deal={deal} />
                                 <NextStepsBanner deal={deal} />
+                                <DealProfile deal={deal} />                                
                             </div>
                             <DealNavMobile deal={deal}></DealNavMobile>
                         </div>

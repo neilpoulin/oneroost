@@ -41,7 +41,9 @@ export default React.createClass({
 
         if ( nextSteps.length < 5 )
         {
-            addButton = <AddNextStepButton deal={self.state.deal} containerClass="AddNextStepButton"/>;
+            addButton = <div className="NextStepBannerItem AddStepContainer">
+                <AddNextStepButton deal={self.state.deal} containerClass="AddNextStepButton"/>;
+            </div>
         }
 
         var completedStepsItem = null
@@ -49,16 +51,15 @@ export default React.createClass({
         {
             completedStepsItem =
             <NavLink tag="div" to={"/roosts/" + this.props.deal.objectId + "/steps/completed" }
-                className={"NextStepBannerItem CompletedStepsContainer col-sm-2" + (this.state.active ? "active " : "")} >
-                <div className="nextStepTitle">Completed Steps</div>
-                <div className="nextStepDueDate">{completedSteps.length}</div>
+                className={"NextStepBannerItem CompletedStepsContainer" + (this.state.active ? "active " : "")} >
+                <div className="nextStepTitle">{completedSteps.length} <i className="fa fa-check"></i></div>                
             </NavLink>
         }
 
         var banner =
         <div id="NextStepsBannerContainer" className="row">
             {completedStepsItem}
-            <div className="NextStepBannerItem col-sm-10">
+            <div className="NextStepBannerItem NextStepsContainer">
                 {nextSteps.map(function(step){
                     var item =
                     <NextStepItem
@@ -68,8 +69,8 @@ export default React.createClass({
                     </NextStepItem>
                     return item;
                 })}
-                {addButton}
             </div>
+            {addButton}
         </div>
 
 

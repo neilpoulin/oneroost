@@ -1,11 +1,19 @@
-$btn-secondary-color:            $gray-dark !default;
-$btn-secondary-bg:               #fff !default;
-$btn-secondary-border:           #ccc !default;
+$btn-secondary-color:            $white !default;
+$btn-secondary-bg:               $roostDarkGray !default;
+$btn-secondary-border:           $roostDarkGray !default;
+
+$btn-primary-bg: $roostOrange;
+$btn-primary-border: $roostOrange;
 
 $navbar-margin-bottom: 0px;
-$navbar-default-bg: #005274;
+$navbar-default-bg: $mainColor;
 $navbar-default-border: darken($navbar-default-bg, 10%);
-$navbar-default-link-color: #DADDE6;
-$navbar-default-link-hover-color: #fff;
+$navbar-default-link-color: $white;
+$navbar-default-link-hover-color: $roostOrange;
 $navbar-default-link-active-bg: $navbar-default-bg;
-$navbar-default-link-active-color: #fff;
+$navbar-default-link-active-color: $roostOrange;
+
+$dropdown-link-hover-bg: $btn-primary-bg;
+$dropdown-link-hover-color: $dropdown-link-active-color;
+$dropdown-link-active-bg: $btn-primary-bg;
+// $dropdown-link-hover-color
