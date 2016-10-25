@@ -2,6 +2,7 @@ $borderHeight: ($nextStepBannerHeight )/2;
 $endPadding: 10px;
 $completedTextColor: #80848f;
 $border-radius: 10px;
+
 .arrow-right{
     display: block;
     float: left;
@@ -13,7 +14,7 @@ $border-radius: 10px;
     color: $mainColor;
     padding-left: $borderHeight;
     &.active:after{
-        border-left-color: $activeBg;
+        border-left-color: $nextStepActiveBg;
     }
     &:after {
         content: "";
@@ -44,17 +45,17 @@ $border-radius: 10px;
         display: none;
     }
 
-    &:nth-last-child(2) {
+    &:nth-last-child(1) {
         border-top-right-radius: 10px; border-bottom-right-radius: 10px;
         a {
             padding-right: $endPadding;
         }
     }
-    &:nth-last-child(2):after {
+    &:nth-last-child(1):after {
         display: none;
     }
 
-    $numSteps: 6;
+    $numSteps: 5;
     @for $i from 0 to $numSteps {
         &:nth-child(#{$i}) {
             z-index: 100 - $i;
@@ -82,7 +83,7 @@ $border-radius: 10px;
     &:hover{
         color: $activeColor;
         cursor: pointer;
-        background-color: $activeBg;
+        background-color: $nextStepActiveBg;
         .editButtons{
             // display: inline-block;
         }
@@ -93,21 +94,20 @@ $border-radius: 10px;
         padding: .5em;
         display: block;
         height: 100%;
+        &:hover{
+            color: $activeColor;
+        }
+
     }
 }
+
 .NextStepItemContainer{
-    width: 19%;
+    flex-grow: 1;
 }
 
-.CompletedStepsContainer{
-    border-radius: $border-radius;
-}
 .NextStepItemContainer, .CompletedStepsContainer{
     text-align: center;
-    min-width: 50px;
     height: 100%;
-    float:left;
-    position: relative;
     a {
         text-decoration: none;
         color: inherit;
@@ -115,6 +115,9 @@ $border-radius: 10px;
         padding-bottom: .5em;
         display: block;
         height: 100%;
+        &:hover{
+            color: $activeColor;
+        }
     }
     .nextStepTitle{
         font-size: 1.2em;
@@ -130,7 +133,7 @@ $border-radius: 10px;
         font-size: .8em;
     }
     &.active{
-        background-color: $activeBg;
+        // background-color: $nextStepActiveBg;
         color: $activeColor;
     }
     &:hover{
