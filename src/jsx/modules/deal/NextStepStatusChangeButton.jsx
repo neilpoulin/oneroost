@@ -60,13 +60,13 @@ const NextStepStatusChangeButton = React.createClass({
         var completeButton;
         if ( this.props.step.completedDate != null ){
             completeButton =
-            <button className="btn btn-outline-warning" onClick={this.toggleComplete}>
+            <button className="btn btn-primary" onClick={this.toggleComplete}>
                 <i className="fa fa-times"/> &nbsp;Not Completed
             </button>;
         }
         else {
             completeButton =
-            <button className="btn btn-outline-success" onClick={this.toggleComplete}>
+            <button className="btn btn-primary" onClick={this.toggleComplete}>
                 <i className="fa fa-check"></i>&nbsp;Completed
             </button>
         }

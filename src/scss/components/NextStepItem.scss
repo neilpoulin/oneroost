@@ -105,6 +105,12 @@ $border-radius: 10px;
     flex-grow: 1;
 }
 
+.CompletedStepsContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .NextStepItemContainer, .CompletedStepsContainer{
     text-align: center;
     height: 100%;
@@ -113,8 +119,7 @@ $border-radius: 10px;
         color: inherit;
         padding-top: .5em;
         padding-bottom: .5em;
-        display: block;
-        height: 100%;
+        display: block;        
         &:hover{
             color: $activeColor;
         }

@@ -21,23 +21,21 @@ const LandingPage = withRouter( React.createClass({
     render () {
         var loginLink = this.getLoginLink();
         var page =
-         <div className={"LandingPage "} >
-                <div className="mask">
-                    <div className="container">
-                        <NavLink className="loginLink" to={loginLink.path} activeClassName="active" tag="span">
-                            {loginLink.name}
-                        </NavLink>
-                        <h1 className="logo cursive">
-                            OneRoost
-                        </h1>
-                        <div className="content text-center">
-                            Denver, Colorado
-                        </div>
-                    </div>
+        <div className={"LandingPage "} >
+            <div className="container">
+                <NavLink className="loginLink" to={loginLink.path} activeClassName="active" tag="span">
+                    {loginLink.name}
+                </NavLink>
+                <h1 className="logo cursive">
+                    OneRoost
+                </h1>
+                <div className="content text-center">
+                    Denver, Colorado
                 </div>
             </div>
-            return page;
-        }
-    }) )
+        </div>
+        return page;
+    }
+}) )
 
-    export default LandingPage
+export default LandingPage
