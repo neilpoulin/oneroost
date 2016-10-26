@@ -52,7 +52,7 @@ export default React.createClass({
             completedStepsItem =
             <NavLink tag="div" to={"/roosts/" + this.props.deal.objectId + "/steps/completed" }
                 className={"NextStepBannerItem CompletedStepsContainer" + (this.state.active ? "active " : "")} >
-                <div className="nextStepTitle">{completedSteps.length} <i className="fa fa-check"></i></div>                
+                <div className="">{completedSteps.length} <i className="fa fa-check"></i></div>
             </NavLink>
         }
 

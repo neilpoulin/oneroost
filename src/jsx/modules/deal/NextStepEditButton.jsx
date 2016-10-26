@@ -6,7 +6,7 @@ const NextStepEditButton = React.createClass({
     },
     render () {
         var button =
-        <button className="btn btn-outline-primary" onClick={this.props.handleEdit}><i className="fa fa-pencil"></i> Edit</button>;
+        <button className="btn btn-outline-secondary" onClick={this.props.handleEdit}><i className="fa fa-pencil"></i> Edit</button>;
         return button;
     }
 })
