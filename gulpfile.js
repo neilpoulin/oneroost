@@ -63,8 +63,8 @@ var paths = {
         fonts: "./public/css/fonts",
         styleName: "styles.css",
         scriptName: "bundle.js",
-        cloudStyles: "./cloud/email/template/style/build",
-        cloudFonts: "./cloud/email/template/style/build/fonts"
+        cloudStyles: "./cloud/email/template/style/target",
+        cloudFonts: "./cloud/email/template/style/target/fonts"
     }
 };
 

@@ -1,7 +1,7 @@
-$fa-font-path: "./build/fonts";
-@import "build/mixins";
-@import "build/variables";
-@import "build/fonts";
+$fa-font-path: "./target/fonts";
+@import "target/mixins";
+@import "target/variables";
+@import "target/fonts";
 @import "font-awesome";
 
 @import "sass-material-colors";
@@ -9,7 +9,7 @@ $fa-font-path: "./build/fonts";
 @import "sass-material-colors-placeholders";
 
 @import "bootstrap";
-@import "build/bootstrap-custom/custom";
+@import "target/bootstrap-custom/custom";
 @import "footer";
 @import "roostLink";
 

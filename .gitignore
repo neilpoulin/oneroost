@@ -50,6 +50,8 @@ build/
 logs/
 parse-server/
 
+cloud/email/template/style/target
+
 # Elastic Beanstalk Files
 .elasticbeanstalk
 .elasticbeanstalk/*
