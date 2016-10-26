@@ -62,7 +62,9 @@ var paths = {
         js: "./public/bundle",
         fonts: "./public/css/fonts",
         styleName: "styles.css",
-        scriptName: "bundle.js"
+        scriptName: "bundle.js",
+        cloudStyles: "./cloud/email/template/style/build",
+        cloudFonts: "./cloud/email/template/style/build/fonts"
     }
 };
 
@@ -77,12 +79,22 @@ var sassOpts = {
         "./src/scss/**/*.scss"]
     };
 
-    gulp.task("fonts", ["sass"], function () {
+    gulp.task("fonts", ["sass", "fonts:cloud"], function () {
         return gulp.src(paths.src.fonts)
         .pipe(gulp.dest(paths.dest.fonts));
     });
 
-    gulp.task("sass", ["clean:css"], function () {
+    gulp.task("fonts:cloud", ["sass:cloud"], function () {
+        return gulp.src(paths.src.fonts)
+        .pipe(gulp.dest(paths.dest.cloudFonts));
+    });
+
+    gulp.task("sass:cloud", ["clean:cloud-style"], function(){
+        return gulp.src(paths.src.styles)
+        .pipe(gulp.dest(paths.dest.cloudStyles));
+    });
+
+    gulp.task("sass", ["clean:css", "clean:cloud-style", "sass:cloud"], function () {
         var scssStream = gulp.src(paths.src.styleEntry)
         .pipe(sass(sassOpts).on("error", sass.logError))
         .pipe(concat(paths.dest.styleName));
@@ -95,6 +107,10 @@ var sassOpts = {
         .pipe(gulp.dest(paths.dest.css));
 
         return mergedStream;
+    });
+
+    gulp.task("clean:cloud-style", function(){
+        return del([paths.dest.cloudStyles]);
     });
 
     gulp.task("clean:css", function(){

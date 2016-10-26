@@ -7,6 +7,8 @@ var emailTemplates = ["commentNotif", "nextStepNotif", "invitedStakeholderNotif"
 var templates = {};
 
 var bootstrapSass = path.resolve(__dirname, "..", "..", "node_modules", "bootstrap-sass", "assets", "stylesheets");
+var fontAwesome = path.resolve(__dirname, "..", "..", "node_modules", "font-awesome", "scss");
+var materialColors = path.resolve(__dirname, "..", "..", "node_modules", "sass-material-colors", "sass");
 
 initializeHandlebars();
 initializeEmails();
@@ -45,7 +47,7 @@ function initializeEmails(){
         var templateDir = path.join(templateRoot, name);
         console.log("creating template", name);
         var template = new EmailTemplate(templateDir, {sassOptions: {
-            includePaths: [bootstrapSass, styleDir]
+            includePaths: [bootstrapSass, fontAwesome, materialColors, styleDir]
         }});
         templates[name] = template;
     });
