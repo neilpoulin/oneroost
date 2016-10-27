@@ -21,7 +21,7 @@ export default React.createClass({
         return month + "/" + date.getDate() + "/" + date.getFullYear()
     },
     render: function(){
-        var dateLabel = "Due Date:"
+        var dateLabel = "Due"
         var date = this.props.step.dueDate;
         if ( this.props.step.completedDate != null )
         {

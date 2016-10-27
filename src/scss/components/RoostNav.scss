@@ -1,9 +1,11 @@
 @import "logo";
 .RoostNav{
     .navbar-brand{
-        @extend .logo-font;
-        font-size: 2em;
-
+        &:not(.roost-title){
+            @extend .logo-font;
+            font-size: 2em;
+        }
+    
         &:hover{
             color: $navbar-default-link-hover-color;
             .logo-chicken{

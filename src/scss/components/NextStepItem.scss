@@ -104,7 +104,7 @@ $border-radius: 10px;
 }
 
 .NextStepItemContainer{
-    flex-grow: 0;    
+    flex-grow: 0;
 }
 
 .CompletedStepsContainer{
@@ -137,7 +137,8 @@ $border-radius: 10px;
         color: $secondaryColor;
     }
     .nextStepDueDate{
-        font-size: .8em;
+        font-size: .8em;        
+        white-space: nowrap;
     }
     &.active{
         // background-color: $nextStepActiveBg;
