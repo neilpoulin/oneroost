@@ -42,7 +42,7 @@ export default React.createClass({
         if ( nextSteps.length < 5 )
         {
             addButton = <div className="NextStepBannerItem AddStepContainer">
-                <AddNextStepButton deal={self.state.deal} containerClass="AddNextStepButton"/>;
+                <AddNextStepButton deal={self.state.deal} containerClass="AddNextStepButton"/>
             </div>
         }
 

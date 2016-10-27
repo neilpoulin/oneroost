@@ -5,6 +5,7 @@ $nextStepBannerHeight: 60px;
 
 #NextStepsBannerContainer{
     overflow-x: auto;
+    overflow-y: hidden;
     height: $nextStepBannerHeight;
     margin-bottom: 5px;
     display:flex;
@@ -17,8 +18,10 @@ $nextStepBannerHeight: 60px;
         padding-left: 15px;
     }
     .NextStepsContainer{
-        flex-grow: 1;
+        flex-grow: 0;
         display: flex;
+        overflow-y: hidden;
+        overflow-x: scroll
     }
     .AddStepContainer{
 
