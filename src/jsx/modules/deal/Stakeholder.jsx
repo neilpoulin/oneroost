@@ -3,7 +3,6 @@ import Parse from "parse";
 import ParseReact from "parse-react";
 import LinkedStateMixin from "react-addons-linked-state-mixin"
 import RoostUtil from "./../util/RoostUtil"
-import PublicProfileLink from "./../profile/PublicProfileLink"
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
@@ -39,8 +38,7 @@ export default React.createClass({
     },
     render: function () {
         var stakeholder = this.props.stakeholder;
-        var user = stakeholder.user;
-        var userId = user.objectId || user.id
+        var user = stakeholder.user;        
         var fullName = RoostUtil.getFullName( user )
         var email = user.email || user.get("email")
 
@@ -51,12 +49,11 @@ export default React.createClass({
             pendingText = <span className="penidng">(Invite Pending)</span>
         }
 
-
         var result =
         <div data-name={fullName} data-email={email} className="Stakeholder row">
             <div className="container-fluid">
                 <div>
-                    <PublicProfileLink userId={userId}><span className="participantName">{fullName}</span></PublicProfileLink>
+                    <span className="participantName">{fullName}</span>
                     <span className={"roleName label " + roleClass}>{stakeholder.role}</span>
                 </div>
                 <div>

@@ -5,6 +5,7 @@ import Parse from "parse"
 import LoadingTakeover from "./../util/LoadingTakeover"
 import RoostUtil from "./../util/RoostUtil"
 import FourOhFourPage from "./../FourOhFourPage"
+import LoginComponent from "./../LoginComponent"
 
 const PublicProfilePage = React.createClass({
     mixins: [ParseReact.Mixin],
@@ -19,7 +20,19 @@ const PublicProfilePage = React.createClass({
             profileUser: (new Parse.Query("User")).equalTo( "objectId", userId )
         }
     },
-
+    getInitialState(){
+        return {
+            currentUser: Parse.User.current()
+        }
+    },
+    loginSuccess(){
+        console.log("login success")
+        this.setState({currentUser: Parse.User.current()})
+    },
+    logoutSuccess(){
+        console.log("logout success")
+        this.setState({currentUser: null})
+    },
     render () {
         if ( this.pendingQueries().length > 0 ){
             return <LoadingTakeover messsage={"Loading Profile"}/>
@@ -29,13 +42,36 @@ const PublicProfilePage = React.createClass({
             return <FourOhFourPage/>
         }
 
-        var profileUser = this.data.profileUser[0];
+        var currentUser = this.state.currentUser
+        var profileUser = this.data.profileUser[0]
+
+        var loginComponent = null
+        if ( !currentUser )
+        {
+            loginComponent = <LoginComponent
+                success={this.loginSuccess}
+                logoutSuccess={this.logoutSuccess}
+                ></LoginComponent>
+        }
 
         var page =
         <div className="PublicProfilePage">
-            <RoostNav showHome={true}/>
+            <RoostNav showHome={false}></RoostNav>
             <div className="container">
-                Public Profile Page for {RoostUtil.getFullName(profileUser)}
+                <div>
+                    <h1>
+                        Welcome to OneRoost!
+                    </h1>
+                    <p>
+                        You’re here because <span className="profileUser">{RoostUtil.getFullName(profileUser)}</span> would like you to create a Roost to learn more about the business opportunity. With OneRoost, you will be able to present the opportunity in a simple and straightforward manner, accelerating the decision process.
+                    </p>
+                    <p>
+                        Once you create a Roost for the opportunity below, you can add documents, create next steps, and communicate the value of a partnership!
+                    </p>
+
+                </div>
+                {loginComponent}
+
             </div>
 
         </div>

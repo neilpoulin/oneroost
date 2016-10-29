@@ -4,7 +4,7 @@
 /*global alert*/
 /*global clearTimeout*/
 /*global setTimeout*/
-import React from "react"
+import React, {PropTypes} from "react"
 import Parse from "parse";
 Parse.serverURL = OneRoost.Config.parseSeverURL;
 import LinkedStateMixin from "react-addons-linked-state-mixin"
@@ -12,6 +12,10 @@ import SpinnerIcon from "./SpinnerIcon"
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
+    propTypes: {
+        logoutSuccess: PropTypes.func.isRequired,
+        success: PropTypes.func.isRequired
+    },
     getInitialState: function(){
         var username;
         var isLoggedIn = false;
