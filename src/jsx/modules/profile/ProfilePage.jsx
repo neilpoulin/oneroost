@@ -1,8 +1,9 @@
 import React from "react"
 import Parse from "parse"
-import RoostUtil from "./../util/RoostUtil.js"
+// import RoostUtil from "./../util/RoostUtil.js"
 import BasicInfo from "./BasicInfo"
-import RoostNav from "./../navigation/RoostNav";
+import RoostNav from "./../navigation/RoostNav"
+import PublicProfileLink from "./../profile/PublicProfileLink"
 
 const ProfilePage = React.createClass({
     getCurrentUser(){
@@ -17,6 +18,10 @@ const ProfilePage = React.createClass({
                 <div className="section">
                     <h2>Basic Info</h2>
                     <BasicInfo user={this.getCurrentUser()}/>
+                </div>
+                <div className="section">
+                    <h2>Links</h2>
+                    <PublicProfileLink userId={this.getCurrentUser().id}>My Public Profile</PublicProfileLink>
                 </div>
                 <div className="section">
                     <h2>Email Preferences</h2>

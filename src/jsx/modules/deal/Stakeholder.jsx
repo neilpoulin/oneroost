@@ -2,6 +2,8 @@ import React from "react";
 import Parse from "parse";
 import ParseReact from "parse-react";
 import LinkedStateMixin from "react-addons-linked-state-mixin"
+import RoostUtil from "./../util/RoostUtil"
+import PublicProfileLink from "./../profile/PublicProfileLink"
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
@@ -22,7 +24,8 @@ export default React.createClass({
     sendComment(stakeholder)
     {
         var user = Parse.User.current();
-        var message = user.get("firstName") + " " + user.get("lastName") + " removed a stakeholder: "
+        var fullName = RoostUtil.getFullName(user)
+        var message = fullName + " removed a stakeholder: "
         + stakeholder.user.firstName + " " + stakeholder.user.lastName + " (" + stakeholder.user.email + ")";
 
         var comment = {
@@ -37,14 +40,9 @@ export default React.createClass({
     render: function () {
         var stakeholder = this.props.stakeholder;
         var user = stakeholder.user;
-        var firstName = user.firstName;
-        var lastName = user.lastName;
-        var email = user.email;
-        if (!user.firstName) {
-            firstName = user.get("firstName");
-            lastName = user.get("lastName");
-            email = user.get("email");
-        }
+        var userId = user.objectId || user.id
+        var fullName = RoostUtil.getFullName( user )
+        var email = user.email || user.get("email")
 
         var roleClass = stakeholder.role.toLowerCase();
         var pendingText = null;
@@ -55,10 +53,10 @@ export default React.createClass({
 
 
         var result =
-        <div data-name={firstName + " " + lastName} data-email={email} className="Stakeholder row">
+        <div data-name={fullName} data-email={email} className="Stakeholder row">
             <div className="container-fluid">
                 <div>
-                    <span className="participantName">{firstName}&nbsp;{lastName}</span>
+                    <PublicProfileLink userId={userId}><span className="participantName">{fullName}</span></PublicProfileLink>
                     <span className={"roleName label " + roleClass}>{stakeholder.role}</span>
                 </div>
                 <div>

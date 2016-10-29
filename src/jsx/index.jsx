@@ -24,6 +24,7 @@ import Unauthorized from "./modules/Unauthorized"
 import Invitation from "./modules/Invitation"
 import Unsubscribe from "./modules/Unsubscribe"
 import ProfilePage from "./modules/profile/ProfilePage"
+import PublicProfilePage from "./modules/profile/PublicProfilePage"
 
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
 Parse.serverURL = OneRoost.Config.serverURL;
@@ -100,6 +101,7 @@ render(
             <Route path="/account" component={ProfilePage} onEnter={requireAuthOrParam}>
 
             </Route>
+            <Route path="/profile/:userId" component={PublicProfilePage}/>
             <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
                 <IndexRoute component={UserHomePage}/>
                 <Route path="unauthorized" component={Unauthorized}/>

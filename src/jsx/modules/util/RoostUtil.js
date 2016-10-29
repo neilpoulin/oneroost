@@ -7,7 +7,14 @@ exports.getCurrentUser = function(){
 }
 
 exports.getFullName = function( parseUser ){
-    var fullName = parseUser.get("firstName") + " " + parseUser.get("lastName")
+    var fullName
+    if ( parseUser instanceof Parse.User ){
+        fullName = parseUser.get("firstName") + " " + parseUser.get("lastName")
+    }
+    else {
+        fullName = parseUser.firstName + " " + parseUser.lastName
+    }
+
     return fullName.trim()
 }
 
