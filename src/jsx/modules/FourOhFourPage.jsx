@@ -5,7 +5,7 @@ const FourOhFourPage = React.createClass({
     render () {
         return (
             <div>
-                <RoostNav showHome={true}/>
+                <RoostNav showHome={false}/>
                 <div className="FourOhFourPage container">
                     <p className="lead">
                         Ooops, the page was not found.

@@ -31,7 +31,7 @@
             },
             "globals": {
                 "OneRoost": true,
-
+                "console":true,
                 },
                 "rules": {
                     "strict": [2, "never"],

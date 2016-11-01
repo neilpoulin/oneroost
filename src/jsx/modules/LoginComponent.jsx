@@ -4,7 +4,7 @@
 /*global alert*/
 /*global clearTimeout*/
 /*global setTimeout*/
-import React from "react"
+import React, {PropTypes} from "react"
 import Parse from "parse";
 Parse.serverURL = OneRoost.Config.parseSeverURL;
 import LinkedStateMixin from "react-addons-linked-state-mixin"
@@ -12,6 +12,10 @@ import SpinnerIcon from "./SpinnerIcon"
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
+    propTypes: {
+        logoutSuccess: PropTypes.func.isRequired,
+        success: PropTypes.func.isRequired
+    },
     getInitialState: function(){
         var username;
         var isLoggedIn = false;
@@ -34,7 +38,8 @@ export default React.createClass({
             error: null,
             isTyping: false,
             emailValidation: null,
-            passwordValidation: null
+            passwordValidation: null,
+            companyName: null
         };
     },
     doLogin: function(e){
@@ -56,6 +61,7 @@ export default React.createClass({
             user.set("firstName", this.state.firstName);
             user.set("lastName", this.state.lastName);
             user.set("passwordChangeRequired", false);
+            user.set("companyName", this.state.companyName);
             user.signUp( null, {
                 success: component.handleLoginSuccess,
                 error: component.handleLoginError
@@ -277,7 +283,7 @@ export default React.createClass({
         }
 
         var result =
-        <div className="LoginComponent col-md-offset-4 col-md-4">
+        <div className="LoginComponent">
             <div className="">
                 {tabs}
             </div>
@@ -289,13 +295,17 @@ export default React.createClass({
                 </div>
                 <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
                     <label htmlFor="loginLastNameInput" className="control-label">Last Name</label>
-                    <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("lastName")} placeholder="" aria-describedby="firstNameHelpBlock"/>
+                    <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("lastName")} placeholder="" aria-describedby="lastNameHelpBlock"/>
                 </div>
 
                 <div className={"form-group " + emailValidationClass}>
                     <label htmlFor="loginUsernameInput" className="control-label">Email</label>
                     <input type="email" id="loginEmailInput" className="form-control" valueLink={this.linkState("email")} onKeyUp={this.emailKeyUp} placeholder="" aria-describedby="emailHelpBlock"/>
                     <span className="help-block" id="emailHelpBlock">{emailHelpBlock}</span>
+                </div>
+                <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
+                    <label htmlFor="loginLastNameInput" className="control-label">Company</label>
+                    <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("companyName")} placeholder="" aria-describedby="companyHelpBlock≠"/>
                 </div>
                 <div className={"form-group " + passwordValidationClass}>
                     <label htmlFor="loginPasswordInput" className="control-label">Password</label>
