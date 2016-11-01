@@ -1,4 +1,5 @@
 import React, { PropTypes } from "react"
+import LinkedStateMixin from "react-addons-linked-state-mixin"
 import RoostNav from "./../navigation/RoostNav";
 import ParseReact from "parse-react"
 import Parse from "parse"
@@ -6,9 +7,10 @@ import LoadingTakeover from "./../util/LoadingTakeover"
 import RoostUtil from "./../util/RoostUtil"
 import FourOhFourPage from "./../FourOhFourPage"
 import LoginComponent from "./../LoginComponent"
+import { withRouter } from "react-router"
 
-const PublicProfilePage = React.createClass({
-    mixins: [ParseReact.Mixin],
+const PublicProfilePage = withRouter( React.createClass({
+    mixins: [ParseReact.Mixin, LinkedStateMixin],
     propTypes: {
         params: PropTypes.shape({
             userId: PropTypes.string.isRequired
@@ -22,16 +24,43 @@ const PublicProfilePage = React.createClass({
     },
     getInitialState(){
         return {
-            currentUser: Parse.User.current()
+            currentUser: Parse.User.current(),
+            roostName: null,
+            canSubmit: false,
+            error: null
         }
     },
     loginSuccess(){
-        console.log("login success")
-        this.setState({currentUser: Parse.User.current()})
+        console.log("login success");
+        this.setState({currentUser: Parse.User.current()});
     },
     logoutSuccess(){
         console.log("logout success")
         this.setState({currentUser: null})
+    },
+    createReadyRoost(){
+        var profileUserId = this.props.params.userId
+        var self = this;
+        Parse.Cloud.run("createReadyRoost", {
+            profileUserId: profileUserId,
+            roostName: self.state.roostName
+        }).then(function(result){
+            console.log("created ready roost, so happy", result);
+            self.props.router.replace("/roosts");
+        },
+        function(error){
+            console.error("can not create roost, already have one for this user", error);
+            self.setState({error: {message: "You have already created a Roost for this user."}})
+        })
+    },
+    handleNameChange(val){
+        if( this.state.roostName != null && this.state.roostName.length > 1 && this.state.currentUser)
+        {
+            this.setState({canSubmit: true})
+        }
+        else {
+            this.setState({canSubmit: false})
+        }
     },
     render () {
         if ( this.pendingQueries().length > 0 ){
@@ -46,6 +75,7 @@ const PublicProfilePage = React.createClass({
         var profileUser = this.data.profileUser[0]
 
         var loginComponent = null
+
         if ( !currentUser )
         {
             loginComponent = <LoginComponent
@@ -54,11 +84,18 @@ const PublicProfilePage = React.createClass({
                 ></LoginComponent>
         }
 
+        var canSubmit = currentUser && this.state.roostName != null && this.state.roostName.length > 1
+
+        var alert = null
+        if ( this.state.error ){
+            alert = <div className="alert alert-warning" role="alert">{this.state.error.message}</div>
+        }
+
         var page =
         <div className="PublicProfilePage">
             <RoostNav showHome={false}></RoostNav>
             <div className="container">
-                <div>
+                <div className="row-fluid">
                     <h1>
                         Welcome to OneRoost!
                     </h1>
@@ -70,14 +107,28 @@ const PublicProfilePage = React.createClass({
                     </p>
 
                 </div>
-                {loginComponent}
+                <div className="row">
+                    <div className="col-md-offset-4 col-md-4">
+                        {loginComponent}
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6">
+                        <h3>Create a Ready Roost</h3>
+                        {alert}
+                        <div className="form-group">
+                            <label htmlFor="readyRoostName">Opportunity Name</label>
+                            <input id="readyRoostName" type="text" className="form-control" valueLink={this.linkState("roostName")}/>
+                        </div>
+                        <button type="submit" className={"btn btn-primary btn-block" } disabled={!canSubmit} onClick={this.createReadyRoost}>Create A Roost for {RoostUtil.getFullName(profileUser)}</button>
 
+                    </div>
+                </div>
             </div>
-
         </div>
 
         return page
     }
-})
+}))
 
 export default PublicProfilePage
