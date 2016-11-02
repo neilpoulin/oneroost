@@ -46,7 +46,7 @@ const PublicProfilePage = withRouter( React.createClass({
             roostName: self.state.roostName
         }).then(function(result){
             console.log("created ready roost, so happy", result);
-            self.props.router.replace("/roosts");
+            self.props.router.replace("/roosts/" + (result.roost.objectId || result.roost.id));
         },
         function(error){
             console.error("can not create roost, already have one for this user", error);
@@ -108,12 +108,12 @@ const PublicProfilePage = withRouter( React.createClass({
 
                 </div>
                 <div className="row">
-                    <div className="col-md-offset-4 col-md-4">
+                    <div className="col-md-5">
                         {loginComponent}
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-5">
                         <h3>Create a Ready Roost</h3>
                         {alert}
                         <div className="form-group">
