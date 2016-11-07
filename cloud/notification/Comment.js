@@ -7,6 +7,7 @@ var NotificationSettings = require("./NotificationSettings");
 Parse.serverURL = envUtil.serverURL;
 
 function sendCommentEmail( comment ){
+    console.log("preparing DealComment email notification");
     var sender = function(){
         var deal = comment.get("deal");
         var author = comment.get("author");
@@ -25,6 +26,8 @@ function sendCommentEmail( comment ){
                 messageId: deal.id
             };
             EmailSender.sendTemplate( "commentNotif", data, recipients );
+        }, function(error){
+            console.error("something went wrong", error);
         });
     }
     NotificationSettings.checkNotificationSettings( NotificationSettings.Settings.COMMENT_EMAILS, true, sender );
@@ -40,6 +43,7 @@ exports.afterSave = function(io){
 
     var broadcast = function( comment )
     {
+        console.log("broadcasting comment to all websocket clients")
         var dealId = comment.get("deal").id;
         namespace.in(dealId).emit("comment", comment);
     }
@@ -68,5 +72,7 @@ exports.afterSave = function(io){
         else {
             console.log("not sending deal comment email as the author was null");
         }
+    }, function(error){
+        console.error("failed to execute DealComment query.", error);
     });
 }

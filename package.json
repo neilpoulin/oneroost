@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dashboard": "parse-dashboard --config parse-dashboard-config.json",
-    "debug": "AWS_PROFILE=oneroost node debug main.js",
-    "start": "AWS_PROFILE=oneroost node main.js"
+    "debug": "node debug main.js",
+    "start": "node main.js"
   },
   "repository": {
     "type": "git",

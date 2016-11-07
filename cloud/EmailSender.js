@@ -8,6 +8,7 @@ Parse.serverURL = envUtil.serverURL;
 
 
 exports.sendTemplate = function( templateName, data, sendTo ){
+    console.log("preparing email template: " + templateName)
     data.host = envUtil.getHost();
     var sender = templateSender(templateName, data);
     sendTo.forEach( function(to){
