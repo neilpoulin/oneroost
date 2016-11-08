@@ -27,13 +27,14 @@ if ( SERVER_URL.indexOf("localhost") != -1 )
     SERVER_URL += ":" + PARSE_PORT;
 }
 SERVER_URL += PARSE_MOUNT;
-
+process.title = "oneroost-npm";
 console.log("APP_ID: " + APP_ID);
 console.log("MASTER_KEY: " + MASTER_KEY);
 console.log("DATABASE_URL: " + DATABASE_URL);
 console.log("PORT: " + PARSE_PORT);
 console.log("PARSE_MOUNT: " + PARSE_MOUNT);
 console.log("SERVER_URL: " + SERVER_URL);
+console.log("node title: ", process.title);
 
 exports.getParseServerUrl = function(){
     return SERVER_URL;

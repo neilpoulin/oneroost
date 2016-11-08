@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dashboard": "parse-dashboard --config parse-dashboard-config.json",
     "debug": "node debug main.js",
-    "start": "node main.js"
+    "start": "node main.js oneroost-npm",
+    "stop": "pkill --signal SIGINT oneroost-npm"
   },
   "repository": {
     "type": "git",
