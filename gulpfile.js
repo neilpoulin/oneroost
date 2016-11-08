@@ -251,8 +251,8 @@ var sassOpts = {
         });
     }
 
-    gulp.task("eb-deploy", ["clean:npm-log", "build"], shell.task("eb deploy oneroost --timeout 25"));
-    gulp.task("deploy-aws", ["build", "eb-deploy"]);
+    gulp.task("eb-deploy:stage", ["clean:npm-log", "build"], shell.task("eb deploy stage --timeout 25"));
+    gulp.task("deploy", ["build", "eb-deploy:stage"]);
 
     gulp.task("update-config", ["mongo-start"], function(){
         var command = "mongo localhost:27017/oneroost-db db/scripts/update_configs.js";
