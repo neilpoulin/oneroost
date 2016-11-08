@@ -28,7 +28,7 @@ import PublicProfilePage from "./modules/profile/PublicProfilePage"
 
 Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
 // Parse.serverURL = OneRoost.Config.serverURL;
-Parse.serverURL = window.location.origin;
+Parse.serverURL = window.location.origin + "/parse";
 Parse.$ = $;
 
 const browserHistory = useRouterHistory(createHistory)({

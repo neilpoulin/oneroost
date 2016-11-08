@@ -1,6 +1,6 @@
 branch-defaults:
-  parse-server:
-    environment: oneroost
+  master: 
+    environment: stage
 global:
   application_name: oneroost
   default_ec2_keyname: oneroost-aws-eb
