@@ -3,8 +3,6 @@ exports.parseReply = function( rawText )
     return parseText( rawText);
 }
 
-
-
 function parseText( rawText ){
     var lines = rawText.split( /\r?\n/ );
     var linesToKeep = [];

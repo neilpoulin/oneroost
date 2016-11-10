@@ -1,11 +1,10 @@
 var Client = require("node-rest-client").Client;
-var aws = require("aws-sdk");
 var MailParser = require("mailparser").MailParser;
 var replyParser = require("./parse-reply");
 
-var PARSE_APP_ID = "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq";
-var PARSE_REST_KEY = "pXy1rBiEEAYEdkFSR0kHu8zUWLshXpX2KuRjmVBH";
-var domain = "http://aws.oneroost.com/parse";
+var PARSE_APP_ID_STAGE = "llcq2KXGOGoOQMO9W1rvgFcramBjAMgZEVRhNagb";
+var PARSE_APP_ID_PROD = "lSNtmvBTimEY6VfOo5zvvOQkljcHeDIOQcjefNUu";
+var PARSE_APP_ID_DEV = "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq"
 
 console.log("Loading event");
 
@@ -33,11 +32,10 @@ function getProcessor( callback ){
 }
 
 function addMessage(mail, callback){
-    var headers = getHeaders();
-
     var fromAddress = mail.from[0].address;
-    var references = parseToAddress( mail );
-    var client = getClient();
+    var references = this.parseToAddress( mail );
+    var client = getClient(references.env);
+    var headers = getHeaders(references.env);
 
     client.methods.getObject({
         parameters: {where: JSON.stringify( {email: fromAddress} )},
@@ -45,8 +43,6 @@ function addMessage(mail, callback){
         headers: headers
     }, function(data, response){
         var user = data.results[0];
-
-
         if ( user ){
             var comment = {
                 deal: {
@@ -77,16 +73,28 @@ function addMessage(mail, callback){
     });
 }
 
-function parseToAddress( mail ){
+exports.parseToAddress = function( mail ){
     var address = mail.to[0].address.split("@")[0].split("+");
+    var domain = mail.to[0].address.split("@")[1];
+    var env = this.getEnvFromDomain(domain);
 
     var type = address[0].toLowerCase();
     var id = address[1];
 
     return {
         className: getClassName(type),
-        objectId: id
+        objectId: id,
+        env: env
     }
+}
+
+exports.getEnvFromDomain = function(domain){
+    if ( domain.indexOf("dev.reply.oneroost.com") != -1 ){
+        return "dev"
+    } else if ( domain.indexOf("stage.reply.oneroost.com") != -1){
+        return "stage"
+    }
+    return "prod"
 }
 
 function getClassName( type ){
@@ -111,18 +119,34 @@ function getClassName( type ){
     return className;
 }
 
-function getClient( ){
+function getClient( env ){
     var client = new Client();
-    client.registerMethod("getObject", domain + "/classes/${className}", "GET");
-    client.registerMethod("postComment", domain + "/classes/DealComment", "POST");
+    var host = getParseServerUrl(env);
+    client.registerMethod("getObject", host + "/classes/${className}", "GET");
+    client.registerMethod("postComment", host + "/classes/DealComment", "POST");
     return client;
 }
 
-function getHeaders()
+function getParseServerUrl(env){
+    env = env === "prod" ? "www" : env;
+    return "http://" + env + ".oneroost.com/parse";
+}
+
+function getHeaders(env)
 {
     return {
-        "X-Parse-Application-Id": PARSE_APP_ID,
-        "X-Parse-REST-API-Key": PARSE_REST_KEY,
+        "X-Parse-Application-Id": getAppId(env),
+        // "X-Parse-REST-API-Key": PARSE_REST_KEY,
         "Content-Type": "application/json"
     }
+}
+
+
+function getAppId( env ){
+    if ( env === "prod" ){
+        return PARSE_APP_ID_PROD
+    } else if ( env === "stage"){
+        PARSE_APP_ID_STAGE
+    }
+    return PARSE_APP_ID_DEV
 }

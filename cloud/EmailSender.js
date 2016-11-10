@@ -136,6 +136,9 @@ function getUnsubscribeEmail( recipientId ){
     if (envUtil.isDev()){
         domain = "dev." + domain;
     }
+    else if ( envUtil.isStage()){
+        domain = "stage." + domain;
+    }
     var address = "unsubscribe+" + recipientId + "@" + domain;
     return address;
 }

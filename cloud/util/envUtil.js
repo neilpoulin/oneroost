@@ -8,8 +8,8 @@ var PARSE_PORT = process.env.PARSE_PORT || 8081;
 var AWS_ID = process.env.AWS_ID || "AKIAIJI2VKVQPR4V4JYA";
 var AWS_SECRET_ID = process.env.AWS_SECRET_ID || "HYS3LqjQV/0Ej6COtVAow7M0xhe6GV3h7fWPkR9K";
 var SERVER_URL = process.env.PARSE_SERVER_URL || "http://localhost"
-var HOSTNAME = process.env.HOSTNAME || "http://localhost:" + PARSE_PORT
-
+var HOSTNAME = process.env.HOSTNAME || "http://dev.oneroost.com"
+var ENV_NAME = process.env.ENV_NAME || "dev"
 var DOCUMENTS_S3_BUCKET = "oneroost-documents";
 var DOCUMENTS_PATH = "documents"
 
@@ -34,6 +34,7 @@ console.log("DATABASE_URL: " + DATABASE_URL);
 console.log("PORT: " + PARSE_PORT);
 console.log("PARSE_MOUNT: " + PARSE_MOUNT);
 console.log("SERVER_URL: " + SERVER_URL);
+console.log("ENV_NAME: " + ENV_NAME)
 console.log("node title: ", process.title);
 
 exports.getParseServerUrl = function(){
@@ -73,7 +74,15 @@ exports.getHost = function(){
 }
 
 exports.isDev = function(){
-    return HOSTNAME.indexOf("localhost") != -1
+    return ENV_NAME.toLowerCase() === "dev";
+}
+
+exports.isStage = function(){
+    return ENV_NAME.toLowerCase() === "stage";
+}
+
+exports.isProd = function(){
+    return ENV_NAME.toLowerCase() === "prod";
 }
 
 exports.getDocumentsBucket = function(){
@@ -84,44 +93,27 @@ exports.getDocumentsPath = function(){
     return DOCUMENTS_PATH;
 }
 
+exports.getEnvName = function(){
+    return ENV_NAME;
+}
+
+exports.getEmailFromName = function(){
+    if ( this.isDev()){
+        return "Dev OneRoost"
+    }
+    else if (this.iStage()){
+        return "Stage OneRoost"
+    }
+    else if (this.isProd()){
+        return "OneRoost Notifications"
+    }
+}
+
 exports.getEnv = function(){
     if ( appEnv == null )
     {
-        var javascriptKey = "";
-        var isDev = true;
-        var envName;
-        var mandrillAppId = "dmCF3Rb55CIbJVvnzB4uzw";
-        var domain = "";
-
-        switch (APP_ID)
-        {
-            case "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq": //dev
-            javascriptKey = "CZfXoAnHhHU46Id1GBZ0zB9LFKHZI0HZJt1GfTlo";
-            isDev = true;
-            envName = "dev";
-            domain = "dev.oneroost.com"
-            break;
-            case "lSNtmvBTimEY6VfOo5zvvOQkljcHeDIOQcjefNUu": //prod
-            javascriptKey = "EZKlfRO9ydZrpO2fpLkIRNTp9dEJxF4IyTh4VkWT";
-            isDev = false;
-            envName = "prod";
-            domain = "www.oneroost.com";
-            break;
-            case "llcq2KXGOGoOQMO9W1rvgFcramBjAMgZEVRhNagb": //stage
-            javascriptKey = "y6EMasJca2ez13ff88AW6XEFaIEHaqi0xTejTpFP";
-            isDev = true;
-            envName = "stage";
-            domain = "stage.oneroost.com";
-            break;
-        }
         var props = {
-            "applicationId": APP_ID,
-            "javascriptKey": javascriptKey,
-            "isDev": isDev,
-            "envName": envName,
-            "mandrillAppId": mandrillAppId,
-            "domain": domain,
-            "serverURL": SERVER_URL
+            "applicationId": APP_ID
         };
 
         var json = JSON.stringify( props );

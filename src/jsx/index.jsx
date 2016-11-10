@@ -26,7 +26,7 @@ import Unsubscribe from "./modules/Unsubscribe"
 import ProfilePage from "./modules/profile/ProfilePage"
 import PublicProfilePage from "./modules/profile/PublicProfilePage"
 
-Parse.initialize(OneRoost.Config.applicationId, OneRoost.Config.javascriptKey);
+Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;
 Parse.serverURL = window.location.origin + "/parse";
 Parse.$ = $;

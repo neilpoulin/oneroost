@@ -5,7 +5,7 @@ var mailcomposer = require("mailcomposer");
 
 var Mail = function(){
     this.recipients = [];
-    this.fromName = envUtil.isDev() ? "Dev OneRoost" : "OneRoost Notifications";
+    this.fromName = envUtil.getEmailFromName();
     this.fromEmail = "notifications@oneroost.com";
     this.subject = null;
     this.bccAddress = null;
@@ -26,8 +26,13 @@ Mail.prototype.getFromAddress = function( isDev ){
     {
         addr += "+" + this.messageId;
     }
+    if ( !envUtil.isProd() ){
+        addr += "@" + envUtil.getEnvName() + "reply.oneroost.com>";
+    }
+    else{
+        addr += "@reply.oneroost.com>";
+    }
 
-    addr += "@reply.oneroost.com>";
     return addr;
 }
 
