@@ -79,11 +79,11 @@ exports.isDev = function(){
 }
 
 exports.isStage = function(){
-    return ENV_NAME.toLowerCase() === "stage";
+    return ENV_NAME.toLowerCase().indexOf("stage") != -1;
 }
 
 exports.isProd = function(){
-    return ENV_NAME.toLowerCase() === "prod";
+    return ENV_NAME.toLowerCase().indexOf( "prod" ) != -1;
 }
 
 exports.getDocumentsBucket = function(){
