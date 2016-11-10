@@ -19,15 +19,14 @@ var Mail = function(){
     this.unsubscribeEmail = null;
 }
 
-Mail.prototype.getFromAddress = function( isDev ){
-    var addr = envUtil.isDev() ? "Dev OneRoost" : "OneRoost Notifications";
+Mail.prototype.getFromAddress = function(){
+    var addr = envUtil.getEmailFromName();
     addr += " <roost";
-    if ( this.messageId )
-    {
+    if ( this.messageId ){
         addr += "+" + this.messageId;
     }
     if ( !envUtil.isProd() ){
-        addr += "@" + envUtil.getEnvName() + "reply.oneroost.com>";
+        addr += "@" + envUtil.getEnvName() + ".reply.oneroost.com>";
     }
     else{
         addr += "@reply.oneroost.com>";
@@ -69,6 +68,7 @@ Mail.prototype.getErrors = function(){
 }
 
 Mail.prototype.buildRawEmail = function(callback){
+    console.log("building raw email...");
     var mail = this;
     var headers = mail.headers;
     // headers.push(mail.getUnsubscribeHeader());
@@ -95,11 +95,13 @@ Mail.prototype.buildRawEmail = function(callback){
         attachments: mail.attachments
         // envelope: null
     }
+    console.log(opts);
     var raw = mailcomposer(opts)
     raw.build(function(err, buffer){
         if ( err ){
             console.error("Failed to generate email", err);
         } else {
+            console.log("successfully built email, attempting to send it");
             callback(mail, buffer);
         }
     });
@@ -113,6 +115,7 @@ exports.sendEmail = function( mail )
     if ( !mail.isValid() ) throw JSON.stringify( mail.getErrors() );
     var response = {message: "not set"};
     try {
+        console.log("trying to build raw email");
         mail.buildRawEmail( sendRawMail );
     } catch (e) {
         console.log("failed to send", e);

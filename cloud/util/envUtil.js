@@ -102,10 +102,10 @@ exports.getEmailFromName = function(){
     if ( this.isDev()){
         return "Dev OneRoost"
     }
-    else if (this.iStage()){
+    else if (this.isStage()){
         return "Stage OneRoost"
     }
-    else if (this.isProd()){
+    else{
         return "OneRoost Notifications"
     }
 }

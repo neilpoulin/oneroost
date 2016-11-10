@@ -21,7 +21,7 @@ exports.handler = function(event, context, callback) {
     // send the email source to the parser
     mailparser.write(email.content);
     mailparser.end();
-    return null;
+    // return null;
 };
 
 function getProcessor( callback ){
@@ -33,15 +33,18 @@ function getProcessor( callback ){
 
 function addMessage(mail, callback){
     var fromAddress = mail.from[0].address;
-    var references = this.parseToAddress( mail );
+    console.log("adding message from: ", fromAddress);
+    var references = parseToAddress( mail );
+    console.log("references:", references);
     var client = getClient(references.env);
     var headers = getHeaders(references.env);
-
-    client.methods.getObject({
+    console.log("headers", headers);
+    var getUser = client.methods.getObject({
         parameters: {where: JSON.stringify( {email: fromAddress} )},
         path: {className: "_User"},
         headers: headers
     }, function(data, response){
+        console.log(data);
         var user = data.results[0];
         if ( user ){
             var comment = {
@@ -69,14 +72,19 @@ function addMessage(mail, callback){
                 console.log("commentData:", data);
                 callback(null, null);
             } )
+        } else {
+            console.error("failed to get user");
         }
+    });
+    getUser.on("error", function (err) {
+        console.log("request error", err);
     });
 }
 
-exports.parseToAddress = function( mail ){
+function parseToAddress( mail ){
     var address = mail.to[0].address.split("@")[0].split("+");
     var domain = mail.to[0].address.split("@")[1];
-    var env = this.getEnvFromDomain(domain);
+    var env = getEnvFromDomain(domain);
 
     var type = address[0].toLowerCase();
     var id = address[1];
@@ -88,7 +96,7 @@ exports.parseToAddress = function( mail ){
     }
 }
 
-exports.getEnvFromDomain = function(domain){
+ function getEnvFromDomain(domain){
     if ( domain.indexOf("dev.reply.oneroost.com") != -1 ){
         return "dev"
     } else if ( domain.indexOf("stage.reply.oneroost.com") != -1){
@@ -122,6 +130,7 @@ function getClassName( type ){
 function getClient( env ){
     var client = new Client();
     var host = getParseServerUrl(env);
+    console.log("host is", host);
     client.registerMethod("getObject", host + "/classes/${className}", "GET");
     client.registerMethod("postComment", host + "/classes/DealComment", "POST");
     return client;
