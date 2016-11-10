@@ -34,7 +34,8 @@ console.log("DATABASE_URL: " + DATABASE_URL);
 console.log("PORT: " + PARSE_PORT);
 console.log("PARSE_MOUNT: " + PARSE_MOUNT);
 console.log("SERVER_URL: " + SERVER_URL);
-console.log("ENV_NAME: " + ENV_NAME)
+console.log("ENV_NAME: " + ENV_NAME);
+console.log("HOSTNAME: " + HOSTNAME);
 console.log("node title: ", process.title);
 
 exports.getParseServerUrl = function(){
