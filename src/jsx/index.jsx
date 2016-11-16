@@ -5,7 +5,6 @@ import Parse from "parse"
 import React from "react"
 import { Router, Route, useRouterHistory, IndexRoute, Redirect } from "react-router"
 import { createHistory } from "history"
-import $ from "jquery"
 import LoginOnly from "./modules/LoginOnly"
 import LoginPage from "./modules/LoginPage"
 import Landing from "./modules/LandingPage"
@@ -29,7 +28,6 @@ import PublicProfilePage from "./modules/profile/PublicProfilePage"
 Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;
 Parse.serverURL = window.location.origin + "/parse";
-Parse.$ = $;
 
 const browserHistory = useRouterHistory(createHistory)({
     basename: "/"

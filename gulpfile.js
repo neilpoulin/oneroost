@@ -17,6 +17,9 @@ var file = require("gulp-file");
 var eslint = require("gulp-eslint");
 var nodemon = require("gulp-nodemon");
 var nodeInspector = require("gulp-node-inspector");
+var minify = require("gulp-minify");
+var cleanCSS = require("gulp-clean-css");
+
 
 var bootstrapRoot = "./node_modules/bootstrap-sass/";
 var bootstrapPaths = {
@@ -53,6 +56,8 @@ var paths = {
     build: {
         root: "./build",
         js: "./build/js",
+        jsbundle: "./build/dist/js",
+        cssbundle: "./build/dist/css",
         sourceFile: "./build/js/jsx/index.js",
         sourceMaps: ".build/**/*.js.map"
     },
@@ -104,7 +109,7 @@ var sassOpts = {
 
         var mergedStream = merge(scssStream, lessStream)
         .pipe(concat("styles.css"))
-        .pipe(gulp.dest(paths.dest.css));
+        .pipe(gulp.dest(paths.build.cssbundle));
 
         return mergedStream;
     });
@@ -161,10 +166,11 @@ var sassOpts = {
             }
         })
         .pipe(b.bundle()
-        .on("error", function (err) {
-            gutil.log(gutil.colors.red("[Task \"bundle\"][Browserify.bundle() Error]"));
-            gutil.log(gutil.colors.red(err.message));
-        }))
+            .on("error", function (err) {
+                gutil.log(gutil.colors.red("[Task \"bundle\"][Browserify.bundle() Error]"));
+                gutil.log(gutil.colors.red(err.message));
+            })
+        )
         .pipe(source(paths.build.sourceFile))
         .pipe(buffer())
         .pipe(sourcemaps.init({loadMaps: true}))
@@ -176,10 +182,32 @@ var sassOpts = {
         .pipe(concat(paths.dest.scriptName))
         // .pipe( sourcemaps.write("./maps") )
         .pipe(plumber.stop())
+        .pipe(gulp.dest(paths.build.jsbundle));
+    });
+
+    gulp.task("compress:css", ["sass"], function(){
+        gulp.src(paths.build.cssbundle + "/*.css")
+        .pipe(cleanCSS())
+        .pipe(gulp.dest(paths.dest.css));
+    });
+
+    gulp.task("compress:js", ["bundle"], function(){
+        gulp.src(paths.build.jsbundle + "/*.js")
+        .pipe(minify({
+            ext:{
+                src:".js",
+                min:"-min.js"
+            },
+            exclude: ["tasks"],
+            ignoreFiles: ["-min.js"],
+            noSource: true
+        }))
         .pipe(gulp.dest(paths.dest.js));
     });
 
-    gulp.task("build", ["bundle", "sass", "fonts"]);
+    gulp.task("compress", ["compress:css", "compress:js"]);
+
+    gulp.task("build", ["compress","bundle", "sass", "fonts"]);
 
     gulp.task("watch", ["build"], function () {
         gulp.watch(paths.src.styles, ["sass", "fonts"]);

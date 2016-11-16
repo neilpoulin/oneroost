@@ -40,9 +40,11 @@ exports.afterSave = function(){
                     messageId: deal.id
                 }
                 //notify stakeholders of the addition
+                console.log("setting up invite email for existing stakeholders...");
                 var existingRecipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, userEmail );
                 EmailSender.sendTemplate( "invitedStakeholderNotif", notifData, existingRecipients );
-
+                console.log("sent email for existing stakeholders");
+                console.log("setting up email for new invitee");
                 //invite the new user
                 //TODO: check if they are a brand new user
                 var inviteData = {
@@ -57,6 +59,7 @@ exports.afterSave = function(){
 
                 var inviteEmail = {name: fullName, email: user.get("email")};
                 EmailSender.sendTemplate( "roostInvite", inviteData, inviteEmail, deal.id );
+                console.log("send email for new invitee");
             });
         } );
     });

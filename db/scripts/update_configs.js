@@ -8,7 +8,7 @@ var params = {
         "emailEnabled": true,
         "emailOverride": "neil@oneroost.com",
         "emailOverrideEnabled": true,
-        "domain": "localhost:8081",
+        "domain": "dev.oneroost.com",
         "maxReadyRoosts": 1
     }
 };

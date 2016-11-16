@@ -1,6 +1,6 @@
-var gulp   = require("gulp");
+var gulp = require("gulp");
 var lambda = require("gulp-awslambda");
-var zip    = require("gulp-zip");
+var zip = require("gulp-zip");
 var eslint = require("gulp-eslint");
 
 gulp.task("deploy:email", ["lint"], function() {
