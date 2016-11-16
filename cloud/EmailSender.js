@@ -11,6 +11,10 @@ exports.sendTemplate = function( templateName, data, sendTo ){
     console.log("preparing email template: " + templateName)
     data.host = envUtil.getHost();
     var sender = templateSender(templateName, data);
+    if (!(sendTo instanceof Array) )
+    {
+        sendTo = [sendTo];
+    }
     sendTo.forEach( function(to){
         findRecipient(to, sender, function(error){
             console.log("something went wrong", error);

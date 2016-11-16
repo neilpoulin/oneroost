@@ -42,7 +42,7 @@ exports.afterSave = function(){
                 //notify stakeholders of the addition
                 console.log("setting up invite email for existing stakeholders...");
                 var existingRecipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, userEmail );
-                EmailSender.sendTemplate( "invitedStakeholderNotif", notifData, existingRecipients );
+                // EmailSender.sendTemplate( "invitedStakeholderNotif", notifData, existingRecipients );
                 console.log("sent email for existing stakeholders");
                 console.log("setting up email for new invitee");
                 //invite the new user
@@ -54,11 +54,12 @@ exports.afterSave = function(){
                     invitePath: "/invitations/" + req.object.id,
                     dealName: dealName,
                     role: role,
-                    dealLink: dealLink
+                    dealLink: dealLink,
+                    messageId: deal.id
                 }
-
                 var inviteEmail = {name: fullName, email: user.get("email")};
-                EmailSender.sendTemplate( "roostInvite", inviteData, inviteEmail, deal.id );
+                console.log("sending invite email to ", inviteEmail);
+                EmailSender.sendTemplate( "roostInvite", inviteData, inviteEmail );
                 console.log("send email for new invitee");
             });
         } );
