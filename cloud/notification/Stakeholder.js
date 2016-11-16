@@ -42,7 +42,7 @@ exports.afterSave = function(){
                 //notify stakeholders of the addition
                 console.log("setting up invite email for existing stakeholders...");
                 var existingRecipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, userEmail );
-                // EmailSender.sendTemplate( "invitedStakeholderNotif", notifData, existingRecipients );
+                EmailSender.sendTemplate( "invitedStakeholderNotif", notifData, existingRecipients );
                 console.log("sent email for existing stakeholders");
                 console.log("setting up email for new invitee");
                 //invite the new user

@@ -10,7 +10,14 @@ exports.getRecipientsFromStakeholders = function( stakeholders, excludedEmail )
     console.log("processing " + stakeholders.length + " stakeholder emails. Excluding = " + excludedEmail + ":", stakeholders );
     for ( var i = 0; i < stakeholders.length; i++ )
     {
-        var user = stakeholders[i].get("user");
+        var stakeholder = stakeholders[i];
+        if ( !stakeholder.get("inviteAccepted") )
+        {
+            console.log("The stakeholder has not accepted the invitation, skipping", stakeholder);
+            continue;
+        }
+
+        var user = stakeholder.get("user");
         if ( !excludedEmail || user.get("email") != excludedEmail )
         {
             var recipient = {
