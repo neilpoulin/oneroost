@@ -128,6 +128,7 @@ function setupRoost(roost, currentUser, profileUser, response){
             user: profileUser,
             inviteAccepted: false,
             invitedBy: currentUser,
+            readyRoostApprover: true,
             role: "SELLER"
         })
     ];
@@ -156,9 +157,20 @@ function getMaxReadyRoostsPerUser(){
     return 1
 }
 
+function processReadyRoostSubmission(currentUser, params, response){
+
+    response.success({"message": "submitted the roost!"});
+}
+
 exports.initialize = function(){
     Parse.Cloud.define("createReadyRoost", function(request, response) {
-        var currentUser = request.user
+        var currentUser = request.user;
         processReadyRoostRequest( currentUser, request.params, response )
+    });
+
+    Parse.Cloud.define("submitReadyRoost", function(request, response){
+        console.log("submitting ready roost");
+        var currentUser = request.user;
+        processReadyRoostSubmission(currentUser, request.params, response);
     });
 }

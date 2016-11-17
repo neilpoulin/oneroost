@@ -1,8 +1,25 @@
 .StakeholderSidebar
 {
+    .stakeholder-actions{
+        display:flex;
+        > *{
+            flex-grow: 1;
+            margin: 5px;
+            width: 50%;
+            &:last-child{
+                margin-right: 0px;
+            }
+            &:first-child{
+                margin-left: 0px;
+            }
+        }
+    }
+
     .Stakeholder{
         text-decoration: none;
         padding: 15px;
+        display: flex;
+        align-items: flex-start;
         @include visible-hover;
         &:not(:last-child){
             border-bottom: $borderThin;
@@ -36,6 +53,12 @@
                     color: #fff
                 }
             }
+        }
+        > * {
+            flex-grow: 1;
+        }
+        .delete-button{
+            flex-grow: 0;
         }
     }
 

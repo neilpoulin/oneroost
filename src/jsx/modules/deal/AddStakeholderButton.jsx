@@ -30,7 +30,7 @@ export default React.createClass({
 
 
         var btn = <ModalButton
-            buttonText="Invite a Participant"
+            buttonText="Invite "
             buttonIcon="plus"
             containerClass="AddStakeholderButton"
             buttonClass={this.props.btnClassName}
