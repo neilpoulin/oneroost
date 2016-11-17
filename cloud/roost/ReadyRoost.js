@@ -30,7 +30,7 @@ function processReadyRoostRequest(currentUser, params, response){
                         //get user's account if it exists, else create one
 
                         var account = profileUser.get("account")
-                        var companyName = profileUser.get("company")
+                        var company = profileUser.get("company")
 
                         var createRoost = function(account){
                             console.log("creating roost with new account")
@@ -54,7 +54,7 @@ function processReadyRoostRequest(currentUser, params, response){
                         if ( !account )
                         {
                             new Parse.Object("Account", {
-                                accountName: companyName || (profileUser.get("firstName") + " " + profileUser.get("lastName")).trim() + "\'s Company"
+                                accountName: company|| (profileUser.get("firstName") + " " + profileUser.get("lastName")).trim() + "\'s Company"
                             }).save().then(createRoost)
                         }
                         else {

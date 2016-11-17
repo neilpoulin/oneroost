@@ -41,15 +41,22 @@ const TimelineSidebar = React.createClass({
     render(){
         var timelineSidebar =
         <div className="TimelineSidebar">
-            <div className="form-group">
-                <label>High</label>
-                <input className="form-control" valueLink={this.linkState("high")}/>
+            <div className="form-inline-half">
+                <div className="form-group">
+                    <label>Low</label>
+                    <div className="input-group">
+                        <span className="input-group-addon" id="basic-addon1">$</span>
+                        <input type="number" className="form-control" placeholder="Username" aria-describedby="basic-addon1" valueLink={this.linkState("low")}/>
+                    </div>
+                </div>
+                <div className="form-group">
+                    <label>High</label>
+                    <div className="input-group">
+                        <span className="input-group-addon" id="basic-addon1">$</span>
+                        <input type="number" className="form-control" placeholder="Username" aria-describedby="basic-addon1" valueLink={this.linkState("high")}/>
+                    </div>
+                </div>
             </div>
-            <div className="form-group">
-                <label>Low</label>
-                <input className="form-control" valueLink={this.linkState("low")}/>
-            </div>
-
             <div className="form-group">
                 <label >Product / Service</label>
                 <AutosizeTextarea

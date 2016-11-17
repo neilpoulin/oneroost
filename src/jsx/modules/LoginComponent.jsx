@@ -39,7 +39,7 @@ export default React.createClass({
             isTyping: false,
             emailValidation: null,
             passwordValidation: null,
-            companyName: null
+            company: null
         };
     },
     doLogin: function(e){
@@ -61,7 +61,7 @@ export default React.createClass({
             user.set("firstName", this.state.firstName);
             user.set("lastName", this.state.lastName);
             user.set("passwordChangeRequired", false);
-            user.set("companyName", this.state.companyName);
+            user.set("company", this.state.company);
             user.signUp( null, {
                 success: component.handleLoginSuccess,
                 error: component.handleLoginError
@@ -305,7 +305,7 @@ export default React.createClass({
                 </div>
                 <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
                     <label htmlFor="loginLastNameInput" className="control-label">Company</label>
-                    <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("companyName")} placeholder="" aria-describedby="companyHelpBlock≠"/>
+                    <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("company")} placeholder="" aria-describedby="companyHelpBlock≠"/>
                 </div>
                 <div className={"form-group " + passwordValidationClass}>
                     <label htmlFor="loginPasswordInput" className="control-label">Password</label>
