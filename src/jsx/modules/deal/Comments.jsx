@@ -21,7 +21,7 @@ export default React.createClass({
     },
     getInitialState: function(){
         return {
-            commentLimit: 100,
+            commentLimit: 200,
             additionalComments: [],
             page: 0,
             lastFetchCount: null
@@ -177,7 +177,7 @@ export default React.createClass({
         }
 
         var moreButton = null
-        if ( this.state.lastFetchCount == null && this.data.dealComments || this.state.lastFetchCount === this.state.commentLimit )
+        if ( this.state.lastFetchCount == null && this.data.dealComments.length === this.state.commentLimit || this.state.lastFetchCount === this.state.commentLimit )
         {
             moreButton = <button className="btn btn-outline-primary" onClick={this.getNextPage}>Load More</button>
         }

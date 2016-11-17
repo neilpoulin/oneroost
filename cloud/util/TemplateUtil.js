@@ -3,7 +3,14 @@ var templateRoot = path.resolve(__dirname, "..", "email", "template");
 var styleDir = path.resolve(__dirname, "..", "email", "template", "style");
 var Handlebars = require("handlebars");
 var EmailTemplate = require("email-templates").EmailTemplate
-var emailTemplates = ["commentNotif", "nextStepNotif", "invitedStakeholderNotif", "roostInvite", "documentAddedNotif"];
+var emailTemplates = [
+    "commentNotif",
+    "nextStepNotif",
+    "invitedStakeholderNotif",
+    "roostInvite",
+    "documentAddedNotif",
+    "readyRoostSubmittedNotif"
+];
 var templates = {};
 
 var bootstrapSass = path.resolve(__dirname, "..", "..", "node_modules", "bootstrap-sass", "assets", "stylesheets");

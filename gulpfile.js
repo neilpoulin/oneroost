@@ -196,7 +196,7 @@ var sassOpts = {
         .pipe(minify({
             ext:{
                 src:".js",
-                min:"-min.js"
+                min:".js"
             },
             exclude: ["tasks"],
             ignoreFiles: ["-min.js"],
@@ -205,13 +205,20 @@ var sassOpts = {
         .pipe(gulp.dest(paths.dest.js));
     });
 
+    gulp.task("ugly:js", ["bundle"], function(){
+        gulp.src(paths.build.jsbundle +"/*.js")
+        .pipe(concat(paths.dest.scriptName))
+        .pipe(gulp.dest(paths.dest.js));
+    });
+
     gulp.task("compress", ["compress:css", "compress:js"]);
 
     gulp.task("build", ["compress","bundle", "sass", "fonts"]);
+    gulp.task("build:dev", ["ugly:js","compress:css", "bundle", "sass", "fonts"]);
 
-    gulp.task("watch", ["build"], function () {
-        gulp.watch(paths.src.styles, ["sass", "fonts"]);
-        gulp.watch(paths.src.scripts, ["bundle"]);
+    gulp.task("watch", ["build:dev"], function () {
+        gulp.watch(paths.src.styles, ["compress:css", "sass", "fonts"]);
+        gulp.watch(paths.src.scripts, ["ugly:js"]);
         gulp.watch(paths.src.cloud, ["lint"]);
     });
 

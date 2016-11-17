@@ -1,6 +1,7 @@
 var ParseCloud = require("parse-cloud-express");
 var moment = require("moment");
 var Parse = ParseCloud.Parse;
+var EmailSender = require("./../EmailSender.js");
 
 function processReadyRoostRequest(currentUser, params, response){
     console.log("Setting up ready roost");
@@ -30,7 +31,7 @@ function processReadyRoostRequest(currentUser, params, response){
                         //get user's account if it exists, else create one
 
                         var account = profileUser.get("account")
-                        var companyName = profileUser.get("company")
+                        var company = profileUser.get("company")
 
                         var createRoost = function(account){
                             console.log("creating roost with new account")
@@ -54,7 +55,7 @@ function processReadyRoostRequest(currentUser, params, response){
                         if ( !account )
                         {
                             new Parse.Object("Account", {
-                                accountName: companyName || (profileUser.get("firstName") + " " + profileUser.get("lastName")).trim() + "\'s Company"
+                                accountName: company|| (profileUser.get("firstName") + " " + profileUser.get("lastName")).trim() + "\'s Company"
                             }).save().then(createRoost)
                         }
                         else {
@@ -80,7 +81,8 @@ function setupRoost(roost, currentUser, profileUser, response){
         new Parse.Object("DealComment", {
             message: getReadyRoostMessage(currentUser, roost.get("dealName")),
             author: null,
-            deal: roost
+            deal: roost,
+            onboarding: true
         }),
         //TODO: I have an issue with how next steps are being set up - troubleshoot this!
         //next steps
@@ -128,7 +130,16 @@ function setupRoost(roost, currentUser, profileUser, response){
             user: profileUser,
             inviteAccepted: false,
             invitedBy: currentUser,
+            readyRoostApprover: true,
             role: "SELLER"
+        }),
+        new Parse.Object("Document", {
+            createdBy: profileUser,
+            deal: roost,
+            fileName: "FAQ - OneRoost",
+            s3key: "documents/public/FAQ+-+OneRoost.docx",
+            type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            size: 123046
         })
     ];
     console.log("set up all objects...atempting to save", toSave);
@@ -156,9 +167,44 @@ function getMaxReadyRoostsPerUser(){
     return 1
 }
 
+function processReadyRoostSubmission(currentUser, params, response){
+    //dealId, stakeholderId
+    var stakeholderQuery = new Parse.Query("Stakeholder");
+    stakeholderQuery.include("deal.readyRoostUser");
+    stakeholderQuery.get(params.stakeholderId, {
+        success: function(stakeholder){
+            console.log("retrieved stakeholder", stakeholder);
+
+            var deal = stakeholder.get("deal");
+            var roostUser = deal.get("readyRoostUser");
+            var roostUserAddress = {
+                email: roostUser.get("email"),
+                name: roostUser.get("firstName") + " " + roostUser.get("lastName")
+            };
+            var email = {
+                deal: deal.toJSON(),
+                roostUser: roostUser.toJSON(),
+                currentUser: currentUser.toJSON()
+            }
+            EmailSender.sendTemplate( "readyRoostSubmittedNotif", email, [roostUserAddress] );
+        },
+        error: function(error){
+            console.error(error);
+        }
+    })
+
+    response.success({"message": "submitted the roost!"});
+}
+
 exports.initialize = function(){
     Parse.Cloud.define("createReadyRoost", function(request, response) {
-        var currentUser = request.user
+        var currentUser = request.user;
         processReadyRoostRequest( currentUser, request.params, response )
+    });
+
+    Parse.Cloud.define("submitReadyRoost", function(request, response){
+        console.log("submitting ready roost");
+        var currentUser = request.user;
+        processReadyRoostSubmission(currentUser, request.params, response);
     });
 }

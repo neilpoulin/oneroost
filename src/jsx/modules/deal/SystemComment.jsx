@@ -50,6 +50,19 @@ const SystemComment = React.createClass({
     },
     render () {
         var comment = this.props.comment;
+        var onboarding = this.props.comment.onboarding;
+        var postTime = <span className="postTime">{this.formatCommentDate(comment)}</span>
+        var author = null;
+        if ( onboarding){
+            author =
+            <div className="row authorRow">
+                <span className="username" title="help@oneroost.com">OneRoost Team</span>
+                &nbsp;
+                <span className="postTime">{this.formatCommentDate(comment)}</span>
+            </div>
+            postTime = null;
+        }
+
         var link = this.buildLink(comment);
         var message = <span className="message">{comment.message}</span>
         if ( link )
@@ -61,12 +74,13 @@ const SystemComment = React.createClass({
         }
 
         var result =
-        <li className="comment system"
+        <li className={"comment system" + ( onboarding ? " onboarding": "" )}
             key={"dealComment_" + comment.objectId } >
             <div className="container-fluid">
-                <div className="row">
+                {author}
+                <div className="row">                    
                     {message}
-                    <span className="postTime"> ({this.formatCommentDate(comment)})</span>
+                    {postTime}
                 </div>
             </div>
         </li>

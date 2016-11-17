@@ -7,7 +7,7 @@ var Parse = ParseCloud.Parse;
 Parse.serverURL = envUtil.serverURL;
 
 exports.afterSave = function(){
-    Parse.Cloud.afterSave( "Stakeholder", function( req ){
+    Parse.Cloud.afterSave( "Stakeholder", function( req, res){
         console.log( "Stakeholder afterSave triggered" );
         var stakeholderQuery = new Parse.Query("Stakeholder");
         stakeholderQuery.include( "user" );
@@ -41,26 +41,31 @@ exports.afterSave = function(){
                 }
                 //notify stakeholders of the addition
                 console.log("setting up invite email for existing stakeholders...");
-                var existingRecipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, userEmail );
+                var existingRecipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, [userEmail, invitedByEmail] );
                 EmailSender.sendTemplate( "invitedStakeholderNotif", notifData, existingRecipients );
                 console.log("sent email for existing stakeholders");
                 console.log("setting up email for new invitee");
-                //invite the new user
-                //TODO: check if they are a brand new user
-                var inviteData = {
-                    invitedByName: invitedByName,
-                    invitedByEmail: invitedByEmail,
-                    userName: fullName,
-                    invitePath: "/invitations/" + req.object.id,
-                    dealName: dealName,
-                    role: role,
-                    dealLink: dealLink,
-                    messageId: deal.id
+
+
+                if ( stakeholder.get("readyRoostApprover") ){
+                    console.log("this person is a ready roost approver, not sending an invite email");
+                } else {
+                    //invite the new user    
+                    var inviteData = {
+                        invitedByName: invitedByName,
+                        invitedByEmail: invitedByEmail,
+                        userName: fullName,
+                        invitePath: "/invitations/" + req.object.id,
+                        dealName: dealName,
+                        role: role,
+                        dealLink: dealLink,
+                        messageId: deal.id
+                    }
+                    var inviteEmail = {name: fullName, email: user.get("email")};
+                    console.log("sending invite email to ", inviteEmail);
+                    EmailSender.sendTemplate( "roostInvite", inviteData, inviteEmail );
+                    console.log("send email for new invitee");
                 }
-                var inviteEmail = {name: fullName, email: user.get("email")};
-                console.log("sending invite email to ", inviteEmail);
-                EmailSender.sendTemplate( "roostInvite", inviteData, inviteEmail );
-                console.log("send email for new invitee");
             });
         } );
     });

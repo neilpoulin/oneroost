@@ -41,6 +41,7 @@ $timestampTextColor: $systemMsgColor;
     }
     .postTime{
         color: $timestampTextColor;
+        margin-left: 10px;
     }
     &.repeatAuthor{
         padding-top: 0px;
@@ -49,7 +50,7 @@ $timestampTextColor: $systemMsgColor;
             display: none;
         }
     }
-    &.system{
+    &.system:not(.onboarding){
         background-color: $systemMsgBg;
         color: $systemMsgColor;
         .authorRow {

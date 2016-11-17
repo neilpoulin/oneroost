@@ -4,10 +4,15 @@ exports.renderEmail = function(name, data){
     return TempalteUtil.renderEmail(name, data);
 }
 
-exports.getRecipientsFromStakeholders = function( stakeholders, excludedEmail )
+exports.getRecipientsFromStakeholders = function( stakeholders, excludedEmails )
 {
     var recipients = [];
-    console.log("processing " + stakeholders.length + " stakeholder emails. Excluding = " + excludedEmail + ":", stakeholders );
+    excludedEmails = excludedEmails || [];
+    if ( !(excludedEmails instanceof Array) )
+    {
+        excludedEmails = [excludedEmails];
+    }
+    console.log("processing " + stakeholders.length + " stakeholder emails. Excluding = " + excludedEmails + ":", stakeholders );
     for ( var i = 0; i < stakeholders.length; i++ )
     {
         var stakeholder = stakeholders[i];
@@ -18,7 +23,7 @@ exports.getRecipientsFromStakeholders = function( stakeholders, excludedEmail )
         }
 
         var user = stakeholder.get("user");
-        if ( !excludedEmail || user.get("email") != excludedEmail )
+        if ( excludedEmails.indexOf( user.get("email") ) == -1)
         {
             var recipient = {
                 email: user.get("email"),

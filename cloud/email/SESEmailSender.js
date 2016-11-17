@@ -95,7 +95,6 @@ Mail.prototype.buildRawEmail = function(callback){
         attachments: mail.attachments
         // envelope: null
     }
-    console.log(opts);
     var raw = mailcomposer(opts)
     raw.build(function(err, buffer){
         if ( err ){

@@ -1,0 +1,73 @@
+{
+    "deal":  {
+        "profile":{
+            "timeline":"2016-05-13T00:00:00-06:00"
+        },
+        "budget":{
+            "low":0,
+            "high":0
+        },
+        "createdBy":{
+            "__type":"Pointer",
+            "className":"_User",
+            "objectId":"tCaq0CFgo1"
+        },
+        "description": "This is a test description",
+        "readyRoostUser":{
+            "username":"neil@oneroost.com",
+            "email":"neil@oneroost.com",
+            "firstName":"NeilTest",
+            "lastName":"Roost",
+            "passwordChangeRequired":false,
+            "createdAt":"2016-10-02T23:16:12.712Z",
+            "updatedAt":"2016-11-16T06:43:00.892Z",
+            "company":"OneRoost",
+            "jobTitle":"CTO",
+            "ACL":{
+                "*":{
+                    "read":true
+                },
+                "L3VRERfTGk":{
+                    "read":true,
+                    "write":true
+                }
+            },
+            "objectId":"L3VRERfTGk",
+            "__type":"Object",
+            "className":"_User"
+        },
+        "account":{
+            "__type":"Pointer",
+            "className":"Account",
+            "objectId":"vPJxByPusp"
+        },
+        "dealName":"ShitAssholes",
+        "createdAt":"2016-11-17T07:58:41.019Z",
+        "updatedAt":"2016-11-17T07:58:56.450Z",
+        "objectId":"xB7kqUBthI"
+    },
+    "roostUser": {
+        "username":"neil@oneroost.com",
+        "email":"neil@oneroost.com",
+        "firstName":"NeilTest",
+        "lastName":"Roost",
+        "passwordChangeRequired":false,
+        "createdAt":"2016-10-02T23:16:12.712Z",
+        "updatedAt":"2016-11-16T06:43:00.892Z",
+        "company":"OneRoost",
+        "jobTitle":"CTO",
+        "objectId":"L3VRERfTGk"
+    },
+    "currentUser": {
+        "username":"someotherguy@oneroost.com",
+        "email":"someotherguy@oneroost.com",
+        "firstName":"OtherDude",
+        "lastName":"Elesewhere",
+        "passwordChangeRequired":false,
+        "createdAt":"2016-10-02T23:16:12.712Z",
+        "updatedAt":"2016-11-16T06:43:00.892Z",
+        "company":"Random Company",
+        "jobTitle":"Peon",
+        "objectId":"L3VRERfTGk"
+    }
+}
