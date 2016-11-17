@@ -80,7 +80,8 @@ function setupRoost(roost, currentUser, profileUser, response){
         new Parse.Object("DealComment", {
             message: getReadyRoostMessage(currentUser, roost.get("dealName")),
             author: null,
-            deal: roost
+            deal: roost,
+            onboarding: true
         }),
         //TODO: I have an issue with how next steps are being set up - troubleshoot this!
         //next steps
