@@ -16,6 +16,7 @@ export default React.createClass({
             lastName: null,
             email: null,
             role: "VENDOR",
+            company: null,
             deal: this.props.deal,
             user: Parse.User.current()
         };
@@ -31,6 +32,7 @@ export default React.createClass({
         var stakeholderRequest = {
             firstName: this.state.firstName,
             lastName: this.state.lastName,
+            company: this.state.company,
             email: this.state.email,
             role: this.state.role
         };
@@ -42,6 +44,7 @@ export default React.createClass({
             createdUser.firstName = createdUser.get("firstName");
             createdUser.lastName = createdUser.get("lastName");
             createdUser.email = createdUser.get("email");
+            createdUser.company = createdUser.get("company");
             var stakeholder = {
                 "user": createdUser,
                 "deal": self.state.deal,
@@ -69,19 +72,21 @@ export default React.createClass({
     render: function(){
         var form =
         <div className="StakeholderFormContainer">
-            <div className="form-group">
-                <label htmlFor="firstNameInput">First Name</label>
-                <input id="firstNameInput"
-                    type="text"
-                    className="form-control"
-                    valueLink={this.linkState("firstName")} />
-            </div>
-            <div className="form-group">
-                <label htmlFor="lastNameInput">Last Name</label>
-                <input id="lastNameInput"
-                    type="text"
-                    className="form-control"
-                    valueLink={this.linkState("lastName")} />
+            <div className="form-inline-half">
+                <div className="form-group">
+                    <label htmlFor="firstNameInput">First Name</label>
+                    <input id="firstNameInput"
+                        type="text"
+                        className="form-control"
+                        valueLink={this.linkState("firstName")} />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="lastNameInput">Last Name</label>
+                    <input id="lastNameInput"
+                        type="text"
+                        className="form-control"
+                        valueLink={this.linkState("lastName")} />
+                </div>
             </div>
             <div className="form-group">
                 <label htmlFor="stakeholderEmailInput">Email</label>
@@ -89,6 +94,13 @@ export default React.createClass({
                     type="text"
                     className="form-control"
                     valueLink={this.linkState("email")} />
+            </div>
+            <div className="form-group">
+                <label htmlFor="stakeholderCompanyInput">Company</label>
+                <input id="stakeholderCompanyInput"
+                    type="text"
+                    className="form-control"
+                    valueLink={this.linkState("company")} />
             </div>
             <div className="form-group">
                 <label htmlFor="userRoleInput">User Role</label>

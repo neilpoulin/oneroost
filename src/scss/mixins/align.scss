@@ -5,3 +5,12 @@
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
 }
+
+@mixin no-margin-on-ends{
+    &:last-child{
+        margin-right: 0px;
+    }
+    &:first-child{
+        margin-left: 0px;
+    }
+}

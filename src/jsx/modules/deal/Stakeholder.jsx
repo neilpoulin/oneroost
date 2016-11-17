@@ -63,7 +63,13 @@ export default React.createClass({
         var user = stakeholder.user;
         var fullName = RoostUtil.getFullName( user )
         var email = user.email || user.get("email")
-        var company = user.company
+        var company = null
+        try{
+            company = user.company || user.get("comapny")
+        }
+        catch(e){
+            console.log("failed to get comapny from user object", user);
+        }
         // var roleClass = stakeholder.role.toLowerCase();
         var pendingText = null;
         var deal = stakeholder.deal;

@@ -70,6 +70,7 @@ function createStakeholderUser( stakeholder, deal, invitedBy, response ){
     user.set( "username", stakeholder.email );
     user.set( "firstName", stakeholder.firstName );
     user.set( "lastName", stakeholder.lastName );
+    user.set( "company", stakeholder.company );
     user.set( "password", deal.id );
     user.set( "sourceDeal", deal );
     user.set( "invitedBy", invitedBy );
