@@ -1,6 +1,7 @@
 var ParseCloud = require("parse-cloud-express");
 var moment = require("moment");
 var Parse = ParseCloud.Parse;
+var EmailSender = require("./../EmailSender.js");
 
 function processReadyRoostRequest(currentUser, params, response){
     console.log("Setting up ready roost");
@@ -167,6 +168,30 @@ function getMaxReadyRoostsPerUser(){
 }
 
 function processReadyRoostSubmission(currentUser, params, response){
+    //dealId, stakeholderId
+    var stakeholderQuery = new Parse.Query("Stakeholder");
+    stakeholderQuery.include("deal.readyRoostUser");
+    stakeholderQuery.get(params.stakeholderId, {
+        success: function(stakeholder){
+            console.log("retrieved stakeholder", stakeholder);
+
+            var deal = stakeholder.get("deal");
+            var roostUser = deal.get("readyRoostUser");
+            var roostUserAddress = {
+                email: roostUser.get("email"),
+                name: roostUser.get("firstName") + " " + roostUser.get("lastName")
+            };
+            var email = {
+                deal: deal.toJSON(),
+                roostUser: roostUser.toJSON(),
+                currentUser: currentUser.toJSON()
+            }
+            EmailSender.sendTemplate( "readyRoostSubmittedNotif", email, [roostUserAddress] );
+        },
+        error: function(error){
+            console.error(error);
+        }
+    })
 
     response.success({"message": "submitted the roost!"});
 }

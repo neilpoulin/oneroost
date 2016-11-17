@@ -62,6 +62,7 @@ export default React.createClass({
             user.set("lastName", this.state.lastName);
             user.set("passwordChangeRequired", false);
             user.set("company", this.state.company);
+            user.set("passwordChangeRequired", false);
             user.signUp( null, {
                 success: component.handleLoginSuccess,
                 error: component.handleLoginError
