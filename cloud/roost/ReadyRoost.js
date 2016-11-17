@@ -131,6 +131,14 @@ function setupRoost(roost, currentUser, profileUser, response){
             invitedBy: currentUser,
             readyRoostApprover: true,
             role: "SELLER"
+        }),
+        new Parse.Object("Document", {
+            createdBy: profileUser,
+            deal: roost,
+            fileName: "FAQ - OneRoost",
+            s3key: "documents/public/FAQ+-+OneRoost.docx",
+            type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            size: 123046
         })
     ];
     console.log("set up all objects...atempting to save", toSave);

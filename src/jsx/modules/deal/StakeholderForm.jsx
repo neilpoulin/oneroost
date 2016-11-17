@@ -101,18 +101,7 @@ export default React.createClass({
                     type="text"
                     className="form-control"
                     valueLink={this.linkState("company")} />
-            </div>
-            <div className="form-group">
-                <label htmlFor="userRoleInput">User Role</label>
-                <select id="userRoleInput"
-                    type="text"
-                    className="form-control"
-                    valueLink={this.linkState("role")}
-                    defaultValue={this.state.role} >
-                    <option value="CLIENT" defaultValue>Client</option>
-                    <option value="VENDOR">Vendor</option>
-                </select>
-            </div>
+            </div>            
         </div>
         return form;
     }
