@@ -4,8 +4,8 @@
             "timeline":"2016-05-13T00:00:00-06:00"
         },
         "budget":{
-            "low":0,
-            "high":0
+            "low":67000,
+            "high":1500000
         },
         "createdBy":{
             "__type":"Pointer",
@@ -41,7 +41,7 @@
             "className":"Account",
             "objectId":"vPJxByPusp"
         },
-        "dealName":"ShitAssholes",
+        "dealName":"Fireworks For Kids",
         "createdAt":"2016-11-17T07:58:41.019Z",
         "updatedAt":"2016-11-17T07:58:56.450Z",
         "objectId":"xB7kqUBthI"
@@ -59,15 +59,21 @@
         "objectId":"L3VRERfTGk"
     },
     "currentUser": {
-        "username":"someotherguy@oneroost.com",
-        "email":"someotherguy@oneroost.com",
-        "firstName":"OtherDude",
-        "lastName":"Elesewhere",
+        "username":"bobjones@example.com",
+        "email":"bobjones@example.com",
+        "firstName":"Bob",
+        "lastName":"Jones",
         "passwordChangeRequired":false,
         "createdAt":"2016-10-02T23:16:12.712Z",
         "updatedAt":"2016-11-16T06:43:00.892Z",
-        "company":"Random Company",
-        "jobTitle":"Peon",
+        "company":"Acme, Inc.",
+        "jobTitle":"Sales Representative",
         "objectId":"L3VRERfTGk"
-    }
+    },
+    "documents": [ {
+        "fileName": "FAQ - OneRoost",
+        "type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    }],
+    "dealLink": "http://dev.oneroost.com/roosts/xyz",
+    "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing"
 }

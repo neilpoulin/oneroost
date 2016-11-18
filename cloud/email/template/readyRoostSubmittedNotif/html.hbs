@@ -1,14 +1,32 @@
-<div class="wrapper">    
-    <div>
-        <b>Deal Name:</b><br/>
-        {{deal.dealName}}
+<div class="wrapper">
+    <div class="form-group">
+        <label>Deal Name:</label>
+        <p class="form-control-static">{{deal.dealName}}</p>
+    </div>
+    <div class="form-group">
+        <label>Submitted By</label>
+        <p class="form-control-static">{{currentUser.firstName}}&nbsp;{{currentUser.lastName}}</p>
+        <p class="company">{{currentUser.company}}</p>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Description</label>
+        <p class="form-control-static">{{deal.description}}</p>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Budget</label>
+        <p class="form-control-static">${{formatCurrency deal.budget.low}} - ${{formatCurrency deal.budget.high}}</p>
+    </div>
+    <div class="form-group">
+        <label class="control-label">{{documents.length}} Documents Added</label>
+        <ul>
+            {{#each documents}}
+                <li class="">{{this.fileName}}</li>
+            {{/each}}
+        </ul>
+
     </div>
     <div>
-        <b>Submitted By:</b><br/>
-        {{currentUser.firstName}}&nbsp;{{currentUser.lastName}}
-    </div>
-    <div>
-        <b>Description:</b><br/>
-        {{deal.description}}
+        {{>roost-link-html}}
     </div>
 </div>
+{{>footer-html}}

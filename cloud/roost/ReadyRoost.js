@@ -2,6 +2,7 @@ var ParseCloud = require("parse-cloud-express");
 var moment = require("moment");
 var Parse = ParseCloud.Parse;
 var EmailSender = require("./../EmailSender.js");
+var envUtil = require("./../util/envUtil.js");
 
 function processReadyRoostRequest(currentUser, params, response){
     console.log("Setting up ready roost");
@@ -137,7 +138,7 @@ function setupRoost(roost, currentUser, profileUser, response){
             createdBy: profileUser,
             deal: roost,
             fileName: "FAQ - OneRoost",
-            s3key: "documents/public/FAQ+-+OneRoost.docx",
+            s3key: "documents/public/FAQ - OneRoost.docx",
             type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             size: 123046
         })
@@ -174,19 +175,42 @@ function processReadyRoostSubmission(currentUser, params, response){
     stakeholderQuery.get(params.stakeholderId, {
         success: function(stakeholder){
             console.log("retrieved stakeholder", stakeholder);
-
             var deal = stakeholder.get("deal");
-            var roostUser = deal.get("readyRoostUser");
-            var roostUserAddress = {
-                email: roostUser.get("email"),
-                name: roostUser.get("firstName") + " " + roostUser.get("lastName")
-            };
-            var email = {
-                deal: deal.toJSON(),
-                roostUser: roostUser.toJSON(),
-                currentUser: currentUser.toJSON()
-            }
-            EmailSender.sendTemplate( "readyRoostSubmittedNotif", email, [roostUserAddress] );
+
+            var documentQuery = new Parse.Query("Document");
+            documentQuery.equalTo("deal", deal).find({
+                success: function(documents){
+                    var roostUser = deal.get("readyRoostUser");
+                    var roostUserAddress = {
+                        email: roostUser.get("email"),
+                        name: roostUser.get("firstName") + " " + roostUser.get("lastName")
+                    };
+                    var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
+                    var documentsJson = documents.map(function(doc){
+                        return {
+                            fileName: doc.get("fileName"),
+                            type: doc.get("type")
+                        }
+                    }).filter(function(doc){
+                        return doc.fileName != "FAQ - OneRoost"
+                    })
+
+                    var email = {
+                        deal: deal.toJSON(),
+                        roostUser: roostUser.toJSON(),
+                        currentUser: currentUser.toJSON(),
+                        documents: documentsJson,
+                        dealLink: dealLink,
+                        messageId: deal.id
+                    }
+                    console.log(email);
+                    EmailSender.sendTemplate( "readyRoostSubmittedNotif", email, [roostUserAddress] );
+                },
+                error: function(error){
+                    console.error(error);
+                }
+            })
+
         },
         error: function(error){
             console.error(error);

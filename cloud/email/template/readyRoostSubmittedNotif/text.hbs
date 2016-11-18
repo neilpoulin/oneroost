@@ -1,1 +1,16 @@
-placeholder text
+Deal Name: {{deal.dealName}}
+
+Submitted By: {{currentUser.fistName}} {{currentUser.lastName}}
+
+Description: {{deal.description}}
+
+Budget: ${{formatCurrency deal.budget.low}} - ${{formatCurrency deal.budget.high}}
+
+{{documents.length}} Documents Added:
+{{#each documents}}
+    * {{this.fileName}}
+{{/each}}
+
+{{>roost-link-text}}
+
+{{> footer-text}}

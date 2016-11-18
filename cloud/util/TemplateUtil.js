@@ -47,6 +47,10 @@ function initializeHandlebars()
     var roostLinkBase = partialsBase + "roostLink/"
     Handlebars.registerPartial("roost-link-html", require(roostLinkBase + "html.hbs"));
     Handlebars.registerPartial("roost-link-text", require(roostLinkBase + "text.hbs"));
+
+    Handlebars.registerHelper("formatCurrency", function(value) {
+        return value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    });
 }
 
 function initializeEmails(){
