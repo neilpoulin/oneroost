@@ -14,7 +14,7 @@ const OneRoostModal = React.createClass({
     },
     getDefaultProps: function() {
         return {
-            onSave: function(){console.log("no success function passed");},
+            onSave: function(){console.log("no success function passed"); return true; },
             saveText: "Save",
             cancelText: "Cancel",
             clearForm: function(){console.log("no clearForm callback provided");},
@@ -31,7 +31,12 @@ const OneRoostModal = React.createClass({
         this.refs.form.setState( this.refs.form.getInitialState() );
     },
     submit: function(){
-        this.refs.form.doSubmit();
+        var result = this.refs.form.doSubmit();
+        if ( typeof result === "boolean" )
+        {
+            return result
+        }
+        return true;
     },
     openModal: function(){
         this.setState({
@@ -39,8 +44,10 @@ const OneRoostModal = React.createClass({
         });
     },
     saveAndClose: function(){
-        this.submit();
-        this.closeModal();
+        if (this.submit())
+        {
+            this.closeModal();
+        }
     },
     render () {
         var form = React.cloneElement(React.Children.only(this.props.children), {

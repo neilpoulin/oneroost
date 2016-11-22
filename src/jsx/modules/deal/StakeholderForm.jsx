@@ -28,10 +28,13 @@ export default React.createClass({
     },
     doSubmit(){
         var errors = this.getValidations();
-        this.setState({errors: errors});
+        console.log(errors);
         if ( !errors ){
             this.saveStakeholder();
+            return true;
         }
+        this.setState({errors: errors});
+        return false;
     },
     getValidations()
     {
@@ -39,13 +42,13 @@ export default React.createClass({
         if ( !RoostUtil.isValidEmail(this.state.email) ){
             errors["email"] = {message: "You must provide a valid email address", level: "error"};
         }
-        if ( this.sate.firstName == null || this.state.firstName.trim() === "" ){
+        if ( this.state.firstName == null || this.state.firstName.trim() === "" ){
             errors["firstName"] = {message: "You must provide a First Name", level: "error"};
         }
-        if ( this.sate.lastName == null || this.state.lastName.trim() === "" ){
+        if ( this.state.lastName == null || this.state.lastName.trim() === "" ){
             errors["lastName"] = {message: "You must provide a Last Name", level: "error"};
         }
-        if ( this.sate.company == null || this.state.company.trim() === "" ){
+        if ( this.state.company == null || this.state.company.trim() === "" ){
             errors["company"] = {message: "You must provide a Company Name", level: "error"};
         }
         return errors;
