@@ -1,11 +1,12 @@
-import React from "react";
-import Parse from "parse";
-import ParseReact from "parse-react";
+import React from "react"
+import Parse from "parse"
+import ParseReact from "parse-react"
 import LinkedStateMixin from "react-addons-linked-state-mixin"
-var DatePicker = require("react-datepicker");
-var moment = require("moment");
+import DatePicker from "react-datepicker"
+import moment from "moment"
 import Dropdown from "./../stakeholder/Dropdown"
-import AutosizeTextarea from "react-textarea-autosize";
+import AutosizeTextarea from "react-textarea-autosize"
+import FormUtil, {Validation} from "./../util/FormUtil"
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
@@ -18,11 +19,27 @@ export default React.createClass({
             assignedUser: null,
             deal: this.props.deal,
             completedDate: null,
-            user: Parse.User.current()
+            user: Parse.User.current(),
+            errors: {}
         };
     },
+    validations: {
+        "title": new Validation(FormUtil.notNullOrEmpty, "error", "A title is reqired"),
+        "dueDate": new Validation(FormUtil.isValidDate, "error", "A due date is required")
+    },
     doSubmit: function () {
-        this.saveNextStep();
+        var errors = this.getValidationErrors();
+        console.log(errors);
+        if ( !errors ){
+            this.saveNextStep();
+            return true;
+        }
+        this.setState({errors: errors});
+        return false;
+    },
+    getValidationErrors(){
+        var errors = FormUtil.getErrors(this.state, this.validations)
+        return errors;
     },
     saveNextStep: function () {
         var self = this;
@@ -72,15 +89,33 @@ export default React.createClass({
             assignedUser: user
         });
     },
+    getErrorClass(field){
+        var errors = this.state.errors;
+        if (errors[field] )
+        {
+            return "has-" + errors[field].level
+        }
+        else return null;
+    },
+    getErrorHelpMessage(field){
+        var errors = this.state.errors;
+        if ( errors[field] )
+        {
+            var error = errors[field];
+            return <span key={"nextStep_error_" + field} className="help-block">{error.message}</span>
+        }
+        return null
+    },
     render: function () {
         var form =
         <div className="NextStepsFormContainer">
-            <div className="form-group">
+            <div className={"form-group " + this.getErrorClass("title")}>
                 <label htmlFor="nextStepTitle">Title</label>
                 <input id="nextStepTitle"
                     type="text"
                     className="form-control"
                     valueLink={this.linkState("title")}/>
+                {this.getErrorHelpMessage("title")}
             </div>
             <div className="form-group">
                 <label htmlFor="nextStepDescription">Description</label>
@@ -93,7 +128,7 @@ export default React.createClass({
                         >
                     </AutosizeTextarea>
             </div>
-            <div className="form-group">
+            <div className={"form-group " + this.getErrorClass("dueDate")}>
                 <label htmlFor="nextStepDueDate">Due Date</label>
 
                 <DatePicker
@@ -102,7 +137,7 @@ export default React.createClass({
                     className="form-control"
                     id="nextStepDueDate"
                     />
-
+                {this.getErrorHelpMessage("dueDate")}
             </div>
             <div className="form-group">
                 <label htmlFor="nextStepAssignedUser">Assigned User</label>

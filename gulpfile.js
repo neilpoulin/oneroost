@@ -96,7 +96,7 @@ var sassOpts = {
 
     gulp.task("sass:cloud", ["clean:cloud-style"], function(){
         return gulp.src(paths.src.styles)
-        .pipe(gulp.dest(paths.dest.cloudStyles));
+        .pipe(gulp.dest(paths.dest.cloudStyles))
     });
 
     gulp.task("sass", ["clean:css", "clean:cloud-style", "sass:cloud"], function () {
@@ -115,11 +115,11 @@ var sassOpts = {
     });
 
     gulp.task("clean:cloud-style", function(){
-        return del([paths.dest.cloudStyles]);
+        return del([paths.dest.cloudStyles + "/**.*css"]);
     });
 
     gulp.task("clean:css", function(){
-        return del(["./public/css"]);
+        return del(["./public/css/**.css"]);
     });
 
     gulp.task("clean:js", function(){
@@ -134,7 +134,7 @@ var sassOpts = {
         .pipe(eslint.format());
     });
 
-    gulp.task("transpile", ["clean:js", "lint"], function () {
+    gulp.task("transpile", ["clean:js"], function () {
         return gulp.src(paths.src.scripts)
         .pipe(plumber({
             handleError: function (err) {
@@ -153,7 +153,7 @@ var sassOpts = {
         .pipe(gulp.dest(paths.build.js));
     });
 
-    gulp.task("bundle", ["clean:js", "transpile"], function () {
+    gulp.task("bundle", ["transpile"], function () {
         var b = browserify({
             entries: paths.build.sourceFile,
             debug: true
@@ -185,8 +185,13 @@ var sassOpts = {
         .pipe(gulp.dest(paths.build.jsbundle));
     });
 
+    gulp.task("ugly:css", ["sass"], function(){
+        gulp.src(paths.build.cssbundle + "/" + paths.dest.styleName)
+        .pipe(gulp.dest(paths.dest.css));
+    });
+
     gulp.task("compress:css", ["sass"], function(){
-        gulp.src(paths.build.cssbundle + "/*.css")
+        gulp.src(paths.build.cssbundle + "/" + paths.dest.styleName)
         .pipe(cleanCSS())
         .pipe(gulp.dest(paths.dest.css));
     });
@@ -213,11 +218,11 @@ var sassOpts = {
 
     gulp.task("compress", ["compress:css", "compress:js"]);
 
-    gulp.task("build", ["compress","bundle", "sass", "fonts"]);
-    gulp.task("build:dev", ["ugly:js","compress:css", "bundle", "sass", "fonts"]);
+    gulp.task("build", ["compress","bundle", "sass", "fonts", "lint"]);
+    gulp.task("build:dev", ["ugly:js","ugly:css"]);
 
     gulp.task("watch", ["build:dev"], function () {
-        gulp.watch(paths.src.styles, ["compress:css", "sass", "fonts"]);
+        gulp.watch(paths.src.styles, ["ugly:css", "sass"]);
         gulp.watch(paths.src.scripts, ["ugly:js"]);
         gulp.watch(paths.src.cloud, ["lint"]);
     });

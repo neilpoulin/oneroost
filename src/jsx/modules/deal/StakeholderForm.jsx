@@ -2,7 +2,7 @@ import React, {PropTypes} from "react";
 import Parse from "parse";
 import ParseReact from "parse-react";
 import LinkedStateMixin from "react-addons-linked-state-mixin"
-import RoostUtil from "./../util/RoostUtil"
+import FormUtil, {Validation} from "./../util/FormUtil"
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
@@ -23,6 +23,12 @@ export default React.createClass({
             user: Parse.User.current()
         };
     },
+    validations: {
+        email: new Validation(FormUtil.isValidEmail, "error", "A valid email is required"),
+        firstName: new Validation(FormUtil.notNullOrEmpty, "error", "A first name is required"),
+        lastName: new Validation(FormUtil.notNullOrEmpty, "error", "A last name is required"),
+        company: new Validation(FormUtil.notNullOrEmpty, "error", "A company name is required")
+    },
     clear: function(){
         this.setState( this.getInitialState() );
     },
@@ -38,20 +44,21 @@ export default React.createClass({
     },
     getValidations()
     {
-        var errors = {};
-        if ( !RoostUtil.isValidEmail(this.state.email) ){
-            errors["email"] = {message: "You must provide a valid email address", level: "error"};
-        }
-        if ( this.state.firstName == null || this.state.firstName.trim() === "" ){
-            errors["firstName"] = {message: "You must provide a First Name", level: "error"};
-        }
-        if ( this.state.lastName == null || this.state.lastName.trim() === "" ){
-            errors["lastName"] = {message: "You must provide a Last Name", level: "error"};
-        }
-        if ( this.state.company == null || this.state.company.trim() === "" ){
-            errors["company"] = {message: "You must provide a Company Name", level: "error"};
-        }
-        return errors;
+        // var errors = {};
+        // if ( !RoostUtil.isValidEmail(this.state.email) ){
+        //     errors["email"] = {message: "You must provide a valid email address", level: "error"};
+        // }
+        // if ( this.state.firstName == null || this.state.firstName.trim() === "" ){
+        //     errors["firstName"] = {message: "You must provide a First Name", level: "error"};
+        // }
+        // if ( this.state.lastName == null || this.state.lastName.trim() === "" ){
+        //     errors["lastName"] = {message: "You must provide a Last Name", level: "error"};
+        // }
+        // if ( this.state.company == null || this.state.company.trim() === "" ){
+        //     errors["company"] = {message: "You must provide a Company Name", level: "error"};
+        // }
+        // return errors;
+        return FormUtil.getErrors(this.state, this.validations);
     },
     saveStakeholder: function(){
         var self = this;
@@ -108,7 +115,7 @@ export default React.createClass({
         if ( errors[field] )
         {
             var error = errors[field];
-            return <span key={"stakeholder_error_" + field} class="help-block">{error.message}</span>
+            return <span key={"stakeholder_error_" + field} className="help-block">{error.message}</span>
         }
         return null
     },

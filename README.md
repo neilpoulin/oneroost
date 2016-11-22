@@ -23,6 +23,7 @@ transpile
 bundle
 ```
 
+Note, the first time you start the app, you'll need to run "gulp build", but for development after that, you can call "gulp start", which calls "gulp build:dev" under the hood, which is quite a bit faster as it doesn't clean and rebuild and compress files. 
 
 Live application:
 [http://aws.oneroost.com](http://aws.oneroost.com)

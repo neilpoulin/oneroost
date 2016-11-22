@@ -3,21 +3,21 @@ import Modal from "react-bootstrap-modal";
 
 const OneRoostModal = React.createClass({
     propTypes: {
-        onSave: PropTypes.func,
         title: PropTypes.string.isRequired,
-        show: PropTypes.bool
+        show: PropTypes.bool,
+        saveText: PropTypes.string,
+        cancelText: PropTypes.string
     },
     getInitialState: function(){
         return {
-            open: this.props.show
+            open: this.props.show,
+            errors: {}
         }
     },
     getDefaultProps: function() {
         return {
-            onSave: function(){console.log("no success function passed"); return true; },
             saveText: "Save",
             cancelText: "Cancel",
-            clearForm: function(){console.log("no clearForm callback provided");},
             show: false
         };
     },
@@ -31,12 +31,18 @@ const OneRoostModal = React.createClass({
         this.refs.form.setState( this.refs.form.getInitialState() );
     },
     submit: function(){
-        var result = this.refs.form.doSubmit();
-        if ( typeof result === "boolean" )
+        var success = this.refs.form.doSubmit();
+        //check if the save was successful and we should close the form
+        console.log("submitting form resulted in ", success);
+        if ( typeof success === "boolean" )
         {
-            return result
+            return success;
         }
-        return true;
+        else{
+            //no success was returned, so defaulting to true
+            console.warn("No doSubmit success value was returned, defaulting to true");
+            return true;
+        }
     },
     openModal: function(){
         this.setState({
@@ -44,8 +50,7 @@ const OneRoostModal = React.createClass({
         });
     },
     saveAndClose: function(){
-        if (this.submit())
-        {
+        if ( this.submit() ){
             this.closeModal();
         }
     },
