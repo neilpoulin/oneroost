@@ -2,6 +2,7 @@ import React, {PropTypes} from "react";
 import Parse from "parse";
 import ParseReact from "parse-react";
 import LinkedStateMixin from "react-addons-linked-state-mixin"
+import RoostUtil from "./../util/RoostUtil"
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
@@ -18,6 +19,7 @@ export default React.createClass({
             role: "VENDOR",
             company: null,
             deal: this.props.deal,
+            errors: {},
             user: Parse.User.current()
         };
     },
@@ -25,7 +27,28 @@ export default React.createClass({
         this.setState( this.getInitialState() );
     },
     doSubmit(){
-        this.saveStakeholder();
+        var errors = this.getValidations();
+        this.setState({errors: errors});
+        if ( !errors ){
+            this.saveStakeholder();
+        }
+    },
+    getValidations()
+    {
+        var errors = {};
+        if ( !RoostUtil.isValidEmail(this.state.email) ){
+            errors["email"] = {message: "You must provide a valid email address", level: "error"};
+        }
+        if ( this.sate.firstName == null || this.state.firstName.trim() === "" ){
+            errors["firstName"] = {message: "You must provide a First Name", level: "error"};
+        }
+        if ( this.sate.lastName == null || this.state.lastName.trim() === "" ){
+            errors["lastName"] = {message: "You must provide a Last Name", level: "error"};
+        }
+        if ( this.sate.company == null || this.state.company.trim() === "" ){
+            errors["company"] = {message: "You must provide a Company Name", level: "error"};
+        }
+        return errors;
     },
     saveStakeholder: function(){
         var self = this;
@@ -69,39 +92,61 @@ export default React.createClass({
 
         });
     },
+    getErrorClass(field){
+        var errors = this.state.errors;
+        if (errors[field] )
+        {
+            return "has-" + errors[field].level
+        }
+        else return null;
+    },
+    getErrorHelpMessage(field){
+        var errors = this.state.errors;
+        if ( errors[field] )
+        {
+            var error = errors[field];
+            return <span key={"stakeholder_error_" + field} class="help-block">{error.message}</span>
+        }
+        return null
+    },
     render: function(){
         var form =
         <div className="StakeholderFormContainer">
             <div className="form-inline-half">
-                <div className="form-group">
+                <div className={"form-group " + this.getErrorClass("firstName")}>
                     <label htmlFor="firstNameInput">First Name</label>
                     <input id="firstNameInput"
                         type="text"
                         className="form-control"
                         valueLink={this.linkState("firstName")} />
+                    {this.getErrorHelpMessage("firstName")}
+
                 </div>
-                <div className="form-group">
+                <div className={"form-group " + this.getErrorClass("lastName")}>
                     <label htmlFor="lastNameInput">Last Name</label>
                     <input id="lastNameInput"
                         type="text"
                         className="form-control"
                         valueLink={this.linkState("lastName")} />
+                    {this.getErrorHelpMessage("lastName")}
                 </div>
             </div>
-            <div className="form-group">
+            <div className={"form-group " + this.getErrorClass("email")}>
                 <label htmlFor="stakeholderEmailInput">Email</label>
                 <input id="stakeholderEmailInput"
                     type="text"
                     className="form-control"
                     valueLink={this.linkState("email")} />
+                {this.getErrorHelpMessage("email")}
             </div>
-            <div className="form-group">
+            <div className={"form-group " + this.getErrorClass("company")}>
                 <label htmlFor="stakeholderCompanyInput">Company</label>
                 <input id="stakeholderCompanyInput"
                     type="text"
                     className="form-control"
                     valueLink={this.linkState("company")} />
-            </div>            
+                {this.getErrorHelpMessage("company")}
+            </div>
         </div>
         return form;
     }

@@ -92,31 +92,32 @@ function setupRoost(roost, currentUser, profileUser, response){
             deal: roost,
             title: "Add the Product/Service",
             assignedUser: currentUser,
-            description: "Click the \"Investment\" box and add the product/service details as well as the cost ranges your offering requires."
+            description: "Time to present your offering!  Click into the \"Investment\" section to add a high-level overview of your product and/or service.  In addition to the overview, we recommend submitting the typical budget range your offering requires."
         }),
         //second step -- documents
         new Parse.Object("NextStep", {
             dueDate: moment().add(1, "day").toDate(),
             deal: roost,
-            title: "Share Documents",
+            title: "Share Relevant Materials",
             assignedUser: currentUser,
-            description: "Click the \"Documents\" box and add any documents that help communicate the value of your offering.  These can be case studies, white papers, presentations, ROI calculators, and any other materials you feel like sharing. "
+            description: "You've spent hours creating sales decks, one-pagers, case studies, and ROI calculators...now it is time to show that hard work off!\n\nClick into the \"Documents\" section to add Power Point presentations, Excel spreadsheets, PDFs, and Word documents."
         }),
         //third step participants
         new Parse.Object("NextStep", {
             dueDate: moment().add(2, "day").toDate(),
             deal: roost,
-            title: "Add Participants",
+            title: "Invite Colleagues",
             assignedUser: currentUser,
-            description: "Click the \"Participants\" box and add additional stakeholders from your team who you'd like to include.  Think of participants as anyone who can help move this opportunity forward.  "
+            description: "On average, B2B deals involve over 5 different stakeholders to make a decision on an opportunity.  To get everyone on the same page (literally!), invite your colleagues to this Roost by clicking into the \"Participants\" section and inputting their email address.  We will take it from there and send them an invitation to join the Roost! "
         }),
         //fourth step - buyer reviewing
         new Parse.Object("NextStep", {
             dueDate: moment().add(3, "days").toDate(),
             deal: roost,
-            title: "Buyer Review",
+            title: "Submit Opportunity for Review!",
             assignedUser: currentUser,
-            description: "Once you've completed all the previous Next Steps, create your own Next Step for the buyer.  We recommend the following: "
+            description: "Congrats!  You've made it to the final next step before submitting the opportunity to the Buyer.  If you're on this next step, the following should have been submitted to the Roost: The offering overview, budget requirements, relevant materials, and your colleagues' information." +
+                "\n\nAssuming everything is completed,  click into the \"Participants\" section and submit the opportunity, which is located under the Buyer's name.  After you click submit, OneRoost will send an email to the Buyer notifying the Roost (opportunity) is ready for review.  "
         }),
         // add participants
         new Parse.Object("Stakeholder", {

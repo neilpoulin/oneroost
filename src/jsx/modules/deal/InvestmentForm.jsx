@@ -46,14 +46,14 @@ const TimelineSidebar = React.createClass({
                     <label>Low</label>
                     <div className="input-group">
                         <span className="input-group-addon" id="basic-addon1">$</span>
-                        <input type="number" className="form-control" placeholder="Username" aria-describedby="basic-addon1" valueLink={this.linkState("low")}/>
+                        <input type="number" className="form-control" placeholder="" aria-describedby="basic-addon1" valueLink={this.linkState("low")}/>
                     </div>
                 </div>
                 <div className="form-group">
                     <label>High</label>
                     <div className="input-group">
                         <span className="input-group-addon" id="basic-addon1">$</span>
-                        <input type="number" className="form-control" placeholder="Username" aria-describedby="basic-addon1" valueLink={this.linkState("high")}/>
+                        <input type="number" className="form-control" placeholder="" aria-describedby="basic-addon1" valueLink={this.linkState("high")}/>
                     </div>
                 </div>
             </div>

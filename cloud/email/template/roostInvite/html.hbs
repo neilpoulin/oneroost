@@ -1,7 +1,7 @@
 <div>
-    {{invitedByName}} ({{invitedByEmail}}) has invited you to participate in the deal {{dealName}} as a {{role}}.
+    {{invitedByName}} ({{invitedByEmail}}) has invited you to participate in the deal {{dealName}}.
 </div>
 <div>
-    {{>roost-link-html}}
+    <a href={{inviteLink}} class="btn btn-primary roostLink">Accept Invitation</a>
 </div>
 {{>footer-html}}

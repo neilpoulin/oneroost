@@ -50,16 +50,16 @@ exports.afterSave = function(){
                 if ( stakeholder.get("readyRoostApprover") ){
                     console.log("this person is a ready roost approver, not sending an invite email");
                 } else {
-                    //invite the new user    
+                    //invite the new user
                     var inviteData = {
                         invitedByName: invitedByName,
                         invitedByEmail: invitedByEmail,
                         userName: fullName,
-                        invitePath: "/invitations/" + req.object.id,
                         dealName: dealName,
                         role: role,
                         dealLink: dealLink,
-                        messageId: deal.id
+                        messageId: deal.id,
+                        inviteLink: envUtil.getHost() + "/invitations/" + req.object.id
                     }
                     var inviteEmail = {name: fullName, email: user.get("email")};
                     console.log("sending invite email to ", inviteEmail);

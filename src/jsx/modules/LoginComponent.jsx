@@ -9,6 +9,7 @@ import Parse from "parse";
 Parse.serverURL = OneRoost.Config.parseSeverURL;
 import LinkedStateMixin from "react-addons-linked-state-mixin"
 import SpinnerIcon from "./SpinnerIcon"
+import RoostUtil from "./util/RoostUtil"
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
@@ -197,9 +198,8 @@ export default React.createClass({
             this.setState({emailValidation: null});
         }
     },
-    isValidEmail: function(){
-        var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(this.state.email);
+    isValidEmail: function(){        
+        return RoostUtil.isValidEmail(this.state.email);
     },
     emailTypingTimeout: null,
     passwordKeyUp: function(){
