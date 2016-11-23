@@ -35,10 +35,10 @@ export default React.createClass({
     doSubmit(){
         var errors = this.getValidations();
         console.log(errors);
-        if ( !errors ){
+        if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
             this.saveStakeholder();
             return true;
-        }
+        }        
         this.setState({errors: errors});
         return false;
     },

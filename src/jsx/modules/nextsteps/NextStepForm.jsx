@@ -30,7 +30,7 @@ export default React.createClass({
     doSubmit: function () {
         var errors = this.getValidationErrors();
         console.log(errors);
-        if ( !errors ){
+        if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
             this.saveNextStep();
             return true;
         }
