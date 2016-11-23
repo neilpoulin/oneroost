@@ -20,6 +20,10 @@ var nodeInspector = require("gulp-node-inspector");
 var minify = require("gulp-minify");
 var cleanCSS = require("gulp-clean-css");
 
+var devEnvProps = {
+    AWS_PROFILE: "oneroost",
+    GA_TRACKING_CODE: "UA-87950724-3"
+}
 
 var bootstrapRoot = "./node_modules/bootstrap-sass/";
 var bootstrapPaths = {
@@ -247,9 +251,7 @@ var sassOpts = {
         nodemon({
             script: "main.js",
             watch: ["public", "cloud", "cloud/email/**/*.hbs", "cloud/**/*.json"],
-            env: {
-                AWS_PROFILE: "oneroost"
-            }
+            env: devEnvProps
         })
         .on("restart", function () {
             console.log("nodemon restarted the node server!")
@@ -262,9 +264,7 @@ var sassOpts = {
             script: "main.js",
             watch: ["public", "cloud", "cloud/**/*.hbs", "cloud/**/*.json"],
             nodeArgs: ["--debug"],
-            env: {
-                AWS_PROFILE: "oneroost"
-            }
+            env: devEnvProps
         })
         .on("restart", function () {
             console.log("nodemon restarted the node server!")
