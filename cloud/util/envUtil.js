@@ -12,6 +12,7 @@ var HOSTNAME = process.env.HOSTNAME || "http://dev.oneroost.com"
 var ENV_NAME = process.env.ENV_NAME || "dev"
 var DOCUMENTS_S3_BUCKET = "oneroost-documents";
 var DOCUMENTS_PATH = "documents"
+var GA_TRACKING_ID = process.env.GA_TRACKING_ID || "UA-87950724-3"
 
 if ( SERVER_URL.trim().indexOf("http:") != 0 )
 {
@@ -37,6 +38,7 @@ console.log("SERVER_URL: " + SERVER_URL);
 console.log("ENV_NAME: " + ENV_NAME);
 console.log("HOSTNAME: " + HOSTNAME);
 console.log("node title: ", process.title);
+console.log("GA Tracking ID", GA_TRACKING_ID);
 
 exports.getParseServerUrl = function(){
     return SERVER_URL;
@@ -97,6 +99,9 @@ exports.getDocumentsPath = function(){
 exports.getEnvName = function(){
     return ENV_NAME;
 }
+exports.getGaTrackingId = function(){
+    return GA_TRACKING_ID;
+}
 
 exports.getEmailFromName = function(){
     if ( this.isDev()){
@@ -114,7 +119,8 @@ exports.getEnv = function(){
     if ( appEnv == null )
     {
         var props = {
-            "applicationId": APP_ID
+            "applicationId": APP_ID,
+            "gaTrackingId": GA_TRACKING_ID
         };
 
         var json = JSON.stringify( props );

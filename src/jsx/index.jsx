@@ -24,27 +24,35 @@ import Invitation from "./modules/Invitation"
 import Unsubscribe from "./modules/Unsubscribe"
 import ProfilePage from "./modules/profile/ProfilePage"
 import PublicProfilePage from "./modules/profile/PublicProfilePage"
+import ReactGA from "react-ga"
+
 
 Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;
 Parse.serverURL = window.location.origin + "/parse";
 
+
+ReactGA.initialize(OneRoost.Config.gaTrackingId, getGaOptions());
+
 const browserHistory = useRouterHistory(createHistory)({
     basename: "/"
 });
 
-// function requireAuth(nextState, replace, callback) {
-//     console.log("requireAuth");
-//     var user = Parse.User.current();
-//     if (!user) {
-//         replace({
-//             pathname: "/login",
-//             state: { nextPathname: nextState.location.pathname }
-//         })
-//     }
-//
-//     callback(nextState, replace);
-// }
+function getGaOptions(){
+    var gaOptions = {};
+    var currentUser = Parse.User.current();
+    if ( currentUser ){
+        var userId = currentUser.objectId
+        console.log("currentUserId:", userId);
+        gaOptions.userId = userId;
+    }
+    return gaOptions;
+}
+
+function logPageView() {
+    ReactGA.set({ page: window.location.pathname });
+    ReactGA.pageview(window.location.pathname);
+}
 
 function requireAuthOrParam( nextState, replace ){
     var user = Parse.User.current();
@@ -90,7 +98,7 @@ function doLogout(nextState, replace){
 }
 
 render(
-    <Router history={browserHistory}>
+    <Router history={browserHistory} onUpdate={logPageView}>
         <Route path="/" component={App}>
             <IndexRoute component={Landing}/>
             <Route path="/login" component={LoginOnly} onEnter={requireAnonymous}></Route>
