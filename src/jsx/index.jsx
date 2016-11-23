@@ -11,6 +11,7 @@ import Landing from "./modules/LandingPage"
 import App from "./modules/App"
 import UserHomePage from "./modules/UserHomePage"
 import Roost from "./modules/deal/Roost"
+import NavPage from "./modules/navigation/NavPage"
 import DealDashboard from "./modules/deal/DealDashboard"
 import StakeholderSidebar from "./modules/deal/sidebar/StakeholderSidebar"
 import TimelineSidebar from "./modules/deal/sidebar/TimelineSidebar"
@@ -24,6 +25,9 @@ import Invitation from "./modules/Invitation"
 import Unsubscribe from "./modules/Unsubscribe"
 import ProfilePage from "./modules/profile/ProfilePage"
 import PublicProfilePage from "./modules/profile/PublicProfilePage"
+import AdminHome from "./modules/admin/AdminHome"
+import UnauthorizedPage from "./modules/UnauthorizedPage"
+import EmailTemplates from "./modules/admin/EmailTemplates"
 import ReactGA from "react-ga"
 
 
@@ -78,6 +82,20 @@ function requireAuthOrParam( nextState, replace ){
     }
 }
 
+function requireAdmin(nextState, replace){
+    var isAdmin = false;
+    var user = Parse.User.current();
+    if ( user ){
+        isAdmin = user.get("admin");
+    }
+    if ( !isAdmin ){
+        replace({
+            pathname: "/unauthorized",
+            state: { nextPathname: nextState.location.pathname || "/unauthorized" }
+        });
+    }
+}
+
 function requireAnonymous(nextState, replace){
     var user = Parse.User.current();
     if ( user )
@@ -106,7 +124,6 @@ render(
             <Route path="/logout" component={Landing} onEnter={doLogout}></Route>
             <Redirect from="/deals" to="/roosts" />
             <Route path="/account" component={ProfilePage} onEnter={requireAuthOrParam}>
-
             </Route>
             <Route path="/profile/:userId" component={PublicProfilePage}/>
             <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
@@ -131,6 +148,11 @@ render(
             <Route path="/unsubscribe">
                 <Route path=":emailRecipientId" component={Unsubscribe}></Route>
             </Route>
+            <Route path="/admin" component={NavPage} onEnter={requireAdmin}>
+                <IndexRoute component={AdminHome}/>
+                <Route path="emails" component={EmailTemplates}/>
+            </Route>
+            <Route path="/unauthorized" component={UnauthorizedPage}></Route>
         </Route>
     </Router>
     , document.getElementById("app")

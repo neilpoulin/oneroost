@@ -1,7 +1,7 @@
 var canSend = false;
 setupPermissions();
 
-var defaultIconUrl = "/static/images/apple/rooster-square-114-precomposed.png";
+var defaultIconUrl = "/static/images/logo/OneRoostLogo.png";
 
 function checkPermission()
 {

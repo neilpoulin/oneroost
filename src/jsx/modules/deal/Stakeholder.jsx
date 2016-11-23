@@ -3,6 +3,7 @@ import Parse from "parse";
 import ParseReact from "parse-react";
 import LinkedStateMixin from "react-addons-linked-state-mixin"
 import RoostUtil from "./../util/RoostUtil"
+import ReactGA from "react-ga"
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
@@ -56,6 +57,11 @@ export default React.createClass({
             console.log(result);
             alert("We have let " + RoostUtil.getFullName(stakeholder.user) + " know that the Roost is ready for them to review.")
             ParseReact.Mutation.Set(deal, {readyRoostSubmitted: new Date()}).dispatch();
+            ReactGA.set({ userId: Parse.User.current().objectId });
+            ReactGA.event({
+              category: "ReadyRoost",
+              action: "Submitted ReadyRoost"
+            });
         });
     },
     render: function () {

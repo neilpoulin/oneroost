@@ -20,6 +20,10 @@ var materialColors = path.resolve(__dirname, "..", "..", "node_modules", "sass-m
 initializeHandlebars();
 initializeEmails();
 
+exports.getTemplateNames = function(){
+    return emailTemplates
+}
+
 exports.renderEmail = function(templateName, data){
     if ( emailTemplates.indexOf(templateName) == -1 ){
         throw "You must provide a vaild template";

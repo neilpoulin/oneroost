@@ -1,3 +1,5 @@
+var TemplateUtil = require("./TemplateUtil")
+
 var appEnv = null;
 
 var APP_ID = process.env.PARSE_APP_ID || "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq";
@@ -120,7 +122,8 @@ exports.getEnv = function(){
     {
         var props = {
             "applicationId": APP_ID,
-            "gaTrackingId": GA_TRACKING_ID
+            "gaTrackingId": GA_TRACKING_ID,
+            "emailTemplates": TemplateUtil.getTemplateNames()
         };
 
         var json = JSON.stringify( props );

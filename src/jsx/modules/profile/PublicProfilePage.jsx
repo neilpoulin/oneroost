@@ -7,6 +7,7 @@ import LoadingTakeover from "./../util/LoadingTakeover"
 import RoostUtil from "./../util/RoostUtil"
 import FourOhFourPage from "./../FourOhFourPage"
 import LoginComponent from "./../LoginComponent"
+import ReactGA from "react-ga"
 import { withRouter } from "react-router"
 
 const PublicProfilePage = withRouter( React.createClass({
@@ -32,6 +33,11 @@ const PublicProfilePage = withRouter( React.createClass({
     },
     loginSuccess(){
         console.log("login success");
+
+        ReactGA.event({
+          category: "ReadyRoost",
+          action: "Log in"
+        });
         this.setState({currentUser: Parse.User.current()});
     },
     logoutSuccess(){
@@ -46,6 +52,11 @@ const PublicProfilePage = withRouter( React.createClass({
             roostName: self.state.roostName
         }).then(function(result){
             console.log("created ready roost, so happy", result);
+            ReactGA.set({ userId: self.state.currentUser.objectId });
+            ReactGA.event({
+                  category: "ReadyRoost",
+                  action: "Created ReadyRoost"
+                });
             self.props.router.replace("/roosts/" + (result.roost.objectId || result.roost.id));
         },
         function(error){

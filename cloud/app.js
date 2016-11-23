@@ -31,7 +31,7 @@ var io = socket(server);
 app.engine("ejs", ejs.__express);
 app.use(bodyParser.json());
 app.use("/parse", getParseServer());
-app.use("/dashboard", getParseDashboard());
+app.use("/admin/dashboard", getParseDashboard());
 app.use("/static", express.static(__dirname + "./../public"));
 app.use(favicon(__dirname + "./../public/favicon.ico"));
 app.set("views", "cloud/views");
@@ -42,12 +42,11 @@ app.locals.formatTime = function(time) {
 };
 
 
-app.get("/emails/:templateName", function(req, resp){
+app.get("/admin/emails/:templateName", function(req, resp){
     TemplateUtil.renderSample(req.params.templateName).then(function(templates){
         // resp.send(templates.html);
         resp.render("emailSample.ejs", templates);
     });
-
 });
 
 app.get("*", function( request, response ){

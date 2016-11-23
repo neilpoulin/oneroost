@@ -10,6 +10,7 @@ Parse.serverURL = OneRoost.Config.parseSeverURL;
 import LinkedStateMixin from "react-addons-linked-state-mixin"
 import SpinnerIcon from "./SpinnerIcon"
 import RoostUtil from "./util/RoostUtil"
+import ReactGA from "react-ga"
 
 export default React.createClass({
     mixins: [LinkedStateMixin],
@@ -65,7 +66,7 @@ export default React.createClass({
             user.set("company", this.state.company);
             user.set("passwordChangeRequired", false);
             user.signUp( null, {
-                success: component.handleLoginSuccess,
+                success: component.handleRegisterSuccess,
                 error: component.handleLoginError
             });
         }
@@ -98,6 +99,13 @@ export default React.createClass({
         this.setState({"error": error});
         console.error(error);
         this.hideLoading();
+    },
+    handleRegisterSuccess(user){
+        ReactGA.event({
+          category: "User",
+          action: "Registration"
+        });
+        return this.handleLoginSuccess(user);
     },
     handleLoginSuccess: function(user){
         if ( this.props.success )
@@ -198,7 +206,7 @@ export default React.createClass({
             this.setState({emailValidation: null});
         }
     },
-    isValidEmail: function(){        
+    isValidEmail: function(){
         return RoostUtil.isValidEmail(this.state.email);
     },
     emailTypingTimeout: null,
