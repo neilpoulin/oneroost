@@ -1,0 +1,50 @@
+@import "sass-material-colors";
+
+//colors
+$roostOrange: #ef5b25;
+$roostDarkGray: #464646;
+$white: #FFFFFF;
+
+//globals
+$mainColor: $roostDarkGray;
+$globalBg: $white;
+$navbarHeight: 50px;
+
+$activeBg: lighten($roostOrange, 40%);
+$activeColor: $roostOrange;
+$activeBorderColor: $roostOrange;
+
+$activeColorAlt: #FF6F00;
+
+$secondaryColor: $roostDarkGray;
+$largeClickableBg: #EEEFF1;
+
+//borders
+$borderColorThick: #D3D3D3;
+$borderWeightThick: 2px;
+$borderThick: $borderWeightThick solid $borderColorThick;
+$borderWeightThin: 1px;
+$borderColorThin: #EAEAEA;
+$borderThin: $borderWeightThin solid $borderColorThin;
+
+//sidebar
+$sidebarBg: #F9FAFC;
+$fixedSidebarBg: $sidebarBg;
+
+//Deal Profile
+$dealPageContainerBg: $globalBg;
+$nextStepsContainerBg: $dealPageContainerBg;
+$nextStepsBg: $largeClickableBg;
+$nextStepActiveBg: $largeClickableBg;
+
+// Comments
+$msgBg: $globalBg;
+$systemMsgBg: #F5F5F5;
+$systemMsgColor: #C9C9C9;
+//commment
+
+//overlay
+$overlayBg: #1A6383;
+
+//nav-mobile
+$nav-mobile-default-color: #464646;

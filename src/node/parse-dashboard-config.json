@@ -1,0 +1,29 @@
+{
+    "apps": [
+        {
+            "serverURL": "http://dev.oneroost.com/parse",
+            "appId": "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq",
+            "masterKey": "RQ50598LZUsDXzgnz6HgnGSwlCuv6XrZ3h7Li13P",
+            "appName": "Local Dev"
+        },
+        {
+            "serverURL": "http://www.oneroost.com/parse",
+            "appId": "lSNtmvBTimEY6VfOo5zvvOQkljcHeDIOQcjefNUu",
+            "masterKey": "LqJHvr4fr6kD43RwCawwwq1AxaiGcQpGHZRvpmc9",
+            "production": true,
+            "appName": "OneRoost - Prod"
+        },
+        {
+            "serverURL": "http://stage.oneroost.com/parse",
+            "appId": "llcq2KXGOGoOQMO9W1rvgFcramBjAMgZEVRhNagb",
+            "masterKey": "vZZXdKrpM3QAqFzNoNVWljX9V8ExokwqaGzncjTh",
+            "appName": "OneRoost - Stage"
+        }
+    ],
+    "users": [
+        {
+            "user":"neil",
+            "pass":"OneRoost88"
+        }
+    ]
+}

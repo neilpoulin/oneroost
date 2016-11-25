@@ -49,8 +49,9 @@ var reactModalBootstrap = {
 var paths = {
     src: {
         root: "./src",
-        scripts: ["./src/**/*.jsx","./src/**/*.js"],
-        cloud: ["./cloud/**/*.js", "./cloud/**/*.hbs", "./cloud/template/**/*.json"],
+        frontend: ["./src/jsx/**/*.jsx","./src/jsx/**/*.js"],
+        node: ["./src/node/**/*.js"],
+        nodetemplates: ["./src/node/**/*.hbs", "./src/node/**/*.scss", "./src/node/**/*.json", "./src/node/**/*.ejs" ],
         gulpfile: ["./gulpfile.js"],
         styles: ["./src/scss/**/*.scss"],
         styleEntry: "./src/scss/index.scss",
@@ -59,21 +60,23 @@ var paths = {
     },
     build: {
         root: "./build",
-        js: "./build/js",
-        jsbundle: "./build/dist/js",
+        frontendjs: "./build/frontendjs",
+        node: "./build/node",
+        nodeStyles: "./build/node/email/template/style/target",
+        nodeFonts: "./build/node/email/template/style/target/fonts",
+        jsbundle: "./build/dist/frontendjs",
         cssbundle: "./build/dist/css",
-        sourceFile: "./build/js/jsx/index.js",
+        sourceFile: "./build/frontendjs/index.js",
         sourceMaps: ".build/**/*.js.map"
     },
     dest: {
         root: "./public",
         css: "./public/css",
-        js: "./public/bundle",
+        frontendjs: "./public/bundle",
+        cloud: "./cloud",
         fonts: "./public/css/fonts",
         styleName: "styles.css",
-        scriptName: "bundle.js",
-        cloudStyles: "./cloud/email/template/style/target",
-        cloudFonts: "./cloud/email/template/style/target/fonts"
+        scriptName: "bundle.js"
     }
 };
 
@@ -88,22 +91,22 @@ var sassOpts = {
         "./src/scss/**/*.scss"]
     };
 
-    gulp.task("fonts", ["sass", "fonts:cloud"], function () {
+    gulp.task("fonts", ["sass"], function () {
         return gulp.src(paths.src.fonts)
         .pipe(gulp.dest(paths.dest.fonts));
     });
 
-    gulp.task("fonts:cloud", ["sass:cloud"], function () {
+    gulp.task("fonts:node", ["sass:node"], function () {
         return gulp.src(paths.src.fonts)
-        .pipe(gulp.dest(paths.dest.cloudFonts));
+        .pipe(gulp.dest(paths.build.nodeFonts));
     });
 
-    gulp.task("sass:cloud", ["clean:cloud-style"], function(){
+    gulp.task("sass:node", ["clean:cloud-style", "clean:node"], function(){
         return gulp.src(paths.src.styles)
-        .pipe(gulp.dest(paths.dest.cloudStyles))
+        .pipe(gulp.dest(paths.build.nodeStyles))
     });
 
-    gulp.task("sass", ["clean:css", "clean:cloud-style", "sass:cloud"], function () {
+    gulp.task("sass", ["clean:css"], function () {
         var scssStream = gulp.src(paths.src.styleEntry)
         .pipe(sass(sassOpts).on("error", sass.logError))
         .pipe(concat(paths.dest.styleName));
@@ -119,15 +122,19 @@ var sassOpts = {
     });
 
     gulp.task("clean:cloud-style", function(){
-        return del([paths.dest.cloudStyles + "/**.*css"]);
+        return del([paths.build.cloudStyles + "/**.*css"]);
     });
 
     gulp.task("clean:css", function(){
         return del(["./public/css/**.css"]);
     });
 
+    gulp.task("clean:node", function(){
+        return del([paths.build.node]);
+    });
+
     gulp.task("clean:js", function(){
-        return del(["./public/bundle", paths.build.root]);
+        return del(["./public/bundle", paths.build.frontendjs]);
     });
 
     gulp.task("clean", ["clean:js", "clean:css", "clean:npm-log"]);
@@ -138,8 +145,33 @@ var sassOpts = {
         .pipe(eslint.format());
     });
 
+    gulp.task("transpile:node", ["clean:node"], function(){
+        gulp.src(paths.src.node)
+        .pipe(plumber({
+            handleErrors: function(error){
+                console.error(error);
+                this.emit("end");
+            }
+        }))
+        .pipe(babel())
+        .on("error", function (err) {
+            gutil.log(gutil.colors.red("[Task \"transpile:node\"][Babel Error]"));
+            gutil.log(gutil.colors.red(err.message));
+        })
+        .pipe(plumber.stop())
+        .pipe(gulp.dest(paths.build.node));
+
+        return gulp.src(paths.src.nodetemplates)
+        .pipe(gulp.dest(paths.build.node));
+    });
+
+    gulp.task("move:cloud", ["clean:node", "transpile:node"], function(){
+        gulp.src(paths.build.node + "/**/*")
+        .pipe(gulp.dest(paths.dest.cloud));
+    });
+
     gulp.task("transpile", ["clean:js"], function () {
-        return gulp.src(paths.src.scripts)
+        return gulp.src(paths.src.frontend)
         .pipe(plumber({
             handleError: function (err) {
                 console.log(err);
@@ -154,7 +186,7 @@ var sassOpts = {
         })
         // .pipe(sourcemaps.write())
         .pipe(plumber.stop())
-        .pipe(gulp.dest(paths.build.js));
+        .pipe(gulp.dest(paths.build.frontendjs));
     });
 
     gulp.task("bundle", ["transpile"], function () {
@@ -211,24 +243,36 @@ var sassOpts = {
             ignoreFiles: ["-min.js"],
             noSource: true
         }))
-        .pipe(gulp.dest(paths.dest.js));
+        .pipe(gulp.dest(paths.dest.frontendjs));
     });
 
     gulp.task("ugly:js", ["bundle"], function(){
         gulp.src(paths.build.jsbundle +"/*.js")
         .pipe(concat(paths.dest.scriptName))
-        .pipe(gulp.dest(paths.dest.js));
+        .pipe(gulp.dest(paths.dest.frontendjs));
     });
 
+    gulp.task("build:node", ["clean:node", "transpile:node", "sass:node", "fonts:node"]);
+    gulp.task("build:node-noclean", ["transpile:node", "sass:node", "fonts:node"]);
+    gulp.task("build:cloud-dev", ["build:node-noclean", "move:cloud"]);
+    gulp.task("build:cloud", ["build:node", "move:cloud"]);
     gulp.task("compress", ["compress:css", "compress:js"]);
+    gulp.task("build:frontend", ["compress","bundle", "sass", "fonts", "lint"]);
+    gulp.task("build:all", ["compress","bundle", "sass", "fonts", "lint", "build:cloud"]);
 
-    gulp.task("build", ["compress","bundle", "sass", "fonts", "lint"]);
-    gulp.task("build:dev", ["ugly:js","ugly:css"]);
+    gulp.task("build:dev", ["ugly:js","ugly:css", "build:cloud-dev"]);
 
     gulp.task("watch", ["build:dev"], function () {
         gulp.watch(paths.src.styles, ["ugly:css", "sass"]);
-        gulp.watch(paths.src.scripts, ["ugly:js"]);
-        gulp.watch(paths.src.cloud, ["lint"]);
+        gulp.watch(paths.src.frontend, ["ugly:js"]);
+        gulp.watch(paths.src.node, ["build:cloud-dev"]);
+    });
+
+
+    gulp.task("watch:prod", ["build:all"], function () {
+        gulp.watch(paths.src.styles, ["compress:css"]);
+        gulp.watch(paths.src.frontend, ["compress:js"]);
+        gulp.watch(paths.src.node, ["build:cloud"]);
     });
 
     gulp.task("clean:npm-log", function () {
@@ -245,12 +289,23 @@ var sassOpts = {
         }));
     });
 
+    gulp.task("start:prod", ["watch:prod"], function(){
+        // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
+        nodemon({
+            script: "main.js",
+            watch: ["cloud", "cloud/email/**/*.hbs", "cloud/**/*.json"],
+            env: devEnvProps
+        })
+        .on("restart", function () {
+            console.log("nodemon restarted the node server!")
+        })
+    });
 
     gulp.task("start", ["mongo-start","clean", "update-config", "watch"], function(){
         // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
         nodemon({
             script: "main.js",
-            watch: ["public", "cloud", "cloud/email/**/*.hbs", "cloud/**/*.json"],
+            watch: ["cloud", "cloud/email/**/*.hbs", "cloud/**/*.json"],
             env: devEnvProps
         })
         .on("restart", function () {
@@ -262,7 +317,7 @@ var sassOpts = {
         // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
         nodemon({
             script: "main.js",
-            watch: ["public", "cloud", "cloud/**/*.hbs", "cloud/**/*.json"],
+            watch: ["cloud", "cloud/**/*.hbs", "cloud/**/*.json"],
             nodeArgs: ["--debug"],
             env: devEnvProps
         })
@@ -291,8 +346,8 @@ var sassOpts = {
         });
     }
 
-    gulp.task("eb-deploy:stage", ["clean:npm-log", "build"], shell.task("eb deploy stage --timeout 25"));
-    gulp.task("deploy", ["build", "eb-deploy:stage"]);
+    gulp.task("eb-deploy:stage", ["clean:npm-log", "build:all"], shell.task("eb deploy stage --timeout 25"));
+    gulp.task("deploy", ["build:all", "eb-deploy:stage"]);
 
     gulp.task("update-config", ["mongo-start"], function(){
         var command = "mongo localhost:27017/oneroost-db db/scripts/update_configs.js";

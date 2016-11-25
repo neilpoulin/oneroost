@@ -1,0 +1,9 @@
+{
+    "firstName": "Neil",
+    "lastName": "Poulin",
+    "documentName": "my_sample_document.pdf",
+    "dealName": "Sample Roost",
+    "icon": "fa-file-pdf-o",
+    "dealLink": "http://dev.oneroost.com/myilnk",
+    "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/blahblahblah"
+}

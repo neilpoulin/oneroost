@@ -1,0 +1,52 @@
+$fa-font-path: "./fonts";
+@import "mixins";
+@import "variables";
+@import "fonts";
+@import "bootstrap";
+@import "bootstrap-custom/custom";
+@import "font-awesome";
+
+@import "sass-material-colors";
+@import "sass-material-colors-classes";
+@import "sass-material-colors-placeholders";
+
+@import "react-select/default";
+
+@import "components";
+
+
+body {
+  padding-top: 50px;
+  background-color: $globalBg;
+}
+
+.label {
+  margin-left: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+h1 {
+  margin-top: 0px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+*{
+    -webkit-overflow-scrolling: touch;
+}
+
+a{
+    color: $activeColor;
+    &:hover{
+        color: $mainColor;
+    }
+}

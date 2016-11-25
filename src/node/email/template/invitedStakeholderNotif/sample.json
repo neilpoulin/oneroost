@@ -1,0 +1,10 @@
+{
+    "userName": "New User",
+    "userEmail": "newuser@test.com",
+    "invitedByName": "Invitor Name",
+    "invitedByEmail": "invitorEmail@test.com",
+    "dealName": "Sample Deal Name",
+    "role": "VENDOR",
+    "dealLink": "http://dev.oneroost.com/roost/testing",
+    "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing"
+}

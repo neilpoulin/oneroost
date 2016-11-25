@@ -1,0 +1,32 @@
+@import "logo";
+.RoostNav{
+    .navbar-brand{
+        &:not(.roost-title){
+            @extend .logo-font;
+            font-size: 2em;
+        }
+    
+        &:hover{
+            color: $navbar-default-link-hover-color;
+            .logo-chicken{
+                fill: $navbar-default-link-hover-color;
+            }
+        }
+
+        .logo-chicken{
+            fill: $navbar-default-link-color;
+        }
+        > svg{
+            display: inline;
+            max-height: 100%;
+            width: 40px;
+        }
+    }
+    .accountLink{
+        a{
+            &:hover{
+                text-decoration: none;
+            }
+        }
+    }
+}

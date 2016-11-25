@@ -1,0 +1,8 @@
+
+.cursive{
+    font-family: 'Grand Hotel';
+}
+
+.logo-font{
+    @extend .cursive;
+}

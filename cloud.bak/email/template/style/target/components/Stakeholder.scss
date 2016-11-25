@@ -1,0 +1,65 @@
+.StakeholderSidebar
+{
+    .stakeholder-actions{
+        display:flex;
+        > *{
+            flex-grow: 1;
+            margin: 5px;
+            width: 50%;
+            &:last-child{
+                margin-right: 0px;
+            }
+            &:first-child{
+                margin-left: 0px;
+            }
+        }
+    }
+
+    .Stakeholder{
+        text-decoration: none;
+        padding: 15px;
+        display: flex;
+        align-items: flex-start;
+        @include visible-hover;
+        &:not(:last-child){
+            border-bottom: $borderThin;
+        }
+        &:hover{
+            background-color: darken($fixedSidebarBg, 5%);
+        }
+        .participantName{
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        .inviteStatus{
+            color: $roostOrange;
+        }
+        .roleName{
+            font-size: .8em;
+            display: inline-block;
+            min-width: 60px;
+            text-transform: uppercase;
+            margin-right: 10px;
+            float: right;
+            &.label{
+                background-color: material-color("grey", "500");
+                color: #fff;
+                &.client{
+                    background-color: material-color("teal", "500");
+                    color: #fff
+                }
+                &.vendor{
+                    background-color: material-color("indigo", "500");
+                    color: #fff
+                }
+            }
+        }
+        > * {
+            flex-grow: 1;
+        }
+        .delete-button{
+            flex-grow: 0;
+        }
+    }
+
+}

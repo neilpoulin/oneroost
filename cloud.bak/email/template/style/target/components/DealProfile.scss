@@ -1,0 +1,68 @@
+$textColor: $mainColor;
+.deal-top{
+    background: $dealPageContainerBg;
+    color: $textColor;
+}
+
+.DealProfile{
+    margin-bottom: 0px;
+    padding: 10px 0px 0px 0px;
+    display: flex;
+
+    .widgetContainer{
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        flex-grow: 1;
+        .widget{
+            flex-grow: 1;
+            flex-shrink: 1;
+            margin: auto;
+            .budget-high{
+                color: green;
+            }
+            .budget-low{
+                color: red;
+            }
+
+            .title{
+                font-size: 1.5em;
+            }
+            .widgetLink, a{
+                text-decoration: none;
+                color: $textColor;
+                &:visited{
+                    text-decoration: none;
+                }
+                &.active, &.active a{
+                    color: $activeColor;
+                    border-color: $activeBorderColor;
+                }
+            }
+
+            .widgetLink{
+                padding: 0px 5px 0px 5px;
+
+                > a{
+                    background-color: $globalBg;
+                    border-bottom: 4px solid transparent;
+                    // border-radius: 10px;
+                    padding: 10px;
+                    display: inline-block;
+                    width: 100%;
+                    &:hover{
+                        color:  $activeColor;
+                        // border-color: $activeBorderColor;
+                    }
+                }
+
+                &.active > a{
+                    // background-color: $activeBg;
+                    color: $activeColor;
+                    border-bottom: 4px solid $activeBorderColor
+                }
+            }
+        }
+    }
+
+}
