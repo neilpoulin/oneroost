@@ -1,0 +1,13 @@
+.RoostPage{
+    display:flex;
+    position: absolute;
+    top: $navbarHeight;
+    bottom: 0px;
+    width: 100%;
+    flex-direction: column;
+
+    > .RoostBody{
+        display: flex;
+        flex: 1;
+    }
+}

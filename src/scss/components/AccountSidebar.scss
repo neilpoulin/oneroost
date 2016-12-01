@@ -1,19 +1,20 @@
 $backgroundColor: $sidebarBg;
 $activeTextColor: $activeColor;
+$sidebarWidthPx: 275px;
 #accountSidebarContainer{
 
 }
 
 #accountSidebar{
-    position: fixed;
-    top: $navbarHeight;
-    bottom: 0px;
-    overflow: auto;
     background-color: $backgroundColor;
     color: $secondaryColor;
     padding: 0px 0px 0px 0px;
     font-family: AlrightSans,Helvetica Neue,Helvetica,Arial,sans-serif;
     border-right: $borderWeightThick solid $borderColorThick;
+    display:flex;
+    flex-direction: column;
+    flex: 0 0 $sidebarWidthPx;
+    order: -1;
     .AddAccountButton{
         text-align: center;
         padding: 10px;
@@ -24,6 +25,8 @@ $activeTextColor: $activeColor;
     list-style: none;
     margin-left: 0px;
     padding-left: 0px;
+    flex-grow: 0;
+    overflow-y: auto;
     .AccountSidebarItem{
         $activeBackgroundColor: $largeClickableBg;
         background-color: $backgroundColor;

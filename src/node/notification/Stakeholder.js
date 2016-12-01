@@ -47,7 +47,11 @@ exports.afterSave = function(){
 
             if ( stakeholder.get("readyRoostApprover") ){
                 console.log("this person is a ready roost approver, not sending an invite email");
-            } else {
+            }
+            else if ( user.id === invitedBy.id ){
+                console.log("This stakeholder is the same as the person that invited them, not sending an email.");
+            }
+            else {
                 //invite the new user
                 var inviteData = {
                     invitedBy: invitedBy.toJSON(),

@@ -1,5 +1,8 @@
 .Deal{
     padding-top: 15px;
+    // position: relative;
+    flex: 1;
+    top: $navbarHeight;
     background-color: $dealPageContainerBg;
     h1{
         font-size: 1.5em;
