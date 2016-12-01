@@ -5,7 +5,7 @@
     "completedDate": null,
     "stepStatus": "Completed (test)",
     "assignedUserName": "Neil Poulin - Test",
-    "dueDate": "2016-05-26",
+    "dueDate": "2016-12-01T20:19:50.683Z",
     "description": "same description with \nnew lines\n\ntesting test test",
     "dealLink": "http://dev.oneroost.com/roost/testing",
     "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing",

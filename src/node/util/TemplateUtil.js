@@ -2,6 +2,7 @@ var path = require("path");
 var templateRoot = path.resolve(__dirname, "..", "email", "template");
 var styleDir = path.resolve(__dirname, "..", "email", "template", "style");
 var Handlebars = require("handlebars");
+var moment = require("moment");
 var EmailTemplate = require("email-templates").EmailTemplate
 var emailTemplates = [
     "commentNotif",
@@ -58,6 +59,13 @@ function initializeHandlebars()
     Handlebars.registerHelper("formatUserName", function(user){
         return user ? user.firstName + " " + user.lastName : "";
     });
+
+    Handlebars.registerHelper("formatDate", function(date){
+        if (date != null && date != undefined) {
+            return moment(date).format("MMM D, YYYY");
+        }
+        return null;
+    })
     Handlebars.registerHelper("trimText", function(value){
         if (!value){
             return "";

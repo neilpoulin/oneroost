@@ -2,7 +2,6 @@ var envUtil = require("./../util/envUtil.js");
 var EmailSender = require("./../EmailSender.js");
 var EmailUtil = require("./../util/EmailUtil.js");
 var NotificationSettings = require("./NotificationSettings")
-
 var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
 Parse.serverURL = envUtil.serverURL;
@@ -47,7 +46,6 @@ exports.afterSave = function(){
                     status = "Completed";
                 }
 
-
                 let authorName = author ? author.get("firstName") + " " + author.get("lastName") : "OneRoost";
                 let authorEmail = author ? author.get("email") : [];
                 var data = {
@@ -59,7 +57,7 @@ exports.afterSave = function(){
                     completedDate: step.get("completedDate"),
                     stepStatus: status,
                     assignedUserName: assignedUserName,
-                    dueDate: deal.get("dueDate"),
+                    dueDate: step.get("dueDate"),
                     description: step.get("description"),
                     dealLink: envUtil.getHost() + "/roosts/" + deal.id,
                     messageId: deal.id
