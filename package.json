@@ -39,6 +39,7 @@
   "dependencies": {
     "asyncawait": "^1.0.6",
     "aws-sdk": "^2.3.5",
+    "babel-polyfill": "^6.16.0",
     "body-parser": "^1.15.0",
     "bootstrap-sass": "^3.3.6",
     "console-stamp": "^0.2.2",
@@ -67,7 +68,6 @@
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-async-to-generator": "^6.16.0",
     "babel-plugin-transform-regenerator": "^6.16.1",
-    "babel-polyfill": "^6.16.0",
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-3": "^6.17.0",
