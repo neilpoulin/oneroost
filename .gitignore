@@ -49,8 +49,9 @@ db/data/*
 build/
 logs/
 parse-server/
+cloud/
 
-cloud/email/template/style/target
+src/node/email/template/style/target
 
 # Elastic Beanstalk Files
 .elasticbeanstalk

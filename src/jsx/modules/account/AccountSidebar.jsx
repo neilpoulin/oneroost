@@ -12,6 +12,7 @@ export default React.createClass({
         stakeholders.include("deal");
         stakeholders.include(["deal.account"]);
         stakeholders.equalTo("user", user );
+        stakeholders.equalTo("inviteAccepted", true);
         return {
             stakeholders: stakeholders
         }

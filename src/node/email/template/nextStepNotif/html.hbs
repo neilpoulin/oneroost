@@ -1,0 +1,36 @@
+{{!-- Next Step Email --}}
+{{stepTitle}} has been assigned to {{assignedUserName}}
+<div class="table-container">
+    <table class="table table-condensed table-bordered">
+        <tbody>
+            <tr scope="row">
+                <th>Opportunity Name</th>
+                <td>{{dealName}}</td>
+            </tr>
+            <tr scope="row">
+                <th>Next Step Creator</th>
+                <td>{{authorName}}</td>
+            </tr>
+            <tr scope="row">
+                <th>Assigned User</th>
+                <td>{{assignedUserName}}</td>
+            </tr>
+            <tr scope="row">
+                <th>Description</th>
+                <td class="description">{{description}}</td>
+            </tr>
+            <tr  scope="row">
+                <th>Due Date</th>
+                <td>{{dueDate}}</td>
+            </tr>
+            <tr scope="row">
+                <th>Incomplete Next Steps</th>
+                <td>{{incompleteSteps.length}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+    {{>roost-link-html}}
+</div>
+{{>footer-html}}

@@ -1,0 +1,82 @@
+{
+    "deal":  {
+        "profile":{
+            "timeline":"2016-05-13T00:00:00-06:00"
+        },
+        "budget":{
+            "low":67000,
+            "high":1500000
+        },
+        "createdBy":{
+            "__type":"Pointer",
+            "className":"_User",
+            "objectId":"tCaq0CFgo1"
+        },
+        "description": "Spicy jalapeno bacon ipsum dolor amet bacon ut burgdoggen ribeye. Ad aliqua cupidatat sed pork loin dolore. Turkey beef ribs chuck fatback quis turducken, pork chop tenderloin landjaeger tongue pork ut andouille ham dolor. Veniam sed fatback kielbasa, picanha cupim turkey in reprehenderit eu excepteur commodo dolor pork. Sunt culpa minim ex cillum tenderloin.\n\nQuis ea drumstick meatloaf fugiat brisket. Proident eu andouille nostrud anim turducken. Meatloaf flank commodo ut pork. Bacon tenderloin ad velit short ribs dolore nostrud officia corned beef. Porchetta eu laboris, turkey cupim occaecat pork chop deserunt pancetta tri-tip irure est.",
+        "readyRoostUser":{
+            "username":"neil@oneroost.com",
+            "email":"neil@oneroost.com",
+            "firstName":"NeilTest",
+            "lastName":"Roost",
+            "passwordChangeRequired":false,
+            "createdAt":"2016-10-02T23:16:12.712Z",
+            "updatedAt":"2016-11-16T06:43:00.892Z",
+            "company":"OneRoost",
+            "jobTitle":"CTO",
+            "ACL":{
+                "*":{
+                    "read":true
+                },
+                "L3VRERfTGk":{
+                    "read":true,
+                    "write":true
+                }
+            },
+            "objectId":"L3VRERfTGk",
+            "__type":"Object",
+            "className":"_User"
+        },
+        "account":{
+            "__type":"Pointer",
+            "className":"Account",
+            "objectId":"vPJxByPusp"
+        },
+        "dealName":"Fireworks For Kids",
+        "createdAt":"2016-11-17T07:58:41.019Z",
+        "updatedAt":"2016-11-17T07:58:56.450Z",
+        "objectId":"xB7kqUBthI"
+    },
+    "roostUser": {
+        "username":"neil@oneroost.com",
+        "email":"neil@oneroost.com",
+        "firstName":"NeilTest",
+        "lastName":"Roost",
+        "passwordChangeRequired":false,
+        "createdAt":"2016-10-02T23:16:12.712Z",
+        "updatedAt":"2016-11-16T06:43:00.892Z",
+        "company":"OneRoost",
+        "jobTitle":"CTO",
+        "objectId":"L3VRERfTGk"
+    },
+    "currentUser": {
+        "username":"bobjones@example.com",
+        "email":"bobjones@example.com",
+        "firstName":"Bob",
+        "lastName":"Jones",
+        "passwordChangeRequired":false,
+        "createdAt":"2016-10-02T23:16:12.712Z",
+        "updatedAt":"2016-11-16T06:43:00.892Z",
+        "company":"Acme, Inc.",
+        "jobTitle":"Sales Representative",
+        "objectId":"L3VRERfTGk"
+    },
+    "documents": [ {
+        "fileName": "My Proposal",
+        "type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    }],
+    "completedSteps": [{
+        "title": "First Step"
+        }],
+    "dealLink": "http://dev.oneroost.com/roosts/xyz",
+    "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing"
+}

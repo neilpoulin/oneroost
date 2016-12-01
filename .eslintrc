@@ -18,7 +18,8 @@
         {
         "browser": true,
         "node": true,
-        "mongo": true
+        "mongo": true,
+        "es6": true,
         },
         "plugins": [
         "react"

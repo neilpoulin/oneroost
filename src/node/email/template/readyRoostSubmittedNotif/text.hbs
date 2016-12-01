@@ -1,0 +1,17 @@
+Opportunity Name: {{deal.dealName}}
+
+Submitted By: {{currentUser.fistName}} {{currentUser.lastName}}, {{currentUser.company}}
+
+Offering Overview: {{deal.description}}
+
+Investment: ${{formatCurrency deal.budget.low}} - ${{formatCurrency deal.budget.high}}
+
+Next Steps Completed: {{completedSteps.length}}
+
+Documents Added: {{documents.length}}
+
+To review the opportunity and let {{formatUserName currentUser}} know if you’re interested, follow the link below
+
+{{>roost-link-text}}
+
+{{> footer-text}}

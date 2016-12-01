@@ -1,0 +1,41 @@
+<div class="wrapper">
+    <div>
+        <table class="table table-condensed table-bordered">
+            <tbody>
+                <tr scope="row">
+                    <th>Opportunity Name</th>
+                    <td>{{deal.dealName}}</td>
+                </tr>
+                <tr scope="row">
+                    <th>Submitted By</th>
+                    <td>{{formatUserName currentUser}}, {{currentUser.company}}</td>
+                </tr>
+                <tr scope="row">
+                    <th>
+                        Offering Overview
+                    </th>
+                    <td>{{trimText deal.description}}</td>
+                </tr>
+                <tr scope="row">
+                    <th>Investment</th>
+                    <td>${{formatCurrency deal.budget.low}} - ${{formatCurrency deal.budget.high}}</td>
+                </tr>
+                <tr scope="row">
+                    <th>Next Steps Completed</th>
+                    <td>{{completedSteps.length}}</td>
+                </tr>
+                <tr scope="row">
+                    <th>Documents Added</th>
+                    <td>{{documents.length}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        To review the opportunity and let {{formatUserName currentUser}} know if you’re interested, click “View the Roost”
+    </div>
+    <div>
+        {{>roost-link-html}}
+    </div>
+</div>
+{{>footer-html}}
