@@ -4,75 +4,61 @@ var Parse = ParseCloud.Parse;
 var EmailSender = require("./../EmailSender.js");
 var envUtil = require("./../util/envUtil.js");
 
-function processReadyRoostRequest(currentUser, params, response){
-    console.log("Setting up ready roost");
-    var {profileUserId, roostName} = params
-    console.log("Setting up Ready Roost for currentUser=" + currentUser.id + " and profilelUser=" + profileUserId);
+async function processReadyRoostRequest(currentUser, params, response){
+    try{
+        console.log("Setting up ready roost");
+        var {profileUserId, roostName} = params
+        console.log("Setting up Ready Roost for currentUser=" + currentUser.id + " and profilelUser=" + profileUserId);
+        let profileUser = await (new Parse.Query("User")).get(profileUserId);
 
-    (new Parse.Query("User")).get(profileUserId, {
-        success: function(profileUser){
-            var roostQuery = new Parse.Query("Deal");
-            roostQuery.equalTo("createdBy", currentUser);
-            roostQuery.equalTo("readyRoostUser", profileUser);
-            roostQuery.find({
-                success: function(roosts){
-                    console.log("query returned for finding existing ready roosts", roosts);
-                    var maxReadyRoosts = getMaxReadyRoostsPerUser();
-                    if ( roosts.length >= maxReadyRoosts ){
-                        //max limit reached, log and return error
-                        console.warn("max number of ready roosts reached for user ", currentUser );
-                        response.error({
-                            "message": "Max number of ready roosts hit for user",
-                            "max_ready_roosts": maxReadyRoosts
-                        });
-                        return;
-                    }
-                    else {
-                        console.log("did not max out roosts, creating new ready roost");
-                        //get user's account if it exists, else create one
 
-                        var account = profileUser.get("account")
-                        var company = profileUser.get("company")
+        var roostQuery = new Parse.Query("Deal");
+        roostQuery.equalTo("createdBy", currentUser);
+        roostQuery.equalTo("readyRoostUser", profileUser);
+        let roosts = await roostQuery.find();
 
-                        var createRoost = function(account){
-                            console.log("creating roost with new account")
-                            var roost = new Parse.Object("Deal", {
-                                createdBy: currentUser,
-                                readyRoostUser: profileUser,
-                                account: account,
-                                dealName: roostName,
-                                profile: {"timeline":"2016-05-13T00:00:00-06:00"},
-                                budget: {"low":0,"high":0}
-                            });
-                            roost.save().then(function(roost){
-                                console.log("successfully saved the ready roost");
-                                setupRoost(roost, currentUser, profileUser, response);
-                            }, function(error){
-                                console.error("failed to save the ready roost", error);
-                                response.error({"error": "failed to create ready roost"})
-                            })
-                        };
-
-                        if ( !account )
-                        {
-                            new Parse.Object("Account", {
-                                accountName: company|| (profileUser.get("firstName") + " " + profileUser.get("lastName")).trim() + "\'s Company"
-                            }).save().then(createRoost)
-                        }
-                        else {
-                            createRoost(account)
-                        }
-                    }
-                },
-                error: function(error){
-                    console.error(error)
-                }
-            })
-        },
-        error: function(error){
-            console.error("Failed to find a Profile User with the id of = " + profileUserId);
+        console.log("query returned for finding existing ready roosts", roosts);
+        var maxReadyRoosts = getMaxReadyRoostsPerUser();
+        if ( roosts.length >= maxReadyRoosts ){
+            //max limit reached, log and return error
+            console.warn("max number of ready roosts reached for user ", currentUser );
+            response.error({
+                "message": "Max number of ready roosts hit for user",
+                "max_ready_roosts": maxReadyRoosts
+            });
+            return;
         }
-    });
+        else {
+            console.log("did not max out roosts, creating new ready roost");
+            //get user's account if it exists, else create one
+
+            var account = profileUser.get("account")
+            var company = profileUser.get("company")
+
+            if ( !account ){
+                let accountName = company || (profileUser.get("firstName") + " " + profileUser.get("lastName")).trim() + "\'s Company"
+                console.log("no account existed, creating one", accountName);
+                account = await (new Parse.Object("Account", {accountName: accountName})).save()
+            }
+            console.log("creating roost")
+            let roost = new Parse.Object("Deal", {
+                createdBy: currentUser,
+                readyRoostUser: profileUser,
+                account: account,
+                dealName: roostName,
+                profile: {"timeline":"2016-05-13T00:00:00-06:00"},
+                budget: {"low":0,"high":0}
+            });
+            let savedRoost = await roost.save()
+            console.log("successfully saved the ready roost");
+            //TODO: don't pass in the response here
+            setupRoost(savedRoost, currentUser, profileUser, response);
+        }
+    }
+    catch(e){
+        console.error("Something went wrong setting up the ready roost", params);
+        response.error({error: "Something went wrong setting up the ready roost", params: params});
+    }
 }
 
 function setupRoost(roost, currentUser, profileUser, response){
@@ -117,7 +103,7 @@ function setupRoost(roost, currentUser, profileUser, response){
             title: "Submit Opportunity for Review!",
             assignedUser: currentUser,
             description: "Congrats!  You've made it to the final next step before submitting the opportunity to the Buyer.  If you're on this next step, the following should have been submitted to the Roost: The offering overview, budget requirements, relevant materials, and your colleagues' information." +
-                "\n\nAssuming everything is completed,  click into the \"Participants\" section and submit the opportunity, which is located under the Buyer's name.  After you click submit, OneRoost will send an email to the Buyer notifying the Roost (opportunity) is ready for review.  "
+            "\n\nAssuming everything is completed,  click into the \"Participants\" section and submit the opportunity, which is located under the Buyer's name.  After you click submit, OneRoost will send an email to the Buyer notifying the Roost (opportunity) is ready for review.  "
         }),
         // add participants
         new Parse.Object("Stakeholder", {
@@ -169,56 +155,62 @@ function getMaxReadyRoostsPerUser(){
     return 1
 }
 
-function processReadyRoostSubmission(currentUser, params, response){
+async function processReadyRoostSubmission(currentUser, params, response){
     //dealId, stakeholderId
-    var stakeholderQuery = new Parse.Query("Stakeholder");
-    stakeholderQuery.include("deal.readyRoostUser");
-    stakeholderQuery.get(params.stakeholderId, {
-        success: function(stakeholder){
-            console.log("retrieved stakeholder", stakeholder);
-            var deal = stakeholder.get("deal");
+    try{
+        var stakeholderQuery = new Parse.Query("Stakeholder");
+        stakeholderQuery.include("deal.readyRoostUser");
 
-            var documentQuery = new Parse.Query("Document");
-            documentQuery.equalTo("deal", deal).find({
-                success: function(documents){
-                    var roostUser = deal.get("readyRoostUser");
-                    var roostUserAddress = {
-                        email: roostUser.get("email"),
-                        name: roostUser.get("firstName") + " " + roostUser.get("lastName")
-                    };
-                    var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
-                    var documentsJson = documents.map(function(doc){
-                        return {
-                            fileName: doc.get("fileName"),
-                            type: doc.get("type")
-                        }
-                    }).filter(function(doc){
-                        return doc.fileName != "FAQ - OneRoost"
-                    })
+        let stakeholder = await stakeholderQuery.get(params.stakeholderId)
 
-                    var email = {
-                        deal: deal.toJSON(),
-                        roostUser: roostUser.toJSON(),
-                        currentUser: currentUser.toJSON(),
-                        documents: documentsJson,
-                        dealLink: dealLink,
-                        messageId: deal.id
-                    }
-                    console.log(email);
-                    EmailSender.sendTemplate( "readyRoostSubmittedNotif", email, [roostUserAddress] );
-                },
-                error: function(error){
-                    console.error(error);
-                }
-            })
+        console.log("retrieved stakeholder", stakeholder);
+        var deal = stakeholder.get("deal");
 
-        },
-        error: function(error){
-            console.error(error);
+        var documentQuery = new Parse.Query("Document");
+        let documentQueryResult = documentQuery.equalTo("deal", deal).find();
+
+        let nextStepsQuery = new Parse.Query("NextStep");
+        nextStepsQuery.equalTo("deal", deal);
+        let nextStepsQueryResult = nextStepsQuery.find();
+
+        let documents = await documentQueryResult;
+        let nextSteps = await nextStepsQueryResult;
+
+        var roostUser = deal.get("readyRoostUser");
+        var roostUserAddress = {
+            email: roostUser.get("email"),
+            name: roostUser.get("firstName") + " " + roostUser.get("lastName")
+        };
+        var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
+        var documentsJson = documents.map(function(doc){
+            return {
+                fileName: doc.get("fileName"),
+                type: doc.get("type")
+            }
+        }).filter(function(doc){
+            return doc.fileName.trim() != "FAQ - OneRoost"
+        })
+
+        let completedStepsJson = nextSteps.filter(step => step.get("completedDate") != null).map(step => step.toJSON());
+
+        var email = {
+            deal: deal.toJSON(),
+            roostUser: roostUser.toJSON(),
+            currentUser: currentUser.toJSON(),
+            documents: documentsJson,
+            dealLink: dealLink,
+            completedSteps: completedStepsJson,
+            messageId: deal.id
         }
-    })
+        console.log(email);
+        EmailSender.sendTemplate( "readyRoostSubmittedNotif", email, [roostUserAddress] );
 
-    response.success({"message": "submitted the roost!"});
+        response.success({"message": "submitted the roost!"});
+    }
+    catch(e){
+        console.error("failed to process ready roost sumission", e);
+        return response.error({error: e});
+    }
 }
 
 exports.initialize = function(){

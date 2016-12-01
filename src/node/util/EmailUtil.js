@@ -1,3 +1,5 @@
+import {Parse} from "parse-cloud-express"
+
 var TempalteUtil = require("./TemplateUtil");
 
 exports.renderEmail = function(name, data){
@@ -54,4 +56,13 @@ exports.getActualRecipients = function( original, config )
         return overrides;
     }
     return original;
+}
+
+exports.getActualRecipientsForDeal = async function( deal, excludedEmails ){
+    var stakeholderQuery = new Parse.Query("Stakeholder");
+    stakeholderQuery.include( "user" );
+    stakeholderQuery.equalTo( "deal", deal );
+    let stakeholders = await stakeholderQuery.find();
+    var recipients = this.getRecipientsFromStakeholders( stakeholders, excludedEmails );
+    return recipients;
 }

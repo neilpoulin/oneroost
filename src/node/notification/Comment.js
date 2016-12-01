@@ -1,22 +1,25 @@
-var EmailUtil = require("./../util/EmailUtil.js");
-var EmailSender = require("./../EmailSender.js");
-var envUtil = require("./../util/envUtil.js");
-var ParseCloud = require("parse-cloud-express");
-var Parse = ParseCloud.Parse;
-var NotificationSettings = require("./NotificationSettings");
+import EmailUtil from "./../util/EmailUtil.js"
+import EmailSender from "./../EmailSender.js"
+import envUtil from "./../util/envUtil.js"
+import {Parse} from "parse-cloud-express"
+import NotificationSettings from "./NotificationSettings"
+
 Parse.serverURL = envUtil.serverURL;
 
-function sendCommentEmail( comment ){
+async function sendCommentEmail( comment ){
     console.log("preparing DealComment email notification");
-    var sender = function(){
-        var deal = comment.get("deal");
-        var author = comment.get("author");
-        var authorEmail = author.get("email");
-        var stakeholderQuery = new Parse.Query("Stakeholder");
-        stakeholderQuery.include( "user" );
-        stakeholderQuery.equalTo( "deal", deal );
-        stakeholderQuery.find().then( function( stakeholders ){
-            var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, authorEmail );
+    try{
+        let sendNotification = await NotificationSettings.getNotificationSetting( NotificationSettings.Settings.COMMENT_EMAILS )
+        if ( sendNotification ){
+            var deal = comment.get("deal");
+            var author = comment.get("author");
+            var authorEmail = author.get("email");
+            // var stakeholderQuery = new Parse.Query("Stakeholder");
+            // stakeholderQuery.include( "user" );
+            // stakeholderQuery.equalTo( "deal", deal );
+            // let stakeholders = await stakeholderQuery.find();
+            // var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, authorEmail );
+            let recipients = await EmailUtil.getActualRecipientsForDeal(deal, authorEmail);
             var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
             var data = {
                 authorName: author.get("firstName") + " " + author.get("lastName"),
@@ -26,11 +29,11 @@ function sendCommentEmail( comment ){
                 messageId: deal.id
             };
             EmailSender.sendTemplate( "commentNotif", data, recipients );
-        }, function(error){
-            console.error("something went wrong", error);
-        });
+        }
     }
-    NotificationSettings.checkNotificationSettings( NotificationSettings.Settings.COMMENT_EMAILS, true, sender );
+    catch(e){
+        console.error("something went wrong with the comment sender", e);
+    }
 }
 
 exports.afterSave = function(io){
@@ -41,8 +44,7 @@ exports.afterSave = function(io){
         });
     });
 
-    var broadcast = function( comment )
-    {
+    var broadcast = function( comment ){
         console.log("broadcasting comment to all websocket clients")
         var dealId = comment.get("deal").id;
         namespace.in(dealId).emit("comment", comment);
@@ -51,7 +53,7 @@ exports.afterSave = function(io){
     Parse.Cloud.afterSave( "DealComment", function( req, res ){
         var comment = req.object;
         /*
-            this block is to send an email... TBD if we want to send these or not.
+        this block is to send an email... TBD if we want to send these or not.
         */
 
         if ( comment.get("author") != null )

@@ -6,24 +6,24 @@ require("console-stamp")(console, {
         metadata: "green"
     }
 });
-var express = require("express");
-var moment = require("moment");
-var ejs = require("ejs");
-var ParseServer = require("parse-server").ParseServer;
-var ParseDashboard = require("parse-dashboard");
-var ParseDashboardConfig = require("./parse-dashboard-config.json");
-var S3Adapter = require("parse-server").S3Adapter;
-var bodyParser = require("body-parser");
-var SESParseAdapter = require("./email/SESParseAdapter.js");
-var favicon = require("serve-favicon");
-var Notifications = require("./notification/Notifications.js");
-var envUtil = require("./util/envUtil.js");
-var Stakeholders = require("./stakeholders.js");
-var http = require("http");
-var socket = require("socket.io");
-var TemplateUtil = require("./util/TemplateUtil");
-var Documents = require("./documents/Documents");
-var ReadyRoost = require("./roost/ReadyRoost");
+import express from "express"
+import moment from "moment"
+import ejs from "ejs"
+import {ParseServer} from "parse-server"
+import ParseDashboard from "parse-dashboard"
+import ParseDashboardConfig from "./parse-dashboard-config.json"
+import {S3Adapter} from "parse-server"
+import bodyParser from "body-parser"
+import SESParseAdapter from "./email/SESParseAdapter.js"
+import favicon from "serve-favicon"
+import Notifications from "./notification/Notifications.js"
+import envUtil from "./util/envUtil.js"
+import Stakeholders from "./stakeholders.js"
+import http from "http"
+import socket from"socket.io"
+import TemplateUtil from"./util/TemplateUtil"
+import Documents from "./documents/Documents"
+import ReadyRoost from "./roost/ReadyRoost"
 
 var app = express();
 var server = http.Server(app);

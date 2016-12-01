@@ -7,26 +7,32 @@ var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
 Parse.serverURL = envUtil.serverURL;
 
-function getSender( req ){
-    return function(){
-        console.log("Next Step afterSave was triggered... ");
-        var stepQuery = new Parse.Query("NextStep");
-        stepQuery.include("deal");
-        stepQuery.include("createdBy"); //this fixed the issue where it didn"t know the properties of the author
-        stepQuery.include("assignedUser");
-        stepQuery.include("modifiedBy");
-        stepQuery.get( req.object.id).then( function( step ){
-            var author = step.get("createdBy");
-            var deal = step.get("deal");
-            var stakeholderQuery = new Parse.Query("Stakeholder");
-            var assignedUser = step.get("assignedUser");
-            var modifiedBy = step.get("modifiedBy");
-            stakeholderQuery.include("user");
-            stakeholderQuery.equalTo( "deal", deal );
-            stakeholderQuery.find().then( function( stakeholders ){
+exports.afterSave = function(){
+    Parse.Cloud.afterSave( "NextStep", async function( req ){
+        try{
+            let notificationSetting = await NotificationSettings.getNotificationSetting(NotificationSettings.Settings.NEXT_STEP_EMAILS)
+            if ( notificationSetting ){
+                console.log("Next Step afterSave was triggered... ");
+                var stepQuery = new Parse.Query("NextStep");
+                stepQuery.include("deal");
+                stepQuery.include("createdBy"); //this fixed the issue where it didn"t know the properties of the author
+                stepQuery.include("assignedUser");
+                stepQuery.include("modifiedBy");
+                let step = await stepQuery.get(req.object.id);
+
+                var allStepsQuery = new Parse.Query("NextStep");
+                allStepsQuery.equalTo("completedDate", null);
+                allStepsQuery.equalTo("deal", step.get("deal"));
+
+                let incompleteSteps = await allStepsQuery.find();
+
+                var author = step.get("createdBy");
+                var deal = step.get("deal");
+                var assignedUser = step.get("assignedUser");
+                var modifiedBy = step.get("modifiedBy");
+
                 var assignedUserName = null
-                if ( assignedUser )
-                {
+                if ( assignedUser ){
                     assignedUserName = assignedUser.get("firstName") + " " + assignedUser.get("lastName");
                 }
 
@@ -40,11 +46,16 @@ function getSender( req ){
                 {
                     status = "Completed";
                 }
+
+
+                let authorName = author ? author.get("firstName") + " " + author.get("lastName") : "OneRoost";
+                let authorEmail = author ? author.get("email") : [];
                 var data = {
                     dealName: deal.get("dealName"),
                     modifiedByName: modifiedByName,
                     stepTitle: step.get("title"),
-                    authorName: author.get("firstName") + " " + author.get("lastName"),
+                    authorName: authorName,
+                    incompleteSteps: incompleteSteps,
                     completedDate: step.get("completedDate"),
                     stepStatus: status,
                     assignedUserName: assignedUserName,
@@ -54,15 +65,13 @@ function getSender( req ){
                     messageId: deal.id
                 }
                 console.log("sending Next Step after Save Email with data", data);
-                var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, author.get("email") );
+                // var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, author.get("email") );
+                let recipients = await EmailUtil.getActualRecipientsForDeal(deal, authorEmail);
                 EmailSender.sendTemplate( "nextStepNotif", data, recipients );
-            });
-        });
-    }
-}
-
-exports.afterSave = function(){
-    Parse.Cloud.afterSave( "NextStep", function( req ){
-        NotificationSettings.checkNotificationSettings(NotificationSettings.Settings.NEXT_STEP_EMAILS, true, getSender(req) )
+            }
+        }
+        catch(e){
+            console.error("Something went wrong with sending NextStep email", e);
+        }
     });
 }

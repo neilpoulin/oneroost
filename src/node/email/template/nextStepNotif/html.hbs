@@ -1,24 +1,31 @@
 {{!-- Next Step Email --}}
-<div>{{modifiedByName}} upated the next step "{{stepTitle}}" on {{dealName}}
-</div>
+{{stepTitle}} has been assigned to {{assignedUserName}}
 <div class="table-container">
     <table class="table table-condensed table-bordered">
         <tbody>
-            <tr>
-                <th scope="row">Assigned User</th>
-                <td><{{assignedUserName}}</td>
+            <tr scope="row">
+                <th>Opportunity Name</th>
+                <td>{{dealName}}</td>
             </tr>
-            <tr>
-                <th scope="row">dueDate</th>
-                <td>{{dueDate}}</td>
+            <tr scope="row">
+                <th>Next Step Creator</th>
+                <td>{{authorName}}</td>
             </tr>
-            <tr>
-                <th scope="row">Description</th>
+            <tr scope="row">
+                <th>Assigned User</th>
+                <td>{{assignedUserName}}</td>
+            </tr>
+            <tr scope="row">
+                <th>Description</th>
                 <td class="description">{{description}}</td>
             </tr>
-            <tr>
-                <th scope="row">Status</th>
-                <td>{{stepStatus}}</td>
+            <tr  scope="row">
+                <th>Due Date</th>
+                <td>{{dueDate}}</td>
+            </tr>
+            <tr scope="row">
+                <th>Incomplete Next Steps</th>
+                <td>{{incompleteSteps.length}}</td>
             </tr>
         </tbody>
     </table>

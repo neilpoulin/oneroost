@@ -1,5 +1,5 @@
 <div>
-    {{invitedByName}} ({{invitedByEmail}}) has sent an invite to {{userName}} ({{userEmail}}) to be a {{role}} on the deal {{dealName}}.
+    {{formatUserName invitedBy}} at {{invitedByCompany}} has sent an invite to {{formatUserName user}} from {{user.company}} to participate in {{dealName}}.
 </div>
 <div>
     {{>roost-link-html}}

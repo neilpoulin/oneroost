@@ -1,10 +1,20 @@
 {
-    "userName": "New User",
-    "userEmail": "newuser@test.com",
-    "invitedByName": "Invitor Name",
-    "invitedByEmail": "invitorEmail@test.com",
-    "dealName": "Sample Deal Name",
+    "user": {
+        "firstName": "Timothy",
+        "lastName": "Scientist",
+        "company": "NASA",
+        "jobTitle":"Staff Scientist"
+    },
+    "invitedBy": {
+        "firstName": "Les",
+        "lastName": "Salesguy",
+        "company": "Acme Corp",
+        "jobTitle":"Head of Sales"
+    },
+    "dealName": "Fancy Dancy Study",
     "role": "VENDOR",
     "dealLink": "http://dev.oneroost.com/roost/testing",
-    "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing"
+    "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing",
+    "messageId": "XXXXYZ",
+    "host": "http://dev.oneroost.com"
 }

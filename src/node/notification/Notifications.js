@@ -1,11 +1,10 @@
-var CommentNotification = require("./Comment.js");
-var NextStepNotification = require("./NextStep.js");
-var StakeholderNotification = require("./Stakeholder.js");
-var DocumentAddedNotification = require("./DocumentAdded.js");
+import CommentNotification from "./Comment.js"
+import NextStepNotification from "./NextStep.js"
+import StakeholderNotification from "./Stakeholder.js"
+import DocumentAddedNotification from "./DocumentAdded.js"
 
-var envUtil = require("./../util/envUtil.js");
-var ParseCloud = require("parse-cloud-express");
-var Parse = ParseCloud.Parse;
+import envUtil from "./../util/envUtil.js"
+import {Parse} from "parse-cloud-express"
 Parse.serverURL = envUtil.serverURL;
 
 exports.initialize = function(io)

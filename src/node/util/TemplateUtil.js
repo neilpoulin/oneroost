@@ -55,6 +55,15 @@ function initializeHandlebars()
     Handlebars.registerHelper("formatCurrency", function(value) {
         return value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
     });
+    Handlebars.registerHelper("formatUserName", function(user){
+        return user ? user.firstName + " " + user.lastName : "";
+    });
+    Handlebars.registerHelper("trimText", function(value){
+        if (!value){
+            return "";
+        }
+        return value.trim();
+    })
 }
 
 function initializeEmails(){

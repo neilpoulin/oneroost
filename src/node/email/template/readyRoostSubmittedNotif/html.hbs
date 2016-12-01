@@ -1,29 +1,38 @@
 <div class="wrapper">
-    <div class="form-group">
-        <label>Deal Name:</label>
-        <p class="form-control-static">{{deal.dealName}}</p>
+    <div>
+        <table class="table table-condensed table-bordered">
+            <tbody>
+                <tr scope="row">
+                    <th>Opportunity Name</th>
+                    <td>{{deal.dealName}}</td>
+                </tr>
+                <tr scope="row">
+                    <th>Submitted By</th>
+                    <td>{{formatUserName currentUser}}, {{currentUser.company}}</td>
+                </tr>
+                <tr scope="row">
+                    <th>
+                        Offering Overview
+                    </th>
+                    <td>{{trimText deal.description}}</td>
+                </tr>
+                <tr scope="row">
+                    <th>Investment</th>
+                    <td>${{formatCurrency deal.budget.low}} - ${{formatCurrency deal.budget.high}}</td>
+                </tr>
+                <tr scope="row">
+                    <th>Next Steps Completed</th>
+                    <td>{{completedSteps.length}}</td>
+                </tr>
+                <tr scope="row">
+                    <th>Documents Added</th>
+                    <td>{{documents.length}}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="form-group">
-        <label>Submitted By</label>
-        <p class="form-control-static">{{currentUser.firstName}}&nbsp;{{currentUser.lastName}}</p>
-        <p class="company">{{currentUser.company}}</p>
-    </div>
-    <div class="form-group">
-        <label class="control-label">Description</label>
-        <p class="form-control-static">{{deal.description}}</p>
-    </div>
-    <div class="form-group">
-        <label class="control-label">Budget</label>
-        <p class="form-control-static">${{formatCurrency deal.budget.low}} - ${{formatCurrency deal.budget.high}}</p>
-    </div>
-    <div class="form-group">
-        <label class="control-label">{{documents.length}} Documents Added</label>
-        <ul>
-            {{#each documents}}
-                <li class="">{{this.fileName}}</li>
-            {{/each}}
-        </ul>
-
+    <div>
+        To review the opportunity and let {{formatUserName currentUser}} know if you’re interested, click “View the Roost”
     </div>
     <div>
         {{>roost-link-html}}

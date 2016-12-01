@@ -15,15 +15,20 @@ exports.sendTemplate = function( templateName, data, sendTo ){
     {
         sendTo = [sendTo];
     }
+    var recipients = [];
+    console.log("sendTo", sendTo);
     sendTo.forEach( function(to){
-        findRecipient(to, sender, function(error){
-            console.log("something went wrong", error);
-        });
+        let recipient = findRecipient(to)
+        recipients.push(recipient);
+        recipient.then(recipient => sender(recipient, to))
+        recipient.catch(error => console.log("something went wrong", error))
     } );
 }
 
 function templateSender( templateName, data ){
+    console.log("TemplateSender", templateName, data);
     return function(recipient, to){
+        console.log("RecipientSender", recipient, to)
         if ( !recipient.get("unsubscribe") )
         {
             data.unsubscribeLink = getUnsubscribeUrl(recipient.id);
@@ -39,30 +44,42 @@ function templateSender( templateName, data ){
     }
 }
 
-
-function findRecipient( to, callback, errorCallack )
+function findRecipient( to )
 {
+    console.log("finding recipeint for ", to);
     var query = new Parse.Query("EmailRecipient");
     query.equalTo( "email", to.email );
-    query.find().then( function(emailRecipients){
-        if ( emailRecipients.length > 0 ){
-            var existing = emailRecipients[0];
-            if ( !existing.get("unsubscribe") ){
-                existing.set("lastSendDate", new Date());
-                existing.save();
-                callback(existing, to)
+    return query.find().then( function(emailRecipients){
+        return new Promise(function(resolve, reject){
+            if ( emailRecipients.length > 0 ){
+                var existing = emailRecipients[0];
+                if ( !existing.get("unsubscribe") ){
+                    existing.set("lastSendDate", new Date());
+                    existing.save();
+                    resolve(existing)
+                }
+                else {
+                    // console.log("not sending email since the user is unsubscribed", existing.get("email"));
+                    reject( {message: "not sending email since the user is unsubscribed", email: existing.get("email") });
+                }
             }
-            else {
-                // console.log("not sending email since the user is unsubscribed", existing.get("email"));
-                errorCallack( "not sending email since the user is unsubscribed", existing.get("email") );
+            else { //create new one
+                return createEmailRecipient( to );
             }
-        }
-        else { //create new one
-            createEmailRecipient( to, callback );
-        }
+        })
     });
 }
 
+
+function createEmailRecipient( to ){
+    var recipient = new EmailRecipient();
+    recipient.set("email", to.email);
+    recipient.set("unsubscribe", false);
+    recipient.set("lastSendDate", new Date());
+    recipient.set("unsubscribeDate", null);
+    console.log("saving new email recipient: ", to);
+    return recipient.save();
+}
 
 function getActualRecipients( original, config )
 {
@@ -117,18 +134,6 @@ function processEmailInput( original )
     return result;
 }
 
-function createEmailRecipient( to, callback ){
-    var recipient = new EmailRecipient();
-    recipient.set("email", to.email);
-    recipient.set("unsubscribe", false);
-    recipient.set("lastSendDate", new Date());
-    recipient.set("unsubscribeDate", null);
-    recipient.save().then(function(savedRecipient){
-        console.log("successfully saved new email recipient", savedRecipient);
-        callback(savedRecipient, to)
-    });
-}
-
 function getUnsubscribeUrl( recipientId ){
     var path = "/unsubscribe/" + recipientId;
     var url = envUtil.getHost() + path;
@@ -159,7 +164,6 @@ function sendEmail( templateResults, data, to ){
             }
 
             actualRecipients.forEach( function( actualTo ){
-
                 var email = new SESEmailSender.Mail();
                 email.setRecipients( [actualTo] );
                 email.subject = templateResults.subject;
@@ -179,7 +183,7 @@ function sendEmail( templateResults, data, to ){
         }
     },
     function(error){
-        console.log("error... failed to get config");
+        console.log("error... failed to get config when sending an email");
         console.log(error);
     });
 }

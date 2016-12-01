@@ -1,10 +1,22 @@
 {
-    "invitedByName": "Test Name",
-    "invitedByEmail": "testemail@test.com",
+    "invitedBy": {
+        "firstName": "Les",
+        "lastName": "Salesguy",
+        "company": "Acme Corp",
+        "jobTitle":"Head of Sales"
+    },
+    "user": {
+        "firstName": "Timothy",
+        "lastName": "Scientist",
+        "company": "NASA",
+        "jobTitle":"Staff Scientist"
+    },
     "invitePath": "/invitations/xxxxxxx",
     "dealName": "Test Deal Name",
     "role": "VENDOR",
     "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing",
     "dealLink": "http://dev.oneroost.com/roosts/testing",
-    "inviteLink": "http://dev.oneroost.com/invitations/12345"
+    "inviteLink": "http://dev.oneroost.com/invitations/12345",
+    "messageId": "XamT6sWS5L",
+    "host": "http://dev.oneroost.com"
 }

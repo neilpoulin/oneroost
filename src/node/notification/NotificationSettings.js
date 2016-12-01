@@ -8,6 +8,17 @@ exports.Settings = {
     DOCUMENT_ADDED_EMAILS: "documentAddedEmails"
 }
 
+
+exports.getNotificationSetting = function( property ){
+    console.log("getting", property, "from notification settings");
+    return Parse.Config.get().then(function(config){
+        return new Promise(function(resolve, reject){
+            var settings = config.get("notificationSettings");
+            resolve(settings[property])
+        });
+    } );
+}
+
 exports.checkNotificationSettings = function( property, value, callback ){
     Parse.Config.get().then( function(config){
         var settings = config.get("notificationSettings");

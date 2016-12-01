@@ -8,5 +8,6 @@
     "dueDate": "2016-05-26",
     "description": "same description with \nnew lines\n\ntesting test test",
     "dealLink": "http://dev.oneroost.com/roost/testing",
-    "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing"
+    "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing",
+    "incompleteSteps": [{"title": "test step"}, {"title": "test step 2"}]
 }

@@ -12,7 +12,7 @@
             "className":"_User",
             "objectId":"tCaq0CFgo1"
         },
-        "description": "This is a test description",
+        "description": "Spicy jalapeno bacon ipsum dolor amet bacon ut burgdoggen ribeye. Ad aliqua cupidatat sed pork loin dolore. Turkey beef ribs chuck fatback quis turducken, pork chop tenderloin landjaeger tongue pork ut andouille ham dolor. Veniam sed fatback kielbasa, picanha cupim turkey in reprehenderit eu excepteur commodo dolor pork. Sunt culpa minim ex cillum tenderloin.\n\nQuis ea drumstick meatloaf fugiat brisket. Proident eu andouille nostrud anim turducken. Meatloaf flank commodo ut pork. Bacon tenderloin ad velit short ribs dolore nostrud officia corned beef. Porchetta eu laboris, turkey cupim occaecat pork chop deserunt pancetta tri-tip irure est.",
         "readyRoostUser":{
             "username":"neil@oneroost.com",
             "email":"neil@oneroost.com",
@@ -71,9 +71,12 @@
         "objectId":"L3VRERfTGk"
     },
     "documents": [ {
-        "fileName": "FAQ - OneRoost",
+        "fileName": "My Proposal",
         "type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     }],
+    "completedSteps": [{
+        "title": "First Step"
+        }],
     "dealLink": "http://dev.oneroost.com/roosts/xyz",
     "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing"
 }

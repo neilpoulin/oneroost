@@ -1,15 +1,16 @@
-Deal Name: {{deal.dealName}}
+Opportunity Name: {{deal.dealName}}
 
-Submitted By: {{currentUser.fistName}} {{currentUser.lastName}}
+Submitted By: {{currentUser.fistName}} {{currentUser.lastName}}, {{currentUser.company}}
 
-Description: {{deal.description}}
+Offering Overview: {{deal.description}}
 
-Budget: ${{formatCurrency deal.budget.low}} - ${{formatCurrency deal.budget.high}}
+Investment: ${{formatCurrency deal.budget.low}} - ${{formatCurrency deal.budget.high}}
 
-{{documents.length}} Documents Added:
-{{#each documents}}
-    * {{this.fileName}}
-{{/each}}
+Next Steps Completed: {{completedSteps.length}}
+
+Documents Added: {{documents.length}}
+
+To review the opportunity and let {{formatUserName currentUser}} know if you’re interested, follow the link below
 
 {{>roost-link-text}}
 

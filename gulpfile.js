@@ -266,6 +266,7 @@ var sassOpts = {
         gulp.watch(paths.src.styles, ["ugly:css", "sass"]);
         gulp.watch(paths.src.frontend, ["ugly:js"]);
         gulp.watch(paths.src.node, ["build:cloud-dev"]);
+        gulp.watch(paths.src.nodetemplates, ["build:cloud-dev"]);        
     });
 
 

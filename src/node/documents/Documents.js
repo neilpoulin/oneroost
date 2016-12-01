@@ -52,18 +52,21 @@ function registerPresignedGetUrl(){
     });
 }
 
-exports.getS3Object = function( s3Key, callback ){
+exports.getS3Object = async function( s3Key ){
     var bucket = envUtil.getDocumentsBucket();
     var params = {
         Bucket: bucket,
         Key: s3Key
     };
-    s3.getObject( params, function(err, data){
-        if ( err ){
-            console.error(err)
-        }else {
-            callback(data);
-        }
+    return new Promise(function( resolve, reject){
+        s3.getObject( params, function(err, data){
+            if ( err ){
+                console.error(err)
+                reject(err);
+            }else {
+                resolve(data);
+            }
+        });
     });
 }
 

@@ -38,7 +38,7 @@ export default React.createClass({
         if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
             this.saveStakeholder();
             return true;
-        }        
+        }
         this.setState({errors: errors});
         return false;
     },
