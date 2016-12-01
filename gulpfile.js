@@ -258,7 +258,7 @@ var sassOpts = {
     gulp.task("build:cloud", ["build:node", "move:cloud"]);
     gulp.task("compress", ["compress:css", "compress:js"]);
     gulp.task("build:frontend", ["compress","bundle", "sass", "fonts", "lint"]);
-    gulp.task("build:all", ["compress","bundle", "sass", "fonts", "lint", "build:cloud"]);
+    gulp.task("build:all", ["compress","bundle", "sass", "fonts", "build:cloud"]);
 
     gulp.task("build:dev", ["ugly:js","ugly:css", "build:cloud-dev"]);
 
@@ -266,7 +266,7 @@ var sassOpts = {
         gulp.watch(paths.src.styles, ["ugly:css", "sass"]);
         gulp.watch(paths.src.frontend, ["ugly:js"]);
         gulp.watch(paths.src.node, ["build:cloud-dev"]);
-        gulp.watch(paths.src.nodetemplates, ["build:cloud-dev"]);        
+        gulp.watch(paths.src.nodetemplates, ["build:cloud-dev"]);
     });
 
 
