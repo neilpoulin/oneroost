@@ -1,9 +1,9 @@
 .Deal{
-    padding-top: 15px;
-    // position: relative;
-    flex: 1;
-    top: $navbarHeight;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
     background-color: $dealPageContainerBg;
+    overflow: auto;
     h1{
         font-size: 1.5em;
     }
@@ -31,8 +31,4 @@
             color: $navbar-default-link-color;
         }
     }
-}
-
-#dealPageContainer{
-    border-bottom: $borderWeightThick solid $borderColorThick;
 }

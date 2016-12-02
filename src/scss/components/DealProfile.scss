@@ -2,12 +2,18 @@ $textColor: $mainColor;
 .deal-top{
     background: $dealPageContainerBg;
     color: $textColor;
+    padding-top: 15px;
+    border-bottom: $borderWeightThick solid $borderColorThick;
+}
+
+.dealPageBottomContainer{
+    display: flex;
 }
 
 .DealProfile{
     margin-bottom: 0px;
     padding: 10px 0px 0px 0px;
-    display: flex;
+
 
     .widgetContainer{
         display: flex;

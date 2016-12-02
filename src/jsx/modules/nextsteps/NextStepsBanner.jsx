@@ -57,7 +57,7 @@ export default React.createClass({
         }
 
         var banner =
-        <div id="NextStepsBannerContainer" className="row">
+        <div id="NextStepsBannerContainer" className="">
             {completedStepsItem}
             <div className="NextStepBannerItem NextStepsContainer">
                 {nextSteps.map(function(step){

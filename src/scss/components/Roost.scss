@@ -10,4 +10,9 @@
         display: flex;
         flex: 1;
     }
+
+    .blank{
+        flex: 0 0 30px;
+        background: red;
+    }
 }

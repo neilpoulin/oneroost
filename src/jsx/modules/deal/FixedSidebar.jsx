@@ -8,12 +8,11 @@ const FixedSidebar = React.createClass({
                 params: PropTypes.any.isRequired,
                 deal: PropTypes.object.isRequired
             })
-        }),
-        columns: PropTypes.number.isRequired
+        })
     },
     render () {
         var sidebar =
-        <div className={"FixedSidebar container-fluid col-xs-12 col-md-" + this.props.columns}>
+        <div className={"FixedSidebar"}>
             <div className="close">
                 <Link to={"/roosts/" + this.props.children.props.params.dealId}
                     className="" >

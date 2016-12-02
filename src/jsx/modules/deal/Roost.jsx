@@ -82,31 +82,26 @@ const Deal = withRouter( React.createClass({
         if ( this.props.children ){
             childrenWithProps = React.cloneElement(this.props.children, {deal: deal});
         }
-
+        // var mobileClassesDealTop = "visible-lg visible-md";
+        var mobileClassesDealTop = "hidden-sm hidden-xs";
         var dealPage =
         <div className="RoostPage">
             <RoostNav deal={deal}/>
             <div className="RoostBody">
                 <AccountSidebar/>
                 <div className="Deal">
-                    <div
-                        className="container-fluid"
-                        id="dealPageContainer">
-                        <div className="dealContainer container-fluid">
-                            <div className="row-fluid deal-top">
-                                <div className="visible-lg visible-md">
-                                    <NextStepsBanner deal={deal} />
-                                    <DealProfile deal={deal} />
-                                </div>
-                                <DealNavMobile deal={deal}></DealNavMobile>
+                        <div className="deal-top">
+                            <div className={mobileClassesDealTop}>
+                                <NextStepsBanner deal={deal} />
+                                <DealProfile deal={deal} />
                             </div>
-                            <div className="row-fluid">
-                                <DealPageBottom ref="dealPageBottom" deal={deal}>
-                                    {childrenWithProps}
-                                </DealPageBottom>
-                            </div>
+                            <DealNavMobile deal={deal}></DealNavMobile>
                         </div>
-                    </div>
+                        <div className="dealPageBottomContainer">
+                            <DealPageBottom ref="dealPageBottom" deal={deal}>
+                                {childrenWithProps}
+                            </DealPageBottom>
+                        </div>
                 </div>
             </div>
         </div>
