@@ -71,6 +71,7 @@ export default React.createClass({
                     maxRows={10}
                     minRows={1}
                     ref="textInput"
+                    placeholder={"Send a message to " + this.props.deal.dealName}
                     onChange={e => this.setState({message: e.target.value})}
                     onBlur={e => this.props.onHeightChange}
                     value={this.state.message}

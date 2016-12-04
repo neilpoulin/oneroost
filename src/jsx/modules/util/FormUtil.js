@@ -1,3 +1,5 @@
+import moment from "moment"
+
 const Validation = function(check, level, message){
     this.check = check;
     this.level = level;
@@ -33,22 +35,37 @@ exports.notNullOrEmpty = function(value){
 exports.isValidEmail = isValidEmail
 
 exports.isValidDate = function(input){
+    //todo: make sure this is actually a date
     return !isNullOrEmpty(input);
 }
 
-exports.getErrors = function( data, validations )
+exports.notBefore = function(input){
+    var date = moment(input);
+    return date.isSameOrAfter(moment(), "day")
+}
+
+exports.getErrors = function( data, validationMap )
 {
     var errors = {};
-    for (var [field, validation] of Object.entries(validations)){
+    for (var [field, validations] of Object.entries(validationMap)){
         var value = data[field];
-        if (!validation.isValid(value))
+        if ( !(validations.constructor === Array ))
         {
-            errors[field] = {
-                field: field,
-                level: validation.level,
-                message: validation.message
+            validations = [validations];
+        }
+        for ( let validation of validations ){
+            if (!validation.isValid(value))
+            {
+                errors[field] = {
+                    field: field,
+                    level: validation.level,
+                    message: validation.message
+                }
+                //note, this will take the validations in priority order in which they are passed
+                break;
             }
         }
+
     }
     return errors;
 }
