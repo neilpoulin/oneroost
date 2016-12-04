@@ -1,5 +1,7 @@
 branch-defaults:
-  master: 
+  flexbox-updates:
+    environment: prod-app-elb-blue
+  master:
     environment: stage
 global:
   application_name: oneroost
