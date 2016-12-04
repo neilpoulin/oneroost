@@ -44,3 +44,8 @@ to ssh run this command:
 ```
 ssh -i ~/.ssh/oneroost-aws-eb ec2-user@52.73.58.128
 ```
+
+or 
+```
+eb ssh <env name: stage | prod-blue | prod-green> 
+```
