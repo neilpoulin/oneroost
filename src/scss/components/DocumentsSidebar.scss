@@ -53,3 +53,22 @@
 
 
 }
+
+
+.DocumentUploadForm{
+
+    .nav{
+        margin-bottom: 15px;
+    }
+    .DropZoneTarget{
+        padding: 20px;
+        border: 1px dashed gray;
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        height: 250px;
+        > *{
+            align-self: center;
+        }
+    }
+}

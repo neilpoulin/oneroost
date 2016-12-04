@@ -44,20 +44,6 @@ export default React.createClass({
     },
     getValidations()
     {
-        // var errors = {};
-        // if ( !RoostUtil.isValidEmail(this.state.email) ){
-        //     errors["email"] = {message: "You must provide a valid email address", level: "error"};
-        // }
-        // if ( this.state.firstName == null || this.state.firstName.trim() === "" ){
-        //     errors["firstName"] = {message: "You must provide a First Name", level: "error"};
-        // }
-        // if ( this.state.lastName == null || this.state.lastName.trim() === "" ){
-        //     errors["lastName"] = {message: "You must provide a Last Name", level: "error"};
-        // }
-        // if ( this.state.company == null || this.state.company.trim() === "" ){
-        //     errors["company"] = {message: "You must provide a Company Name", level: "error"};
-        // }
-        // return errors;
         return FormUtil.getErrors(this.state, this.validations);
     },
     saveStakeholder: function(){

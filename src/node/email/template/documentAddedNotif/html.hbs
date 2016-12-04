@@ -2,8 +2,11 @@
     <p>
         {{firstName}} {{lastName}} uploaded a new document on <i>{{dealName}}</i>
     </p>
-
-    <p class="document">{{documentName}}</p>
+    {{#if externalLink}}
+        <a href={{externalLink}}>{{documentName}}</a>
+    {{else}}
+        <p class="document">{{documentName}}</p>
+    {{/if}}    
 </div>
 <div>
     {{>roost-link-html}}

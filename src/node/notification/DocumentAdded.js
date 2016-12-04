@@ -22,23 +22,29 @@ exports.afterSave = function(){
                 var deal = doc.get("deal");
                 var uploadedBy = doc.get("createdBy");
                 var stakeholders = await getStakeholdersForDeal(deal);
-                let s3Object = await Documents.getS3Object(doc.get("s3key") );
+                var attachments = [];
+                if ( doc.get("s3key") && !doc.get("externalLink"))
+                {
+                    let s3Object = await Documents.getS3Object(doc.get("s3key") );
+                    var attachment = {
+                        content: s3Object.Body,
+                        contentType: doc.get("type")
+                        // cid: doc.id //TODO:used if we want inline images (maybe we do someday)
+                    };
+                    attachments.push(attachment);
+                }
 
-                var attachment = {
-                    content: s3Object.Body,
-                    contentType: doc.get("type")
-                    // cid: doc.id //TODO:used if we want inline images (maybe we do someday)
-                };
 
                 var data = {
                     firstName: uploadedBy.get("firstName"),
                     lastName: uploadedBy.get("lastName"),
                     dealName: deal.get("dealName"),
                     documentName: doc.get("fileName"),
+                    externalLink: doc.get("externalLink"),
                     icon: null,
                     dealLink: envUtil.getHost() + "/roosts/" + deal.id,
                     messageId: deal.id,
-                    attachments: [attachment]
+                    attachments: attachments
                 };
                 console.log("sending Document after save email with data", data);
                 var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, uploadedBy.get("email") );
