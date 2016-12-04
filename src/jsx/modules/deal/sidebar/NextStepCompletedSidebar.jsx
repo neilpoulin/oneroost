@@ -26,7 +26,7 @@ const NextStepCompletedSidebar = React.createClass({
     render () {
         if ( this.pendingQueries().length > 0 )
         {
-            var spinner = <div><i className="fa fa-spinner fa-spin"></i> Loading steps...</div>
+            var spinner = <div><i className="fa fa-spinner fa-spin"></i></div>
             return spinner;
         }
 

@@ -16,8 +16,13 @@ const DealPageBottom = React.createClass({
                 {this.props.children}
             </FixedSidebar>;
         }
+        var sidebarOpen = false;
+        if ( sidebar ){
+            sidebarOpen = true;
+        }
+
         var pageBottom =
-        <div className="DealPageBottom" ref="DealPageBottom">
+        <div className={"DealPageBottom " + (sidebarOpen ? "sidebar-open" : "")} ref="DealPageBottom">
             <Comments
                 ref="comments"
                 deal={deal} />

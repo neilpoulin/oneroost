@@ -1,35 +1,68 @@
-.DealPageBottom {
-    display: flex;
-    flex-direction: row;
-    $messagePaddingRight: 15px;
-
-    .commentsSection{
+.dealPageBottomContainer{
+    flex: 1;
+    .DealPageBottom {
         display: flex;
-        flex-direction: column;
-        .messagesContainer{
-            flex: 1;
-            overflow: auto;
-            overflow-scrolling: touch;
-            -webkit-overflow-scrolling: touch;
-            margin-bottom: 20px;
+        flex-direction: row;
+        $messagePaddingRight: 15px;
+
+        .commentsSection{
+            display: flex;
+            flex-direction: column;
+            flex: 2;
+            .messagesContainer{
+                flex: 1;
+                overflow: scroll;
+                overflow-scrolling: touch;
+                -webkit-overflow-scrolling: touch;
+                margin-bottom: 20px;
+                .loadMore{
+                    margin-top: 20px;
+                }
+
+                .messageStart{
+                    text-align: center;
+                    padding: 20px;
+                }
+
+                .commentsList{
+                    display: flex;
+                    // flex-direction: column-reverse;
+                    flex-direction: column;
+                }
+            }
+            .addCommentContainer{
+                flex: 0;
+                padding: 0px 0px 10px 0px;
+                background-color: white;
+                .input-group{
+                    position:relative;
+                    top: -20px;
+                }
+                textarea:focus{
+                    border-color: $input-border;
+                }
+            }
         }
-        .addCommentContainer{
-            flex: 0;
-            padding: 0px 0px 0px 0px;
-            background-color: white;
-            .input-group{
-                position:relative;
-                top: -20px;
-            }
-            textarea:focus{
-                border-color: $input-border;
-            }
+
+        .FixedSidebar{
+            padding: 0 15px 15px 15px;
+            flex: 1;
+            min-width: 250px;
+            overflow-y: scroll;
         }
     }
+}
 
-    .FixedSidebar{
-        padding: 0 15px 15px 15px;
-        width: 450px;
-        overflow-y: scroll;
+
+@media (max-width: $screen-md-min) {
+    .DealPageBottom{
+        &.sidebar-open{
+            .commentsSection{
+                display: none !important;
+            }
+            .FixedSidebar{
+                width: 100vw;
+            }
+        }
     }
 }

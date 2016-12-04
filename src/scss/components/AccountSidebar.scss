@@ -13,11 +13,12 @@ $sidebarWidthPx: 275px;
     border-right: $borderWeightThick solid $borderColorThick;
     display:flex;
     flex-direction: column;
-    flex: 0 0 $sidebarWidthPx;
+    flex: 1;
+    min-width: 15em;
     order: -1;
     .AddAccountButton{
         text-align: center;
-        padding: 10px;
+        padding: 10px 10px 30px 10px;
     }
 }
 
@@ -79,5 +80,11 @@ $sidebarWidthPx: 275px;
             margin-bottom: 0px;
         }
 
+    }
+}
+
+@media (max-width: $screen-md-min) {
+    #accountSidebar{
+        display: none !important;
     }
 }

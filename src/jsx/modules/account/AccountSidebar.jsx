@@ -43,7 +43,7 @@ export default React.createClass({
 
 
         return (
-            <div id={"accountSidebar" + (this.props.isMobile ? "Mobile" : "")} className="col-md-2 container-fluid hidden-sm hidden-xs">
+            <div id={"accountSidebar" + (this.props.isMobile ? "Mobile" : "")} className="container-fluid hidden-sm hidden-xs">
                 <h3>My Opportunities</h3>
                 {contents}
                 <AddAccountButton
