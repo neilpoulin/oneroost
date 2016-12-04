@@ -80,6 +80,7 @@ const LoginOnly = withRouter(
         },
         handleLoginError: function(user, error)
         {
+            console.error(error);
             switch( error.code )
             {
                 case 101: //invalid login params
@@ -90,12 +91,12 @@ const LoginOnly = withRouter(
                 break;
             }
             this.setState({"error": error});
-            console.error(error);
+
             this.hideLoading();
         },
         handleLoginSuccess: function(){
             const { location } = this.props;
-            if (location.state && location.state.nextPathname) {
+            if (location.state && location.state.nextPathname && window.location.pathname != location.state.nextPathname) {
                 this.props.router.replace(location.state.nextPathname)
             } else {
                 this.props.router.replace("/roosts")
@@ -258,6 +259,8 @@ const LoginOnly = withRouter(
                 passwordValidationClass = "has-" + this.state.passwordValidation.level;
             }
 
+
+
             var result =
             <div className="LoginOnly">
                 <form className="container-fluid col-md-offset-4 col-md-4">
@@ -276,8 +279,8 @@ const LoginOnly = withRouter(
                         <br/>
                         <button className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doLogin}>{btnText} <SpinnerIcon ref="spinner"></SpinnerIcon></button>
                     </div>
-                    <div className={"forgotPassword "}>
-                        Forgot your password? <a href="#" onClick={this.resetPassword}>Click here</a> to reset it.
+                    <div className="forgotPassword">
+                        Forgot your password{"?"} <a href="#" onClick={this.resetPassword}>Click here</a> to reset it.
                     </div>
                 </form>
             </div>
