@@ -40,7 +40,7 @@ const TimelineSidebar = React.createClass({
     },
     render(){
         var timelineSidebar =
-        <div className="TimelineSidebar">
+        <div className="InvestmentForm">
             <div className="form-inline-half">
                 <div className="form-group">
                     <label>Low</label>

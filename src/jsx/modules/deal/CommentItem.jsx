@@ -1,5 +1,4 @@
 import React, {PropTypes} from "react";
-import moment from "moment";
 import SystemComment from "./SystemComment"
 import UserComment from "./UserComment"
 
@@ -18,11 +17,6 @@ export default React.createClass({
         return {
             forceShowUsername: false
         }
-    },
-    formatCommentDate: function( comment )
-    {
-        var date = comment.createdAt;
-        return moment(date).format("h:mm a");
     },
     render: function(){
         var comment = this.props.comment;

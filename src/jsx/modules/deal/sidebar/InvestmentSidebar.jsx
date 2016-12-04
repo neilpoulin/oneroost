@@ -25,7 +25,7 @@ const InvestmentSidebar = React.createClass({
     var deal = this.data.deal[0];
 
     return (
-      <div className="TimelineSidebar">
+      <div className="InvestmentSidebar">
         <h3 className="title">Investment</h3>
         <InvestmentForm deal={deal}/>
       </div>

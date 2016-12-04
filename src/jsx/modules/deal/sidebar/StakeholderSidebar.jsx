@@ -40,7 +40,7 @@ const StakeholderSidebar = React.createClass({
     render () {
         if (this.pendingQueries() > 0) {
             return (
-                <i className="fa fa-spin fa-spinner">Loading Stakeholders</i>
+                <i className="fa fa-spin fa-spinner"></i>
             )
         }
         var deal = this.data.deal[0];

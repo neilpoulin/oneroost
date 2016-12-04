@@ -78,7 +78,7 @@ const SystemComment = React.createClass({
             key={"dealComment_" + comment.objectId } >
             <div className="container-fluid">
                 {author}
-                <div className="row">                    
+                <div className="row">
                     {message}
                     {postTime}
                 </div>

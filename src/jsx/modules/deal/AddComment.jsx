@@ -60,7 +60,7 @@ export default React.createClass({
     },
     onTextAreaResize(height){
         this.refs.addButton.style.height = height + "px";
-        this.props.onHeightChange();
+        // this.props.onHeightChange();
     },
     render: function(){
         var addComment =

@@ -24,7 +24,7 @@ export default React.createClass({
 
         if ( this.pendingQueries().length > 0 )
         {
-            return <div id="NextStepsBannerContainer"><i className="fa fa-spin fa-spinner"></i>Loading Steps... </div>
+            return <div><i className="fa fa-spin fa-spinner"></i>Loading Steps...</div>
         }
 
         var completedSteps = [];
@@ -57,7 +57,7 @@ export default React.createClass({
         }
 
         var banner =
-        <div id="NextStepsBannerContainer" className="row">
+        <div id="NextStepsBannerContainer" className="">
             {completedStepsItem}
             <div className="NextStepBannerItem NextStepsContainer">
                 {nextSteps.map(function(step){

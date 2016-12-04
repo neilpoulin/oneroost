@@ -1,12 +1,10 @@
 import React, {PropTypes} from "react";
-import ReactDOM from "react-dom"
 import Parse from "parse";
 import ParseReact from "parse-react";
 import AddComment from "./AddComment";
 import CommentItem from "./CommentItem";
 import CommentDateSeparator from "./CommentDateSeparator";
 import Notification from "./../Notification";
-import $ from "jquery";
 import io from "socket.io-client"
 import RoostUtil from "./../util/RoostUtil"
 
@@ -59,12 +57,12 @@ export default React.createClass({
 
     },
     componentDidMount: function() {
-        window.addEventListener("resize", this.scrollToBottom);
+        // window.addEventListener("resize", this.scrollToBottom);
         var self = this;
         var socket = io("/DealComment");
         socket.on("connect", function() {
             // Connected, let's sign-up for to receive messages for this room
-           socket.emit("deal", self.props.deal.objectId);
+            socket.emit("deal", self.props.deal.objectId);
         });
 
         socket.on("comment", function(comment){
@@ -78,25 +76,21 @@ export default React.createClass({
             self.refreshQueries(["dealComments"]);
         });
     },
-    componentWillUnmount: function(props, state) {
-        window.removeEventListener("resize", this.scrollToBottom);
+    componentWillUpdate: function() {
+        var node = this.refs.messagesContainer;
+        var buffer = 15;
+        this.shouldScrollBottom = node.scrollTop + node.offsetHeight + buffer >= node.scrollHeight;
+        this.scrollHeight = node.scrollHeight;
+        this.scrollTop = node.scrollTop;
     },
-    componentDidUpdate: function(props, state)
-    {
-        // if (state.currentPage == 0)
-        // {
-            this.scrollToBottom();
-        // }
-    },
-    scrollToBottom: function()
-    {
-        var $commentContainer = $(this.refs.messagesContainer);
-        $commentContainer.scrollTop( $commentContainer.prop("scrollHeight") );
-    },
-    calculateDimensions: function(){
-        var addCommentBounding = ReactDOM.findDOMNode( this.refs.addComment ).getBoundingClientRect();
-        this.refs.messagesContainer.style.bottom = addCommentBounding.height + "px";
-        this.scrollToBottom();
+    componentDidUpdate: function() {
+        var node = this.refs.messagesContainer;
+        if (this.shouldScrollBottom) {
+            node.scrollTop = node.scrollHeight;
+        }
+        else {
+            node.scrollTop = this.scrollTop + (node.scrollHeight - this.scrollHeight);
+        }
     },
     forceShowUsername: function( currentDate, previousDate )
     {
@@ -115,7 +109,6 @@ export default React.createClass({
     render: function(){
         var component = this;
         var deal = this.props.deal;
-        var previousComment = null;
 
         var commentsSection = null;
         if (component.pendingQueries().length > 0 && this.data.dealComments.length == 0)
@@ -135,19 +128,16 @@ export default React.createClass({
         }
         else
         {
-            // var comments = this.data.dealComments.sort(function(a, b){
-            //     return a.createdAt.getTime() > b.createdAt.getTime();
-            // });
             var comments = this.data.dealComments.slice(0).concat(this.state.additionalComments);
-            comments.reverse();
+            comments = comments.reverse();
             var items = [];
-
+            var previousComment = null;
             comments.forEach(function(comment){
                 var currentDate = comment.createdAt
                 var previousDate = previousComment != null ? previousComment.createdAt : null;
                 var isSameDate = RoostUtil.isSameDate( currentDate, previousDate );
 
-                if ( !isSameDate )
+                if ( !isSameDate || previousComment == null )
                 {
                     var separator =
                     <CommentDateSeparator
@@ -157,6 +147,7 @@ export default React.createClass({
                         />
                     items.push( separator );
                 }
+
                 var forceShowUsername = component.forceShowUsername(currentDate, previousDate);
                 var item =
                 <CommentItem key={"commentItem_" + comment.objectId}
@@ -167,9 +158,8 @@ export default React.createClass({
                 items.push(item);
                 previousComment = comment;
             })
-
             commentsSection =
-            <ul className="list-unstyled" id="commentsList" ref="commentList">
+            <ul className="list-unstyled commentsList" id="commentsList" ref="commentList">
                 {items.map(function(item){
                     return item;
                 })}
@@ -179,21 +169,22 @@ export default React.createClass({
         var moreButton = null
         if ( this.state.lastFetchCount == null && this.data.dealComments.length === this.state.commentLimit || this.state.lastFetchCount === this.state.commentLimit )
         {
-            moreButton = <button className="btn btn-outline-primary" onClick={this.getNextPage}>Load More</button>
+            moreButton = <button className="btn btn-outline-primary loadMore" onClick={this.getNextPage}>Load Previous Comments</button>
+        }
+        else if ( this.state.lastFetchCount != null && this.state.lastFetchCount < this.state.commentLimit ){
+             moreButton = <div className="messageStart">This is the start of the message history</div>
         }
 
         var result =
-        <div className={"commentsSection container-fluid col-xs-12 col-md-" + this.props.columns}>
+        <div className={"commentsSection container-fluid"}>
             <div className="messagesContainer" ref="messagesContainer">
-                <div className="">
-                    {moreButton}
-                    {commentsSection}
-                </div>
+                {moreButton}
+                {commentsSection}
             </div>
             <AddComment
                 ref="addComment"
                 deal={deal}
-                onHeightChange={this.calculateDimensions} >
+                onHeightChange={this.scrollToBottom}>
             </AddComment>
         </div>
 

@@ -82,29 +82,26 @@ const Deal = withRouter( React.createClass({
         if ( this.props.children ){
             childrenWithProps = React.cloneElement(this.props.children, {deal: deal});
         }
-
+        // var mobileClassesDealTop = "visible-lg visible-md";
+        var mobileClassesDealTop = "hidden-sm hidden-xs";
         var dealPage =
-        <div>
+        <div className="RoostPage">
             <RoostNav deal={deal}/>
-            <AccountSidebar/>
-            <div className="Deal">
-                <div
-                    className="container-fluid"
-                    id="dealPageContainer">
-                    <div className="dealContainer col-md-10 col-md-offset-2 container-fluid">
-                        <div className="row-fluid deal-top">
-                            <div className="visible-lg visible-md">
+            <div className="RoostBody">
+                <AccountSidebar/>
+                <div className="Deal">
+                        <div className="deal-top">
+                            <div className={mobileClassesDealTop}>
                                 <NextStepsBanner deal={deal} />
-                                <DealProfile deal={deal} />                                
+                                <DealProfile deal={deal} />
                             </div>
                             <DealNavMobile deal={deal}></DealNavMobile>
                         </div>
-                        <div className="row-fluid">
+                        <div className="dealPageBottomContainer">
                             <DealPageBottom ref="dealPageBottom" deal={deal}>
                                 {childrenWithProps}
                             </DealPageBottom>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
