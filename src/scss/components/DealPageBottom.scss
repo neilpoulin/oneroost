@@ -56,7 +56,9 @@
 
 @media (max-width: $screen-md-min) {
     .DealPageBottom{
-        width: 100vw;
+        .commentsSection{
+            width: 100vw;
+        }        
         &.sidebar-open{
             .commentsSection{
                 display: none !important;
