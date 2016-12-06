@@ -1,4 +1,5 @@
 import moment from "moment"
+import _ from "underscore"
 
 const Validation = function(check, level, message){
     this.check = check;
@@ -69,8 +70,9 @@ exports.notBefore = function(input){
 exports.getErrors = function( data, validationMap )
 {
     var errors = {};
-    for (var [field, validations] of Object.entries(validationMap)){
+    for (let field of Object.keys(validationMap)){
         var value = data[field];
+        var validations = validationMap[field];
         if ( !(validations.constructor === Array ))
         {
             validations = [validations];
