@@ -140,7 +140,7 @@ function sendRawMail( mail, buffer ){
             console.log(err, err.stack); // an error occurred
         }
         else{
-            console.log("successfully sent email");           // successful response
+            console.log("successfully sent email to", mail.recipients);           // successful response
         }
     });
 }

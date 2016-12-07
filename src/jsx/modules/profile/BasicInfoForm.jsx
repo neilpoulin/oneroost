@@ -44,29 +44,34 @@ const BasicInfoForm = React.createClass({
         this.props.doCancel();
     },
     render () {
-        var form = <div>
+        var form =
+        <div className="">
             <h2>Edit your info</h2>
+            <div className="form-inline-equal">
+                <div className="form-group">
+                    <label>First Name</label>
+                    <input type="text" className="form-control" valueLink={this.linkState("firstName")}/>
+                </div>
+                <div className="form-group">
+                    <label>Last Name</label>
+                    <input type="text" className="form-control" valueLink={this.linkState("lastName")}/>
+                </div>
+            </div>
+
             <div className="form-group">
-                Email:
+                <label>Email</label>
                 <input type="text" className="form-control" valueLink={this.linkState("email")}/>
             </div>
+
             <div className="form-group">
-                First Name:
-                <input type="text" className="form-control" valueLink={this.linkState("firstName")}/>
-            </div>
-            <div className="formt-group">
-                Last Name:
-                <input type="text" className="form-control" valueLink={this.linkState("lastName")}/>
-            </div>
-            <div className="formt-group">
-                Company:
+                <label>Company</label>
                 <input type="text" className="form-control" valueLink={this.linkState("company")}/>
             </div>
-            <div className="formt-group">
-                Job Title:
+            <div className="form-group">
+                <label>Job Title</label>
                 <input type="text" className="form-control" valueLink={this.linkState("jobTitle")}/>
             </div>
-            <div>
+            <div className="actions">
                 <button className="btn btn-link pull-left" onClick={this.doCancel}>Cancel</button> <button className="btn btn-primary pull-right" onClick={this.doSave}>Save</button>
             </div>
         </div>

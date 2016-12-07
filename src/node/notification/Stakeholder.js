@@ -24,6 +24,7 @@ exports.afterSave = function(){
             var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
             console.log("checking if is new invite");
             let isNewInvite = stakeholder.get("updatedAt").getTime() === stakeholder.get("createdAt").getTime();
+            isNewInvite = stakeholder.existed();
             if ( !isNewInvite ){
                 console.log("the invite was updated, not created... exiting");
                 return res.success();

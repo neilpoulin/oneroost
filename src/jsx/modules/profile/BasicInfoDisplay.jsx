@@ -15,23 +15,32 @@ const BasicInfoDisplay = React.createClass({
     render () {
         var info =
         <div>
-            <div>
-                <b>email:</b> {this.props.user.get("email")}
+            <div className="title action">
+                <h2>Basic Info</h2><a href='#' onClick={this.props.doEdit}>Edit</a>
             </div>
-            <div>
-                <b>First Name:</b> {this.props.user.get("firstName")}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Name</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static">{this.props.user.get("firstName") + " " + this.props.user.get("lastName")}</p>
+                </div>
             </div>
-            <div>
-                <b>Last Name:</b> {this.props.user.get("lastName")}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Email</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static">{this.props.user.get("email")}</p>
+                </div>
             </div>
-            <div>
-                <b>Company:</b> {this.props.user.get("company")}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Company</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static">{this.props.user.get("company")}</p>
+                </div>
             </div>
-            <div>
-                <b>Job Title:</b> {this.props.user.get("jobTitle")}
-            </div>
-            <div>
-                <button className="btn btn-primary" onClick={this.props.doEdit}>Edit</button>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Job Title</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static">{this.props.user.get("jobTitle")}</p>
+                </div>
             </div>
         </div>
 

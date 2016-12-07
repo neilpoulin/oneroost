@@ -22,6 +22,7 @@ import NextStepCompletedSidebar from "./modules/deal/sidebar/NextStepCompletedSi
 import DocumentsSidebar from "./modules/deal/sidebar/DocumentsSidebar"
 import Unauthorized from "./modules/Unauthorized"
 import Invitation from "./modules/Invitation"
+import ReviewInvitation from "./modules/ReviewInvitation"
 import Unsubscribe from "./modules/Unsubscribe"
 import ProfilePage from "./modules/profile/ProfilePage"
 import PublicProfilePage from "./modules/profile/PublicProfilePage"
@@ -145,6 +146,7 @@ render(
                 </Route>
             </Route>
             <Route path="/invitations/:stakeholderId" component={Invitation}/>
+            <Route path="/review/:stakeholderId" component={ReviewInvitation}/>
             <Route path="/unsubscribe">
                 <Route path=":emailRecipientId" component={Unsubscribe}></Route>
             </Route>

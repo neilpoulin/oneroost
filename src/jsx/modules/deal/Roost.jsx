@@ -55,6 +55,9 @@ const Deal = withRouter( React.createClass({
             {
                 this.handleUnauthorized();
             }
+            else if ( !foundStakeholder.inviteAccepted && foundStakeholder.readyRoostApprover ){
+                this.props.router.replace("/review/" + foundStakeholder.objectId)
+            }
             else if ( !foundStakeholder.inviteAccepted )
             {
                 this.props.router.replace("/invitations/" + foundStakeholder.objectId)

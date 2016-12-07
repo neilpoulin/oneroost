@@ -78,7 +78,9 @@ function setupRoost(roost, currentUser, profileUser, response){
             deal: roost,
             title: "Add the Product/Service",
             assignedUser: currentUser,
-            description: "Time to present your offering!  Click into the \"Investment\" section to add a high-level overview of your product and/or service.  In addition to the overview, we recommend submitting the typical budget range your offering requires."
+            createdBy: currentUser,
+            description: "Time to present your offering!  Click into the \"Investment\" section to add a high-level overview of your product and/or service.  In addition to the overview, we recommend submitting the typical budget range your offering requires.",
+            onboarding: true
         }),
         //second step -- documents
         new Parse.Object("NextStep", {
@@ -86,7 +88,9 @@ function setupRoost(roost, currentUser, profileUser, response){
             deal: roost,
             title: "Share Relevant Materials",
             assignedUser: currentUser,
-            description: "You've spent hours creating sales decks, one-pagers, case studies, and ROI calculators...now it is time to show that hard work off!\n\nClick into the \"Documents\" section to add Power Point presentations, Excel spreadsheets, PDFs, and Word documents."
+            createdBy: currentUser,
+            description: "You've spent hours creating sales decks, one-pagers, case studies, and ROI calculators...now it is time to show that hard work off!\n\nClick into the \"Documents\" section to add Power Point presentations, Excel spreadsheets, PDFs, and Word documents.",
+            onboarding: true
         }),
         //third step participants
         new Parse.Object("NextStep", {
@@ -94,7 +98,9 @@ function setupRoost(roost, currentUser, profileUser, response){
             deal: roost,
             title: "Invite Colleagues",
             assignedUser: currentUser,
-            description: "On average, B2B deals involve over 5 different stakeholders to make a decision on an opportunity.  To get everyone on the same page (literally!), invite your colleagues to this Roost by clicking into the \"Participants\" section and inputting their email address.  We will take it from there and send them an invitation to join the Roost! "
+            createdBy: currentUser,
+            description: "On average, B2B deals involve over 5 different stakeholders to make a decision on an opportunity.  To get everyone on the same page (literally!), invite your colleagues to this Roost by clicking into the \"Participants\" section and inputting their email address.  We will take it from there and send them an invitation to join the Roost! ",
+            onboarding: true
         }),
         //fourth step - buyer reviewing
         new Parse.Object("NextStep", {
@@ -102,8 +108,10 @@ function setupRoost(roost, currentUser, profileUser, response){
             deal: roost,
             title: "Submit Opportunity for Review!",
             assignedUser: currentUser,
+            createdBy: currentUser,
             description: "Congrats!  You've made it to the final next step before submitting the opportunity to the Buyer.  If you're on this next step, the following should have been submitted to the Roost: The offering overview, budget requirements, relevant materials, and your colleagues' information." +
-            "\n\nAssuming everything is completed,  click into the \"Participants\" section and submit the opportunity, which is located under the Buyer's name.  After you click submit, OneRoost will send an email to the Buyer notifying the Roost (opportunity) is ready for review.  "
+            "\n\nAssuming everything is completed,  click into the \"Participants\" section and submit the opportunity, which is located under the Buyer's name.  After you click submit, OneRoost will send an email to the Buyer notifying the Roost (opportunity) is ready for review.  ",
+            onboarding: true
         }),
         // add participants
         new Parse.Object("Stakeholder", {
@@ -111,7 +119,8 @@ function setupRoost(roost, currentUser, profileUser, response){
             user: currentUser,
             inviteAccepted: true,
             invitedBy: null,
-            role: "CREATOR"
+            role: "CREATOR",
+            onboarding: true
         }),
         new Parse.Object("Stakeholder", {
             deal: roost,
@@ -119,7 +128,8 @@ function setupRoost(roost, currentUser, profileUser, response){
             inviteAccepted: false,
             invitedBy: currentUser,
             readyRoostApprover: true,
-            role: "SELLER"
+            role: "SELLER",
+            onboarding: true
         }),
         new Parse.Object("Document", {
             createdBy: profileUser,
@@ -127,7 +137,8 @@ function setupRoost(roost, currentUser, profileUser, response){
             fileName: "FAQ - OneRoost",
             s3key: "documents/public/FAQ - OneRoost.docx",
             type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            size: 123046
+            size: 123046,
+            onboarding: true
         })
     ];
     console.log("set up all objects...atempting to save", toSave);
@@ -182,6 +193,7 @@ async function processReadyRoostSubmission(currentUser, params, response){
             name: roostUser.get("firstName") + " " + roostUser.get("lastName")
         };
         var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
+        let reviewLink = envUtil.getHost() + "/review/" + stakeholder.id;
         var documentsJson = documents.map(function(doc){
             return {
                 fileName: doc.get("fileName"),
@@ -199,6 +211,7 @@ async function processReadyRoostSubmission(currentUser, params, response){
             currentUser: currentUser.toJSON(),
             documents: documentsJson,
             dealLink: dealLink,
+            reviewLink: reviewLink,
             completedSteps: completedStepsJson,
             messageId: deal.id
         }

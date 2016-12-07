@@ -18,7 +18,7 @@ exports.afterSave = function(){
             if ( sendNotification ){
                 console.log("Document after save was triggered");
                 var documentId = req.object.id;
-                var doc = await getDocumentById( documentId );
+                var doc = await getDocumentById( documentId, false );
                 var deal = doc.get("deal");
                 var uploadedBy = doc.get("createdBy");
                 var stakeholders = await getStakeholdersForDeal(deal);
@@ -61,10 +61,11 @@ exports.afterSave = function(){
     });
 }
 
-async function getDocumentById( documentId ){
+async function getDocumentById( documentId, includeOnboarding ){
     var documentQuery = new Parse.Query("Document");
     documentQuery.include("deal");
-    documentQuery.include("createdBy")
+    documentQuery.include("createdBy");
+    documentQuery.equalTo("onboarding", includeOnboarding);
     return documentQuery.get( documentId )
 }
 

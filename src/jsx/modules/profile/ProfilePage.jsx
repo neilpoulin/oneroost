@@ -13,10 +13,9 @@ const ProfilePage = React.createClass({
         var page =
         <div className="ProfilePage">
             <RoostNav showHome={true}/>
-            <div className="container">
-                <h1 className="pageTitle">My Account</h1>
-                <div className="section">
-                    <h2>Basic Info</h2>
+            <div className="container col-md-6 col-md-offset-3">
+                <h1 className="pageTitle">Account Settings</h1>
+                <div className="section">                    
                     <BasicInfo user={this.getCurrentUser()}/>
                 </div>
                 <div className="section">

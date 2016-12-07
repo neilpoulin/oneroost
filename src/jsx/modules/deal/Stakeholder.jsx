@@ -101,7 +101,7 @@ export default React.createClass({
                 <i className="fa fa-check"></i> Submit Ready Roost
             </button>;
         }
-        else if (stakeholder.readyRoostApprover && deal.readyRoostSubmitted){
+        else if (stakeholder.readyRoostApprover && deal.readyRoostSubmitted && !stakeholder.inviteAccepted ){
             pendingText = <span>Ready Roost submitted on {RoostUtil.formatDate(deal.readyRoostSubmitted)}</span>
             actionButton = null;
         }

@@ -35,8 +35,9 @@ const RoostNav = React.createClass({
                     <i className="fa fa-user"></i> {user.get("firstName") + " " + user.get("lastName")} <span className="caret"></span>
                 </a>
                 <ul className="dropdown-menu">
-                    <NavLink to="/roosts"><i className="fa fa-list"></i> My Roosts</NavLink>
-                    <NavLink to="/account"><i className="fa fa-gear"></i> My Account</NavLink>
+                    <NavLink to="/roosts"><i className="fa fa-list"></i> Opportunities</NavLink>
+                    <NavLink to="/account"><i className="fa fa-gear"></i> Account Settings</NavLink>
+                    <li role="separator" className="divider"></li>
                     <NavLink to="/logout"><i className="fa fa-sign-out"></i> Logout</NavLink>
                 </ul>
             </li>

@@ -43,7 +43,7 @@ exports.getRecipientsFromStakeholders = function( stakeholders, excludedEmails )
 }
 
 exports.getActualRecipients = function( original, config )
-{
+{    
     var emailOverride = config.get( "emailOverride");
     if ( emailOverride )
     {
@@ -51,7 +51,7 @@ exports.getActualRecipients = function( original, config )
         var overrideEmails = emailOverride.replace(/ /g, "").split(",");
         for ( var i = 0; i < overrideEmails.length; i++ )
         {
-            overrides.push({email: overrideEmails[i], name: overrideEmails[i]});
+            overrides.push({email: overrideEmails[i], name: original.name});
         }
         return overrides;
     }

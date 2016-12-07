@@ -78,5 +78,6 @@
         "title": "First Step"
         }],
     "dealLink": "http://dev.oneroost.com/roosts/xyz",
+    "reviewLink": "http://dev.oneroost.com/review/234",
     "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing"
 }

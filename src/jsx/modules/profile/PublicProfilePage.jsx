@@ -89,6 +89,11 @@ const PublicProfilePage = withRouter( React.createClass({
         var readyRoostRow = null;
         var canSubmit = currentUser && this.state.roostName != null && this.state.roostName.length > 1
 
+        var alert = null
+        if ( this.state.error ){
+            alert = <div className="alert alert-warning" role="alert">{this.state.error.message}</div>
+        }
+
         if ( !currentUser )
         {
             loginRow =
@@ -115,12 +120,6 @@ const PublicProfilePage = withRouter( React.createClass({
 
                 </div>
             </div>
-        }
-
-
-        var alert = null
-        if ( this.state.error ){
-            alert = <div className="alert alert-warning" role="alert">{this.state.error.message}</div>
         }
 
         var page =

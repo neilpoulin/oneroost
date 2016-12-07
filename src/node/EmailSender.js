@@ -15,13 +15,16 @@ exports.sendTemplate = function( templateName, data, sendTo ){
     {
         sendTo = [sendTo];
     }
-    var recipients = [];
-    console.log("sendTo", sendTo);
+    console.log("[" + templateName + "] sendTo", sendTo);
     sendTo.forEach( function(to){
-        let recipient = findRecipient(to)
-        recipients.push(recipient);
-        recipient.then(recipient => sender(recipient, to))
-        recipient.catch(error => console.log("something went wrong", error))
+        try{
+            let recipient = findRecipient(to)        
+            recipient.then(recipient => sender(recipient, to))
+            recipient.catch(error => console.log("[" + templateName + "] something went wrong", error))
+        }
+        catch (e){
+            console.log("something went wrong creating or fetching the recipient for ", to, e );
+        }
     } );
 }
 
@@ -37,41 +40,41 @@ function templateSender( templateName, data ){
             TemplateUtil.renderEmail(templateName, data)
             .then(function(templateResults){
                 sendEmail(templateResults, data, to);
-            });
+            }).catch(e => console.error("[" + templateName + "] Failed to send email ", e));
         } else {
             console.log("User has unsubscribed, not sending email", recipient)
         }
     }
 }
 
-function findRecipient( to )
+async function findRecipient( to )
 {
     console.log("finding recipeint for ", to);
     var query = new Parse.Query("EmailRecipient");
     query.equalTo( "email", to.email );
-    return query.find().then( function(emailRecipients){
-        return new Promise(function(resolve, reject){
-            if ( emailRecipients.length > 0 ){
-                var existing = emailRecipients[0];
-                if ( !existing.get("unsubscribe") ){
-                    existing.set("lastSendDate", new Date());
-                    existing.save();
-                    resolve(existing)
-                }
-                else {
-                    // console.log("not sending email since the user is unsubscribed", existing.get("email"));
-                    reject( {message: "not sending email since the user is unsubscribed", email: existing.get("email") });
-                }
-            }
-            else { //create new one
-                return createEmailRecipient( to );
-            }
-        })
-    });
+    let emailRecipients = await query.find();
+
+    if ( emailRecipients.length > 0 ){
+        var existing = emailRecipients[0];
+        console.log("found existing recipient", existing.toJSON())
+        if ( !existing.get("unsubscribe") ){
+            existing.set("lastSendDate", new Date());
+            return existing.save();
+        }
+        else {
+            // console.log("not sending email since the user is unsubscribed", existing.get("email"));
+            throw {message: "not sending email since the user is unsubscribed", email: existing.get("email") }
+        }
+    }
+    else { //create new one
+        console.log("creating a new recipient for ", to);
+        return createEmailRecipient( to )
+    }
+
 }
 
 
-function createEmailRecipient( to ){
+async function createEmailRecipient( to ){
     var recipient = new EmailRecipient();
     recipient.set("email", to.email);
     recipient.set("unsubscribe", false);
@@ -91,7 +94,7 @@ function getActualRecipients( original, config )
         var overrideEmails = emailOverride.replace(/ /g, "").split(",");
         for ( var i = 0; i < overrideEmails.length; i++ )
         {
-            overrides.push({email: overrideEmails[i], name: overrideEmails[i]});
+            overrides.push({email: overrideEmails[i], name: original.name});
         }
         return overrides;
     }
