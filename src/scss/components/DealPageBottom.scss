@@ -15,6 +15,7 @@
                 overflow-scrolling: touch;
                 -webkit-overflow-scrolling: touch;
                 margin-bottom: 20px;
+                word-break: break-word;
                 .loadMore{
                     margin-top: 20px;
                 }
@@ -58,7 +59,7 @@
     .DealPageBottom{
         .commentsSection{
             width: 100vw;
-        }        
+        }
         &.sidebar-open{
             .commentsSection{
                 display: none !important;

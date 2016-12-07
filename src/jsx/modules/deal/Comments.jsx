@@ -11,10 +11,12 @@ import RoostUtil from "./../util/RoostUtil"
 export default React.createClass({
     mixins: [ParseReact.Mixin],
     propTypes: {
-        deal: PropTypes.object.isRequired
+        deal: PropTypes.object.isRequired,
+        sidebarOpen: PropTypes.bool
     },
     getDefaultProps: function(){
         return{
+            sidebarOpen: false
         }
     },
     getInitialState: function(){
@@ -75,21 +77,52 @@ export default React.createClass({
             });
             self.refreshQueries(["dealComments"]);
         });
+        //doing this so that iOS records the scrollTop position correctly.
+        var messageContainer = this.refs.messagesContainer;
+        messageContainer.ontouchstart = function () {
+            console.log("touchstart scrollTop" + messageContainer.scrollTop )
+        };
+
+        messageContainer.onscroll = function(){
+            console.log("onscroll scrollTop" + messageContainer.scrollTop )
+        }
     },
-    componentWillUpdate: function() {
+    componentWillUpdate: function(nextProps, nextState) {
         var node = this.refs.messagesContainer;
         var buffer = 15;
-        this.shouldScrollBottom = node.scrollTop + node.offsetHeight + buffer >= node.scrollHeight;
+        var currentPosition = node.scrollTop + node.offsetHeight;
+        this.shouldScrollBottom = currentPosition + buffer >= node.scrollHeight;
+        //TODO: record width changes and scale the scroll position accordingly
         this.scrollHeight = node.scrollHeight;
         this.scrollTop = node.scrollTop;
     },
-    componentDidUpdate: function() {
+    componentDidUpdate: function(prevProps, prevState) {
         var node = this.refs.messagesContainer;
-        if (this.shouldScrollBottom) {
-            node.scrollTop = node.scrollHeight;
+        if (this.shouldScrollBottom || this.scrollTop === 0) {
+            this.scrollBottom();
         }
         else {
-            node.scrollTop = this.scrollTop + (node.scrollHeight - this.scrollHeight);
+            var newPositoin =this.scrollTop + (node.scrollHeight - this.scrollHeight);
+            //this is to fix iOS safari from not reacting to the scrollTop property change.
+            //TODO: don't use timeouts anywhere!! this is a shitty hack for iOS
+            setTimeout(function(){
+                node.scrollTop = newPositoin;
+            }, 250);
+        }
+    },
+    scrollBottom(){
+        var node = this.refs.messagesContainer;
+        setTimeout(function(){
+            node.scrollTop = node.scrollHeight;
+        }, 250);
+    },
+    scrollBottomIfNeeded(height){
+        var node = this.refs.messagesContainer;
+        var buffer = 25;
+        var currentPosition = node.scrollTop + node.offsetHeight;
+        var shouldScrollBottom = currentPosition + buffer >= node.scrollHeight;
+        if (shouldScrollBottom) {
+            this.scrollBottom();
         }
     },
     forceShowUsername: function( currentDate, previousDate )
@@ -184,7 +217,7 @@ export default React.createClass({
             <AddComment
                 ref="addComment"
                 deal={deal}
-                onHeightChange={this.scrollToBottom}>
+                onHeightChange={this.scrollBottomIfNeeded}>
             </AddComment>
         </div>
 
