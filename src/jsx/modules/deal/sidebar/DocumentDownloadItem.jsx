@@ -8,12 +8,16 @@ const DocumentDownloadItem = React.createClass({
     },
     getInitialState(){
         return {
-            downloadUrl: null
+            downloadUrl: null,
         }
     },
-    doDownload(){
+    getPresignedGetUrl(){
         var self = this;
         var doc = this.props.doc;
+        if ( this.state.downloadUrl ){
+            console.log("already has a download url, not fetching it again");
+            return
+        }
         Parse.Cloud.run("getPresignedGetUrl", {
             documentId: doc.objectId
         }).then(function( result ) {
@@ -83,13 +87,21 @@ const DocumentDownloadItem = React.createClass({
     },
     render () {
         var doc = this.props.doc;
-
-        if ( doc.externalLink ){
-
+        var actions = null;
+        if ( this.state.downloadUrl ){
+            actions =
+            <div className="downloadActions">
+                <a href={this.state.downloadUrl} download className="btn btn-primary btn-block" target="_blank"><i className="fa fa-download"></i> Download {"\"" + doc.fileName + "\""}</a>
+            </div>
         }
 
+        var iframe = <iframe width="1"
+                height="1"
+                frameBorder="0"
+                src={this.state.downloadUrl}></iframe>
+
         return (
-            <div className="DocumentItem pointer" onClick={this.doDownload}>
+            <div className="DocumentItem pointer" onClick={this.getPresignedGetUrl}>
                 <div>
                     <div className="fileIcon pull-left">
                         <i className={"fa fa-2x " + this.getIconType()}></i>
@@ -103,12 +115,9 @@ const DocumentDownloadItem = React.createClass({
                             <span className="createdAt">{this.formatDate(doc.createdAt)}</span>
                         </div>
                     </div>
-
+                    {actions}
                 </div>
-                <iframe width="1"
-                        height="1"
-                        frameBorder="0"
-                        src={this.state.downloadUrl}></iframe>
+
             </div>
         )
     }

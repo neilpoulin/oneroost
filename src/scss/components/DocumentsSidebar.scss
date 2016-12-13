@@ -48,9 +48,13 @@
                     content: " on "
                 }
             }
-            a{
+            > a{
                 text-decoration: none;
                 color: inherit;
+            }
+
+            .downloadActions{
+                margin: 10px 0px 10px 0px;
             }
         }
     }
