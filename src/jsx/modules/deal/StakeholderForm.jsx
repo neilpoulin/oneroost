@@ -59,6 +59,10 @@ export default React.createClass({
             dealId: self.state.deal.objectId,
             stakeholder: stakeholderRequest
         }).then(function( result ) {
+            if ( result.exists ){
+                alert("this user is already a stakeholder on this opportunity.");
+                return;
+            }
             var createdUser = result.user;
             createdUser.firstName = createdUser.get("firstName");
             createdUser.lastName = createdUser.get("lastName");
@@ -86,7 +90,11 @@ export default React.createClass({
             };
             ParseReact.Mutation.Create("DealComment", comment).dispatch();
 
+        }, function(error){
+            alert("this user is already a stakeholder on this opportunity.");
+            console.error(error);
         });
+
     },
     getErrorClass(field){
         var errors = this.state.errors;

@@ -29,7 +29,17 @@ exports.initialize = function()
             let user = await userQueryResult;
             if ( user != null){
                 console.log( "found user with email = " + user.get("email") );
-                response.success({user: user});
+
+                let existingStakeholderQuery = new Parse.Query("Stakeholder");
+                existingStakeholderQuery.equalTo("deal", deal);
+                existingStakeholderQuery.equalTo("user", user);
+                let foundStakeholders = await existingStakeholderQuery.find()
+                if ( foundStakeholders.length > 0 ){
+                    response.error({error: "this user is already a stakeholder.", exists: true})
+                }
+                else {
+                    response.success({user: user});
+                }
             }
             else{
                 console.log( "no user found with email = " + stakeholder.email + " ... will create" );
