@@ -45,15 +45,15 @@ const LoginOnly = withRouter(
             this.showLoading();
             if ( this.state.isLogin )
             {
-                Parse.User.logIn(this.state.email, this.state.password, {
+                Parse.User.logIn(this.state.email.toLowerCase(), this.state.password, {
                     success: component.handleLoginSuccess,
                     error: component.handleLoginError
                 });
             }
             else {
                 var user = new Parse.User();
-                user.set("username", this.state.email);
-                user.set("email", this.state.email);
+                user.set("username", this.state.email.toLowerCase());
+                user.set("email", this.state.email.toLowerCase());
                 user.set("password", this.state.password);
                 user.set("firstName", this.state.firstName);
                 user.set("lastName", this.state.lastName);

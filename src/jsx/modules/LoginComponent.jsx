@@ -50,7 +50,7 @@ export default React.createClass({
         this.showLoading();
         if ( this.state.isLogin )
         {
-            Parse.User.logIn(this.state.email, this.state.password, {
+            Parse.User.logIn(this.state.email.toLowerCase(), this.state.password, {
                 success: component.handleLoginSuccess,
                 error: component.handleLoginError
             });

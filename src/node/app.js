@@ -24,6 +24,7 @@ import socket from"socket.io"
 import TemplateUtil from"./util/TemplateUtil"
 import Documents from "./documents/Documents"
 import ReadyRoost from "./roost/ReadyRoost"
+import BeforeSave from "./triggers/BeforeSave"
 
 var app = express();
 var server = http.Server(app);
@@ -65,6 +66,7 @@ io.on("connection", function(socket){
     console.log("recieved a websocket error: ", error);
 });
 
+BeforeSave.initialize();
 Notifications.initialize(io);
 Documents.initialize();
 Stakeholders.initialize();

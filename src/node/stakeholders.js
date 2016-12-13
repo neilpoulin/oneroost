@@ -20,7 +20,7 @@ exports.initialize = function()
 
             let dealQueryResult = (new Parse.Query("Deal")).get(dealId)
             let userQuery = new Parse.Query("User");
-            userQuery.equalTo("email", stakeholder.email)
+            userQuery.equalTo("email", stakeholder.email.toLowerCase())
             let userQueryResult = userQuery.first();
 
             console.log("looking for existing user with email = " + stakeholder.email);
