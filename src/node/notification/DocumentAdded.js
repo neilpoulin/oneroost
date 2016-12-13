@@ -15,10 +15,26 @@ exports.afterSave = function(){
         try{
             console.log("after save of document triggered")
             let sendNotification = await NotificationSettings.getNotificationSetting(NotificationSettings.Settings.DOCUMENT_ADDED_EMAILS)
+
+            let isOnboardingDoc = req.object.onboarding;
+            console.log("onboarding", isOnboardingDoc);
+            if ( req.object.onboarding == true ){
+                console.log("this is an onboarding document, not sending email.");
+                return;
+            }
+
             if ( sendNotification ){
                 console.log("Document after save was triggered");
                 var documentId = req.object.id;
-                var doc = await getDocumentById( documentId, false );
+                console.log("document id = " + documentId);
+
+                var documentQuery = new Parse.Query("Document");
+                documentQuery.include("deal");
+                documentQuery.include("createdBy");
+                // documentQuery.equalTo("onboarding", false);
+                let doc = await documentQuery.get( documentId )
+
+                console.log("found document: " + doc);
                 var deal = doc.get("deal");
                 var uploadedBy = doc.get("createdBy");
                 var stakeholders = await getStakeholdersForDeal(deal);
@@ -62,11 +78,12 @@ exports.afterSave = function(){
 }
 
 async function getDocumentById( documentId, includeOnboarding ){
+    console.log("looking for document with Id = " + documentId);
     var documentQuery = new Parse.Query("Document");
     documentQuery.include("deal");
     documentQuery.include("createdBy");
     documentQuery.equalTo("onboarding", includeOnboarding);
-    return documentQuery.get( documentId )
+    return await documentQuery.get( documentId )
 }
 
 async function getStakeholdersForDeal( deal ){

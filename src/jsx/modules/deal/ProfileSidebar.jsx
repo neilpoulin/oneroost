@@ -45,7 +45,7 @@ export default React.createClass({
 	refreshStakeholders()
 	{
 		this.refreshQueries(["stakeholders"]);
-	},	
+	},
 	saveProfile: function(){
 		var self = this;
 		var timeline = this.state.timeline;
@@ -128,7 +128,7 @@ export default React.createClass({
 
 
 					<div className="row-fluid">
-						<div class="container-fluid">
+						<div className="container-fluid">
 							<h2>Stakeholders</h2>
 							<ul className="list-unstyled" id="stakeholderList">
 								{this.data.stakeholders.map( function(stakeholder){

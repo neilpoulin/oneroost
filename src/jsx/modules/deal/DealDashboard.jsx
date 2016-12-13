@@ -4,6 +4,9 @@ const DealDashboard = React.createClass({
     propTypes: {
         children: PropTypes.object.isRequired
     },
+    componentDidMount(){
+        document.title= "My Opportunities | OneRoost"
+    },
     render () {
         var dashboard =
         <div>

@@ -97,18 +97,15 @@ const PublicProfilePage = withRouter( React.createClass({
         if ( !currentUser )
         {
             loginRow =
-            <div className="row">
-                <div className="">
-                    <p className="loginHelp">To get started, you'll need to create an account below.</p>
-                    <LoginComponent
-                        success={this.loginSuccess}
-                        logoutSuccess={this.logoutSuccess} />
-                </div>
+            <div className="">
+                <p className="loginHelp">To get started, you'll need to create an account below.</p>
+                <LoginComponent
+                    success={this.loginSuccess}
+                    logoutSuccess={this.logoutSuccess} />
             </div>
         }
         else {
             readyRoostRow =
-            <div className="row">
                 <div className="">
                     <h3>Create a Opportunity for {RoostUtil.getFullName(profileUser)}</h3>
                     {alert}
@@ -117,16 +114,14 @@ const PublicProfilePage = withRouter( React.createClass({
                         <input id="readyRoostName" type="text" className="form-control" valueLink={this.linkState("roostName")} placeholder={"Opportunity for " + RoostUtil.getFullName(profileUser)}/>
                     </div>
                     <button type="submit" className={"btn btn-primary btn-block" } disabled={!canSubmit} onClick={this.createReadyRoost}>Let's get started!</button>
-
                 </div>
-            </div>
         }
 
         var page =
         <div className="PublicProfilePage">
             <RoostNav showHome={false}></RoostNav>
             <div className="container col-md-6 col-md-offset-3">
-                <div className="row">
+                <div className="">
                     <h1>
                         Welcome to OneRoost!
                     </h1>

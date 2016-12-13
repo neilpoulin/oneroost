@@ -9,13 +9,16 @@ const ProfilePage = React.createClass({
     getCurrentUser(){
         return Parse.User.current();
     },
+    componentDidMount(){
+        document.title= "My Account | OneRost";
+    },
     render(){
         var page =
         <div className="ProfilePage">
             <RoostNav showHome={true}/>
             <div className="container col-md-6 col-md-offset-3">
                 <h1 className="pageTitle">Account Settings</h1>
-                <div className="section">                    
+                <div className="section">
                     <BasicInfo user={this.getCurrentUser()}/>
                 </div>
                 <div className="section">

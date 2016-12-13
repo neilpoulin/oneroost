@@ -5,7 +5,8 @@ import StakeholderForm from "./StakeholderForm";
 export default React.createClass({
     getDefaultProps: function(){
         return {
-            btnClassName: "btn-outline-secondary"
+            btnClassName: "btn-outline-secondary",
+            disabled: false
         }
     },
     openModal: function(){
@@ -35,6 +36,7 @@ export default React.createClass({
             containerClass="AddStakeholderButton"
             buttonClass={this.props.btnClassName}
             modalTitle="Invite a Participant"
+            disabled={this.props.disabled}
             >
             <StakeholderForm
                 ref="addStakeholderForm"

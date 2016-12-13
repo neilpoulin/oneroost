@@ -58,7 +58,9 @@ const StakeholderSidebar = React.createClass({
                     {actionButton}
                     <AddStakeholderButton deal={deal}
                         btnClassName={"btn-primary btn-block " + (isEdit ? "disabled" : null)}
-                        onSuccess={this.refreshStakeholders}/>
+                        onSuccess={this.refreshStakeholders}
+                        disabled={isEdit}
+                        />
                 </div>
                 <div>
                     {this.data.stakeholders.map(function (stakeholder) {

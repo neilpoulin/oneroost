@@ -80,11 +80,11 @@ export default React.createClass({
         //doing this so that iOS records the scrollTop position correctly.
         var messageContainer = this.refs.messagesContainer;
         messageContainer.ontouchstart = function () {
-            console.log("touchstart scrollTop " + messageContainer.scrollTop )
+            // console.log("touchstart scrollTop " + messageContainer.scrollTop )
         };
 
         messageContainer.onscroll = function(){
-            console.log("onscroll scrollTop " + messageContainer.scrollTop )
+            // console.log("onscroll scrollTop " + messageContainer.scrollTop )
         }
     },
     componentWillUpdate: function(nextProps, nextState) {
@@ -102,7 +102,7 @@ export default React.createClass({
             this.scrollBottom();
         }
         else {
-            var newPosition =this.scrollTop + (node.scrollHeight - this.scrollHeight);            
+            var newPosition =this.scrollTop + (node.scrollHeight - this.scrollHeight);
             node.scrollTop = newPosition;
         }
     },

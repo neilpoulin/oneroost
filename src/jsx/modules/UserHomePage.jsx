@@ -25,6 +25,9 @@ export default withRouter( React.createClass({
     afterAddAccount: function(stakeholder){
         this.props.router.replace("/roosts/" + stakeholder.deal.objectId )
     },
+    componentDidMount(){
+        document.title = "My Opportunities | OneRoost"
+    },
     render: function(){
         var contents = null;
         if ( this.pendingQueries().length > 0 ){
@@ -40,7 +43,7 @@ export default withRouter( React.createClass({
                 contents = <ul className="AccountSidebarList">
                     {deals.map(function(deal){
                         var item =
-                        <NavLink className="UserHomeListItem" to={"/roosts/" + deal.objectId} activeClassName="active">
+                        <NavLink className="UserHomeListItem" to={"/roosts/" + deal.objectId} activeClassName="active" key={"UserHomeListItem_" + deal.objectId}>
                             <span className="dealName">{deal.dealName}</span>
                             <span className="accountName">{deal.account.accountName}</span>
                         </NavLink>

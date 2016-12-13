@@ -7,7 +7,8 @@ const ModalButton = React.createClass({
         buttonText: PropTypes.string,
         containerClass: PropTypes.string,
         buttonIcon: PropTypes.string,
-        modalTitle: PropTypes.string.isRequired
+        modalTitle: PropTypes.string.isRequired,
+        disabled: PropTypes.bool
     },
     getInitialState: function(){
         return {
@@ -19,7 +20,8 @@ const ModalButton = React.createClass({
             buttonText: "Open",
             buttonClass: "btn-default",
             buttonIcon: "",
-            containerClass: ""
+            containerClass: "",
+            disabled: false
         };
     },
     openModal: function(){
@@ -35,6 +37,7 @@ const ModalButton = React.createClass({
             <div className={"ModalButton " + this.props.containerClass}>
                 <button className={"btn " + this.props.buttonClass }
                     onClick={this.openModal}
+                    disabled={this.props.disabled}
                     >
                     {buttonIcon}&nbsp;{this.props.buttonText}
                 </button>

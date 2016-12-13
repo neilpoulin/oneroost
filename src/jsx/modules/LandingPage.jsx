@@ -18,6 +18,9 @@ const LandingPage = withRouter( React.createClass({
             path: "/roosts"
         }
     },
+    componentDidMount(){
+        document.title = "OneRoost"
+    },
     render () {
         var loginLink = this.getLoginLink();
         var page =

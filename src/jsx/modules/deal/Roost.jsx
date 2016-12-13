@@ -43,6 +43,16 @@ const Deal = withRouter( React.createClass({
             myStakeholders: stakeholders
         }
     },
+    componentDidUpdate(){
+        if ( this.data.deal && this.data.deal[0] ){
+            var dealName = this.data.deal[0].dealName;
+            document.title = dealName + " | OneRoost";
+        }
+        else{
+            document.title = "OneRoost";
+        }
+
+    },
     componentWillUpdate(nextProps, nextState)
     {
         var dealId = nextProps.params.dealId;
@@ -79,8 +89,7 @@ const Deal = withRouter( React.createClass({
                 <div>ERROR</div>
             )
         }
-        var dealName = this.data.deal[0].dealName;
-        document.title = "OneRoost - " + dealName;
+
         var childrenWithProps = null;
         if ( this.props.children ){
             childrenWithProps = React.cloneElement(this.props.children, {deal: deal});

@@ -47,7 +47,7 @@ function getGaOptions(){
     var gaOptions = {};
     var currentUser = Parse.User.current();
     if ( currentUser ){
-        var userId = currentUser.objectId
+        var userId = currentUser.objectId || currentUser.id 
         console.log("currentUserId:", userId);
         gaOptions.userId = userId;
     }
@@ -125,6 +125,7 @@ render(
             <Route path="/logout" component={Landing} onEnter={doLogout}></Route>
             <Redirect from="/deals" to="/roosts" />
             <Route path="/account" component={ProfilePage} onEnter={requireAuthOrParam}>
+
             </Route>
             <Route path="/profile/:userId" component={PublicProfilePage}/>
             <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>

@@ -2,7 +2,9 @@ import React from "react"
 import NavLink from "./../NavLink"
 
 const AdminHome = React.createClass({
-
+    componentDidMount(){
+        document.title = "Admin | OneRoost"
+    },
     render () {
         var adminHome =
         <div className="container">
