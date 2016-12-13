@@ -80,16 +80,16 @@ export default React.createClass({
         //doing this so that iOS records the scrollTop position correctly.
         var messageContainer = this.refs.messagesContainer;
         messageContainer.ontouchstart = function () {
-            console.log("touchstart scrollTop" + messageContainer.scrollTop )
+            console.log("touchstart scrollTop " + messageContainer.scrollTop )
         };
 
         messageContainer.onscroll = function(){
-            console.log("onscroll scrollTop" + messageContainer.scrollTop )
+            console.log("onscroll scrollTop " + messageContainer.scrollTop )
         }
     },
     componentWillUpdate: function(nextProps, nextState) {
         var node = this.refs.messagesContainer;
-        var buffer = 15;
+        var buffer = 50;
         var currentPosition = node.scrollTop + node.offsetHeight;
         this.shouldScrollBottom = currentPosition + buffer >= node.scrollHeight;
         //TODO: record width changes and scale the scroll position accordingly
@@ -102,19 +102,17 @@ export default React.createClass({
             this.scrollBottom();
         }
         else {
-            var newPositoin =this.scrollTop + (node.scrollHeight - this.scrollHeight);
-            //this is to fix iOS safari from not reacting to the scrollTop property change.
-            //TODO: don't use timeouts anywhere!! this is a shitty hack for iOS
-            setTimeout(function(){
-                node.scrollTop = newPositoin;
-            }, 250);
+            var newPosition =this.scrollTop + (node.scrollHeight - this.scrollHeight);            
+            node.scrollTop = newPosition;
         }
     },
     scrollBottom(){
         var node = this.refs.messagesContainer;
+        node.scrollTop = node.scrollHeight;
+        //Note: doing this so that mobile works a bit better
         setTimeout(function(){
             node.scrollTop = node.scrollHeight;
-        }, 250);
+        }, 200);
     },
     scrollBottomIfNeeded(height){
         var node = this.refs.messagesContainer;

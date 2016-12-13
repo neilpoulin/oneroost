@@ -45,13 +45,7 @@ export default React.createClass({
 	refreshStakeholders()
 	{
 		this.refreshQueries(["stakeholders"]);
-	},
-	removeStakeholder: function( deleted )
-	{
-		//TODO: use mutations to dispatch deletion of stakeholder
-		// ParseReact.Mutation.Destroy( "Stakeholder",  )
-
-	},
+	},	
 	saveProfile: function(){
 		var self = this;
 		var timeline = this.state.timeline;

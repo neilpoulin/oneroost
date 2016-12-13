@@ -46,7 +46,6 @@ export default React.createClass({
         ParseReact.Mutation.Create("DealComment", comment).dispatch();
     },
     submitRoost(){
-        console.log("TODO: Submit the roost to cloud code");
         var self = this;
         var stakeholder = self.props.stakeholder;
         var deal = self.props.stakeholder.deal

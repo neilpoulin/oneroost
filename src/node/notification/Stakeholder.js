@@ -10,6 +10,7 @@ exports.afterSave = function(){
     Parse.Cloud.afterSave( "Stakeholder", async function(req, res){
         try{
             console.log("Stakeholder afterSave triggered");
+            let isNewInvite = !req.object.existed()
             var stakeholderQuery = new Parse.Query("Stakeholder");
             stakeholderQuery.include("user");
             stakeholderQuery.include("invitedBy");
@@ -23,8 +24,8 @@ exports.afterSave = function(){
             var dealName = deal.get("dealName");
             var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
             console.log("checking if is new invite");
-            let isNewInvite = stakeholder.get("updatedAt").getTime() === stakeholder.get("createdAt").getTime();
-            isNewInvite = stakeholder.existed();
+            //  = stakeholder.get("updatedAt").getTime() === stakeholder.get("createdAt").getTime();
+            // isNewInvite = stakeholder.existed();
             if ( !isNewInvite ){
                 console.log("the invite was updated, not created... exiting");
                 return res.success();
