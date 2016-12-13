@@ -1,15 +1,15 @@
 .FixedSidebar {
 
-  background-color: $fixedSidebarBg;
-  .close {
-    margin-top: 10px;
-    i {
-      color: $mainColor;
+    background-color: $fixedSidebarBg;
+    .close {
+        margin-top: 10px;
+        i {
+            color: $mainColor;
+        }
     }
-  }
-  & > :last-child{
-      margin-bottom: 100px;
-  }
-  color: $mainColor;
-  border-left: $borderWeightThick solid $borderColorThick;
+    & > :last-child{
+        margin-bottom: 100px;
+    }
+    color: $mainColor;
+    border-left: $borderWeightThick solid $borderColorThick;    
 }

@@ -128,7 +128,8 @@ const DocumentUploadForm = React.createClass({
             new Validation(FormUtil.notNullOrEmpty, "error", "You must enter a file name.")
         ],
         uploading: new Validation(FormUtil.isFalsey, "warn", "The file must finish uploading before you can save the document."),
-        uploadSuccess: new Validation(FormUtil.isTruthy, "error", "Something went wrong while uploading the document, please try again."),
+        uploadSuccess: new Validation(FormUtil.isTruthy, "error", "You must upload a file."),
+        s3key: new Validation(FormUtil.notNullOrEmpty, "error", "You must upload a file.")
     },
     linkValidations: {
         fileName: new Validation(FormUtil.notNullOrEmpty, "error", "You must enter a file name."),
@@ -161,53 +162,56 @@ const DocumentUploadForm = React.createClass({
         var progress = null;
         var formAction =
         <div className={"form-group " + this.getErrorClass("externalLink")}>
-            <label htmlFor="externalLinkInput">Link</label>
+            <label htmlFor="externalLinkInput">URL</label>
             <input id="externalLinkInput"
                 type="text"
                 className="form-control"
-                valueLink={this.linkState("externalLink")} />
+                valueLink={this.linkState("externalLink")}
+                placeholder={"http://www.mywebsite.com/mydocument.pdf"} />
             {this.getErrorHelpMessage("externalLink")}
-            {this.getErrorHelpMessage("uploadSuccess")}
         </div>
 
         if ( this.state.isFileUpload ){
             formAction =
-            <Dropzone onDrop={this.onDrop}
-                multiple={false}
-                onDragEnter={this.onDragEnter}
-                onDragLeave={this.onDragLeave}
-                className={"DocumentDropzone pointer " + (this.state.dragover ? " active" : "")}>
-                <div className="DropZoneTarget">
-                    <span>Drag and drop here or click to choose from your computer.</span>
-                </div>
-            </Dropzone>
+            <div className={"form-group " + this.getErrorClass("uploadSuccess")}>
+                <Dropzone onDrop={this.onDrop}
+                    multiple={false}
+                    onDragEnter={this.onDragEnter}
+                    onDragLeave={this.onDragLeave}
+                    className={"DocumentDropzone pointer " + (this.state.dragover ? " active" : "")}>
+                    <div className="DropZoneTarget">
+                        <span>Drag and drop here or click to choose from your computer.</span>
+                    </div>
+                </Dropzone>
+                {this.getErrorHelpMessage("uploadSuccess")}
+            </div>
+
+            var progressLabel = this.state.percent + "%";
+            if ( this.state.uploadSuccess ){
+                progressLabel = "Upload Completed"
+            }
+
             if ( this.state.uploading || this.state.uploadSuccess ){
                 progress =
-                <div className="progress">
-                    <div className="progress-bar" role="progressbar"
-                        aria-valuenow={this.state.percent}
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                        style={{width: this.state.percent + "%"}}>
-                        <span className="sr-only">{this.state.percent}</span>
+                <div className="upload-info">
+                    <div className="progress">
+                        <div className="progress-bar" role="progressbar"
+                            aria-valuenow={this.state.percent}
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            style={{width: this.state.percent + "%"}}>
+                            {progressLabel}
+                        </div>
                     </div>
-                    {this.getErrorHelpMessage("uploadSuccess")}
                 </div>
+
             }
         }
 
         var form =
         <div className="DocumentUploadForm">
-            <div className={"form-group " + this.getErrorClass("fileName")}>
-                <label htmlFor="fileNameInput">File Name</label>
-                <input id="fileNameInput"
-                    type="text"
-                    className="form-control"
-                    valueLink={this.linkState("fileName")} />
-                {this.getErrorHelpMessage("fileName")}
-            </div>
             <div>
-                <ul className="nav nav-tabs nav-justified">
+                <ul className="nav nav-tabs">
                     <li role="presentation" className={this.state.isFileUpload ? "active" : ""}>
                         <a onClick={this.setIsUpload}>Upload Document</a>
                     </li>
@@ -216,10 +220,17 @@ const DocumentUploadForm = React.createClass({
                     </li>
                 </ul>
 
+                <div className={"form-group " + this.getErrorClass("fileName")}>
+                    <label htmlFor="fileNameInput">File Name</label>
+                    <input id="fileNameInput"
+                        type="text"
+                        className="form-control"
+                        valueLink={this.linkState("fileName")} />
+                    {this.getErrorHelpMessage("fileName")}
+                </div>
                 {formAction}
                 {progress}
             </div>
-
         </div>
         return form
     }

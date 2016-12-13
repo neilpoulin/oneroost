@@ -13,10 +13,13 @@ const TimelineSidebar = React.createClass({
         return {
             high: this.props.deal.budget.high || 0,
             low: this.props.deal.budget.low || 0,
-            description: this.props.deal.description || null
+            description: this.props.deal.description || null,
+            saveSuccess: false,
+            saveError: false,
         }
     },
     doSubmit(){
+        var self = this;
         var deal = this.props.deal;
         var budget = {high: this.state.high, low: this.state.low};
         var setter = ParseReact.Mutation.Set(deal, {
@@ -24,6 +27,14 @@ const TimelineSidebar = React.createClass({
             description: this.state.description
         });
         setter.dispatch().then(this.sendComment);
+        self.showSuccess();
+    },
+    showSuccess(){
+        var self = this;
+        self.setState({saveSuccess: true});
+        setTimeout(function(){
+            self.setState({saveSuccess: false});
+        }, 2000);
     },
     sendComment( deal )
     {
@@ -36,9 +47,16 @@ const TimelineSidebar = React.createClass({
             username: "OneRoost Bot",
             navLink: {type: "investment"}
         };
-        ParseReact.Mutation.Create("DealComment", comment).dispatch();
+        return ParseReact.Mutation.Create("DealComment", comment).dispatch();
     },
     render(){
+        var saveMessage = null;
+        var saveClass = null
+        if ( this.state.saveSuccess ){
+            saveMessage = <div className="help-block">Success <i className="fa fa-check"></i></div>
+            saveClass = "has-success";
+        }
+
         var timelineSidebar =
         <div className="InvestmentForm">
             <div className="form-inline-half">
@@ -69,8 +87,11 @@ const TimelineSidebar = React.createClass({
                     ></AutosizeTextarea>
             </div>
 
+            <div className={"form-group " + saveClass}>
+                <button className="btn btn-outline-primary btn-block" onClick={this.doSubmit}>Save</button>
+                {saveMessage}
+            </div>
 
-            <button className="btn btn-primary" onClick={this.doSubmit}>Save</button>
         </div>
 
         return timelineSidebar;

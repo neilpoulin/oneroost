@@ -16,7 +16,9 @@ const TimelineForm = React.createClass({
     getInitialState(){
         return {
             timeline: moment(this.props.timeline),
-            stage: this.props.deal.currentStage || "EXPLORE"
+            stage: this.props.deal.currentStage || "EXPLORE",
+            saveSuccess: false,
+            saveError: false
         };
     },
     handleChange: function (date) {
@@ -40,6 +42,7 @@ const TimelineForm = React.createClass({
             stageUpdatedAt: new Date()
         });
         setter.dispatch().then(this.sendComment);
+        this.showSuccess();
     },
     sendComment( deal )
     {
@@ -63,6 +66,13 @@ const TimelineForm = React.createClass({
         }
 
         return formatted;
+    },
+    showSuccess(){
+        var self = this;
+        self.setState({saveSuccess: true});
+        setTimeout(function(){
+            self.setState({saveSuccess: false});
+        }, 2000);
     },
     getFormattedAge(){
         var deal = this.props.deal;
@@ -99,6 +109,14 @@ const TimelineForm = React.createClass({
         var stageUpdated = deal.stageUpdatedAt || deal.createdAt;
         var stageUpdatedFormatted = this.formatDate( stageUpdated );
         var stageUpdatedAge = this.formatDurationAsDays( stageUpdated );
+
+        var saveMessage = null;
+        var saveClass = null
+        if ( this.state.saveSuccess ){
+            saveMessage = <div className="help-block">Success <i className="fa fa-check"></i></div>
+            saveClass = "has-success";
+        }
+
         return (
             <div className="TimelineForm">
                 <div className="form-group">
@@ -119,7 +137,11 @@ const TimelineForm = React.createClass({
                         />
                     <p className="help-block">Last updated {stageUpdatedAge} on <span className="stageUpdatedDate">{stageUpdatedFormatted}</span></p>
                 </div>
-                <button className="btn btn-outline-primary btn-block" onClick={this.doSubmit}>Save</button>
+                <div className={"form-group " + saveClass}>
+                    <button className="btn btn-outline-primary btn-block" onClick={this.doSubmit}>Save</button>
+                    {saveMessage}
+                </div>
+
             </div>
         )
     }

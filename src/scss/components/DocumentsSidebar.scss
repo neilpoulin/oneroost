@@ -48,6 +48,10 @@
                     content: " on "
                 }
             }
+            a{
+                text-decoration: none;
+                color: inherit;
+            }
         }
     }
 
@@ -59,16 +63,30 @@
 
     .nav{
         margin-bottom: 15px;
+        a {
+            &:hover{
+                cursor: pointer;
+            }
+        }
     }
+
     .DropZoneTarget{
         padding: 20px;
         border: 1px dashed gray;
         display: flex;
         align-content: center;
         justify-content: center;
-        height: 250px;
+        height: 200px;
         > *{
             align-self: center;
         }
     }
+
+    .upload-info{
+        margin-top: 15px;
+        .progress-bar{
+            min-width: 2em;
+        }
+    }
+
 }

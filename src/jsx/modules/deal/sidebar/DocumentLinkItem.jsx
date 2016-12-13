@@ -22,7 +22,7 @@ const DocumentLinkItem = React.createClass({
     },
     getIconType(){
         //todo: figure out how to handle GSheets, etc.
-        return "fa-file-o";
+        return "fa-external-link";
     },
     formatDate(date){
         return moment(date).format("MMM D, YYYY");
