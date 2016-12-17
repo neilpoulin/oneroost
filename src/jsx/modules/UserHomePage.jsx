@@ -5,6 +5,7 @@ import { withRouter } from "react-router";
 import NavLink from "./NavLink";
 import RoostNav from "./navigation/RoostNav";
 import AddAccountButton from "./account/AddAccountButton";
+import AccountSidebarList from "./account/AccountSidebarList"
 
 export default withRouter( React.createClass({
     mixins: [ParseReact.Mixin],
@@ -13,6 +14,8 @@ export default withRouter( React.createClass({
         var stakeholders = new Parse.Query("Stakeholder");
         stakeholders.include("deal");
         stakeholders.include(["deal.account"]);
+        stakeholders.include("deal.createdBy");
+        stakeholders.include("deal.readyRoostUser");
         stakeholders.equalTo("user", user );
         return {
             stakeholders: stakeholders
@@ -37,20 +40,8 @@ export default withRouter( React.createClass({
                 var deals = this.data.stakeholders.map(function(stakeholder){
                     return stakeholder.deal
                 })
-                .sort(function(a, b){
-                    a.dealName <= b.dealName;
-                });
-                contents = <ul className="AccountSidebarList">
-                    {deals.map(function(deal){
-                        var item =
-                        <NavLink className="UserHomeListItem" to={"/roosts/" + deal.objectId} activeClassName="active" key={"UserHomeListItem_" + deal.objectId}>
-                            <span className="dealName">{deal.dealName}</span>
-                            <span className="accountName">{deal.account.accountName}</span>
-                        </NavLink>
 
-                        return item;
-                    })}
-                </ul>;
+                contents = <AccountSidebarList deals={deals} className="bg-inherit"></AccountSidebarList>
             }
 
 
@@ -58,7 +49,7 @@ export default withRouter( React.createClass({
             <div>
                 <RoostNav showHome={false}/>
                 <div className="container UserHomePage ">
-                    <h1>My Roosts</h1>
+                    <h1>Opportunities</h1>
                     <AddAccountButton
                         onSuccess={this.afterAddAccount}
                         />

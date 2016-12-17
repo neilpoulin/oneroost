@@ -16,6 +16,7 @@ const TimelineSidebar = React.createClass({
             description: this.props.deal.description || null,
             saveSuccess: false,
             saveError: false,
+            dealName: this.props.deal.dealName
         }
     },
     doSubmit(){
@@ -24,7 +25,8 @@ const TimelineSidebar = React.createClass({
         var budget = {high: this.state.high, low: this.state.low};
         var setter = ParseReact.Mutation.Set(deal, {
             budget: budget,
-            description: this.state.description
+            description: this.state.description,
+            dealName: this.state.dealName
         });
         setter.dispatch().then(this.sendComment);
         self.showSuccess();
@@ -74,6 +76,14 @@ const TimelineSidebar = React.createClass({
                         <input type="number" className="form-control" placeholder="" aria-describedby="basic-addon1" valueLink={this.linkState("high")}/>
                     </div>
                 </div>
+            </div>
+            <div className="form-group">
+                <label >Problem Summary</label>
+                <input type="text" className="form-control"
+                    placeholder=""
+                    aria-describedby="basic-addon1"
+                    valueLink={this.linkState("dealName")}
+                    maxLength={40}/>
             </div>
             <div className="form-group">
                 <label >Product / Service</label>
