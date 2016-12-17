@@ -70,3 +70,19 @@ exports.isValidEmail = function(email){
     var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
 }
+
+exports.isNotCurrentUser = function(user){
+    return !this.isCurrentUser(user);
+}
+
+exports.isCurrentUser = function(user){
+    if (user){
+        let userId = user.objectId || user.id;
+        if ( typeof userId === "object" ){
+            userId = userId.objectId;
+        }
+
+        return Parse.User.current().id === userId
+    }
+    return false;
+}

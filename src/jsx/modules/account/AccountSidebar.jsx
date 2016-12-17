@@ -11,6 +11,8 @@ export default React.createClass({
         var stakeholders = new Parse.Query("Stakeholder");
         stakeholders.include("deal");
         stakeholders.include(["deal.account"]);
+        stakeholders.include("deal.createdBy");
+        stakeholders.include("deal.readyRoostUser");
         stakeholders.equalTo("user", user );
         stakeholders.equalTo("inviteAccepted", true);
         return {
