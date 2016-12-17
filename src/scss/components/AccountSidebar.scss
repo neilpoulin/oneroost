@@ -22,6 +22,16 @@ $sidebarWidthPx: 275px;
     }
 }
 
+.AccountSidebarList.bg-inherit{
+    .AccountSidebarItem{
+        $activeBackgroundColor: $largeClickableBg;
+        background-color: inherit;
+        a{
+            color: $secondaryColor;
+        }
+    }
+}
+
 .AccountSidebarList{
     list-style: none;
     margin-left: 0px;

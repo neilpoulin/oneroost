@@ -1,8 +1,9 @@
 import React from "react"
-import Parse from "parse";
-import ParseReact from "parse-react";
-import AccountSidebarList from "./AccountSidebarList";
+import Parse from "parse"
+import ParseReact from "parse-react"
+import AccountSidebarList from "./AccountSidebarList"
 import AddAccountButton from "./AddAccountButton"
+import moment from "moment"
 
 export default React.createClass({
     mixins: [ParseReact.Mixin],
@@ -36,9 +37,6 @@ export default React.createClass({
             var deals = this.data.stakeholders.map(function(stakeholder){
                     return stakeholder.deal
                 })
-                .sort(function(a, b){
-                    a.dealName <= b.dealName;
-                });
             contents = <AccountSidebarList deals={deals} />
         }
 

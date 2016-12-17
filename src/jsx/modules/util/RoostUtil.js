@@ -86,3 +86,26 @@ exports.isCurrentUser = function(user){
     }
     return false;
 }
+
+
+
+/** Get the display name for the roost, contextual to the user passed in**/
+exports.getRoostDisplayName = function(deal, displayFor){
+    let readyRoostUser = deal.readyRoostUser;
+    let account = deal.account;
+    displayFor = displayFor || this.getCurrentUser();
+    let createdBy = deal.createdBy;
+
+    let isCreator = this.isCurrentUser(createdBy);
+    let isReadyRoostUser = this.isCurrentUser(readyRoostUser);
+
+    let roostName = "";
+    if ( !isCreator && createdBy.company ){
+        roostName = createdBy.company
+    } else if ( readyRoostUser && !isReadyRoostUser && readyRoostUser.company ){
+        roostName = readyRoostUser.company;
+    } else{
+        roostName = account.accountName;
+    }
+    return roostName;
+}

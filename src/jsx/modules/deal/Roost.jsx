@@ -10,6 +10,7 @@ import DealNavMobile from "./DealNavMobile";
 import DealPageBottom from "./DealPageBottom";
 import AccountSidebar from "./../account/AccountSidebar";
 import RoostNav from "./../navigation/RoostNav";
+import RoostUtil from "./../util/RoostUtil"
 
 const Deal = withRouter( React.createClass({
     mixins: [ParseReact.Mixin],
@@ -38,14 +39,21 @@ const Deal = withRouter( React.createClass({
         stakeholders.include("deal");
         stakeholders.include(["deal.account"]);
         stakeholders.equalTo("user", user );
+
+        let dealQuery = new Parse.Query("Deal");
+        dealQuery.equalTo("objectId", props.params.dealId );
+        dealQuery.include("readyRoostUser");
+        dealQuery.include("createdBy");
+        dealQuery.include("account")
         return {
-            deal: new Parse.Query("Deal").equalTo("objectId", props.params.dealId ),
+            deal: dealQuery,
             myStakeholders: stakeholders
         }
     },
     componentDidUpdate(){
         if ( this.data.deal && this.data.deal[0] ){
-            var dealName = this.data.deal[0].dealName;
+            var deal = this.data.deal[0];
+            var dealName = RoostUtil.getRoostDisplayName(deal);
             document.title = dealName + " | OneRoost";
         }
         else{
