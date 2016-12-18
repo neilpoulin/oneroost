@@ -10,7 +10,15 @@ const Registration = React.createClass({
         nextStep: PropTypes.func.isRequired,
         previousStep: PropTypes.func.isRequired,
         saveValues: PropTypes.func.isRequired,
-        company: PropTypes.string.isRequired
+        company: PropTypes.string.isRequired,
+        nextText: PropTypes.string,
+        previousText: PropTypes.string
+    },
+    getDefaultProps(){
+        return {
+            nextText: "Continue",
+            previousText: "Previous Step"
+        }
     },
     getInitialState(){
         return {
@@ -33,17 +41,23 @@ const Registration = React.createClass({
         console.log("logout success")
         this.setState({currentUser: null})
     },
+    doLogin(e){
+        this.refs.loginComponent.doLogin(e)
+    },
     render () {
         let loginComponent =
         <LoginComponent
             success={this.loginSuccess}
             logoutSuccess={this.logoutSuccess}
             showCompany={false}
-            company={this.props.company} />
-        let continueButton = null
+            company={this.props.company}
+            showButton={false}
+            ref="loginComponent" />
+        let continueButton = <button className="btn btn-primary" onClick={this.doLogin}>{this.props.nextText}</button>
+
         if ( this.props.currentUser ){
-            loginComponent = <div>You've sussessfully logged in.</div>
-            continueButton = <button className="btn btn-primary" onClick={this.props.nextStep}>Next Step</button>
+            loginComponent = <div className="lead">You've sussessfully logged in.</div>
+            continueButton = <button className="btn btn-primary" onClick={this.props.nextStep}>{this.props.nextText}</button>
         }
 
         let page =
@@ -52,7 +66,7 @@ const Registration = React.createClass({
                 {loginComponent}
             </div>
             <div className="actions" >
-                <button className="btn btn-outline-secondary" onClick={this.props.previousStep}>Previous Step</button>
+                <button className="btn btn-outline-secondary" onClick={this.props.previousStep}>{this.props.previousText}</button>
                 {continueButton}
             </div>
 

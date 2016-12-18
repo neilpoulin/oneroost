@@ -18,7 +18,8 @@ export default React.createClass({
         logoutSuccess: PropTypes.func.isRequired,
         success: PropTypes.func.isRequired,
         company: PropTypes.string,
-        showCompany: PropTypes.bool
+        showCompany: PropTypes.bool,
+        showButton: PropTypes.bool
     },
     getInitialState: function(){
         var username;
@@ -43,13 +44,14 @@ export default React.createClass({
             isTyping: false,
             emailValidation: null,
             passwordValidation: null,
-            company: this.props.company
+            company: this.props.company,
         };
     },
     getDefaultProps(){
         return {
             showCompany: true,
-            company: null
+            company: null,
+            showButton: true
         }
     },
     doLogin: function(e){
@@ -88,10 +90,14 @@ export default React.createClass({
         .fail(component.handleLogoutError);
     },
     showLoading(){
-        this.refs.spinner.doShow();
+        if ( this.refs.spinner ){
+            this.refs.spinner.doShow();
+        }
     },
     hideLoading(){
-        this.refs.spinner.doHide();
+        if ( this.refs.spinner ){
+            this.refs.spinner.doHide();
+        }        
     },
     handleLoginError: function(user, error)
     {
@@ -307,6 +313,15 @@ export default React.createClass({
             </div>
         }
 
+        let actionButton = null;
+        if ( this.props.showButton ){
+            actionButton =
+            <div className="form-group">
+                <br/>
+                <button className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doLogin}>{btnText} <SpinnerIcon ref="spinner"></SpinnerIcon></button>
+            </div>
+        }
+
         var result =
         <div className="LoginComponent">
             <div className="">
@@ -334,10 +349,7 @@ export default React.createClass({
                     <input type="password" id="loginPasswordInput" className="form-control" valueLink={this.linkState("password")} onKeyUp={this.passwordKeyUp} aria-describedby="passwordHelpBlock"/>
                     <span className="help-block" id="passwordHelpBlock">{passwordHelpBlock}</span>
                 </div>
-                <div className="form-group">
-                    <br/>
-                    <button className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doLogin}>{btnText} <SpinnerIcon ref="spinner"></SpinnerIcon></button>
-                </div>
+                {actionButton}
                 <div className={"forgotPassword " + (this.state.isLogin ? "" : "hidden")}>
                     Forgot your password? <a href="#" onClick={this.resetPassword}>Click here</a> to reset it.
                 </div>

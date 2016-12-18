@@ -111,6 +111,7 @@
     "react-dropzone": "^3.5.3",
     "react-ga": "^2.1.2",
     "react-linkify": "^0.1.1",
+    "react-progress-steps": "0.0.8",
     "react-router": "^2.8.1",
     "react-router-active-component": "^4.0.0-rc.0",
     "react-select": "^1.0.0-beta12",

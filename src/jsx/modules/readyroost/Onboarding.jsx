@@ -7,6 +7,7 @@ import Parse from "parse"
 import ReactGA from "react-ga"
 import { withRouter, Link } from "react-router"
 import RoostUtil from "./../util/RoostUtil"
+import Progress from "./Progress"
 
 var fieldValues = {
     problem: null,
@@ -120,6 +121,12 @@ const Onboarding = withRouter( React.createClass({
                 />
         }
     },
+    getLabels(){
+        if ( this.props.currentUser ){
+            return ["Welcome", "Submit"]
+        }
+        return ["Welcome", "Opportunity", "Login", "Submit"];        
+    },
     render () {
         var alert = null;
         if ( this.state.error ){
@@ -136,7 +143,7 @@ const Onboarding = withRouter( React.createClass({
 
         let page =
         <div className="Onboarding">
-            Onboarding Step: {this.state.step} of {this.state.totalSteps}
+            <Progress totalSteps={this.state.totalSteps} step={this.state.step} labels={this.getLabels()}/>
             {alert}
             {this.showStep()}
         </div>

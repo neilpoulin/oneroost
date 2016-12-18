@@ -1,9 +1,81 @@
 .ReadyRoostPage{
     .Onboarding{
         .actions{
-            button:not(:last-of-type){
-                margin-right: 15px;
+            display: flex;
+            justify-content: space-between;
+            > button{
+                flex-grow: 1;
+                &:not(:last-of-type){
+                    margin-right: 15px;
+                }
             }
+
+        }
+    }
+}
+$progressColor: $roostOrange;
+.Progress{
+    display: flex;
+    margin-top:30px;
+    margin-bottom: 20px;
+    padding:10px;
+    height: 20px;
+    $diameter: 22px;
+    .step{
+        flex-grow: 1;
+        height: 5px;
+        background: $progressColor;
+        position:relative;
+        &:last-of-type{
+            flex-grow: 0;
+            width: 0px;
+            .step-label{
+                text-align: right;
+                width: 100px;
+                margin-left: -100px + ( $diameter / 2 );
+            }
+        }
+        &:first-of-type{
+            .step-label{
+                left: -1 * $diameter / 2;
+                text-align: left;
+            }
+        }
+        &.complete{
+            .dot{
+                background-color: $progressColor;
+            }
+        }
+        &.active{
+            .dot{
+                background-color: $progressColor;
+            }
+        }
+        .dot{
+
+            height: $diameter;
+            width: $diameter;
+            border-radius: 50px;
+            background-color: $globalBg;
+            border: 4px solid $progressColor;
+            position: absolute;
+            top: -9px;
+            left: -1 * ($diameter / 2);
+            display: flex;
+            align-items: center;
+            i {
+                align-self: center;
+                color: $globalBg;
+            }
+        }
+        .step-label{
+            overflow: visible;
+            position: absolute;
+            left: -50%;
+            top: -2em;
+            width: 100%;
+            text-align: center;
+            color: $progressColor;
         }
     }
 }

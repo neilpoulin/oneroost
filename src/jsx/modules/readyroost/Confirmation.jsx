@@ -16,7 +16,7 @@ const Confirmation = React.createClass({
     render () {
         let page =
         <div>
-            <div>
+            <div className="lead">
                 You're ready to start creating an opportunity
             </div>
             <div className="actions" >

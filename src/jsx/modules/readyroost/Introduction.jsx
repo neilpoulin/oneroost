@@ -20,7 +20,7 @@ const Introduction = React.createClass({
                 </p>
             </div>
             <div className="actions">
-                <button className="btn btn-primary" onClick={this.props.nextStep}>Get Started</button>
+                <button className="btn btn-primary btn-block" onClick={this.props.nextStep}>Get Started</button>
             </div>
         </div>
 

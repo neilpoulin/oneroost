@@ -1,9 +1,15 @@
-.LoginComponent .forgotPassword{
-    margin-top: 20px;
-}
+.LoginComponent{
+    margin-bottom: 15px;
 
-.LoginComponent form{
-    padding-top: 15px;
+    .forgotPassword{
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    form{
+        padding-top: 15px;
+
+    }
+
 }
 
 .pointer{

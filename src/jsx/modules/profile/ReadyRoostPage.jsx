@@ -87,7 +87,7 @@ const ReadyRoostPage = withRouter( React.createClass({
         var page =
         <div className="ReadyRoostPage">
             <RoostNav showHome={false}></RoostNav>
-            <div className="container col-md-6 col-md-offset-3">
+            <div className="container col-md-4 col-md-offset-4">
                 <Onboarding readyRoostUser={readyRoostUser} currentUser={currentUser} />
             </div>
         </div>
