@@ -99,8 +99,12 @@ exports.getRoostDisplayName = function(deal, displayFor){
     let isCreator = this.isCurrentUser(createdBy);
     let isReadyRoostUser = this.isCurrentUser(readyRoostUser);
 
+    if ( !createdBy ){
+        console.warn("There is no created by on the deal object", deal);
+    }
+
     let roostName = "";
-    if ( !isCreator && createdBy.company ){
+    if ( createdBy && !isCreator && createdBy.company ){
         roostName = createdBy.company
     } else if ( readyRoostUser && !isReadyRoostUser && readyRoostUser.company ){
         roostName = readyRoostUser.company;

@@ -13,7 +13,7 @@ const PublicProfileLink = React.createClass({
         }
     },
     render () {
-        return <NavLink to={"/profile/" + this.props.userId } tag={this.props.tag}>{this.props.children}</NavLink>
+        return <NavLink to={"/proposals/" + this.props.userId } tag={this.props.tag}>{this.props.children}</NavLink>
     }
 })
 

@@ -16,7 +16,9 @@ export default React.createClass({
     mixins: [LinkedStateMixin],
     propTypes: {
         logoutSuccess: PropTypes.func.isRequired,
-        success: PropTypes.func.isRequired
+        success: PropTypes.func.isRequired,
+        company: PropTypes.string,
+        showCompany: PropTypes.bool
     },
     getInitialState: function(){
         var username;
@@ -41,8 +43,14 @@ export default React.createClass({
             isTyping: false,
             emailValidation: null,
             passwordValidation: null,
-            company: null
+            company: this.props.company
         };
+    },
+    getDefaultProps(){
+        return {
+            showCompany: true,
+            company: null
+        }
     },
     doLogin: function(e){
         e.preventDefault();
@@ -290,6 +298,14 @@ export default React.createClass({
             passwordHelpBlock = this.state.passwordValidation.message;
             passwordValidationClass = "has-" + this.state.passwordValidation.level;
         }
+        let companyInput = null
+        if ( this.props.showCompany ){
+            companyInput =
+            <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
+                <label htmlFor="loginLastNameInput" className="control-label">Company</label>
+                <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("company")} placeholder="" aria-describedby="companyHelpBlock" maxLength={40}/>
+            </div>
+        }
 
         var result =
         <div className="LoginComponent">
@@ -312,10 +328,7 @@ export default React.createClass({
                     <input type="email" id="loginEmailInput" className="form-control" valueLink={this.linkState("email")} onKeyUp={this.emailKeyUp} placeholder="" aria-describedby="emailHelpBlock"/>
                     <span className="help-block" id="emailHelpBlock">{emailHelpBlock}</span>
                 </div>
-                <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
-                    <label htmlFor="loginLastNameInput" className="control-label">Company</label>
-                    <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("company")} placeholder="" aria-describedby="companyHelpBlock≠"/>
-                </div>
+                {companyInput}
                 <div className={"form-group " + passwordValidationClass}>
                     <label htmlFor="loginPasswordInput" className="control-label">Password</label>
                     <input type="password" id="loginPasswordInput" className="form-control" valueLink={this.linkState("password")} onKeyUp={this.passwordKeyUp} aria-describedby="passwordHelpBlock"/>

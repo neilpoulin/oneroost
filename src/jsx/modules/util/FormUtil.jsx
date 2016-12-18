@@ -1,5 +1,5 @@
+import React from "react"
 import moment from "moment"
-import _ from "underscore"
 
 const Validation = function(check, level, message){
     this.check = check;
@@ -95,3 +95,21 @@ exports.getErrors = function( data, validationMap )
 }
 
 exports.Validation = Validation;
+
+exports.getErrorClass = function(field, errors){
+    errors = errors || {};
+    if (errors[field] )
+    {
+        return "has-" + errors[field].level
+    }
+    else return null;
+}
+exports.getErrorHelpMessage = function(field, errors){
+    errors = errors || {};
+    if ( errors[field] )
+    {
+        var error = errors[field];
+        return <span key={"opportunitydetails_error_" + field} className="help-block">{error.message}</span>
+    }
+    return null
+}

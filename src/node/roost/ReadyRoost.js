@@ -24,6 +24,7 @@ async function processReadyRoostRequest(currentUser, params, response){
             console.warn("max number of ready roosts reached for user ", currentUser );
             response.error({
                 "message": "Max number of ready roosts hit for user",
+                "link": "/roosts/" + roosts[0].id,
                 "max_ready_roosts": maxReadyRoosts
             });
             return;
@@ -56,7 +57,7 @@ async function processReadyRoostRequest(currentUser, params, response){
         }
     }
     catch(e){
-        console.error("Something went wrong setting up the ready roost", params);
+        console.error("Something went wrong setting up the ready roost", e);
         response.error({error: "Something went wrong setting up the ready roost", params: params});
     }
 }

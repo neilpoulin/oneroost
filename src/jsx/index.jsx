@@ -25,7 +25,8 @@ import Invitation from "./modules/Invitation"
 import ReviewInvitation from "./modules/ReviewInvitation"
 import Unsubscribe from "./modules/Unsubscribe"
 import ProfilePage from "./modules/profile/ProfilePage"
-import PublicProfilePage from "./modules/profile/PublicProfilePage"
+// import PublicProfilePage from "./modules/profile/PublicProfilePage"
+import ReadyRoostPage from "./modules/profile/ReadyRoostPage"
 import AdminHome from "./modules/admin/AdminHome"
 import UnauthorizedPage from "./modules/UnauthorizedPage"
 import EmailTemplates from "./modules/admin/EmailTemplates"
@@ -47,7 +48,7 @@ function getGaOptions(){
     var gaOptions = {};
     var currentUser = Parse.User.current();
     if ( currentUser ){
-        var userId = currentUser.objectId || currentUser.id 
+        var userId = currentUser.objectId || currentUser.id
         console.log("currentUserId:", userId);
         gaOptions.userId = userId;
     }
@@ -127,7 +128,7 @@ render(
             <Route path="/account" component={ProfilePage} onEnter={requireAuthOrParam}>
 
             </Route>
-            <Route path="/profile/:userId" component={PublicProfilePage}/>
+            <Route path="/proposals/:userId" component={ReadyRoostPage}/>
             <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
                 <IndexRoute component={UserHomePage}/>
                 <Route path="unauthorized" component={Unauthorized}/>
