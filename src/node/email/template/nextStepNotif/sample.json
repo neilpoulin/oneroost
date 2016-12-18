@@ -1,4 +1,4 @@
-{
+[{
     "dealName": "Test Deal Name",
     "stepTitle": "Sample Title",
     "authorName": "Taylor Linnell",
@@ -9,5 +9,35 @@
     "description": "same description with \nnew lines\n\ntesting test test",
     "dealLink": "http://dev.oneroost.com/roost/testing",
     "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing",
-    "incompleteSteps": [{"title": "test step"}, {"title": "test step 2"}]
-}
+    "incompleteSteps": [{"title": "test step"}, {"title": "test step 2"}],
+    "modifiedByName": "ModifiedUserName"
+},
+{
+    "dealName": "Test Deal Name",
+    "stepTitle": "Sample Title",
+    "authorName": "Taylor Linnell",
+    "completedDate": null,
+    "stepStatus": "Completed (test)",
+    "assignedUserName": null,
+    "dueDate": "2016-12-01T20:19:50.683Z",
+    "description": "same description with \nnew lines\n\ntesting test test",
+    "dealLink": "http://dev.oneroost.com/roost/testing",
+    "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing",
+    "incompleteSteps": [{"title": "test step"}, {"title": "test step 2"}],
+    "modifiedByName": "ModifiedUserName"
+},
+{
+    "dealName": "Test Deal Name",
+    "stepTitle": "Sample Title",
+    "authorName": "Taylor Linnell",
+    "completedDate": null,
+    "existed": true,
+    "stepStatus": "Completed (test)",
+    "assignedUserName": null,
+    "dueDate": "2016-12-01T20:19:50.683Z",
+    "description": "same description with \nnew lines\n\ntesting test test",
+    "dealLink": "http://dev.oneroost.com/roost/testing",
+    "unsubscribeLink": "http://dev.oneroost.com/unsubscribe/testing",
+    "incompleteSteps": [{"title": "test step"}, {"title": "test step 2"}],
+    "modifiedByName": "ModifiedUserName"
+}]

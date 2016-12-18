@@ -1,4 +1,14 @@
-{{stepTitle}} has been assigned to {{assignedUserName}}
+{{#if existed}}
+    {{#if assignedUserName}}
+        {{modifiedByName}} has assigned {{stepTitle}} to {{assignedUserName}}
+    {{else}}
+        {{modifiedByName}} has updated {{stepTitle}}
+    {{/if}}
+{{else if assignedUserName}}
+    {{modifiedByName}} has assigned {{stepTitle}} to {{assignedUserName}}
+{{else}}
+    {{modifiedByName}} has created {{stepTitle}}
+{{/if}}
 
 Opportunity Name:
 {{dealName}}

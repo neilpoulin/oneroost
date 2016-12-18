@@ -32,9 +32,11 @@ exports.renderEmail = function(templateName, data){
     return renderTemplate(templateName, data);
 }
 
-exports.renderSample = function( name ){
+exports.renderSample = function( name, number ){
+    number = number || 0;
+
     var template = templates[name];
-    return template.render( getSampleData(name) );
+    return template.render( getSampleData(name, number) );
 }
 
 function renderTemplate( name, data ){
@@ -85,8 +87,11 @@ function initializeEmails(){
     });
 }
 
-function getSampleData( name ){
+function getSampleData( name, number ){
     var dataDir = "./../email/template/" + name + "/sample.json";
     var data = require(dataDir);
+    if ( data.constructor === Array ){
+        data = data[number];
+    }
     return data;
 }

@@ -30,6 +30,8 @@ exports.afterSave = function(){
                 var assignedUser = step.get("assignedUser");
                 var modifiedBy = step.get("modifiedBy");
 
+                let authorName = author ? author.get("firstName") + " " + author.get("lastName") : "OneRoost";
+
                 var assignedUserName = null
                 if ( assignedUser ){
                     assignedUserName = assignedUser.get("firstName") + " " + assignedUser.get("lastName");
@@ -39,6 +41,7 @@ exports.afterSave = function(){
                 if ( modifiedBy ){
                     modifiedByName = modifiedBy.get("firstName") + " " + modifiedBy.get("lastName");
                 }
+                modifiedByName = modifiedByName || authorName;
 
                 var status = "Not Done";
                 if ( step.get("completedDate") != null )
@@ -46,7 +49,7 @@ exports.afterSave = function(){
                     status = "Completed";
                 }
 
-                let authorName = author ? author.get("firstName") + " " + author.get("lastName") : "OneRoost";
+
                 let authorEmail = author ? author.get("email") : [];
                 var data = {
                     dealName: deal.get("dealName"),
@@ -60,6 +63,7 @@ exports.afterSave = function(){
                     dueDate: step.get("dueDate"),
                     description: step.get("description"),
                     dealLink: envUtil.getHost() + "/roosts/" + deal.id,
+                    existed: req.object.existed(),
                     messageId: deal.id
                 }
                 console.log("sending Next Step after Save Email with data", data);

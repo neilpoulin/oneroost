@@ -45,10 +45,16 @@ app.locals.formatTime = function(time) {
 
 app.get("/admin/emails/:templateName", function(req, resp){
     TemplateUtil.renderSample(req.params.templateName).then(function(templates){
-        // resp.send(templates.html);
         resp.render("emailSample.ejs", templates);
     });
 });
+
+app.get("/admin/emails/:templateName/:number", function(req, resp){
+    TemplateUtil.renderSample(req.params.templateName, req.params.number).then(function(templates){
+        resp.render("emailSample.ejs", templates);
+    });
+});
+
 
 app.get("*", function( request, response ){
     var env = envUtil.getEnv();
