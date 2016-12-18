@@ -6,6 +6,7 @@ const DocumentDownloadItem = React.createClass({
     propTypes: {
         doc: PropTypes.object.isRequired
     },
+    urlAttempts: 0,
     getInitialState(){
         return {
             downloadUrl: null,
@@ -22,7 +23,18 @@ const DocumentDownloadItem = React.createClass({
             documentId: doc.objectId
         }).then(function( result ) {
             console.log(result);
-            self.setState({downloadUrl: result.url});
+            if (result.url.indexOf( "https://s3.amazonaws.com") != -1 ){
+                console.warn("Failed to get a valid S3 url, trying again.", result.url)
+                if ( self.urlAttempts < 3 ){
+                    self.getPresignedGetUrl();
+                    self.urlAttempts = self.urlAttempts + 1;
+                } else{
+                    self.urlAttempts = 0
+                }
+            } else {
+                self.setState({downloadUrl: result.url});
+                self.urlAttempts = 0
+            }
         });
     },
     getIconType(){
