@@ -1,0 +1,9 @@
+.ReadyRoostPage{
+    .Onboarding{
+        .actions{
+            button:not(:last-of-type){
+                margin-right: 15px;
+            }
+        }
+    }
+}
