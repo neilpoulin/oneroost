@@ -30,6 +30,7 @@ import ReadyRoostPage from "./modules/profile/ReadyRoostPage"
 import AdminHome from "./modules/admin/AdminHome"
 import UnauthorizedPage from "./modules/UnauthorizedPage"
 import EmailTemplates from "./modules/admin/EmailTemplates"
+import HelpPage from "./modules/help/HelpPage"
 import ReactGA from "react-ga"
 
 
@@ -129,6 +130,7 @@ render(
 
             </Route>
             <Route path="/proposals/:userId" component={ReadyRoostPage}/>
+            <Route path="/help" component={HelpPage}/>
             <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
                 <IndexRoute component={UserHomePage}/>
                 <Route path="unauthorized" component={Unauthorized}/>

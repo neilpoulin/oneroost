@@ -21,6 +21,7 @@ const DocumentDownloadItem = React.createClass({
         Parse.Cloud.run("getPresignedGetUrl", {
             documentId: doc.objectId
         }).then(function( result ) {
+            console.log(result);
             self.setState({downloadUrl: result.url});
         });
     },
