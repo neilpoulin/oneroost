@@ -2,7 +2,6 @@ import Parse from "parse";
 import React from "react";
 import ParseReact from "parse-react";
 import { withRouter } from "react-router";
-import NavLink from "./NavLink";
 import RoostNav from "./navigation/RoostNav";
 import AddAccountButton from "./account/AddAccountButton";
 import AccountSidebarList from "./account/AccountSidebarList"
