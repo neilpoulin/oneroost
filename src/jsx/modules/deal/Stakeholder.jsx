@@ -67,7 +67,7 @@ export default React.createClass({
         var stakeholder = this.props.stakeholder;
         var user = stakeholder.user;
         var fullName = RoostUtil.getFullName( user )
-        var email = user.email || user.get("email")
+        var email = user.email || user.username
         var company = null
         try{
             company = user.company || user.get("comapny")
