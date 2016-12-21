@@ -25,8 +25,11 @@ import TemplateUtil from"./util/TemplateUtil"
 import Documents from "./documents/Documents"
 import ReadyRoost from "./roost/ReadyRoost"
 import BeforeSave from "./triggers/BeforeSave"
-
+import AWSXRay from "aws-xray-sdk";
+AWSXRay.setDefaultName(envUtil.getEnvName());
 var app = express();
+app.use(AWSXRay.express.openSegment());
+
 var server = http.Server(app);
 var io = socket(server);
 app.engine("ejs", ejs.__express);
@@ -77,6 +80,8 @@ Notifications.initialize(io);
 Documents.initialize();
 Stakeholders.initialize();
 ReadyRoost.initialize();
+
+app.use(AWSXRay.express.closeSegment());
 
 process.on("uncaughtException", function(err){
     console.error(err.stack)
