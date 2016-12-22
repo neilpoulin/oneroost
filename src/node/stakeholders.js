@@ -18,10 +18,10 @@ exports.initialize = function()
             console.log("request.stakeholder:", stakeholder);
             console.log("request.currentUser", currentUser);
 
-            let dealQueryResult = (new Parse.Query("Deal")).get(dealId)
+            let dealQueryResult = (new Parse.Query("Deal")).get(dealId, {useMasterKey: true})
             let userQuery = new Parse.Query("User");
             userQuery.equalTo("email", stakeholder.email.toLowerCase())
-            let userQueryResult = userQuery.first();
+            let userQueryResult = userQuery.first({useMasterKey: true});
 
             console.log("looking for existing user with email = " + stakeholder.email);
             let deal = await dealQueryResult;
@@ -33,7 +33,7 @@ exports.initialize = function()
                 let existingStakeholderQuery = new Parse.Query("Stakeholder");
                 existingStakeholderQuery.equalTo("deal", deal);
                 existingStakeholderQuery.equalTo("user", user);
-                let foundStakeholders = await existingStakeholderQuery.find()
+                let foundStakeholders = await existingStakeholderQuery.find({useMasterKey: true})
                 if ( foundStakeholders.length > 0 ){
                     response.error({error: "this user is already a stakeholder.", exists: true})
                 }
@@ -58,7 +58,7 @@ exports.initialize = function()
         var password = request.params.password;
         var userId = request.params.userId;
         // var stakeholderId = request.params.stakeholderId;
-        new Parse.Query(Parse.User).get(userId).then(function(user){
+        new Parse.Query(Parse.User).get(userId, {useMasterKey: true}).then(function(user){
             console.log("saveNewPassword: found user: " + userId);
             if ( user.get("passwordChangeRequired") )
             {

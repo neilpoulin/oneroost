@@ -23,7 +23,7 @@ exports.afterSave = function(){
                 allStepsQuery.equalTo("completedDate", null);
                 allStepsQuery.equalTo("deal", step.get("deal"));
 
-                let incompleteSteps = await allStepsQuery.find();
+                let incompleteSteps = await allStepsQuery.find({userMasterKey: true});
 
                 var author = step.get("createdBy");
                 var deal = step.get("deal");

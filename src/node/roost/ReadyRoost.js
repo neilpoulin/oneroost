@@ -15,7 +15,7 @@ async function processReadyRoostRequest(currentUser, params, response){
         var roostQuery = new Parse.Query("Deal");
         roostQuery.equalTo("createdBy", currentUser);
         roostQuery.equalTo("readyRoostUser", profileUser);
-        let roosts = await roostQuery.find();
+        let roosts = await roostQuery.find({useMasterKey: true});
 
         console.log("query returned for finding existing ready roosts", roosts);
         var maxReadyRoosts = getMaxReadyRoostsPerUser();
@@ -183,7 +183,7 @@ async function processReadyRoostSubmission(currentUser, params, response){
 
         let nextStepsQuery = new Parse.Query("NextStep");
         nextStepsQuery.equalTo("deal", deal);
-        let nextStepsQueryResult = nextStepsQuery.find();
+        let nextStepsQueryResult = nextStepsQuery.find({useMasterKey: true});
 
         let documents = await documentQueryResult;
         let nextSteps = await nextStepsQueryResult;
