@@ -32,7 +32,7 @@ exports.afterSave = function(){
                 documentQuery.include("deal");
                 documentQuery.include("createdBy");
                 // documentQuery.equalTo("onboarding", false);
-                let doc = await documentQuery.get( documentId )
+                let doc = await documentQuery.get( documentId, {useMasterKey: true} )
 
                 console.log("found document: " + doc);
                 var deal = doc.get("deal");
@@ -83,7 +83,7 @@ async function getDocumentById( documentId, includeOnboarding ){
     documentQuery.include("deal");
     documentQuery.include("createdBy");
     documentQuery.equalTo("onboarding", includeOnboarding);
-    return await documentQuery.get( documentId )
+    return await documentQuery.get( documentId, {useMasterKey: true} )
 }
 
 async function getStakeholdersForDeal( deal ){

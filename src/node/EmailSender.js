@@ -18,7 +18,7 @@ exports.sendTemplate = function( templateName, data, sendTo ){
     console.log("[" + templateName + "] sendTo", sendTo);
     sendTo.forEach( function(to){
         try{
-            let recipient = findRecipient(to)        
+            let recipient = findRecipient(to)
             recipient.then(recipient => sender(recipient, to))
             recipient.catch(error => console.log("[" + templateName + "] something went wrong", error))
         }
@@ -52,7 +52,7 @@ async function findRecipient( to )
     console.log("finding recipeint for ", to);
     var query = new Parse.Query("EmailRecipient");
     query.equalTo( "email", to.email );
-    let emailRecipients = await query.find();
+    let emailRecipients = await query.find({useMasterKey: true});
 
     if ( emailRecipients.length > 0 ){
         var existing = emailRecipients[0];

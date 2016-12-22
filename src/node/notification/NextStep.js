@@ -17,7 +17,7 @@ exports.afterSave = function(){
                 stepQuery.include("createdBy"); //this fixed the issue where it didn"t know the properties of the author
                 stepQuery.include("assignedUser");
                 stepQuery.include("modifiedBy");
-                let step = await stepQuery.get(req.object.id);
+                let step = await stepQuery.get(req.object.id, {useMasterKey: true});
 
                 var allStepsQuery = new Parse.Query("NextStep");
                 allStepsQuery.equalTo("completedDate", null);

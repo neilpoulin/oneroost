@@ -14,6 +14,11 @@ async function sendCommentEmail( comment ){
             var deal = comment.get("deal");
             var author = comment.get("author");
             var authorEmail = author.get("email");
+            console.log("comment", comment.toJSON());
+            console.log("author", author.toJSON());
+            console.log("authorEmail", authorEmail);
+            console.log("author.email", author.get("email"));
+
             // var stakeholderQuery = new Parse.Query("Stakeholder");
             // stakeholderQuery.include( "user" );
             // stakeholderQuery.equalTo( "deal", deal );
@@ -62,6 +67,7 @@ exports.afterSave = function(io){
             query.include("author");
             query.include("deal");
             query.get( comment.id, {
+                useMasterKey: true,
                 success: function( comment ){
                     broadcast(comment);
                     sendCommentEmail( comment );

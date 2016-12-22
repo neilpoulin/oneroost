@@ -15,7 +15,7 @@ exports.afterSave = function(){
             stakeholderQuery.include("user");
             stakeholderQuery.include("invitedBy");
             stakeholderQuery.include("deal");
-            let stakeholder = await stakeholderQuery.get(req.object.id);
+            let stakeholder = await stakeholderQuery.get(req.object.id, {useMasterKey: true});
             var deal = stakeholder.get("deal");
             var invitedBy = stakeholder.get("invitedBy");
             var role = stakeholder.get("role");

@@ -25,6 +25,7 @@ function registerPresignedGetUrl(){
         var docQuery = new Parse.Query("Document");
         docQuery.matchesKeyInQuery("deal", "deal", stakeholderQuery);
         docQuery.get( documentId , {
+            useMasterKey: true,
             success: function( doc ){
                 if ( !doc ){
                     console.log("no document was found matching the query");

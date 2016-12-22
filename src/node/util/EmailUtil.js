@@ -14,13 +14,14 @@ exports.getRecipientsFromStakeholders = function( stakeholders, excludedEmails )
     {
         excludedEmails = [excludedEmails];
     }
-    console.log("processing " + stakeholders.length + " stakeholder emails. Excluding = " + excludedEmails + ":", stakeholders );
+    var stakeholderEmails = stakeholders.map(s => {return {"stakeholderId": s.id, "email": s.get("user").get("email")}});
+    console.log("processing " + stakeholders.length + " stakeholder emails. Excluding = " + excludedEmails + ":", stakeholderEmails );
     for ( var i = 0; i < stakeholders.length; i++ )
     {
         var stakeholder = stakeholders[i];
         if ( !stakeholder.get("inviteAccepted") )
         {
-            console.log("The stakeholder has not accepted the invitation, skipping", stakeholder);
+            console.log("The stakeholder has not accepted the invitation, skipping", {"stakeholderId":stakeholder.id, "email": stakeholder.get("user").get("email")});
             continue;
         }
 
@@ -43,7 +44,7 @@ exports.getRecipientsFromStakeholders = function( stakeholders, excludedEmails )
 }
 
 exports.getActualRecipients = function( original, config )
-{    
+{
     var emailOverride = config.get( "emailOverride");
     if ( emailOverride )
     {
@@ -62,7 +63,7 @@ exports.getActualRecipientsForDeal = async function( deal, excludedEmails ){
     var stakeholderQuery = new Parse.Query("Stakeholder");
     stakeholderQuery.include( "user" );
     stakeholderQuery.equalTo( "deal", deal );
-    let stakeholders = await stakeholderQuery.find();
+    let stakeholders = await stakeholderQuery.find({useMasterKey: true});
     var recipients = this.getRecipientsFromStakeholders( stakeholders, excludedEmails );
     return recipients;
 }

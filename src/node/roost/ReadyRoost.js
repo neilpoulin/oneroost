@@ -173,7 +173,7 @@ async function processReadyRoostSubmission(currentUser, params, response){
         var stakeholderQuery = new Parse.Query("Stakeholder");
         stakeholderQuery.include("deal.readyRoostUser");
 
-        let stakeholder = await stakeholderQuery.get(params.stakeholderId)
+        let stakeholder = await stakeholderQuery.get(params.stakeholderId, {useMasterKey: true})
 
         console.log("retrieved stakeholder", stakeholder);
         var deal = stakeholder.get("deal");
