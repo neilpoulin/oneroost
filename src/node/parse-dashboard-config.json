@@ -7,14 +7,14 @@
             "appName": "Local Dev"
         },
         {
-            "serverURL": "http://www.oneroost.com/parse",
+            "serverURL": "https://www.oneroost.com/parse",
             "appId": "lSNtmvBTimEY6VfOo5zvvOQkljcHeDIOQcjefNUu",
             "masterKey": "LqJHvr4fr6kD43RwCawwwq1AxaiGcQpGHZRvpmc9",
             "production": true,
             "appName": "OneRoost - Prod"
         },
         {
-            "serverURL": "http://stage.oneroost.com/parse",
+            "serverURL": "https://stage.oneroost.com/parse",
             "appId": "llcq2KXGOGoOQMO9W1rvgFcramBjAMgZEVRhNagb",
             "masterKey": "vZZXdKrpM3QAqFzNoNVWljX9V8ExokwqaGzncjTh",
             "appName": "OneRoost - Stage"
@@ -24,6 +24,10 @@
         {
             "user":"neil",
             "pass":"OneRoost88"
+        },
+        {
+            "user":"taylor",
+            "pass":"PlatformT2016"
         }
     ]
 }
