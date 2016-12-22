@@ -11,7 +11,7 @@ mailparser.on("end", function(mail_object){
     console.log("Subject:", mail_object.subject); // Hello world!
     console.log("Text body:", mail_object.text); // How are you today?
     console.log("To Addr", mail_object.to);
-    console.log("parsed To Addr", lambda.parseToAddress(mail_object));
+    console.log("parsed To Addr", lambda.testParseToAddress(mail_object));
     var replyOnly = parseReply.parseReply(mail_object.text);
     console.log("replyOnly:", replyOnly)
 

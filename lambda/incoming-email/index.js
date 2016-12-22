@@ -81,6 +81,10 @@ function addMessage(mail, callback){
     });
 }
 
+exports.testParseToAddress = function(mail){
+    return parseToAddress(mail);
+}
+
 function parseToAddress( mail ){
     var address = mail.to[0].address.split("@")[0].split("+");
     var domain = mail.to[0].address.split("@")[1];
@@ -138,7 +142,7 @@ function getClient( env ){
 
 function getParseServerUrl(env){
     env = env === "prod" ? "www" : env;
-    return "http://" + env + ".oneroost.com/parse";
+    return "https://" + env + ".oneroost.com/parse";
 }
 
 function getHeaders(env)
@@ -149,6 +153,7 @@ function getHeaders(env)
         "Content-Type": "application/json"
     }
 }
+
 
 
 function getAppId( env ){
