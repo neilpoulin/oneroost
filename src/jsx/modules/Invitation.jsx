@@ -2,10 +2,11 @@ import React, { PropTypes } from "react"
 import Parse from "parse"
 import {withRouter} from "react-router"
 import ParseReact from "parse-react"
-import LinkedStateMixin from "react-addons-linked-state-mixin"
+import {linkState} from "./util/LinkState"
+import RoostUtil from "./util/RoostUtil"
 
 const Invitation = withRouter( React.createClass({
-    mixins: [ParseReact.Mixin,LinkedStateMixin],
+    mixins: [ParseReact.Mixin],
     propTypes: {
         router: PropTypes.object.isRequired
     },
@@ -111,18 +112,20 @@ const Invitation = withRouter( React.createClass({
                 </div>
                 <div className="container-fluid">
                     <div className="form-group">
-                        <label htmlFor="nextStepTitle">Create a Password</label>
+                        <label htmlFor="nextStepTitle" className="control-label">Create a Password</label>
                         <input id="createPassword"
                             type="password"
                             className="form-control"
-                            valueLink={this.linkState("password")}/>
+                            value={this.state.password}
+                            onChange={linkState(this,"password")}/>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="nextStepTitle">Confirm Password</label>
+                        <label htmlFor="nextStepTitle" className="control-label">Confirm Password</label>
                         <input id="confirmPassword"
                             type="password"
                             className="form-control"
-                            valueLink={this.linkState("confirmPassword")}/>
+                            value={this.state.confirmPassword}
+                            onChange={linkState(this,"confirmPassword")}/>
                     </div>
                     <div className="form-group">
                         <button className="btn btn-success btn-block" onClick={this.submitPassword}>Accept Invite</button>
@@ -148,14 +151,12 @@ const Invitation = withRouter( React.createClass({
                     <p className="lead">
                         <span className="">{stakeholder.user.firstName} {stakeholder.user.lastName},</span>
                         <br/>
-                        {stakeholder.invitedBy.firstName} {stakeholder.invitedBy.lastName} ({stakeholder.invitedBy.email}) has invited to you join {stakeholder.deal.dealName} on OneRoost
+                        {RoostUtil.getFullName(stakeholder.invitedBy)} from {stakeholder.invitedBy.company} has invited to you join {stakeholder.deal.dealName} on OneRoost
                     </p>
                 </div>
             </div>
             {form}
         </div>
-
-
 
         return result;
     }

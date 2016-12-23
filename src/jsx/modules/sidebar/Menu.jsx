@@ -1,9 +1,8 @@
 import $ from "jquery";
 import React from "react";
-import LinkedStateMixin from "react-addons-linked-state-mixin"
+import {linkState} from "./../util/LinkState"
 
 export default React.createClass({
-    mixins: [LinkedStateMixin],
     getInitialState: function() {
         return {
             visible: this.props.visible ? true : false,
@@ -40,7 +39,12 @@ export default React.createClass({
                 <div className="form-group">
                     <div className="inner-addon left-addon">
                         <div className="inner-addon {this.props.side}-addon"><i className="fa fa-search"></i></div>
-                        <input type="text" className="form-control" placeholder="search" onKeyUp={this.doFilter} valueLink={this.linkState("filterTerm")} />
+                        <input type="text"
+                            className="form-control"
+                            placeholder="search"
+                            onKeyUp={this.doFilter}
+                            value={this.state.filterTerm}
+                            onChange={linkState(this,"filterTerm")} />
                     </div>
                 </div>
             </div>

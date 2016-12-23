@@ -1,11 +1,10 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
-import ParseReact from "parse-react";
-import LinkedStateMixin from "react-addons-linked-state-mixin";
-import AutosizeTextarea from "react-textarea-autosize";
+import ParseReact from "parse-react"
+import {linkState} from "./../util/linkState"
+import AutosizeTextarea from "react-textarea-autosize"
 
 const TimelineSidebar = React.createClass({
-    mixins: [LinkedStateMixin],
     propTypes: {
         deal: PropTypes.object.isRequired
     },
@@ -13,7 +12,7 @@ const TimelineSidebar = React.createClass({
         return {
             high: this.props.deal.budget.high || 0,
             low: this.props.deal.budget.low || 0,
-            description: this.props.deal.description || null,
+            description: this.props.deal.description || "",
             saveSuccess: false,
             saveError: false,
             dealName: this.props.deal.dealName
@@ -66,14 +65,24 @@ const TimelineSidebar = React.createClass({
                     <label>Low</label>
                     <div className="input-group">
                         <span className="input-group-addon" id="basic-addon1">$</span>
-                        <input type="number" className="form-control" placeholder="" aria-describedby="basic-addon1" valueLink={this.linkState("low")}/>
+                        <input type="number"
+                            className="form-control"
+                            placeholder=""
+                            aria-describedby="basic-addon1"
+                            value={this.state.low}
+                            onChange={linkState(this, "low")}/>
                     </div>
                 </div>
                 <div className="form-group">
                     <label>High</label>
                     <div className="input-group">
                         <span className="input-group-addon" id="basic-addon1">$</span>
-                        <input type="number" className="form-control" placeholder="" aria-describedby="basic-addon1" valueLink={this.linkState("high")}/>
+                        <input type="number"
+                            className="form-control"
+                            placeholder=""
+                            aria-describedby="basic-addon1"
+                            value={this.state.high}
+                            onChange={linkState(this, "high")}/>
                     </div>
                 </div>
             </div>
@@ -82,7 +91,8 @@ const TimelineSidebar = React.createClass({
                 <input type="text" className="form-control"
                     placeholder=""
                     aria-describedby="basic-addon1"
-                    valueLink={this.linkState("dealName")}
+                    value={this.state.dealName}
+                    onChange={linkState(this, "dealName")}
                     maxLength={40}/>
             </div>
             <div className="form-group">

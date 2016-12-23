@@ -1,12 +1,11 @@
-import React from "react";
-import Parse, {PropTypes} from "parse";
-import ParseReact from "parse-react";
-import Stakeholder from "./Stakeholder";
-import AddStakeholderButton from "./AddStakeholderButton";
-import LinkedStateMixin from "react-addons-linked-state-mixin"
+import React from "react"
+import Parse, {PropTypes} from "parse"
+import ParseReact from "parse-react"
+import Stakeholder from "./Stakeholder"
+import AddStakeholderButton from "./AddStakeholderButton"
+import {linkState} from "./../util/LinkState"
 
 export default React.createClass({
-	mixins: [LinkedStateMixin, ParseReact.Mixin],
 	propTypes: {
 		deal: PropTypes.shape({
 			id: PropTypes.any.isRequired,
@@ -86,8 +85,12 @@ export default React.createClass({
 			<div className="row-fluid">
 				<div className="container-fluid">
 					<div className="form-group">
-						<label htmlFor="dealSummary">Objective / Summary</label>
-						<textarea id="dealSummary" placeholder="enter the deal summary / objective " valueLink={this.linkState("summary")} className="form-control" ></textarea>
+						<label htmlFor="dealSummary" className="control-label">Objective / Summary</label>
+						<textarea id="dealSummary"
+                            placeholder="enter the deal summary / objective "
+                            value={this.state.summary}
+                            onChange={linkState(this,"summary")}
+                            className="form-control" ></textarea>
 					</div>
 				</div>
 			</div>
@@ -96,10 +99,14 @@ export default React.createClass({
 					<div className="row-fluid">
 						<div className="">
 							<div className="form-group">
-								<label htmlFor="timelineInput">Timeline</label>
+								<label htmlFor="timelineInput" className="control-label">Timeline</label>
 								<div className="input-group">
 									<span className="input-group-addon"><i className="fa fa-calendar"></i></span>
-									<input type="text" id="timelineInput" valueLink={this.linkState("timeline")} className="form-control" />
+									<input type="text"
+                                        id="timelineInput"
+                                        value={this.state.timeline}
+                                        onChange={linkState(this, "timeline")}
+                                        className="form-control" />
 								</div>
 							</div>
 						</div>
@@ -107,17 +114,25 @@ export default React.createClass({
 					<div className="row-fluid">
 						<div className="">
 							<div className="form-group">
-								<label htmlFor="budgetLowInput">Budget (Low)</label>
+								<label htmlFor="budgetLowInput" className="control-label">Budget (Low)</label>
 								<div className="input-group">
 									<span className="input-group-addon">$</span>
-									<input type="number" id="budgetLowInput" className="form-control" valueLink={this.linkState("budgetLow")} />
+									<input type="number"
+                                        id="budgetLowInput"
+                                        className="form-control"
+                                        value={this.state.budgetLow}
+                                        onChange={linkState(this, "budgetLow")} />
 								</div>
 							</div>
 							<div className="form-group">
-								<label htmlFor="budgetHighInput">Budget (High)</label>
+								<label htmlFor="budgetHighInput" className="control-label">Budget (High)</label>
 								<div className="input-group">
 									<span className="input-group-addon">$</span>
-									<input type="number" id="budgetHighInput" className="form-control" valueLink={this.linkState("budgetHigh")} />
+									<input type="number"
+                                        id="budgetHighInput"
+                                        className="form-control"
+                                        value={this.state.budgetHigh}
+                                        onChange={linkState(this, "budgetHigh")} />
 								</div>
 							</div>
 						</div>
@@ -145,11 +160,21 @@ export default React.createClass({
 						<div className="form-inline">
 							<div className="form-group">
 								<label htmlFor="stakeholderNameInput" className="sr-only">Name</label>
-								<input type="text" id="stakeholderNameInput" className="form-control" placeholder="Name" valueLink={this.linkState("stakeholderName")} />
+								<input type="text"
+                                    id="stakeholderNameInput"
+                                    className="form-control"
+                                    placeholder="Name"
+                                    value={this.state.stakeholderName}
+                                    onChange={linkState(this, "stakeholderName")} />
 							</div>
 							<div className="form-group">
 								<label htmlFor="stakeholderNameInput" className="sr-only">Email</label>
-								<input type="text" id="stakeholderEmailInput" className="form-control" placeholder="Email" valueLink={this.linkState("stakeholderEmail")} />
+								<input type="text"
+                                    id="stakeholderEmailInput"
+                                    className="form-control"
+                                    placeholder="Email"
+                                    value={this.state.stakeholderEmail}
+                                    onChange={linkState(this, "stakeholderEmail")} />
 							</div>
 							<div className="form-group">
 								<AddStakeholderButton/>

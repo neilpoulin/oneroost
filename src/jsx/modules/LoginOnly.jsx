@@ -7,13 +7,12 @@
 import React from "react"
 import Parse from "parse";
 Parse.serverURL = OneRoost.Config.parseSeverURL;
-import LinkedStateMixin from "react-addons-linked-state-mixin"
 import SpinnerIcon from "./SpinnerIcon"
 import { browserHistory, withRouter } from "react-router"
+import {linkState} from "./util/LinkState"
 
 const LoginOnly = withRouter(
     React.createClass({
-        mixins: [LinkedStateMixin],
         getInitialState: function(){
             var username;
             var isLoggedIn = false;
@@ -28,15 +27,15 @@ const LoginOnly = withRouter(
             return {
                 isLoggedIn: isLoggedIn,
                 username: username,
-                firstName: null,
-                lastName: null,
-                password: null,
+                firstName: "",
+                lastName: "",
+                password: "",
                 email: email,
                 isLogin: window.location.pathname.indexOf("login") != -1,
-                error: null,
+                error: "",
                 isTyping: false,
-                emailValidation: null,
-                passwordValidation: null
+                emailValidation: "",
+                passwordValidation: ""
             };
         },
         doLogin: function(e){
@@ -267,12 +266,25 @@ const LoginOnly = withRouter(
                     {error}
                     <div className={"form-group " + emailValidationClass}>
                         <label htmlFor="loginUsernameInput" className="control-label">Email</label>
-                        <input type="email" id="loginEmailInput" className="form-control" valueLink={this.linkState("email")} onKeyUp={this.emailKeyUp} placeholder="" aria-describedby="emailHelpBlock"/>
+                        <input type="email"
+                            id="loginEmailInput"
+                            className="form-control"
+                            value={this.state.email}
+                            onChange={linkState(this,"email")}
+                            onKeyUp={this.emailKeyUp}
+                            placeholder=""
+                            aria-describedby="emailHelpBlock"/>
                         <span className="help-block" id="emailHelpBlock">{emailHelpBlock}</span>
                     </div>
                     <div className={"form-group " + passwordValidationClass}>
                         <label htmlFor="loginPasswordInput" className="control-label">Password</label>
-                        <input type="password" id="loginPasswordInput" className="form-control" valueLink={this.linkState("password")} onKeyUp={this.passwordKeyUp} aria-describedby="passwordHelpBlock"/>
+                        <input type="password"
+                            id="loginPasswordInput"
+                            className="form-control"
+                            value={this.state.password}
+                            onChange={linkState(this,"password")}
+                            onKeyUp={this.passwordKeyUp}
+                            aria-describedby="passwordHelpBlock"/>
                         <span className="help-block" id="passwordHelpBlock">{passwordHelpBlock}</span>
                     </div>
                     <div className="form-group">

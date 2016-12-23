@@ -32,7 +32,9 @@ module.exports = function activeComponent(Component, options) {
             activeClassName: t.string.isRequired,
             router: t.object.isRequired,
             to: t.oneOfType([t.string, t.object]).isRequired,
-
+            params: t.object.isRequired,
+            location: t.object.isRequired,
+            routes: t.array.isRequired,
             activeStyle: t.object,
             className: t.string,
             hash: t.string,
@@ -47,40 +49,49 @@ module.exports = function activeComponent(Component, options) {
                 activeClassName: "active",
                 link: options.link,
                 onlyActiveOnIndex: false,
+                className: ""
             }
         },
 
         render() {
             let {
-                link, linkProps,
-                to, query, hash, state, onlyActiveOnIndex,
-                activeClassName, activeStyle,
+                link,
+                linkProps,
+                to,
+                query,
+                hash,
+                state,
+                onlyActiveOnIndex,
+                activeClassName,
+                activeStyle,
                 router,
-                ...props,
+                className,
+                active,
+                style,
             } = this.props
             let location = createLocationDescriptor({to, query, hash, state})
 
             if (router) {
-                let active = router.isActive(location, onlyActiveOnIndex)
+                let isActive = router.isActive(location, onlyActiveOnIndex)
                 if (typeOf(Component) !== "string") {
-                    props.active = active
+                    active = isActive
                 }
 
                 if (active) {
                     if (activeClassName) {
-                        props.className = `${props.className || ""}${props.className ? " " : ""}${activeClassName}`
+                        className = className + " " + activeClassName;
                     }
                     if (activeStyle) {
-                        props.style = {...props.style, activeStyle}
+                        style = {...style, activeStyle}
                     }
                 }
             }
 
             if (!link) {
-                return <Component {...props}>{this.props.children}</Component>
+                return <Component className={className} >{this.props.children}</Component>
             }
-            return <Component {...props}>
-                <Link className={options.linkClassName} {...linkProps} to={location}>
+            return <Component className={className}>
+                <Link className={options.linkClassName } {...linkProps} to={location}>
                     {this.props.children}
                 </Link>
             </Component>

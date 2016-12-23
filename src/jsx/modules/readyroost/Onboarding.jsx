@@ -10,9 +10,9 @@ import RoostUtil from "./../util/RoostUtil"
 import Progress from "./Progress"
 
 var fieldValues = {
-    problem: null,
-    company: null,
-    currentUser: null
+    problem: "",
+    company: "",
+    currentUser: ""
 }
 
 const Onboarding = withRouter( React.createClass({
@@ -125,7 +125,7 @@ const Onboarding = withRouter( React.createClass({
         if ( this.props.currentUser ){
             return ["Welcome", "Submit"]
         }
-        return ["Welcome", "Opportunity", "Login", "Submit"];        
+        return ["Welcome", "Opportunity", "Login", "Submit"];
     },
     render () {
         var alert = null;

@@ -3,7 +3,6 @@ import Parse from "parse"
 import ParseReact from "parse-react"
 import AccountSidebarList from "./AccountSidebarList"
 import AddAccountButton from "./AddAccountButton"
-import moment from "moment"
 
 export default React.createClass({
     mixins: [ParseReact.Mixin],
@@ -39,8 +38,6 @@ export default React.createClass({
                 })
             contents = <AccountSidebarList deals={deals} />
         }
-
-
 
         return (
             <div id={"accountSidebar" + (this.props.isMobile ? "Mobile" : "")} className="container-fluid hidden-sm hidden-xs">

@@ -1,9 +1,8 @@
 import React, { PropTypes } from "react"
 import FormUtil, {Validation} from "./../util/FormUtil"
-import LinkedStateMixin from "react-addons-linked-state-mixin"
+import {linkState} from "./../util/LinkState"
 
 const OpportunityDetail = React.createClass({
-    mixins: [LinkedStateMixin],
     propTypes: {
         readyRoostUser: PropTypes.object.isRequired,
         currentUser: PropTypes.object,
@@ -52,20 +51,22 @@ const OpportunityDetail = React.createClass({
             </div>
             <div>
                 <div className={"form-group " + FormUtil.getErrorClass("company", this.state.errors)}>
-                    <label htmlFor="companyInput">Company</label>
+                    <label htmlFor="companyInput" className="control-label">Company</label>
                     <input id="companyInput"
                         type="text"
                         className="form-control"
-                        valueLink={this.linkState("company")}/>
+                        value={this.state.company}
+                        onChange={linkState(this,"company")}/>
                     {FormUtil.getErrorHelpMessage("company", this.state.errors)}
                 </div>
                 <div className={"form-group " + FormUtil.getErrorClass("problem", this.state.errors)}>
-                    <label htmlFor="problemInput">Problem Summary</label>
+                    <label htmlFor="problemInput" className="control-label">Problem Summary</label>
                     <input id="problemInput"
                         type="text"
                         maxLength={40}
                         className="form-control"
-                        valueLink={this.linkState("problem")}/>
+                        value={this.state.problem}
+                        onChange={linkState(this,"problem")}/>
                     {FormUtil.getErrorHelpMessage("problem", this.state.errors)}
                 </div>
             </div>

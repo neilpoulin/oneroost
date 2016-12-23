@@ -1,13 +1,13 @@
 import React, { PropTypes } from "react"
 import FormUtil, {Validation} from "./../util/FormUtil"
-import LinkedStateMixin from "react-addons-linked-state-mixin"
+import {linkState} from "./../util/linkState"
 import Parse from "parse";
 import ParseReact from "parse-react"
 import Dropzone from "react-dropzone"
 import request from "superagent"
+import numeral from "numeral"
 
 const DocumentUploadForm = React.createClass({
-    mixins: [LinkedStateMixin],
     propTypes: {
         deal: PropTypes.shape({
             objectId: PropTypes.string.isRequired
@@ -19,11 +19,11 @@ const DocumentUploadForm = React.createClass({
             uploading: false,
             uploadSuccess: false,
             dragover: false,
-            fileName: null,
+            fileName: "",
             deal: this.props.deal,
-            externalLink: null,
-            s3key: null,
-            type: null,
+            externalLink: "",
+            s3key: "",
+            type: "",
             size: null,
             percent: 0,
             errors: {}
@@ -99,7 +99,7 @@ const DocumentUploadForm = React.createClass({
         .set("Content-Type", file.type)
         .send(file)
         .on("progress", function(e) {
-            console.log("Percentage done: ", e.percent);
+            console.log("Percentage done: ", numeral( e.percent).format("0,0"));
             self.setState({uploading: true, percent: e.percent});
         })
         .end(function(err, response){
@@ -162,11 +162,12 @@ const DocumentUploadForm = React.createClass({
         var progress = null;
         var formAction =
         <div className={"form-group " + this.getErrorClass("externalLink")}>
-            <label htmlFor="externalLinkInput">URL</label>
+            <label htmlFor="externalLinkInput" className="control-label">URL</label>
             <input id="externalLinkInput"
                 type="text"
                 className="form-control"
-                valueLink={this.linkState("externalLink")}
+                onChange={linkState(this, "externalLink")}
+                value={this.state.externalLink}
                 placeholder={"http://www.mywebsite.com/mydocument.pdf"} />
             {this.getErrorHelpMessage("externalLink")}
         </div>
@@ -186,7 +187,7 @@ const DocumentUploadForm = React.createClass({
                 {this.getErrorHelpMessage("uploadSuccess")}
             </div>
 
-            var progressLabel = this.state.percent + "%";
+            var progressLabel = numeral(this.state.percent).format("0,0") + "%";
             if ( this.state.uploadSuccess ){
                 progressLabel = "Upload Completed"
             }
@@ -221,11 +222,12 @@ const DocumentUploadForm = React.createClass({
                 </ul>
 
                 <div className={"form-group " + this.getErrorClass("fileName")}>
-                    <label htmlFor="fileNameInput">File Name</label>
+                    <label htmlFor="fileNameInput" className="control-label">File Name</label>
                     <input id="fileNameInput"
                         type="text"
                         className="form-control"
-                        valueLink={this.linkState("fileName")} />
+                        value={this.state.fileName}
+                        onChange={linkState(this, "fileName")} />
                     {this.getErrorHelpMessage("fileName")}
                 </div>
                 {formAction}

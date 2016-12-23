@@ -1,11 +1,10 @@
-import React, {PropTypes} from "react";
-import Parse from "parse";
-import ParseReact from "parse-react";
-import LinkedStateMixin from "react-addons-linked-state-mixin"
+import React, {PropTypes} from "react"
+import Parse from "parse"
+import ParseReact from "parse-react"
+import {linkState} from "./../util/LinkState"
 import FormUtil, {Validation} from "./../util/FormUtil"
 
 export default React.createClass({
-    mixins: [LinkedStateMixin],
     propTypes: {
         deal: PropTypes.shape({
             objectId: PropTypes.string.isRequired
@@ -13,11 +12,11 @@ export default React.createClass({
     },
     getInitialState: function(){
         return {
-            firstName: null,
-            lastName: null,
-            email: null,
+            firstName: "",
+            lastName: "",
+            email: "",
             role: "VENDOR",
-            company: null,
+            company: "",
             deal: this.props.deal,
             errors: {},
             user: Parse.User.current()
@@ -118,37 +117,41 @@ export default React.createClass({
         <div className="StakeholderFormContainer">
             <div className="form-inline-half">
                 <div className={"form-group " + this.getErrorClass("firstName")}>
-                    <label htmlFor="firstNameInput">First Name</label>
+                    <label htmlFor="firstNameInput" className="control-label">First Name</label>
                     <input id="firstNameInput"
                         type="text"
                         className="form-control"
-                        valueLink={this.linkState("firstName")} />
+                        value={this.state.firstName}
+                        onChange={linkState(this, "firstName")} />
                     {this.getErrorHelpMessage("firstName")}
 
                 </div>
                 <div className={"form-group " + this.getErrorClass("lastName")}>
-                    <label htmlFor="lastNameInput">Last Name</label>
+                    <label htmlFor="lastNameInput" className="control-label">Last Name</label>
                     <input id="lastNameInput"
                         type="text"
                         className="form-control"
-                        valueLink={this.linkState("lastName")} />
+                        value={this.state.lastName}
+                        onChange={linkState(this,"lastName")} />
                     {this.getErrorHelpMessage("lastName")}
                 </div>
             </div>
             <div className={"form-group " + this.getErrorClass("email")}>
-                <label htmlFor="stakeholderEmailInput">Email</label>
+                <label htmlFor="stakeholderEmailInput" className="control-label">Email</label>
                 <input id="stakeholderEmailInput"
                     type="text"
                     className="form-control"
-                    valueLink={this.linkState("email")} />
+                    value={this.state.email}
+                    onChange={linkState(this,"email")} />
                 {this.getErrorHelpMessage("email")}
             </div>
             <div className={"form-group " + this.getErrorClass("company")}>
-                <label htmlFor="stakeholderCompanyInput">Company</label>
+                <label htmlFor="stakeholderCompanyInput" className="control-label">Company</label>
                 <input id="stakeholderCompanyInput"
                     type="text"
                     className="form-control"
-                    valueLink={this.linkState("company")} />
+                    value={this.state.company}
+                    onChange={linkState(this,"company")} />
                 {this.getErrorHelpMessage("company")}
             </div>
         </div>
