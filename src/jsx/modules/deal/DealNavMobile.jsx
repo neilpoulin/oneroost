@@ -9,7 +9,7 @@ const DealNavMobile = React.createClass({
         var dealId = this.props.deal.objectId;
         var colSize = "col-xs-3";
         var mobileNav =
-        <div {...this.props} className="conatiner-fluid text-center hidden-lg hidden-md DealNavMobile">            
+        <div className="conatiner-fluid text-center hidden-lg hidden-md DealNavMobile">            
             <NavLink tag="div" to={"/roosts/" + dealId + "/steps" } className={colSize}>
                 <div>
                     <i className="fa fa-map-signs fa-2x"></i>

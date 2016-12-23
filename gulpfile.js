@@ -232,7 +232,9 @@ var sassOpts = {
         .pipe(gulp.dest(paths.dest.css));
     });
 
-    gulp.task("compress:js", ["bundle"], function(){
+    gulp.task("bundle:prod", ["bundle", "set-prod-node-env"]);
+
+    gulp.task("compress:js", ["bundle:prod", "set-prod-node-env"], function(){
         gulp.src(paths.build.jsbundle + "/*.js")
         .pipe(minify({
             ext:{
@@ -246,10 +248,14 @@ var sassOpts = {
         .pipe(gulp.dest(paths.dest.frontendjs));
     });
 
-    gulp.task("ugly:js", ["bundle"], function(){
+    gulp.task("ugly:js", ["bundle:prod", "set-prod-node-env"], function(){
         gulp.src(paths.build.jsbundle +"/*.js")
         .pipe(concat(paths.dest.scriptName))
         .pipe(gulp.dest(paths.dest.frontendjs));
+    });
+
+    gulp.task("set-prod-node-env", function() {
+        return process.env.NODE_ENV = "production";
     });
 
     gulp.task("build:node", ["clean:node", "transpile:node", "sass:node", "fonts:node"]);
@@ -347,8 +353,8 @@ var sassOpts = {
         });
     }
 
-    gulp.task("eb-deploy:stage", ["clean:npm-log", "build:all"], shell.task("eb deploy stage --timeout 25"));
-    gulp.task("deploy", ["build:all", "eb-deploy:stage"]);
+    gulp.task("eb-deploy:stage", ["clean:npm-log", "build:all", "set-prod-node-env"], shell.task("eb deploy stage --timeout 25"));
+    gulp.task("deploy", ["build:all", "eb-deploy:stage", "set-prod-node-env"]);
 
     gulp.task("update-config", ["mongo-start"], function(){
         var command = "mongo localhost:27017/oneroost-db db/scripts/update_configs.js";

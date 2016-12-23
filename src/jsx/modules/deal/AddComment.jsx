@@ -1,11 +1,9 @@
 import React, {PropTypes} from "react";
 import ParseReact from "parse-react";
 import Parse from "parse";
-import LinkedStateMixin from "react-addons-linked-state-mixin";
 import AutosizeTextarea from "react-textarea-autosize";
 
 export default React.createClass({
-    mixins: [LinkedStateMixin],
     getInitialState: function(){
         return {
             message: "",

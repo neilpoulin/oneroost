@@ -1,7 +1,7 @@
 import React, { PropTypes } from "react"
 import ParseReact from "parse-react"
 import Parse from "parse"
-import LinkedStateMixin from "react-addons-linked-state-mixin"
+import {linkState} from "./../util/LinkState"
 import NextStepActions from "./NextStepActions";
 import DatePicker from "react-datepicker";
 import moment from "moment";
@@ -16,7 +16,6 @@ const NextStepDetailEdit = React.createClass({
         afterDelete: PropTypes.func.isRequired,
         handleCancel: PropTypes.func.isRequired
     },
-    mixins: [LinkedStateMixin],
     getInitialState: function () {
         return {
             title: this.props.step.title,
@@ -84,14 +83,15 @@ const NextStepDetailEdit = React.createClass({
         var form =
         <div>
             <div className="form-group">
-                <label htmlFor="nextStepTitle">Title</label>
+                <label htmlFor="nextStepTitle" className="control-label">Title</label>
                 <input id="nextStepTitle"
                     type="text"
                     className="form-control"
-                    valueLink={this.linkState("title")}/>
+                    value={this.state.title}
+                    onChange={linkState(this, "title")}/>
             </div>
             <div className="form-group">
-                <label htmlFor="nextStepDescription">Description</label>
+                <label htmlFor="nextStepDescription" className="control-label">Description</label>
                 <AutosizeTextarea
                     className="form-control"
                     maxRows={15}
@@ -102,7 +102,7 @@ const NextStepDetailEdit = React.createClass({
                 </AutosizeTextarea>
             </div>
             <div className="form-group">
-                <label htmlFor="nextStepDueDate">Due Date</label>
+                <label htmlFor="nextStepDueDate" className="control-label">Due Date</label>
 
                 <DatePicker
                     selected={this.state.dueDate}
@@ -112,7 +112,7 @@ const NextStepDetailEdit = React.createClass({
                     />
             </div>
             <div className="form-group">
-                <label htmlFor="nextStepAssignedUser">Assigned User</label>
+                <label htmlFor="nextStepAssignedUser" className="control-label">Assigned User</label>
                 <Dropdown deal={this.props.deal} handleChange={this.handleUserChange} value={this.props.step.assignedUser != null ? this.props.step.assignedUser.objectId : null}/>
             </div>
             <NextStepActions step={this.props.step}

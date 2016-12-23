@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react"
-import LinkedStateMixin from "react-addons-linked-state-mixin"
+import {linkState} from "./../util/LinkState"
 import RoostNav from "./../navigation/RoostNav";
 import ParseReact from "parse-react"
 import Parse from "parse"
@@ -11,7 +11,7 @@ import ReactGA from "react-ga"
 import { withRouter } from "react-router"
 
 const PublicProfilePage = withRouter( React.createClass({
-    mixins: [ParseReact.Mixin, LinkedStateMixin],
+    mixins: [ParseReact.Mixin],
     propTypes: {
         params: PropTypes.shape({
             userId: PropTypes.string.isRequired
@@ -110,8 +110,13 @@ const PublicProfilePage = withRouter( React.createClass({
                     <h3>Create a Opportunity for {RoostUtil.getFullName(profileUser)}</h3>
                     {alert}
                     <div className="form-group">
-                        <label htmlFor="readyRoostName">Opportunity Name</label>
-                        <input id="readyRoostName" type="text" className="form-control" valueLink={this.linkState("roostName")} placeholder={"Opportunity for " + RoostUtil.getFullName(profileUser)}/>
+                        <label htmlFor="readyRoostName" className="control-label">Opportunity Name</label>
+                        <input id="readyRoostName"
+                            type="text"
+                            className="form-control"
+                            value={this.state.roostName}
+                            onChange={linkState(this,"roostName")}
+                            placeholder={"Opportunity for " + RoostUtil.getFullName(profileUser)}/>
                     </div>
                     <button type="submit" className={"btn btn-primary btn-block" } disabled={!canSubmit} onClick={this.createReadyRoost}>Let's get started!</button>
                 </div>

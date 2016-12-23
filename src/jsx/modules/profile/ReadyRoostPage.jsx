@@ -1,5 +1,4 @@
 import React, { PropTypes } from "react"
-import LinkedStateMixin from "react-addons-linked-state-mixin"
 import RoostNav from "./../navigation/RoostNav";
 import ParseReact from "parse-react"
 import Parse from "parse"
@@ -10,7 +9,7 @@ import { withRouter } from "react-router"
 import Onboarding from "./../readyroost/Onboarding"
 
 const ReadyRoostPage = withRouter( React.createClass({
-    mixins: [ParseReact.Mixin, LinkedStateMixin],
+    mixins: [ParseReact.Mixin],
     propTypes: {
         params: PropTypes.shape({
             userId: PropTypes.string.isRequired

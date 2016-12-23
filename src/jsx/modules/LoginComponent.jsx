@@ -7,13 +7,13 @@
 import React, {PropTypes} from "react"
 import Parse from "parse";
 Parse.serverURL = OneRoost.Config.parseSeverURL;
-import LinkedStateMixin from "react-addons-linked-state-mixin"
+
 import SpinnerIcon from "./SpinnerIcon"
 import RoostUtil from "./util/RoostUtil"
 import ReactGA from "react-ga"
+import {linkState} from "./util/LinkState"
 
 export default React.createClass({
-    mixins: [LinkedStateMixin],
     propTypes: {
         logoutSuccess: PropTypes.func.isRequired,
         success: PropTypes.func.isRequired,
@@ -24,7 +24,7 @@ export default React.createClass({
     getInitialState: function(){
         var username;
         var isLoggedIn = false;
-        var email = null;
+        var email = "";
         var user = Parse.User.current();
         if ( user )
         {
@@ -35,15 +35,15 @@ export default React.createClass({
         return {
             isLoggedIn: isLoggedIn,
             username: username,
-            firstName: null,
-            lastName: null,
-            password: null,
+            firstName: "",
+            lastName: "",
+            password: "",
             email: email,
             isLogin: window.location.pathname.indexOf("login") != -1,
-            error: null,
+            error: "",
             isTyping: false,
-            emailValidation: null,
-            passwordValidation: null,
+            emailValidation: "",
+            passwordValidation: "",
             company: this.props.company,
         };
     },
@@ -97,7 +97,7 @@ export default React.createClass({
     hideLoading(){
         if ( this.refs.spinner ){
             this.refs.spinner.doHide();
-        }        
+        }
     },
     handleLoginError: function(user, error)
     {
@@ -309,7 +309,14 @@ export default React.createClass({
             companyInput =
             <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
                 <label htmlFor="loginLastNameInput" className="control-label">Company</label>
-                <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("company")} placeholder="" aria-describedby="companyHelpBlock" maxLength={40}/>
+                <input type="text"
+                    id="loginLastNameInput"
+                    className="form-control"
+                    value={this.state.company}
+                    onChange={linkState(this,"company")}
+                    placeholder=""
+                    aria-describedby="companyHelpBlock"
+                    maxLength={40}/>
             </div>
         }
 
@@ -331,27 +338,52 @@ export default React.createClass({
                 {error}
                 <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
                     <label htmlFor="loginLastNameInput" className="control-label">First Name</label>
-                    <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("firstName")} placeholder="" aria-describedby="firstNameHelpBlock"/>
+                    <input type="text"
+                        id="loginLastNameInput"
+                        className="form-control"
+                        value={this.state.firstName}
+                        onChange={linkState(this,"firstName")}
+                        placeholder=""
+                        aria-describedby="firstNameHelpBlock"/>
                 </div>
                 <div className={"form-group " + (!this.state.isLogin ? "" : "hidden")}>
                     <label htmlFor="loginLastNameInput" className="control-label">Last Name</label>
-                    <input type="text" id="loginLastNameInput" className="form-control" valueLink={this.linkState("lastName")} placeholder="" aria-describedby="lastNameHelpBlock"/>
+                    <input type="text"
+                        id="loginLastNameInput"
+                        className="form-control"
+                        value={this.state.lastName}
+                        onChange={linkState(this,"lastName")}
+                        placeholder=""
+                        aria-describedby="lastNameHelpBlock"/>
                 </div>
 
                 <div className={"form-group " + emailValidationClass}>
                     <label htmlFor="loginUsernameInput" className="control-label">Email</label>
-                    <input type="email" id="loginEmailInput" className="form-control" valueLink={this.linkState("email")} onKeyUp={this.emailKeyUp} placeholder="" aria-describedby="emailHelpBlock"/>
+                    <input type="email"
+                        id="loginEmailInput"
+                        className="form-control"
+                        value={this.state.email}
+                        onChange={linkState(this,"email")}
+                        onKeyUp={this.emailKeyUp}
+                        placeholder=""
+                        aria-describedby="emailHelpBlock"/>
                     <span className="help-block" id="emailHelpBlock">{emailHelpBlock}</span>
                 </div>
                 {companyInput}
                 <div className={"form-group " + passwordValidationClass}>
                     <label htmlFor="loginPasswordInput" className="control-label">Password</label>
-                    <input type="password" id="loginPasswordInput" className="form-control" valueLink={this.linkState("password")} onKeyUp={this.passwordKeyUp} aria-describedby="passwordHelpBlock"/>
+                    <input type="password"
+                        id="loginPasswordInput"
+                        className="form-control"
+                        value={this.state.password}
+                        onChange={linkState(this,"password")}
+                        onKeyUp={this.passwordKeyUp}
+                        aria-describedby="passwordHelpBlock"/>
                     <span className="help-block" id="passwordHelpBlock">{passwordHelpBlock}</span>
                 </div>
                 {actionButton}
                 <div className={"forgotPassword " + (this.state.isLogin ? "" : "hidden")}>
-                    Forgot your password? <a href="#" onClick={this.resetPassword}>Click here</a> to reset it.
+                    {"Forgot your password?"} <a href="#" onClick={this.resetPassword}>Click here</a> to reset it.
                 </div>
             </form>
         </div>

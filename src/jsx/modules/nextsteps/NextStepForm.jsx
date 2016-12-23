@@ -1,24 +1,23 @@
 import React from "react"
 import Parse from "parse"
 import ParseReact from "parse-react"
-import LinkedStateMixin from "react-addons-linked-state-mixin"
 import DatePicker from "react-datepicker"
 import moment from "moment"
 import Dropdown from "./../stakeholder/Dropdown"
 import AutosizeTextarea from "react-textarea-autosize"
 import FormUtil, {Validation} from "./../util/FormUtil"
+import {linkState} from "./../util/LinkState"
 
 export default React.createClass({
-    mixins: [LinkedStateMixin],
     getInitialState: function () {
         return {
-            title: null,
-            description: null,
+            title: "",
+            description: "",
             dueDate: moment(),
             createdBy: Parse.User.current(),
-            assignedUser: null,
+            assignedUser: "",
             deal: this.props.deal,
-            completedDate: null,
+            completedDate: "",
             user: Parse.User.current(),
             errors: {}
         };
@@ -113,15 +112,16 @@ export default React.createClass({
         var form =
         <div className="NextStepsFormContainer">
             <div className={"form-group " + this.getErrorClass("title")}>
-                <label htmlFor="nextStepTitle">Title</label>
+                <label htmlFor="nextStepTitle" className="control-label">Title</label>
                 <input id="nextStepTitle"
                     type="text"
                     className="form-control"
-                    valueLink={this.linkState("title")}/>
+                    value={this.state.title}
+                    onChange={linkState(this,"title")}/>
                 {this.getErrorHelpMessage("title")}
             </div>
             <div className="form-group">
-                <label htmlFor="nextStepDescription">Description</label>
+                <label htmlFor="nextStepDescription" className="control-label">Description</label>
                     <AutosizeTextarea
                         className="form-control"
                         maxRows={10}
@@ -132,7 +132,7 @@ export default React.createClass({
                     </AutosizeTextarea>
             </div>
             <div className={"form-group " + this.getErrorClass("dueDate")}>
-                <label htmlFor="nextStepDueDate">Due Date</label>
+                <label htmlFor="nextStepDueDate" className="control-label">Due Date</label>
 
                 <DatePicker
                     selected={this.state.dueDate}
@@ -143,7 +143,7 @@ export default React.createClass({
                 {this.getErrorHelpMessage("dueDate")}
             </div>
             <div className="form-group">
-                <label htmlFor="nextStepAssignedUser">Assigned User</label>
+                <label htmlFor="nextStepAssignedUser" className="control-label">Assigned User</label>
 
                 <Dropdown deal={this.props.deal} handleChange={this.handleUserChange}/>
 

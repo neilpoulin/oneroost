@@ -1,8 +1,7 @@
 import React, { PropTypes } from "react"
-import LinkedStateMixin from "react-addons-linked-state-mixin";
+import {linkState} from "./../util/LinkState"
 
 const BasicInfoForm = React.createClass({
-    mixins: [LinkedStateMixin],
     propTypes: {
         user: PropTypes.object.isRequired,
         doCancel: PropTypes.func.isRequired,
@@ -21,11 +20,11 @@ const BasicInfoForm = React.createClass({
     getInitialState(){
         var user = this.props.user;
         return {
-            email: user.get("email"),
-            firstName: user.get("firstName"),
-            lastName: user.get("lastName"),
-            jobTitle: user.get("jobTitle"),
-            company: user.get("company")
+            email: user.get("email") || "",
+            firstName: user.get("firstName") || "",
+            lastName: user.get("lastName") || "",
+            jobTitle: user.get("jobTitle") || "",
+            company: user.get("company") || ""
         }
     },
     doSave(){
@@ -50,29 +49,45 @@ const BasicInfoForm = React.createClass({
             <div className="form-inline-equal">
                 <div className="form-group">
                     <label>First Name</label>
-                    <input type="text" className="form-control" valueLink={this.linkState("firstName")}/>
+                    <input type="text"
+                        className="form-control"
+                        value={this.state.firstName}
+                        onChange={linkState(this,"firstName")}/>
                 </div>
                 <div className="form-group">
                     <label>Last Name</label>
-                    <input type="text" className="form-control" valueLink={this.linkState("lastName")}/>
+                    <input type="text"
+                        className="form-control"
+                        value={this.state.lastName}
+                        onChange={linkState(this,"lastName")}/>
                 </div>
             </div>
 
             <div className="form-group">
                 <label>Email</label>
-                <input type="text" className="form-control" valueLink={this.linkState("email")}/>
+                <input type="text"
+                    className="form-control"
+                    value={this.state.email}
+                    onChange={linkState(this,"email")}/>
             </div>
 
             <div className="form-group">
                 <label>Company</label>
-                <input type="text" className="form-control" valueLink={this.linkState("company")}/>
+                <input type="text"
+                    className="form-control"
+                    value={this.state.company}
+                    onChange={linkState(this,"company")}/>
             </div>
             <div className="form-group">
                 <label>Job Title</label>
-                <input type="text" className="form-control" valueLink={this.linkState("jobTitle")}/>
+                <input type="text"
+                    className="form-control"
+                    value={this.state.jobTitle}
+                    onChange={linkState(this,"jobTitle")}/>
             </div>
             <div className="actions">
-                <button className="btn btn-link pull-left" onClick={this.doCancel}>Cancel</button> <button className="btn btn-primary pull-right" onClick={this.doSave}>Save</button>
+                <button className="btn btn-link pull-left" onClick={this.doCancel}>Cancel</button>
+                <button className="btn btn-primary pull-right" onClick={this.doSave}>Save</button>
             </div>
         </div>
         return form

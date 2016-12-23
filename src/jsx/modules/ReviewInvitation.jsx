@@ -2,10 +2,9 @@ import React, { PropTypes } from "react"
 import Parse from "parse"
 import {withRouter} from "react-router"
 import ParseReact from "parse-react"
-import LinkedStateMixin from "react-addons-linked-state-mixin"
 
 const ReviewInvitation = withRouter( React.createClass({
-    mixins: [ParseReact.Mixin,LinkedStateMixin],
+    mixins: [ParseReact.Mixin],
     propTypes: {
         router: PropTypes.object.isRequired
     },

@@ -1,12 +1,10 @@
 import React, {PropTypes} from "react";
 import Parse from "parse";
 import ParseReact from "parse-react";
-import LinkedStateMixin from "react-addons-linked-state-mixin"
 import RoostUtil from "./../util/RoostUtil"
 import ReactGA from "react-ga"
 
 export default React.createClass({
-    mixins: [LinkedStateMixin],
     propTypes: {
         isEdit: PropTypes.bool
     },

@@ -1,11 +1,10 @@
 import React, { PropTypes } from "react"
 import ParseReact from "parse-react";
 import Parse from "parse";
-import LinkedStateMixin from "react-addons-linked-state-mixin";
 import Select from "react-select";
 
 const Dropdown = React.createClass({
-    mixins: [LinkedStateMixin, ParseReact.Mixin],
+    mixins: [ ParseReact.Mixin],
     propTypes: {
         deal: PropTypes.object.isRequired
     },
