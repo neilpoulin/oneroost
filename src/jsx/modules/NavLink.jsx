@@ -1,5 +1,5 @@
 import React from "react"
-import activeComponent from "react-router-active-component"
+import activeComponent from "./navigation/ActiveComponent"
 
 export default React.createClass({
     getDefaultProps: function(){

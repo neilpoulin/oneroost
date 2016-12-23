@@ -100,8 +100,7 @@ server.listen(port, function() {
 
 function getParseDashboard()
 {
-    var allowInsecure = true;
-    return new ParseDashboard(ParseDashboardConfig, allowInsecure);
+    return new ParseDashboard(ParseDashboardConfig);
 }
 
 function getParseServer()

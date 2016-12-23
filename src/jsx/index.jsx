@@ -3,8 +3,7 @@
 import { render } from "react-dom"
 import Parse from "parse"
 import React from "react"
-import { Router, Route, useRouterHistory, IndexRoute, Redirect } from "react-router"
-import { createHistory } from "history"
+import { Router, Route, browserHistory, IndexRoute, Redirect } from "react-router"
 import LoginOnly from "./modules/LoginOnly"
 import LoginPage from "./modules/LoginPage"
 import Landing from "./modules/LandingPage"
@@ -40,10 +39,6 @@ Parse.serverURL = window.location.origin + "/parse";
 
 
 ReactGA.initialize(OneRoost.Config.gaTrackingId, getGaOptions());
-
-const browserHistory = useRouterHistory(createHistory)({
-    basename: "/"
-});
 
 function getGaOptions(){
     var gaOptions = {};
