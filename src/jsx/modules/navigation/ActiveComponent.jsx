@@ -63,40 +63,39 @@ module.exports = function activeComponent(Component, options) {
                 state,
                 onlyActiveOnIndex,
                 activeClassName,
-                // activeStyle,
+                activeStyle,
                 router,
-                className,
-                active,
-                // style,
+                ...props,
             } = this.props
             let location = createLocationDescriptor({to, query, hash, state})
 
             if (router) {
-                let isActive = router.isActive(location, onlyActiveOnIndex)
+                let active = router.isActive(location, onlyActiveOnIndex)
                 if (typeOf(Component) !== "string") {
-                    active = isActive
+                    props.active = active
                 }
 
                 if (active) {
                     if (activeClassName) {
-                        className = className + " " + activeClassName;
+                        props.className = `${props.className || ""}${props.className ? " " : ""}${activeClassName}`
                     }
-                    // if (activeStyle) {
-                    //     style = {...style, activeStyle}
-                    // }
+                    if (activeStyle) {
+                        props.style = {...props.style, activeStyle}
+                    }
                 }
             }
 
             if (!link) {
-                return <Component className={className} >{this.props.children}</Component>
+                return <Component {...props}>{this.props.children}</Component>
             }
-            return <Component className={className}>
-                <Link className={options.linkClassName } {...linkProps} to={location}>
+
+            return <Component className={props.className}>
+                <Link className={options.linkClassName} {...linkProps} to={location}>
                     {this.props.children}
                 </Link>
             </Component>
         }
     })
-
+    
     return withRouter(ActiveComponent)
 }

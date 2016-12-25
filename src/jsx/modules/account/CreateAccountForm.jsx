@@ -36,6 +36,7 @@ export default React.createClass({
         return false;
     },
     saveDeal(){
+        let self = this;
         var account = {
             createdBy: Parse.User.current(),
             accountName: this.state.accountName,
