@@ -16,9 +16,9 @@ exports.afterSave = function(){
             console.log("after save of document triggered")
             let sendNotification = await NotificationSettings.getNotificationSetting(NotificationSettings.Settings.DOCUMENT_ADDED_EMAILS)
 
-            let isOnboardingDoc = req.object.onboarding;
+            let isOnboardingDoc = req.object.get("onboarding");
             console.log("onboarding", isOnboardingDoc);
-            if ( req.object.onboarding == true ){
+            if ( isOnboardingDoc == true ){
                 console.log("this is an onboarding document, not sending email.");
                 return;
             }
@@ -34,7 +34,7 @@ exports.afterSave = function(){
                 // documentQuery.equalTo("onboarding", false);
                 let doc = await documentQuery.get( documentId, {useMasterKey: true} )
 
-                console.log("found document: " + doc);
+                console.log("found document: " + doc.toJSON());
                 var deal = doc.get("deal");
                 var uploadedBy = doc.get("createdBy");
                 var stakeholders = await getStakeholdersForDeal(deal);
@@ -75,15 +75,6 @@ exports.afterSave = function(){
         }
 
     });
-}
-
-async function getDocumentById( documentId, includeOnboarding ){
-    console.log("looking for document with Id = " + documentId);
-    var documentQuery = new Parse.Query("Document");
-    documentQuery.include("deal");
-    documentQuery.include("createdBy");
-    documentQuery.equalTo("onboarding", includeOnboarding);
-    return await documentQuery.get( documentId, {useMasterKey: true} )
 }
 
 async function getStakeholdersForDeal( deal ){
