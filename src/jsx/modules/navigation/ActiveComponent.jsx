@@ -63,11 +63,11 @@ module.exports = function activeComponent(Component, options) {
                 state,
                 onlyActiveOnIndex,
                 activeClassName,
-                activeStyle,
+                // activeStyle,
                 router,
                 className,
                 active,
-                style,
+                // style,
             } = this.props
             let location = createLocationDescriptor({to, query, hash, state})
 
@@ -81,9 +81,9 @@ module.exports = function activeComponent(Component, options) {
                     if (activeClassName) {
                         className = className + " " + activeClassName;
                     }
-                    if (activeStyle) {
-                        style = {...style, activeStyle}
-                    }
+                    // if (activeStyle) {
+                    //     style = {...style, activeStyle}
+                    // }
                 }
             }
 

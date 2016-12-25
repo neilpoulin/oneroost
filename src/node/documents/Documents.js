@@ -32,10 +32,17 @@ function registerPresignedGetUrl(){
                     response.error({message: "the docuemnt was not found for the user and document ID."})
                 }
                 var s3Key = doc.get("s3key");
+                var fileName = doc.get("fileName");
+                var fileExtension = doc.get("fileExtension");
+                let disposition = "attachment"
+                if (fileName){
+                    disposition += `; filename=${fileName}.${fileExtension}`
+                }
+
                 var params = {
                     Bucket: envUtil.getDocumentsBucket(),
                     Key: s3Key,
-                    ResponseContentDisposition: "attachemnt"
+                    ResponseContentDisposition: disposition
                 };
                 var url = s3.getSignedUrl("getObject", params);
 
