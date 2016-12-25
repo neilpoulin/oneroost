@@ -46,6 +46,9 @@ var reactModalBootstrap = {
     stylesheets: "./node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less"
 };
 
+var infiniteCalendar = {
+    stylesheets: "./node_modules/react-infinite-calendar/styles.css"
+}
 var paths = {
     src: {
         root: "./src",
@@ -113,8 +116,10 @@ var sassOpts = {
         var lessStream = gulp.src(reactModalBootstrap.stylesheets)
         .pipe(less())
         .pipe(concat("less-files.less"));
+        var cssStream = gulp.src(infiniteCalendar.stylesheets)
+        .pipe(concat("css-files.css"));
 
-        var mergedStream = merge(scssStream, lessStream)
+        var mergedStream = merge(scssStream, lessStream, cssStream)
         .pipe(concat("styles.css"))
         .pipe(gulp.dest(paths.build.cssbundle));
 
@@ -248,7 +253,7 @@ var sassOpts = {
         .pipe(gulp.dest(paths.dest.frontendjs));
     });
 
-    gulp.task("ugly:js", ["bundle:prod", "set-prod-node-env"], function(){
+    gulp.task("ugly:js", ["bundle"], function(){
         gulp.src(paths.build.jsbundle +"/*.js")
         .pipe(concat(paths.dest.scriptName))
         .pipe(gulp.dest(paths.dest.frontendjs));
