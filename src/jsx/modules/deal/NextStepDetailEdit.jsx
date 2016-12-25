@@ -3,10 +3,11 @@ import ParseReact from "parse-react"
 import Parse from "parse"
 import {linkState} from "./../util/LinkState"
 import NextStepActions from "./NextStepActions";
-import DatePicker from "react-datepicker";
 import moment from "moment";
 import Dropdown from "./../stakeholder/Dropdown"
 import AutosizeTextarea from "react-textarea-autosize";
+import DateTakeoverButton from "./../util/DateTakeoverButton"
+import RoostUtil from "./../util/RoostUtil"
 
 const NextStepDetailEdit = React.createClass({
     propTypes: {
@@ -103,13 +104,14 @@ const NextStepDetailEdit = React.createClass({
             </div>
             <div className="form-group">
                 <label htmlFor="nextStepDueDate" className="control-label">Due Date</label>
-
-                <DatePicker
-                    selected={this.state.dueDate}
-                    onChange={this.handleDateChange}
-                    className="form-control"
-                    id="nextStepDueDate"
-                    />
+                <div className="form-control-static">
+                    {RoostUtil.formatDate(this.state.dueDate)}
+                    <DateTakeoverButton onChange={this.handleDateChange}
+                        buttonText="edit"
+                        buttonClass="link"
+                        buttonType="span"
+                        selectedDate={this.state.dueDate.toDate()}/>
+                </div>
             </div>
             <div className="form-group">
                 <label htmlFor="nextStepAssignedUser" className="control-label">Assigned User</label>

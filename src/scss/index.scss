@@ -40,6 +40,15 @@ h1 {
   cursor: pointer;
 }
 
+.link{
+    cursor: pointer;
+    color: $roostOrange;
+    text-decoration: none;
+    &:hover{
+        color: $roostDarkGray;
+    }
+}
+
 *{
     -webkit-overflow-scrolling: touch;
 }

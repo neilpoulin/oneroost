@@ -1,12 +1,13 @@
 import React from "react"
 import Parse from "parse"
 import ParseReact from "parse-react"
-import DatePicker from "react-datepicker"
 import moment from "moment"
 import Dropdown from "./../stakeholder/Dropdown"
 import AutosizeTextarea from "react-textarea-autosize"
 import FormUtil, {Validation} from "./../util/FormUtil"
+import RoostUtil from "./../util/RoostUtil"
 import {linkState} from "./../util/LinkState"
+import DateTakeoverButton from "./../util/DateTakeoverButton"
 
 export default React.createClass({
     getInitialState: function () {
@@ -15,7 +16,7 @@ export default React.createClass({
             description: "",
             dueDate: moment(),
             createdBy: Parse.User.current(),
-            assignedUser: "",
+            assignedUser: null,
             deal: this.props.deal,
             completedDate: "",
             user: Parse.User.current(),
@@ -45,6 +46,7 @@ export default React.createClass({
     },
     saveNextStep: function () {
         var self = this;
+        debugger;
         var step = {
             "createdBy": this.state.createdBy,
             "title": this.state.title,
@@ -52,7 +54,7 @@ export default React.createClass({
             "dueDate": this.state.dueDate.toDate(),
             "assignedUser": this.state.assignedUser,
             "deal": this.state.deal,
-            "completedDate": this.state.completedDate != null ? new Date(this.state.completedDate) : null
+            "completedDate": this.state.completedDate ? new Date(this.state.completedDate) : null
         };
         ParseReact.Mutation.Create("NextStep", step)
         .dispatch()
@@ -133,13 +135,16 @@ export default React.createClass({
             </div>
             <div className={"form-group " + this.getErrorClass("dueDate")}>
                 <label htmlFor="nextStepDueDate" className="control-label">Due Date</label>
+                <div className="form-control-static">
+                    {RoostUtil.formatDate(this.state.dueDate)}
+                    <DateTakeoverButton onChange={this.handleDateChange}
+                        buttonText="edit"
+                        buttonClass="link"
+                        buttonType="span"
+                        selectedDate={this.state.dueDate}
+                        />
+                </div>
 
-                <DatePicker
-                    selected={this.state.dueDate}
-                    onChange={this.handleDateChange}
-                    className="form-control"
-                    id="nextStepDueDate"
-                    />
                 {this.getErrorHelpMessage("dueDate")}
             </div>
             <div className="form-group">
