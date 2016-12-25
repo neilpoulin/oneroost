@@ -46,7 +46,6 @@ export default React.createClass({
     },
     saveNextStep: function () {
         var self = this;
-        debugger;
         var step = {
             "createdBy": this.state.createdBy,
             "title": this.state.title,
