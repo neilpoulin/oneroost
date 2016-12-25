@@ -104,7 +104,7 @@ const DocumentDownloadItem = React.createClass({
         if ( this.state.downloadUrl ){
             actions =
             <div className="downloadActions">
-                <a href={this.state.downloadUrl} download className="btn btn-primary btn-block" target="_blank"><i className="fa fa-download"></i> Download {"\"" + doc.fileName + "\""}</a>
+                <a href={this.state.downloadUrl} download={doc.fileName} className="btn btn-primary btn-block" target="_blank"><i className="fa fa-download"></i> Download {"\"" + doc.fileName + "\""}</a>
             </div>
         }
 

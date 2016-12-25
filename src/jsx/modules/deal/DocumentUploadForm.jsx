@@ -7,6 +7,8 @@ import Dropzone from "react-dropzone"
 import request from "superagent"
 import numeral from "numeral"
 
+const re = /(?:\.([^.]+))?$/;
+
 const DocumentUploadForm = React.createClass({
     propTypes: {
         deal: PropTypes.shape({
@@ -26,7 +28,8 @@ const DocumentUploadForm = React.createClass({
             type: "",
             size: null,
             percent: 0,
-            errors: {}
+            errors: {},
+            fileExtension: null
         }
     },
     doSubmit(){
@@ -51,7 +54,8 @@ const DocumentUploadForm = React.createClass({
             s3key: this.state.s3key,
             externalLink: this.state.externalLink,
             type: this.state.type,
-            size: this.state.size
+            size: this.state.size,
+            fileExtension: this.state.fileExtension
         }
         ParseReact.Mutation.Create("Document", upload)
         .dispatch()
@@ -79,7 +83,11 @@ const DocumentUploadForm = React.createClass({
             }).then(function( result ) {
                 console.log("recieved presignedurl", result);
                 self.doUpload(file, result);
-                self.setState({s3key: result.key});
+
+                self.setState({
+                    s3key: result.key,
+                    fileExtension: re.exec(fileName)[1]
+                });
             });
         });
 

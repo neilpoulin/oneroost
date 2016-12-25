@@ -2,8 +2,10 @@
     text-align: justify;
     .question{
         font-weight: bold;
+        white-space: pre-line;
     }
     .answer{
         margin-bottom: 20px;
+        white-space: pre-line;
     }
 }

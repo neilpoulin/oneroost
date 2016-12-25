@@ -4,13 +4,15 @@ var Parse = ParseCloud.Parse;
 var EmailSender = require("./../EmailSender.js");
 var envUtil = require("./../util/envUtil.js");
 
+const DOCS_CONFIG_KEY = "readyRoostDocs";
+const STEPS_CONFIG_KEY = "readyRoostSteps";
+
 async function processReadyRoostRequest(currentUser, params, response){
     try{
         console.log("Setting up ready roost");
         var {profileUserId, roostName} = params
         console.log("Setting up Ready Roost for currentUser=" + currentUser.id + " and profilelUser=" + profileUserId);
         let profileUser = await (new Parse.Query("User")).get(profileUserId);
-
 
         var roostQuery = new Parse.Query("Deal");
         roostQuery.equalTo("createdBy", currentUser);
@@ -53,7 +55,7 @@ async function processReadyRoostRequest(currentUser, params, response){
             let savedRoost = await roost.save()
             console.log("successfully saved the ready roost");
             //TODO: don't pass in the response here
-            setupRoost(savedRoost, currentUser, profileUser, response);
+            await setupRoost(savedRoost, currentUser, profileUser, response);
         }
     }
     catch(e){
@@ -62,59 +64,45 @@ async function processReadyRoostRequest(currentUser, params, response){
     }
 }
 
-function setupRoost(roost, currentUser, profileUser, response){
+async function setupRoost(roost, currentUser, profileUser, response){
     console.log("attempting to set up roost....");
-    var toSave = [
+    let config = await Parse.Config.get();
+
+    let comments = createComments(currentUser, roost, config);
+    let docs = createDocs(profileUser, roost, config);
+    let steps = createNextSteps(currentUser, roost, config);
+    let stakeholders = createStakeholders(currentUser, profileUser, roost);
+
+    console.log("finished setting up ready roost items");
+    let toSave = [].concat(comments, steps, docs, stakeholders);
+
+    console.log("set up all objects...atempting to save", toSave);
+    Parse.Object.saveAll(toSave, {
+        success: function(list) {
+            console.log("SUCCESS for all!")
+            response.success({roost: roost});
+        },
+        error: function(error){
+            console.error("ERROR SAVING ALL")
+            response.error("Faild to save objects", error);
+        }
+    });
+}
+
+function createComments(currentUser, roost, config){
+    return [
         //deal comment
         new Parse.Object("DealComment", {
             message: getReadyRoostMessage(currentUser, roost.get("dealName")),
             author: null,
             deal: roost,
             onboarding: true
-        }),
-        //TODO: I have an issue with how next steps are being set up - troubleshoot this!
-        //next steps
-        new Parse.Object("NextStep", {
-            dueDate: moment().toDate(),
-            deal: roost,
-            title: "Add the Product/Service",
-            assignedUser: currentUser,
-            createdBy: currentUser,
-            description: "Time to present your offering!  Click into the \"Investment\" section to add a high-level overview of your product and/or service.  In addition to the overview, we recommend submitting the typical budget range your offering requires.",
-            onboarding: true
-        }),
-        //second step -- documents
-        new Parse.Object("NextStep", {
-            dueDate: moment().add(1, "day").toDate(),
-            deal: roost,
-            title: "Share Relevant Materials",
-            assignedUser: currentUser,
-            createdBy: currentUser,
-            description: "You've spent hours creating sales decks, one-pagers, case studies, and ROI calculators...now it is time to show that hard work off!\n\nClick into the \"Documents\" section to add Power Point presentations, Excel spreadsheets, PDFs, and Word documents.",
-            onboarding: true
-        }),
-        //third step participants
-        new Parse.Object("NextStep", {
-            dueDate: moment().add(2, "day").toDate(),
-            deal: roost,
-            title: "Invite Colleagues",
-            assignedUser: currentUser,
-            createdBy: currentUser,
-            description: "On average, B2B deals involve over 5 different stakeholders to make a decision on an opportunity.  To get everyone on the same page (literally!), invite your colleagues to this Roost by clicking into the \"Participants\" section and inputting their email address.  We will take it from there and send them an invitation to join the Roost! ",
-            onboarding: true
-        }),
-        //fourth step - buyer reviewing
-        new Parse.Object("NextStep", {
-            dueDate: moment().add(3, "days").toDate(),
-            deal: roost,
-            title: "Submit Opportunity for Review!",
-            assignedUser: currentUser,
-            createdBy: currentUser,
-            description: "Congrats!  You've made it to the final next step before submitting the opportunity to the Buyer.  If you're on this next step, the following should have been submitted to the Roost: The offering overview, budget requirements, relevant materials, and your colleagues' information." +
-            "\n\nAssuming everything is completed,  click into the \"Participants\" section and submit the opportunity, which is located under the Buyer's name.  After you click submit, OneRoost will send an email to the Buyer notifying the Roost (opportunity) is ready for review.  ",
-            onboarding: true
-        }),
-        // add participants
+        })
+    ];
+}
+
+function createStakeholders(currentUser, profileUser, roost){
+    return [
         new Parse.Object("Stakeholder", {
             deal: roost,
             user: currentUser,
@@ -131,36 +119,55 @@ function setupRoost(roost, currentUser, profileUser, response){
             readyRoostApprover: true,
             role: "SELLER",
             onboarding: true
-        }),
-        new Parse.Object("Document", {
-            createdBy: profileUser,
-            deal: roost,
-            fileName: "FAQ - OneRoost",
-            s3key: "documents/public/FAQ - OneRoost.docx",
-            type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            size: 123046,
-            onboarding: true
         })
     ];
-    console.log("set up all objects...atempting to save", toSave);
-    Parse.Object.saveAll(toSave, {
-        success: function(list) {
-            console.log("SUCCESS for all!")
-            response.success({roost: roost});
-        },
-        error: function(error){
-            console.error("ERROR SAVING ALL")
-            response.error("Faild to save objects", error);
-        }
+}
+
+function createNextSteps(currentUser, roost, config){
+    let toCreate = config.get(STEPS_CONFIG_KEY);
+    let steps = toCreate.map((step) =>{
+        return new Parse.Object("NextStep", {
+            dueDate: moment().add(step.offsetDays, "day").toDate(),
+            deal: roost,
+            title: step.title,
+            assignedUser: currentUser,
+            createdBy: currentUser,
+            description: step.description,
+            onboarding: true
+        })
+    })
+    return steps;
+}
+
+function createDocs(createdBy, roost, config){
+    let toCreate = config.get(DOCS_CONFIG_KEY);
+    let docs = toCreate.map((doc) => {
+        return new Parse.Object("Document", {
+            createdBy: createdBy,
+            deal: roost,
+            fileName: doc.displayName,
+            s3key: doc.s3key,
+            type: doc.type,
+            size: doc.size,
+            fileExtension: doc.fileExtension,
+            onboarding: true
+        })
     });
+    return docs;
 }
 
 function getReadyRoostMessage(createdByUser, roostName){
-    return "Hi " + createdByUser.get("firstName") + " " + createdByUser.get("lastName") + ",\n\n" +
-    "Congratulations on creating the " + roostName + " Roost! OneRoost is a tool to get buyers and sellers on the same page by aggregating all the different elements of an opportunity: Product/service details, documents, next steps, participants, and investment requirements." +
-    "\n\nWe know this is a new experience for many sellers, so we've already created a few next steps to get you started (see above). If you have any questions about how to use OneRoost or best practices, check out the Frequently Asked Questions by clicking \"Documents\" above. Still need help after reviewing the FAQs, feel free to send us a note at help@oneroost.com" +
-    "\n\nGood luck and happy Roosting!" +
-    "\n\nThe OneRoost Team"
+    let fullName = createdByUser.get("firstName") + " " + createdByUser.get("lastName");
+
+    return `Hi ${fullName},` +
+    "\n" +
+    `Congratulations on creating the ${roostName} Roost! OneRoost is a tool to get buyers and sellers on the same page by aggregating all the different elements of an opportunity: Product/service details, documents, next steps, participants, and investment requirements.` +
+    "\n\n" +
+    "We know this is a new experience for many sellers, so we've already created a few next steps to get you started (see above). If you have any questions about how to use OneRoost or best practices, check out the Frequently Asked Questions by clicking \"Documents\" above. Still need help after reviewing the FAQs, feel free to send us a note at help@oneroost.com" +
+    "\n\n" +
+    "Good luck and happy Roosting!" +
+    "\n" +
+    "The OneRoost Team"
 }
 
 function getMaxReadyRoostsPerUser(){

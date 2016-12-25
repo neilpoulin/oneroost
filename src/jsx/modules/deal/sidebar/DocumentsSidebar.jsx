@@ -46,7 +46,7 @@ const DocumentsSidebar = React.createClass({
         var sidebar =
         <div className="DocumentsSidebar">
             <h3 className="title">Documents</h3>
-            <AddDocumentButton deal={this.props.deal}/>
+            <AddDocumentButton deal={this.props.deal} buttonClassName={"btn-outline-primary"}/>
             {documents}
         </div>;
 
