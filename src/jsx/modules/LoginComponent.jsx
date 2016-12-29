@@ -50,7 +50,7 @@ export default React.createClass({
     getDefaultProps(){
         return {
             showCompany: true,
-            company: null,
+            company: "",
             showButton: true
         }
     },

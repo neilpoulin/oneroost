@@ -5,7 +5,7 @@ import Parse from "parse"
 import React from "react"
 import { Router, Route, browserHistory, IndexRoute, Redirect } from "react-router"
 import LoginOnly from "./modules/LoginOnly"
-import LoginPage from "./modules/LoginPage"
+import RegisterPage from "./modules/RegisterPage"
 import Landing from "./modules/LandingPage"
 import App from "./modules/App"
 import UserHomePage from "./modules/UserHomePage"
@@ -118,7 +118,7 @@ render(
         <Route path="/" component={App}>
             <IndexRoute component={Landing}/>
             <Route path="/login" component={LoginOnly} onEnter={requireAnonymous}></Route>
-            <Route path="/beta/register" component={LoginPage} onEnter={requireAnonymous}></Route>
+            <Route path="/beta/register" component={RegisterPage} onEnter={requireAnonymous}></Route>
             <Route path="/logout" component={Landing} onEnter={doLogout}></Route>
             <Redirect from="/deals" to="/roosts" />
             <Route path="/account" component={ProfilePage} onEnter={requireAuthOrParam}>

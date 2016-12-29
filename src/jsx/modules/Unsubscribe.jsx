@@ -68,7 +68,7 @@ const Unsubscribe = React.createClass({
             }
         }
 
-        return <div className="container col-md-6 col-md-offset-3">
+        return <div className="Unsubscribe container col-md-6 col-md-offset-3">
             <div>
                 <h1 className="logo cursive">
                     OneRoost

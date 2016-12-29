@@ -1,6 +1,8 @@
 import React from "react"
 import { browserHistory, withRouter } from "react-router"
 import LoginComponent from "./LoginComponent"
+import RoostNav from "./navigation/RoostNav"
+import Logo from "./Logo"
 
 const LoginPage = withRouter( React.createClass({
     handleLoginError: function(user, error)
@@ -34,10 +36,18 @@ const LoginPage = withRouter( React.createClass({
         console.error( error );
     },
     render () {
-        return <LoginComponent
-            success={this.handleLoginSuccess}
-            logoutSuccess={this.handleLogoutSuccess}
-            />
+        let page =
+        <div className="RegisterPage col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+            <RoostNav showHome={false}/>
+            <Logo/>
+            <p className="lead">Please fill out the form below to get started.</p>
+            <LoginComponent
+                success={this.handleLoginSuccess}
+                logoutSuccess={this.handleLogoutSuccess}
+                />
+        </div>
+
+        return page;
     }
 }))
 

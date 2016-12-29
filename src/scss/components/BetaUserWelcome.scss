@@ -1,0 +1,12 @@
+.BetaUserWelcome{
+    padding-top: 25px;
+    .link-container{
+        margin-top: 25px;
+        padding: 10px;
+        word-wrap: break-word;
+        border: 2px dotted $borderColorThick;
+        border-radius: 15px;
+        font-size: .8em;
+        text-align: center;
+    }
+}

@@ -6,3 +6,9 @@
 .logo-font{
     @extend .cursive;
 }
+
+.logo{
+    @extend .logo-font;
+    text-align: center;
+    font-size: 1.4em;
+}

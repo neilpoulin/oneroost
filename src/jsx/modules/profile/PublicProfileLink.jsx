@@ -9,11 +9,17 @@ const PublicProfileLink = React.createClass({
     },
     getDefaultProps(){
         return {
-            tag: "span"
+            tag: "span",
+            className: ""
         }
     },
     render () {
-        return <NavLink to={"/proposals/" + this.props.userId } tag={this.props.tag}>{this.props.children}</NavLink>
+        let content = this.props.children;
+        if ( !content ){
+            content = `${window.location.origin}/proposals/${this.props.userId}`
+        }
+
+        return <NavLink to={"/proposals/" + this.props.userId } tag={this.props.tag} className={`PublicProfileLink ${this.props.className}`}>{content}</NavLink>
     }
 })
 
