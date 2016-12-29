@@ -3,11 +3,13 @@ import Parse from "parse"
 import ParseReact from "parse-react"
 import moment from "moment"
 import Dropdown from "./../stakeholder/Dropdown"
-import AutosizeTextarea from "react-textarea-autosize"
-import FormUtil, {Validation} from "./../util/FormUtil"
+import FormUtil from "./../util/FormUtil"
 import RoostUtil from "./../util/RoostUtil"
-import {linkState} from "./../util/LinkState"
 import DateTakeoverButton from "./../util/DateTakeoverButton"
+import FormInputGroup from "./../form/FormInputGroup"
+import AutosizeTextAreaFormGroup from "./../form/AutosizeTextAreaFormGroup"
+import FormGroup from "./../form/FormGroup"
+import {validations} from "./NextStepValidations"
 
 export default React.createClass({
     getInitialState: function () {
@@ -23,15 +25,8 @@ export default React.createClass({
             errors: {}
         };
     },
-    validations: {
-        "title": new Validation(FormUtil.notNullOrEmpty, "error", "A title is reqired"),
-        "dueDate": [
-            new Validation(FormUtil.isValidDate, "error", "A due date is required"),
-            new Validation(FormUtil.notBefore, "error", "The due date can not be in the past.")
-        ]
-    },
     doSubmit: function () {
-        var errors = this.getValidationErrors();
+        var errors = FormUtil.getErrors(this.state, validations)
         console.log(errors);
         if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
             this.saveNextStep();
@@ -39,10 +34,6 @@ export default React.createClass({
         }
         this.setState({errors: errors});
         return false;
-    },
-    getValidationErrors(){
-        var errors = FormUtil.getErrors(this.state, this.validations)
-        return errors;
     },
     saveNextStep: function () {
         var self = this;
@@ -92,66 +83,46 @@ export default React.createClass({
             assignedUser: user
         });
     },
-    getErrorClass(field){
-        var errors = this.state.errors;
-        if (errors[field] )
-        {
-            return "has-" + errors[field].level
-        }
-        else return null;
-    },
-    getErrorHelpMessage(field){
-        var errors = this.state.errors;
-        if ( errors[field] )
-        {
-            var error = errors[field];
-            return <span key={"nextStep_error_" + field} className="help-block">{error.message}</span>
-        }
-        return null
-    },
     render: function () {
         var form =
         <div className="NextStepsFormContainer">
-            <div className={"form-group " + this.getErrorClass("title")}>
-                <label htmlFor="nextStepTitle" className="control-label">Title</label>
-                <input id="nextStepTitle"
-                    type="text"
-                    className="form-control"
-                    value={this.state.title}
-                    onChange={linkState(this,"title")}/>
-                {this.getErrorHelpMessage("title")}
-            </div>
-            <div className="form-group">
-                <label htmlFor="nextStepDescription" className="control-label">Description</label>
-                    <AutosizeTextarea
-                        className="form-control"
-                        maxRows={10}
-                        minRows={4}
-                        onChange={e => this.setState({description: e.target.value})}
-                        value={this.state.description}
-                        >
-                    </AutosizeTextarea>
-            </div>
-            <div className={"form-group " + this.getErrorClass("dueDate")}>
-                <label htmlFor="nextStepDueDate" className="control-label">Due Date</label>
+            <FormInputGroup
+                label="Title"
+                errors={this.state.errors}
+                fieldName="title"
+                value={this.state.title}
+                onChange={val => this.setState({title: val})}/>
+
+            <AutosizeTextAreaFormGroup
+                label="Description"
+                errors={this.state.errors}
+                fieldName="description"
+                maxRows={10}
+                minRows={4}
+                value={this.state.description}
+                onChange={val => this.setState({description: val})} />
+
+            <FormGroup
+                label="Due Date"
+                errors={this.state.errors}
+                fieldName="dueDate"
+                >
                 <div className="form-control-static">
                     {RoostUtil.formatDate(this.state.dueDate)}
                     <DateTakeoverButton onChange={this.handleDateChange}
                         buttonText="edit"
                         buttonClass="link"
                         buttonType="span"
-                        selectedDate={this.state.dueDate}
-                        />
+                        selectedDate={this.state.dueDate.toDate()}/>
                 </div>
+            </FormGroup>
 
-                {this.getErrorHelpMessage("dueDate")}
-            </div>
-            <div className="form-group">
-                <label htmlFor="nextStepAssignedUser" className="control-label">Assigned User</label>
-
-                <Dropdown deal={this.props.deal} handleChange={this.handleUserChange}/>
-
-            </div>
+            <FormGroup
+                label="Assigned User"
+                errors={this.state.errors}
+                fieldName="assignedUser" >
+                <Dropdown deal={this.props.deal} handleChange={this.handleUserChange} value={this.props.assignedUser != null ? this.props.step.assignedUser.objectId : null}/>
+            </FormGroup>
         </div>
         return form;
     }

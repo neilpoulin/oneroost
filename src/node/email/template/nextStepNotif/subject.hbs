@@ -1,7 +1,7 @@
 {{#if existed}}
-    {{dealName}} | {{authorName}} has updated a next step
+    {{dealName}} | {{modifiedByName}} has updated a next step
 {{else if assignedUserName}}
-    {{dealName}} | {{authorName}} has assigned a next step for {{assignedUserName}}
+    {{dealName}} | {{modifiedByName}} has assigned a next step for {{assignedUserName}}
 {{else}}
-    {{dealName}} | {{authorName}} has created a next step
+    {{dealName}} | {{modifiedByName}} has created a next step
 {{/if}}
