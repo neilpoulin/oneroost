@@ -7,37 +7,37 @@ import AddAccountButton from "./account/AddAccountButton"
 import AccountSidebarList from "./account/AccountSidebarList"
 import BetaUserWelcome from "./BetaUserWelcome"
 
-export default withRouter( React.createClass(
+export default withRouter( React.createClass({
+    mixins: [ParseReact.Mixin],
+    observe: function(props, state){
+        var user = Parse.User.current();
+        var stakeholders = new Parse.Query("Stakeholder");
+        stakeholders.include("deal");
+        stakeholders.include(["deal.account"]);
+        stakeholders.include("deal.createdBy");
+        stakeholders.include("deal.readyRoostUser");
+        stakeholders.equalTo("user", user );
+        stakeholders.equalTo("inviteAccepted", true);
+        return {
+            stakeholders: stakeholders
+        }
+    },
+    getCurrentUser: function()
     {
-        mixins: [ParseReact.Mixin],
-        observe: function(props, state){
-            var user = Parse.User.current();
-            var stakeholders = new Parse.Query("Stakeholder");
-            stakeholders.include("deal");
-            stakeholders.include(["deal.account"]);
-            stakeholders.include("deal.createdBy");
-            stakeholders.include("deal.readyRoostUser");
-            stakeholders.equalTo("user", user );
-            return {
-                stakeholders: stakeholders
-            }
-        },
-        getCurrentUser: function()
-        {
-            return Parse.User.current();
-        },
-        afterAddAccount: function(stakeholder){
-            this.props.router.replace("/roosts/" + stakeholder.deal.objectId )
-        },
-        componentDidMount(){
-            document.title = "My Opportunities | OneRoost"
-        },
-        render(){
-            let contents = null;
-            if ( this.pendingQueries().length > 0 ){
-                contents =
-                <div>
-                    <i className="fa fa-spin fa-spinner"></i>{" Loading..."}
+        return Parse.User.current();
+    },
+    afterAddAccount: function(stakeholder){
+        this.props.router.replace("/roosts/" + stakeholder.deal.objectId )
+    },
+    componentDidMount(){
+        document.title = "My Opportunities | OneRoost"
+    },
+    render(){
+        let contents = null;
+        if ( this.pendingQueries().length > 0 ){
+            contents =
+            <div>
+                <i className="fa fa-spin fa-spinner"></i>{" Loading..."}
                 </div>
             }
             else
@@ -51,7 +51,6 @@ export default withRouter( React.createClass(
                 else{
                     contents = <BetaUserWelcome userId={this.getCurrentUser().id}/>
                 }
-
             }
 
             var homePage =
@@ -69,4 +68,4 @@ export default withRouter( React.createClass(
 
             return homePage;
         }
-    }) );
+    }));
