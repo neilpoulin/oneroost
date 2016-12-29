@@ -1,12 +1,13 @@
 {{!-- Next Step Email --}}
+
 {{#if existed}}
-    {{#if assignedUserName}}
-        {{modifiedByName}} has assigned {{stepTitle}} to {{assignedUserName}}
+    {{#if completedDate}}
+        {{modifiedByName}} has completed {{stepTitle}}
     {{else}}
         {{modifiedByName}} has updated {{stepTitle}}
     {{/if}}
 {{else if assignedUserName}}
-    {{modifiedByName}} has assigned {{stepTitle}} to {{assignedUserName}}
+    {{modifiedByName}} has assigned a next step to {{assignedUserName}}
 {{else}}
     {{modifiedByName}} has created {{stepTitle}}
 {{/if}}
@@ -30,9 +31,13 @@
                 <th>Description</th>
                 <td class="description">{{description}}</td>
             </tr>
-            <tr  scope="row">
+            <tr scope="row">
                 <th>Due Date</th>
                 <td>{{formatDate dueDate}}</td>
+            </tr>
+            <tr scope="row">
+                <th>Status</th>
+                <td>{{stepStatusLabel completedDate}}</td>
             </tr>
             <tr scope="row">
                 <th>Incomplete Next Steps</th>

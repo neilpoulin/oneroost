@@ -1,11 +1,11 @@
 {{#if existed}}
-    {{#if assignedUserName}}
-        {{modifiedByName}} has assigned {{stepTitle}} to {{assignedUserName}}
+    {{#if completedDate}}
+        {{modifiedByName}} has completed {{stepTitle}}
     {{else}}
         {{modifiedByName}} has updated {{stepTitle}}
     {{/if}}
 {{else if assignedUserName}}
-    {{modifiedByName}} has assigned {{stepTitle}} to {{assignedUserName}}
+    {{modifiedByName}} has assigned a next step to {{assignedUserName}}
 {{else}}
     {{modifiedByName}} has created {{stepTitle}}
 {{/if}}
@@ -25,6 +25,9 @@ Description:
 
 Due Date:
 {{formatDate dueDate}}
+
+Status:
+{{stepStatusLabel completedDate}}
 
 Incomplete Next Steps:
 {{incompleteSteps.length}}

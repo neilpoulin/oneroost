@@ -74,6 +74,13 @@ function initializeHandlebars()
         }
         return value.trim();
     })
+
+    Handlebars.registerHelper("stepStatusLabel", function(completedDate){
+        if ( !completedDate ){
+            return "Not Complete"
+        }
+        return "Completed on " + moment(completedDate).format("MMM D, YYYY");
+    })
 }
 
 function initializeEmails(){
