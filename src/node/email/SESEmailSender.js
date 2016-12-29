@@ -76,7 +76,7 @@ Mail.prototype.buildRawEmail = function(callback){
         name: mail.fromName,
         address: mail.fromEmail
     }
-
+    console.log("subject is", mail.subject);
     var opts = {
         from: fromSender,
         sender: fromSender,

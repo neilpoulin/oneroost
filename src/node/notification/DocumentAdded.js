@@ -34,7 +34,7 @@ exports.afterSave = function(){
                 // documentQuery.equalTo("onboarding", false);
                 let doc = await documentQuery.get( documentId, {useMasterKey: true} )
 
-                console.log("found document: " + doc.toJSON());
+                console.log("found document: ", doc.toJSON());
                 var deal = doc.get("deal");
                 var uploadedBy = doc.get("createdBy");
                 var stakeholders = await getStakeholdersForDeal(deal);
@@ -44,12 +44,12 @@ exports.afterSave = function(){
                     let s3Object = await Documents.getS3Object(doc.get("s3key") );
                     var attachment = {
                         content: s3Object.Body,
-                        contentType: doc.get("type")
+                        contentType: doc.get("type"),
+                        filename: doc.get("fileName") + "." + doc.get("fileExtension")
                         // cid: doc.id //TODO:used if we want inline images (maybe we do someday)
                     };
                     attachments.push(attachment);
                 }
-
 
                 var data = {
                     firstName: uploadedBy.get("firstName"),
@@ -81,5 +81,5 @@ async function getStakeholdersForDeal( deal ){
     var stakeholderQuery = new Parse.Query("Stakeholder");
     stakeholderQuery.include("user");
     stakeholderQuery.equalTo( "deal", deal );
-    return stakeholderQuery.find();
+    return stakeholderQuery.find({useMasterKey: true});
 }
