@@ -156,6 +156,7 @@ function getUnsubscribeEmail( recipientId ){
 }
 
 function sendEmail( templateResults, data, to ){
+    console.log("Template Results", templateResults);
     Parse.Config.get().then( function(config){
         if ( config.get( "emailEnabled" ) ){
 
