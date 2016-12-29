@@ -74,6 +74,42 @@ exports.initialize = function()
         })
 
     });
+
+    Parse.Cloud.define("validateStakeholder", async function(request, response){
+        let userId = request.user.id;
+        let dealId = request.params.dealId;
+        let deal = {
+            __type: "Pointer",
+            className: "Deal",
+            objectId: dealId
+        }
+        let stakeholderQuery = new Parse.Query("Stakeholder");
+        stakeholderQuery.equalTo("user", request.user);
+        stakeholderQuery.equalTo("deal", deal);
+        try{
+            let result = await stakeholderQuery.find();
+            console.log("result", result);
+            if ( result.length > 0 ){
+                return response.success({
+                    message: "User" + userId + " is a stakeholder for deal " + dealId,
+                    authorized: true,
+                    stakeholder: result[0].toJSON()
+                })
+            }
+            else{
+                return response.success({
+                    message: "The user is not authorized for this deal.",
+                    authorized: false
+                });
+            }
+        } catch(error){
+            console.error(error);
+            return response.error({
+                message: "something went wrong looking up the stakeholder",
+                authorized: false
+            });
+        }
+    });
 }
 
 async function createStakeholderUser( stakeholder, deal, invitedBy ){

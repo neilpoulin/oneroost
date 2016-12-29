@@ -64,23 +64,24 @@ const Deal = withRouter( React.createClass({
     componentWillUpdate(nextProps, nextState)
     {
         var dealId = nextProps.params.dealId;
-        if ( this.pendingQueries().length == 0 )
-        {
-            var stakeholders = this.data.myStakeholders;
+        const self = this;
+        Parse.Cloud
+        .run("validateStakeholder", {dealId: dealId})
+        .then(({message, authorized, stakeholder}) => {
+            console.log("validateStakeholder response", message);
+            if ( !authorized ){
+                self.handleUnauthorized();
+                return;
+            }
 
-            var foundStakeholder = stakeholders.find( s => s.deal.objectId == dealId );
-            if (!stakeholders || !foundStakeholder )
+            if ( !stakeholder.inviteAccepted && stakeholder.readyRoostApprover ){
+                self.props.router.replace("/review/" + stakeholder.objectId)
+            }
+            else if ( !stakeholder.inviteAccepted )
             {
-                this.handleUnauthorized();
+                self.props.router.replace("/invitations/" + stakeholder.objectId)
             }
-            else if ( !foundStakeholder.inviteAccepted && foundStakeholder.readyRoostApprover ){
-                this.props.router.replace("/review/" + foundStakeholder.objectId)
-            }
-            else if ( !foundStakeholder.inviteAccepted )
-            {
-                this.props.router.replace("/invitations/" + foundStakeholder.objectId)
-            }
-        }
+        });
     },
     render () {
         if ( this.pendingQueries().length > 0 )
@@ -110,18 +111,18 @@ const Deal = withRouter( React.createClass({
             <div className="RoostBody">
                 <AccountSidebar/>
                 <div className="Deal">
-                        <div className="deal-top">
-                            <div className={mobileClassesDealTop}>
-                                <NextStepsBanner deal={deal} />
-                                <DealProfile deal={deal} />
-                            </div>
-                            <DealNavMobile deal={deal}></DealNavMobile>
+                    <div className="deal-top">
+                        <div className={mobileClassesDealTop}>
+                            <NextStepsBanner deal={deal} />
+                            <DealProfile deal={deal} />
                         </div>
-                        <div className="dealPageBottomContainer">
-                            <DealPageBottom ref="dealPageBottom" deal={deal}>
-                                {childrenWithProps}
-                            </DealPageBottom>
-                        </div>
+                        <DealNavMobile deal={deal}></DealNavMobile>
+                    </div>
+                    <div className="dealPageBottomContainer">
+                        <DealPageBottom ref="dealPageBottom" deal={deal}>
+                            {childrenWithProps}
+                        </DealPageBottom>
+                    </div>
                 </div>
             </div>
         </div>
