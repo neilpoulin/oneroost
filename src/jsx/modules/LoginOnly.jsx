@@ -16,7 +16,7 @@ const LoginOnly = withRouter(
         getInitialState: function(){
             var username;
             var isLoggedIn = false;
-            var email = null;
+            var email = "";
             var user = Parse.User.current();
             if ( user )
             {

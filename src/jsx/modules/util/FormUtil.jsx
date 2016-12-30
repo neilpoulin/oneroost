@@ -7,8 +7,34 @@ const Validation = function(check, level, message){
     this.message = message;
 }
 
-Validation.prototype.isValid = function(value){
-    return this.check(value);
+Validation.prototype.isValid = function(value, data){
+    return this.check(value, data);
+}
+
+exports.minimumLength = function(min){
+    return function(value){
+        if ( value === null ){
+            return false
+        }
+        if ( typeof value === "string" && value.length >= min )
+        {
+            return true;
+        }
+        return false;
+    }
+}
+
+exports.matchesValue = function(input){
+    return function(value, data){
+        return value === input;
+    }
+}
+
+
+exports.matchesField = function(fieldName){
+    return function(value, data){
+        return data[fieldName] === value;
+    }
 }
 
 function isNullOrEmpty(value){
@@ -82,7 +108,7 @@ exports.getErrors = function( data, validationMap )
             validations = [validations];
         }
         for ( let validation of validations ){
-            if (!validation.isValid(value))
+            if (!validation.isValid(value, data))
             {
                 errors[field] = {
                     field: field,

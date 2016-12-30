@@ -1,8 +1,9 @@
 import React, {PropTypes} from "react"
 import Parse from "parse"
 import ParseReact from "parse-react"
-import {linkState} from "LinkState"
-import FormUtil, {Validation} from "FormUtil"
+import StakeholderValidation from "StakeholderValidation"
+import FormUtil from "FormUtil"
+import FormInputGroup from "FormInputGroup"
 
 export default React.createClass({
     propTypes: {
@@ -22,28 +23,18 @@ export default React.createClass({
             user: Parse.User.current()
         };
     },
-    validations: {
-        email: new Validation(FormUtil.isValidEmail, "error", "A valid email is required"),
-        firstName: new Validation(FormUtil.notNullOrEmpty, "error", "A first name is required"),
-        lastName: new Validation(FormUtil.notNullOrEmpty, "error", "A last name is required"),
-        company: new Validation(FormUtil.notNullOrEmpty, "error", "A company name is required")
-    },
     clear: function(){
         this.setState( this.getInitialState() );
     },
     doSubmit(){
-        var errors = this.getValidations();
-        console.log(errors);
-        if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
+        var errors = FormUtil.getErrors(this.state, StakeholderValidation);
+        if ( !FormUtil.hasErrors(errors) ){
             this.saveStakeholder();
+            this.setState({errors: {}});
             return true;
         }
         this.setState({errors: errors});
         return false;
-    },
-    getValidations()
-    {
-        return FormUtil.getErrors(this.state, this.validations);
     },
     saveStakeholder: function(){
         var self = this;
@@ -95,65 +86,46 @@ export default React.createClass({
         });
 
     },
-    getErrorClass(field){
-        var errors = this.state.errors;
-        if (errors[field] )
-        {
-            return "has-" + errors[field].level
-        }
-        else return null;
-    },
-    getErrorHelpMessage(field){
-        var errors = this.state.errors;
-        if ( errors[field] )
-        {
-            var error = errors[field];
-            return <span key={"stakeholder_error_" + field} className="help-block">{error.message}</span>
-        }
-        return null
-    },
     render: function(){
+        let {errors, firstName, lastName, email, company} = this.state
         var form =
         <div className="StakeholderFormContainer">
             <div className="form-inline-half">
-                <div className={"form-group " + this.getErrorClass("firstName")}>
-                    <label htmlFor="firstNameInput" className="control-label">First Name</label>
-                    <input id="firstNameInput"
-                        type="text"
-                        className="form-control"
-                        value={this.state.firstName}
-                        onChange={linkState(this, "firstName")} />
-                    {this.getErrorHelpMessage("firstName")}
+                <FormInputGroup
+                    fieldName="firstName"
+                    value={firstName}
+                    onChange={val => this.setState({firstName: val})}
+                    label="First Name"
+                    errors={errors}
+                    placeholder=""
+                    required={true} />
 
-                </div>
-                <div className={"form-group " + this.getErrorClass("lastName")}>
-                    <label htmlFor="lastNameInput" className="control-label">Last Name</label>
-                    <input id="lastNameInput"
-                        type="text"
-                        className="form-control"
-                        value={this.state.lastName}
-                        onChange={linkState(this,"lastName")} />
-                    {this.getErrorHelpMessage("lastName")}
-                </div>
+                <FormInputGroup
+                    fieldName="lastName"
+                    value={lastName}
+                    onChange={val => this.setState({lastName: val})}
+                    label="Last Name"
+                    errors={errors}
+                    placeholder=""
+                    required={true} />
             </div>
-            <div className={"form-group " + this.getErrorClass("email")}>
-                <label htmlFor="stakeholderEmailInput" className="control-label">Email</label>
-                <input id="stakeholderEmailInput"
-                    type="text"
-                    className="form-control"
-                    value={this.state.email}
-                    onChange={linkState(this,"email")} />
-                {this.getErrorHelpMessage("email")}
-            </div>
-            <div className={"form-group " + this.getErrorClass("company")}>
-                <label htmlFor="stakeholderCompanyInput" className="control-label">Company</label>
-                <input id="stakeholderCompanyInput"
-                    type="text"
-                    className="form-control"
-                    value={this.state.company}
-                    onChange={linkState(this,"company")} />
-                {this.getErrorHelpMessage("company")}
-            </div>
+            <FormInputGroup
+                fieldName="email"
+                value={email}
+                onChange={val => this.setState({email: val})}
+                label="Email"
+                errors={errors}
+                placeholder=""
+                required={true} />
+
+            <FormInputGroup
+                fieldName="company"
+                value={company}
+                onChange={val => this.setState({company: val})}
+                label="Company"
+                errors={errors}
+                placeholder=""
+                required={true} />
         </div>
         return form;
     }

@@ -54,6 +54,15 @@ exports.initialize = function()
 
     });
 
+    Parse.Cloud.define("getUserWithEmail", function(request, response){
+        let {userId} = request.params;
+        new Parse.Query(Parse.User).get(userId, {useMasterKey: true}).then(function(user){
+            console.log("found user: ", user);
+            return response.success({user: user});
+        })
+        .catch(error => response.error(error));
+    });
+
     Parse.Cloud.define("saveNewPassword", function(request, response) {
         var password = request.params.password;
         var userId = request.params.userId;
@@ -66,10 +75,10 @@ exports.initialize = function()
                 user.set("password", password);
                 user.set("passwordChangeRequired", false);
                 Parse.Cloud.useMasterKey();
-                user.save().then(function(user){
+                user.save(null, {useMasterKey: true}).then(function(user){
                     console.log("successfully changed password");
                     response.success({message: "succesfully saved the user's password"})
-                });
+                }).catch(error => response.error({message: "Failed to update the user's password", error: error}));
             }
         })
 

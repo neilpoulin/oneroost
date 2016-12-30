@@ -4,6 +4,7 @@ import ParseReact from "parse-react"
 import moment from "moment"
 import Select from "react-select"
 import Stages from "Stages"
+import FormGroup from "FormGroup"
 
 const TimelineForm = React.createClass({
     mixins: [ParseReact.Mixin],
@@ -18,7 +19,8 @@ const TimelineForm = React.createClass({
             timeline: moment(this.props.timeline),
             stage: this.props.deal.currentStage || "EXPLORE",
             saveSuccess: false,
-            saveError: false
+            saveError: false,
+            errors: {},
         };
     },
     handleChange: function (date) {
@@ -102,6 +104,7 @@ const TimelineForm = React.createClass({
         return values;
     },
     render(){
+        let {errors} = this.state;
         var deal = this.props.deal;
         var age = this.getFormattedAge();
         var stages = this.getStageValues();
@@ -119,15 +122,21 @@ const TimelineForm = React.createClass({
 
         return (
             <div className="TimelineForm">
-                <div className="form-group">
-                    <label>Opportunity Created</label>
+                <FormGroup
+                    label="Opportunity Created"
+                    fieldName="created"
+                    errors={errors}
+                    >
                     <div>
                         <span className="opportunityAge">{age}</span> on <span className="createdDate">{created}</span>
                     </div>
-                </div>
+                </FormGroup>
 
-                <div className="form-group">
-                    <label>Current Stage</label>
+                <FormGroup
+                    label="Current Stage"
+                    errors={errors}
+                    fieldName="stage"
+                    >
                     <Select
                         name="deal-stage"
                         options={stages}
@@ -135,9 +144,12 @@ const TimelineForm = React.createClass({
                         onChange={this.handleStageChange}
                         clearable={false}
                         />
-                    <p className="help-block">Last updated {stageUpdatedAge} on <span className="stageUpdatedDate">{stageUpdatedFormatted}</span></p>
-                </div>
-                <div className={"form-group " + saveClass}>
+                    <p className="help-block">
+                        Last updated {stageUpdatedAge} on <span className="stageUpdatedDate">{stageUpdatedFormatted}</span>
+                    </p>
+                </FormGroup>
+
+                <div className={saveClass}>
                     <button className="btn btn-outline-primary btn-block" onClick={this.doSubmit}>Save</button>
                     {saveMessage}
                 </div>
