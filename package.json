@@ -66,7 +66,9 @@
     "uuid": "^3.0.1"
   },
   "devDependencies": {
+    "babel-core": "^6.21.0",
     "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.2.10",
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-async-to-generator": "^6.16.0",
     "babel-plugin-transform-regenerator": "^6.16.1",
@@ -122,6 +124,8 @@
     "superagent": "^3.3.1",
     "tether": "^1.2.0",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "webpack": "2.2.0-rc.3",
+    "webpack-dev-server": "2.2.0-rc.0"
   }
 }

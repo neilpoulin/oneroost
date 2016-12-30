@@ -45,6 +45,9 @@ db/
 logs/
 parse-server/
 gulpfile.js
+gulpfile.babel.js
+webpack.config.babel.js
+build-paths.js
 src/
 cloud.bak/
 .eslintrc

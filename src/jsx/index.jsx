@@ -4,9 +4,9 @@ import { render } from "react-dom"
 import Parse from "parse"
 import React from "react"
 import { Router, Route, browserHistory, IndexRoute, Redirect } from "react-router"
-import LoginOnly from "./modules/LoginOnly"
-import RegisterPage from "./modules/RegisterPage"
-import Landing from "./modules/LandingPage"
+import LoginOnly from "LoginOnly"
+import RegisterPage from "RegisterPage"
+import Landing from "LandingPage"
 import App from "./modules/App"
 import UserHomePage from "./modules/UserHomePage"
 import Roost from "./modules/deal/Roost"
@@ -31,7 +31,6 @@ import UnauthorizedPage from "./modules/UnauthorizedPage"
 import EmailTemplates from "./modules/admin/EmailTemplates"
 import HelpPage from "./modules/help/HelpPage"
 import ReactGA from "react-ga"
-
 
 Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;

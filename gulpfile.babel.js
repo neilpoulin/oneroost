@@ -19,69 +19,14 @@ var nodemon = require("gulp-nodemon");
 var nodeInspector = require("gulp-node-inspector");
 var minify = require("gulp-minify");
 var cleanCSS = require("gulp-clean-css");
+var webpack = require("webpack");
+var webpackConfig = require("./webpack.config.babel.js")
+import {paths, bootstrapPaths, fontAwesomePaths, GoogleMaterialColors, reactModalBootstrap, infiniteCalendar,} from "./build-paths";
 
 var devEnvProps = {
     AWS_PROFILE: "oneroost",
     GA_TRACKING_CODE: "UA-87950724-3"
 }
-
-var bootstrapRoot = "./node_modules/bootstrap-sass/";
-var bootstrapPaths = {
-    fonts: bootstrapRoot + "assets/fonts/**/*",
-    stylesheets: bootstrapRoot + "assets/stylesheets"
-};
-
-var fontAwesomeRoot = "./node_modules/font-awesome/";
-var fontAwesomePaths = {
-    fonts: fontAwesomeRoot + "fonts/**/*",
-    stylesheets: fontAwesomeRoot + "scss"
-};
-
-var materialColorsRoot = "./node_modules/sass-material-colors/";
-var GoogleMaterialColors = {
-    stylesheets: materialColorsRoot + "sass"
-};
-
-var reactModalBootstrap = {
-    stylesheets: "./node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less"
-};
-
-var infiniteCalendar = {
-    stylesheets: "./node_modules/react-infinite-calendar/styles.css"
-}
-var paths = {
-    src: {
-        root: "./src",
-        frontend: ["./src/jsx/**/*.jsx","./src/jsx/**/*.js"],
-        node: ["./src/node/**/*.js"],
-        nodetemplates: ["./src/node/**/*.hbs", "./src/node/**/*.scss", "./src/node/**/*.json", "./src/node/**/*.ejs" ],
-        gulpfile: ["./gulpfile.js"],
-        styles: ["./src/scss/**/*.scss"],
-        styleEntry: "./src/scss/index.scss",
-        all: ["./src/**/*.js", "./src/**/*.jsx", "./cloud/**/*.js", "./gulpfile.js"],
-        fonts: [bootstrapPaths.fonts, fontAwesomePaths.fonts, "./src/fonts/**/*"]
-    },
-    build: {
-        root: "./build",
-        frontendjs: "./build/frontendjs",
-        node: "./build/node",
-        nodeStyles: "./build/node/email/template/style/target",
-        nodeFonts: "./build/node/email/template/style/target/fonts",
-        jsbundle: "./build/dist/frontendjs",
-        cssbundle: "./build/dist/css",
-        sourceFile: "./build/frontendjs/index.js",
-        sourceMaps: ".build/**/*.js.map"
-    },
-    dest: {
-        root: "./public",
-        css: "./public/css",
-        frontendjs: "./public/bundle",
-        cloud: "./cloud",
-        fonts: "./public/css/fonts",
-        styleName: "styles.css",
-        scriptName: "bundle.js"
-    }
-};
 
 var sassOpts = {
     outputStyle: "nested",
@@ -175,56 +120,99 @@ var sassOpts = {
         .pipe(gulp.dest(paths.dest.cloud));
     });
 
-    gulp.task("transpile", ["clean:js"], function () {
-        return gulp.src(paths.src.frontend)
-        .pipe(plumber({
-            handleError: function (err) {
-                console.log(err);
-                this.emit("end");
-            }
-        }))
-        // .pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(babel())
-        .on("error", function (err) {
-            gutil.log(gutil.colors.red("[Task \"transpile\"][Babel Error]"));
-            gutil.log(gutil.colors.red(err.message));
-        })
-        // .pipe(sourcemaps.write())
-        .pipe(plumber.stop())
-        .pipe(gulp.dest(paths.build.frontendjs));
-    });
+    // gulp.task("transpile", ["clean:js"], function () {
+    //     return gulp.src(paths.src.frontend)
+    //     .pipe(plumber({
+    //         handleError: function (err) {
+    //             console.log(err);
+    //             this.emit("end");
+    //         }
+    //     }))
+    //     // .pipe(sourcemaps.init({loadMaps: true}))
+    //     .pipe(babel())
+    //     .on("error", function (err) {
+    //         gutil.log(gutil.colors.red("[Task \"transpile\"][Babel Error]"));
+    //         gutil.log(gutil.colors.red(err.message));
+    //     })
+    //     // .pipe(sourcemaps.write())
+    //     .pipe(plumber.stop())
+    //     .pipe(gulp.dest(paths.build.frontendjs));
+    // });
 
-    gulp.task("bundle", ["transpile"], function () {
-        var b = browserify({
-            entries: paths.build.sourceFile,
-            debug: true
-        });
 
-        return plumber({
-            handleError: function (err) {
-                console.log(err);
-                this.emit("end");
-            }
-        })
-        .pipe(b.bundle()
-            .on("error", function (err) {
-                gutil.log(gutil.colors.red("[Task \"bundle\"][Browserify.bundle() Error]"));
-                gutil.log(gutil.colors.red(err.message));
-            })
-        )
-        .pipe(source(paths.build.sourceFile))
-        .pipe(buffer())
-        .pipe(sourcemaps.init({loadMaps: true}))
-        // .pipe( browserify({debug: true}) )
-        .on("error", function (err) {
-            gutil.log(gutil.colors.red("[Task \"bundle\"][Browserify Error]"));
-            gutil.log(gutil.colors.red(err.message));
-        })
-        .pipe(concat(paths.dest.scriptName))
-        // .pipe( sourcemaps.write("./maps") )
-        .pipe(plumber.stop())
-        .pipe(gulp.dest(paths.build.jsbundle));
-    });
+    gulp.task("bundle", ["clean:js"], function(callback){
+        var command = "webpack"
+        runCommand(command);
+        callback();
+        // let config = webpackConfig;
+        //
+        // let plugins = [];
+        // if (process.env.NODE_ENV === "production"){
+        //     plugins = plugins.concat(
+        //         [
+        //             new webpack.DefinePlugin({
+        //                 "process.env": {
+        //                     // This has effect on the react lib size
+        //                     "NODE_ENV": process.env.NODE_ENV
+        //                 }
+        //             }),
+        //             new webpack.optimize.UglifyJsPlugin()
+        //         ]);
+        // }
+        //
+        // config.plugins = config.plugins.concat(plugins);
+        //
+        // gutil.log(config);
+        // webpack(config, function(err, stats) {
+        //     if(err) throw new gutil.PluginError("webpack:build", err);
+        //     gutil.log("[webpack:build]", stats.toString({
+        //         colors: true
+        //     }));
+        //     callback();
+        // });
+
+
+
+
+
+
+
+        //     return gulp.src(paths.src.jsEntry)
+        //           .pipe(webpack( webpackConfig ))
+        //           .pipe(gulp.dest(paths.dest.frontendjs));
+    })
+
+    // gulp.task("bundle", ["transpile"], function () {
+    //     var b = browserify({
+    //         entries: paths.build.sourceFile,
+    //         debug: true
+    //     });
+    //
+    //     return plumber({
+    //         handleError: function (err) {
+    //             console.log(err);
+    //             this.emit("end");
+    //         }
+    //     })
+    //     .pipe(b.bundle()
+    //         .on("error", function (err) {
+    //             gutil.log(gutil.colors.red("[Task \"bundle\"][Browserify.bundle() Error]"));
+    //             gutil.log(gutil.colors.red(err.message));
+    //         })
+    //     )
+    //     .pipe(source(paths.build.sourceFile))
+    //     .pipe(buffer())
+    //     .pipe(sourcemaps.init({loadMaps: true}))
+    //     // .pipe( browserify({debug: true}) )
+    //     .on("error", function (err) {
+    //         gutil.log(gutil.colors.red("[Task \"bundle\"][Browserify Error]"));
+    //         gutil.log(gutil.colors.red(err.message));
+    //     })
+    //     .pipe(concat(paths.dest.scriptName))
+    //     // .pipe( sourcemaps.write("./maps") )
+    //     .pipe(plumber.stop())
+    //     .pipe(gulp.dest(paths.build.jsbundle));
+    // });
 
     gulp.task("ugly:css", ["sass"], function(){
         gulp.src(paths.build.cssbundle + "/" + paths.dest.styleName)
@@ -294,74 +282,77 @@ var sassOpts = {
 
     gulp.task("inspect", function () {
         gulp.src([]).pipe(nodeInspector({  // You"ll need to tweak these settings per your setup
-            debugPort: 5858,
-            webHost: "localhost",
-            webPort: "8085",
-            preload: false
-        }));
-    });
+        debugPort: 5858,
+        webHost: "localhost",
+        webPort: "8085",
+        preload: false
+    }));
+});
 
-    gulp.task("start:prod", ["watch:prod"], function(){
-        // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
-        nodemon({
-            script: "main.js",
-            watch: ["cloud", "cloud/email/**/*.hbs", "cloud/**/*.json"],
-            env: devEnvProps
-        })
-        .on("restart", function () {
-            console.log("nodemon restarted the node server!")
-        })
-    });
-
-    gulp.task("start", ["mongo-start","clean", "update-config", "watch"], function(){
-        // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
-        nodemon({
-            script: "main.js",
-            watch: ["cloud", "cloud/email/**/*.hbs", "cloud/**/*.json"],
-            env: devEnvProps
-        })
-        .on("restart", function () {
-            console.log("nodemon restarted the node server!")
-        })
-    });
-
-    gulp.task("debug", ["mongo-start", "clean", "update-config", "watch", "inspect"], function(){
-        // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
-        nodemon({
-            script: "main.js",
-            watch: ["cloud", "cloud/**/*.hbs", "cloud/**/*.json"],
-            nodeArgs: ["--debug"],
-            env: devEnvProps
-        })
-        .on("restart", function () {
-            console.log("nodemon restarted the node server!")
-        })
-    });
-
-    gulp.task("mongo-start", function() {
-        var command = "mongod --dbpath db/data";
-        runCommand(command);
-    });
-
-    gulp.task("mongo-stop", function() {
-        var command = "mongo admin --eval 'db.shutdownServer();'"
-        runCommand(command);
-    });
-
-    function runCommand(command) {
-        exec(command, function (err, stdout, stderr) {
-            console.log(stdout);
-            console.log(stderr);
-            if (err !== null) {
-                console.log("exec error: " + err);
-            }
-        });
-    }
-
-    gulp.task("eb-deploy:stage", ["clean:npm-log", "build:all", "set-prod-node-env"], shell.task("eb deploy stage --timeout 25"));
-    gulp.task("deploy", ["build:all", "eb-deploy:stage", "set-prod-node-env"]);
-
-    gulp.task("update-config", ["mongo-start"], function(){
-        var command = "mongo localhost:27017/oneroost-db db/scripts/update_configs.js";
-        runCommand(command);
+gulp.task("start:prod", ["watch:prod"], function(){
+    // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
+    nodemon({
+        script: "main.js",
+        watch: ["cloud", "cloud/email/**/*.hbs", "cloud/**/*.json"],
+        env: devEnvProps
     })
+    .on("restart", function () {
+        console.log("nodemon restarted the node server!")
+    })
+});
+
+gulp.task("start", ["mongo-start","clean", "update-config", "watch"], function(){
+    // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
+    nodemon({
+        script: "main.js",
+        watch: ["cloud", "cloud/email/**/*.hbs", "cloud/**/*.json"],
+        env: devEnvProps
+    })
+    .on("restart", function () {
+        console.log("nodemon restarted the node server!")
+    })
+});
+
+gulp.task("debug", ["mongo-start", "clean", "update-config", "watch", "inspect"], function(){
+    // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
+    nodemon({
+        script: "main.js",
+        watch: ["cloud", "cloud/**/*.hbs", "cloud/**/*.json"],
+        nodeArgs: ["--debug"],
+        env: devEnvProps
+    })
+    .on("restart", function () {
+        console.log("nodemon restarted the node server!")
+    })
+});
+
+gulp.task("mongo-start", function() {
+    var command = "mongod --dbpath db/data";
+    runCommand(command);
+});
+
+gulp.task("mongo-stop", function() {
+    var command = "mongo admin --eval 'db.shutdownServer();'"
+    runCommand(command);
+});
+
+function runCommand(command) {
+    exec(command, function (err, stdout, stderr) {
+        gutil.log(gutil.colors.yellow(stdout))
+
+        gutil.log(stderr.toString({
+                colors: true
+            }));
+        if (err !== null) {
+            console.log("exec error: " + err);
+        }
+    });
+}
+
+gulp.task("eb-deploy:stage", ["clean:npm-log", "build:all", "set-prod-node-env"], shell.task("eb deploy stage --timeout 25"));
+gulp.task("deploy", ["build:all", "eb-deploy:stage", "set-prod-node-env"]);
+
+gulp.task("update-config", ["mongo-start"], function(){
+    var command = "mongo localhost:27017/oneroost-db db/scripts/update_configs.js";
+    runCommand(command);
+})
