@@ -18,7 +18,7 @@ const InvestmentSidebar = React.createClass({
   render(){
     if (this.pendingQueries().length > 0) {
       return (
-        <i className="fa fa-spin fa-spinner">Loading Deal</i>
+        <span><i className="fa fa-spin fa-spinner"></i>Loading Deal...</span>
       );
     }
 

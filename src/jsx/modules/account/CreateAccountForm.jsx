@@ -1,8 +1,9 @@
 import React from "react";
-import {linkState} from "LinkState"
 import ParseReact from "parse-react"
 import Parse from "parse"
-import FormUtil, {Validation} from "FormUtil"
+import FormUtil from "FormUtil"
+import AccountValidation from "account/AccountValidation"
+import FormInputGroup from "FormInputGroup"
 
 export default React.createClass({
     getDefaultProps: function(){
@@ -25,7 +26,7 @@ export default React.createClass({
     doSubmit: function()
     {
         var self = this;
-        var errors = FormUtil.getErrors(this.state, this.validations);
+        var errors = FormUtil.getErrors(this.state, AccountValidation);
         console.log(errors);
         if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
             this.saveDeal();
@@ -52,10 +53,6 @@ export default React.createClass({
         .then( function( acct ){
             self.createDeal( acct, dealName );
         });
-    },
-    validations: {
-        accountName: new Validation(FormUtil.notNullOrEmpty, "error", "You must provide a company name.") ,
-        dealName: new Validation(FormUtil.notNullOrEmpty, "error", "You must enter a Problem Summary.")
     },
     createDeal: function( account, dealName ){
         var self = this;
@@ -92,28 +89,23 @@ export default React.createClass({
     render: function(){
         return (
             <div className="CreateAccount">
-                <div>
-                    <div className={"form-group " + FormUtil.getErrorClass("accountName", this.state.errors)}>
-                        <label htmlFor="accountNameInput" className="control-label" >Company Name</label>
-                        <input id="accountNameInput"
-                            type="text"
-                            className="form-control"
-                            value={this.state.accountName}
-                            onChange={linkState(this, "accountName")} />
-                        {FormUtil.getErrorHelpMessage("accountName", this.state.errors)}
-                    </div>
-                    <div className={"form-group " + FormUtil.getErrorClass("dealName", this.state.errors)}>
-                        <label htmlFor="dealNameInput" className="control-label" >Problem Summary</label>
-                        <input id="dealNameInput"
-                            type="text"
-                            className="form-control"
-                            value={this.state.dealName}
-                            maxLength={40}
-                            onChange={linkState(this, "dealName")} />
-                        <span className="help-block">briefly explain your offering in 40 characters or less</span>
-                        {FormUtil.getErrorHelpMessage("dealName", this.state.errors)}
-                    </div>
-                </div>
+                <FormInputGroup
+                    fieldName="accountName"
+                    label="Company Name"
+                    errors={this.state.errors}
+                    onChange={val => this.setState("accountName", val)}
+                    value={this.state.accountName}
+                    />
+
+                <FormInputGroup
+                    fieldName="dealName"
+                    label="Problem Summary"
+                    errors={this.state.errors}
+                    onChange={val => this.setState("dealName", val)}
+                    value={this.state.dealName}
+                    >
+                    <span className="help-block">briefly explain your offering in 40 characters or less</span>
+                </FormInputGroup>
             </div>
         );
     }

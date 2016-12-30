@@ -6,17 +6,19 @@ const FormGroup = React.createClass({
         fieldName: PropTypes.string.isRequired,
         label: PropTypes.string,
         errors: PropTypes.object.isRequired,
-        children: PropTypes.any.isRequired
+        children: PropTypes.any.isRequired,
+        required: PropTypes.bool
     },
     getDefaultProps(){
         return {
-            label: ""
+            label: "",
+            required: false,
         }
     },
     render () {
         let form =
         <div className={`form-group ${FormUtil.getErrorClass(this.props.fieldName, this.props.errors)}`}>
-            <label className="control-label">{this.props.label}</label>
+            <label className={"control-label" + (this.props.required ? " required" : "")}>{this.props.label}</label>
             {this.props.children}
             {FormUtil.getErrorHelpMessage(this.props.fieldName, this.props.errors)}
         </div>

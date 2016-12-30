@@ -67,6 +67,10 @@ exports.notBefore = function(input){
     return date.isSameOrAfter(moment(), "day")
 }
 
+exports.hasErrors = function( errors ){
+    return errors && errors.constructor === Object && Object.keys(errors).length > 0
+}
+
 exports.getErrors = function( data, validationMap )
 {
     var errors = {};
@@ -102,7 +106,7 @@ exports.getErrorClass = function(field, errors){
     {
         return "has-" + errors[field].level
     }
-    else return null;
+    else return "";
 }
 exports.getErrorHelpMessage = function(field, errors){
     errors = errors || {};

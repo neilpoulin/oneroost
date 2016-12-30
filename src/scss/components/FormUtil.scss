@@ -1,5 +1,11 @@
 $default-margin: 5px;
 
+.control-label{
+    &.required:after{
+        content: "* "
+    }
+}
+
 @mixin flex-group{
     display: flex;
     margin-bottom: $form-group-margin-bottom;

@@ -116,7 +116,7 @@ var sassOpts = {
         .pipe(gulp.dest(paths.dest.cloud));
     });
 
-    gulp.task("bundle", ["clean:js"], function(done){
+    gulp.task("bundle", function(done){
         let plugins = [];
         if (process.env.NODE_ENV === "production"){
             gutil.log(gutil.colors.green("**************** Bundling for production ******************"));
@@ -267,9 +267,11 @@ gulp.task("mongo-stop", function() {
     runCommand(command);
 });
 
-function runCommand(command) {
+function runCommand(command, log=false) {
     exec(command, function (err, stdout, stderr) {
-        gutil.log(gutil.colors.yellow(stdout))
+        if (log){
+            gutil.log(gutil.colors.yellow(stdout))
+        }
 
         gutil.log(stderr.toString({
             colors: true

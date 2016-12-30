@@ -1,11 +1,13 @@
 import React, { PropTypes } from "react"
-import FormUtil, {Validation} from "FormUtil"
-import {linkState} from "LinkState"
+import FormUtil from "FormUtil"
 import Parse from "parse";
 import ParseReact from "parse-react"
 import Dropzone from "react-dropzone"
 import request from "superagent"
 import numeral from "numeral"
+import {linkValidation, fileValidation} from "DocumentValidation"
+import FormInputGroup from "FormInputGroup"
+import FormGroup from "FormGroup"
 
 const re = /(?:\.([^.]+))?$/;
 
@@ -127,38 +129,9 @@ const DocumentUploadForm = React.createClass({
     },
     getValidations(){
         if ( this.state.isFileUpload ){
-            return FormUtil.getErrors(this.state, this.uploadValidations);
+            return FormUtil.getErrors(this.state, fileValidation);
         }
-        return FormUtil.getErrors(this.state, this.linkValidations);
-    },
-    uploadValidations: {
-        fileName: [
-            new Validation(FormUtil.notNullOrEmpty, "error", "You must enter a file name.")
-        ],
-        uploading: new Validation(FormUtil.isFalsey, "warn", "The file must finish uploading before you can save the document."),
-        uploadSuccess: new Validation(FormUtil.isTruthy, "error", "You must upload a file."),
-        s3key: new Validation(FormUtil.notNullOrEmpty, "error", "You must upload a file.")
-    },
-    linkValidations: {
-        fileName: new Validation(FormUtil.notNullOrEmpty, "error", "You must enter a file name."),
-        externalLink: new Validation(FormUtil.isValidHyperLink, "error", "The link provided must be a valid hyperlink.")
-    },
-    getErrorClass(field){
-        var errors = this.state.errors;
-        if (errors[field] )
-        {
-            return "has-" + errors[field].level
-        }
-        else return "";
-    },
-    getErrorHelpMessage(field){
-        var errors = this.state.errors;
-        if ( errors[field] )
-        {
-            var error = errors[field];
-            return <span key={"document_error_" + field} className="help-block">{error.message}</span>
-        }
-        return null
+        return FormUtil.getErrors(this.state, linkValidation);
     },
     setIsUpload(){
         this.setState({isFileUpload: true});
@@ -167,22 +140,25 @@ const DocumentUploadForm = React.createClass({
         this.setState({isFileUpload: false});
     },
     render () {
+        var errors = this.state.errors;
         var progress = null;
         var formAction =
-        <div className={"form-group " + this.getErrorClass("externalLink")}>
-            <label htmlFor="externalLinkInput" className="control-label">URL</label>
-            <input id="externalLinkInput"
-                type="text"
-                className="form-control"
-                onChange={linkState(this, "externalLink")}
-                value={this.state.externalLink}
-                placeholder={"http://www.mywebsite.com/mydocument.pdf"} />
-            {this.getErrorHelpMessage("externalLink")}
-        </div>
+
+
+        <FormInputGroup
+            fieldName="externalLink"
+            value={this.state.externalLink}
+            onChange={val => this.setState({externalLink: val})}
+            label="URL"
+            errors={this.state.errors}
+            placeholder=""
+            required={true} />
 
         if ( this.state.isFileUpload ){
             formAction =
-            <div className={"form-group " + this.getErrorClass("uploadSuccess")}>
+            <FormGroup
+                fieldName="uploadSuccess"
+                errors={errors} >
                 <Dropzone onDrop={this.onDrop}
                     multiple={false}
                     onDragEnter={this.onDragEnter}
@@ -192,8 +168,7 @@ const DocumentUploadForm = React.createClass({
                         <span>Drag and drop here or click to choose from your computer.</span>
                     </div>
                 </Dropzone>
-                {this.getErrorHelpMessage("uploadSuccess")}
-            </div>
+            </FormGroup>
 
             var progressLabel = numeral(this.state.percent).format("0,0") + "%";
             if ( this.state.uploadSuccess ){
@@ -229,15 +204,15 @@ const DocumentUploadForm = React.createClass({
                     </li>
                 </ul>
 
-                <div className={"form-group " + this.getErrorClass("fileName")}>
-                    <label htmlFor="fileNameInput" className="control-label">File Name</label>
-                    <input id="fileNameInput"
-                        type="text"
-                        className="form-control"
-                        value={this.state.fileName}
-                        onChange={linkState(this, "fileName")} />
-                    {this.getErrorHelpMessage("fileName")}
-                </div>
+                <FormInputGroup
+                    fieldName="fileName"
+                    value={this.state.fileName}
+                    onChange={val => this.setState({fileName: val})}
+                    label="File Name"
+                    errors={this.state.errors}
+                    required={true}
+                    />
+
                 {formAction}
                 {progress}
             </div>
