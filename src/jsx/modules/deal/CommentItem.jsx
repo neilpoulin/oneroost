@@ -1,6 +1,6 @@
 import React, {PropTypes} from "react";
-import SystemComment from "./SystemComment"
-import UserComment from "./UserComment"
+import SystemComment from "SystemComment"
+import UserComment from "UserComment"
 
 export default React.createClass({
     propTypes: {

@@ -1,5 +1,5 @@
 import React from "react"
-import LoginComponent from "./LoginComponent"
+import LoginComponent from "LoginComponent"
 import { browserHistory, withRouter } from "react-router"
 
 const Home = withRouter( React.createClass({

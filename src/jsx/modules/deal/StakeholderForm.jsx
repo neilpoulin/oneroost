@@ -1,8 +1,8 @@
 import React, {PropTypes} from "react"
 import Parse from "parse"
 import ParseReact from "parse-react"
-import {linkState} from "./../util/LinkState"
-import FormUtil, {Validation} from "./../util/FormUtil"
+import {linkState} from "LinkState"
+import FormUtil, {Validation} from "FormUtil"
 
 export default React.createClass({
     propTypes: {

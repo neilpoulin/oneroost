@@ -3,7 +3,7 @@ import Parse from "parse"
 import ParseReact from "parse-react"
 import moment from "moment"
 import Select from "react-select"
-import Stages from "./Stages"
+import Stages from "Stages"
 
 const TimelineForm = React.createClass({
     mixins: [ParseReact.Mixin],

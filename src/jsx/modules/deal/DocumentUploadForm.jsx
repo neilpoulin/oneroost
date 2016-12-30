@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
-import FormUtil, {Validation} from "./../util/FormUtil"
-import {linkState} from "./../util/LinkState"
+import FormUtil, {Validation} from "FormUtil"
+import {linkState} from "LinkState"
 import Parse from "parse";
 import ParseReact from "parse-react"
 import Dropzone from "react-dropzone"

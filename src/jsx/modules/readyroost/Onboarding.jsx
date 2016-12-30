@@ -1,13 +1,13 @@
 import React, { PropTypes } from "react"
-import Introduction from "./Introduction"
-import Registration from "./Registration"
-import OpportunityDetail from "./OpportunityDetail"
-import Confirmation from "./Confirmation"
+import Introduction from "readyroost/Introduction"
+import Registration from "readyroost/Registration"
+import OpportunityDetail from "readyroost/OpportunityDetail"
+import Confirmation from "readyroost/Confirmation"
 import Parse from "parse"
 import ReactGA from "react-ga"
 import { withRouter, Link } from "react-router"
-import RoostUtil from "./../util/RoostUtil"
-import Progress from "./Progress"
+import RoostUtil from "RoostUtil"
+import Progress from "readyroost/Progress"
 
 var fieldValues = {
     problem: "",

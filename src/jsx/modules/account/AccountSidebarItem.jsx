@@ -1,6 +1,6 @@
 import React, {PropTypes} from "react"
-import NavLink from "./../NavLink"
-import RoostUtil from "./../util/RoostUtil.js"
+import NavLink from "NavLink"
+import RoostUtil from "RoostUtil"
 
 const AccountSidebarItem = React.createClass({
     propTypes: {

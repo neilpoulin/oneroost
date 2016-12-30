@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
-import BasicInfoDisplay from "./BasicInfoDisplay"
-import BasicInfoForm from "./BasicInfoForm"
+import BasicInfoDisplay from "profile/BasicInfoDisplay"
+import BasicInfoForm from "profile/BasicInfoForm"
 
 const BasicInfo = React.createClass({
     propTypes: {

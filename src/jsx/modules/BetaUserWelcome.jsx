@@ -1,5 +1,5 @@
 import React, {PropTypes} from "react"
-import PublicProfileLink from "./profile/PublicProfileLink"
+import PublicProfileLink from "profile/PublicProfileLink"
 
 const BetaUserWelcome = React.createClass({
     propTypes: {

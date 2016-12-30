@@ -1,8 +1,8 @@
 import React from "react";
-import {linkState} from "./../util/LinkState"
+import {linkState} from "LinkState"
 import ParseReact from "parse-react"
 import Parse from "parse"
-import FormUtil, {Validation} from "./../util/FormUtil"
+import FormUtil, {Validation} from "FormUtil"
 
 export default React.createClass({
     getDefaultProps: function(){

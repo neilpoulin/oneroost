@@ -1,6 +1,6 @@
 import React from "react";
-import ModalButton from "./../util/ModalButton";
-import NextStepForm from "./NextStepForm";
+import ModalButton from "ModalButton";
+import NextStepForm from "nextsteps/NextStepForm";
 
 export default React.createClass({
     getInitialState: function(){

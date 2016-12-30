@@ -1,6 +1,6 @@
 import Parse from "parse";
 import React from "react";
-import NavLink from "./../NavLink";
+import NavLink from "NavLink";
 
 export default React.createClass({
     getInitialState: function(){

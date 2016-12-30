@@ -1,7 +1,7 @@
 import Parse from "parse";
 import React from "react";
 import ParseReact from "parse-react";
-import NavLink from "./../../NavLink";
+import NavLink from "NavLink";
 
 const NextStepCompletedSidebar = React.createClass({
     mixins: [ParseReact.Mixin],

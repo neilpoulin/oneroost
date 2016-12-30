@@ -7,17 +7,12 @@ var shell = require("gulp-shell");
 var exec = require("child_process").exec;
 var plumber = require("gulp-plumber");
 var gutil = require("gulp-util");
-var sourcemaps = require("gulp-sourcemaps");
-var source = require("vinyl-source-stream");
-var buffer = require("vinyl-buffer");
-var browserify = require("browserify");
 var less = require("gulp-less");
 var merge = require("merge-stream");
 var file = require("gulp-file");
 var eslint = require("gulp-eslint");
 var nodemon = require("gulp-nodemon");
 var nodeInspector = require("gulp-node-inspector");
-var minify = require("gulp-minify");
 var cleanCSS = require("gulp-clean-css");
 var webpack = require("webpack");
 var webpackConfig = require("./webpack.config.babel.js")
@@ -38,6 +33,7 @@ var sassOpts = {
         reactModalBootstrap.stylesheets,
         "./src/scss/**/*.scss"]
     };
+
 
     gulp.task("fonts", ["sass"], function () {
         return gulp.src(paths.src.fonts)
@@ -120,173 +116,108 @@ var sassOpts = {
         .pipe(gulp.dest(paths.dest.cloud));
     });
 
-    // gulp.task("transpile", ["clean:js"], function () {
-    //     return gulp.src(paths.src.frontend)
-    //     .pipe(plumber({
-    //         handleError: function (err) {
-    //             console.log(err);
-    //             this.emit("end");
-    //         }
-    //     }))
-    //     // .pipe(sourcemaps.init({loadMaps: true}))
-    //     .pipe(babel())
-    //     .on("error", function (err) {
-    //         gutil.log(gutil.colors.red("[Task \"transpile\"][Babel Error]"));
-    //         gutil.log(gutil.colors.red(err.message));
-    //     })
-    //     // .pipe(sourcemaps.write())
-    //     .pipe(plumber.stop())
-    //     .pipe(gulp.dest(paths.build.frontendjs));
-    // });
+    gulp.task("bundle", ["clean:js"], function(done){
+        let plugins = [];
+        if (process.env.NODE_ENV === "production"){
+            gutil.log(gutil.colors.green("**************** Bundling for production ******************"));
+            plugins = plugins.concat([
+                new webpack.DefinePlugin({
+                    "process.env": {
+                        NODE_ENV: JSON.stringify("production")
+                    }
+                }),
+                new webpack.optimize.UglifyJsPlugin()
+            ]);
+        }
+        else{
+            gutil.log(gutil.colors.green("**************** Bundling for dev ******************"));
+            webpackConfig.devtool = "source-map";
+        }
+        webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
+
+        webpack(webpackConfig).run((err, stats) => {
+            if (err) {
+                var error = new gutil.PluginError("bundle", err);
+                gutil.log( gutil.colors.red(error));
+                if (done) {
+                    done();
+                }
+            } else {
+                gutil.log("[webpack:build]", stats.toString({
+                    colors: true,
+                    version: true,
+                    timings: true,
+                    errorDetails: true,
+                    hash: true,
+                    assets: true,
+                    chunks: false
+                }));
+                Object.keys(stats.compilation.assets).forEach(function(key) {
+                    gutil.log("Webpack: output ", gutil.colors.green(key));
+                });
+
+                if (done) {
+                    done();
+                }
+            }
+        }
+    );
+})
 
 
-    gulp.task("bundle", ["clean:js"], function(callback){
-        var command = "webpack"
-        runCommand(command);
-        callback();
-        // let config = webpackConfig;
-        //
-        // let plugins = [];
-        // if (process.env.NODE_ENV === "production"){
-        //     plugins = plugins.concat(
-        //         [
-        //             new webpack.DefinePlugin({
-        //                 "process.env": {
-        //                     // This has effect on the react lib size
-        //                     "NODE_ENV": process.env.NODE_ENV
-        //                 }
-        //             }),
-        //             new webpack.optimize.UglifyJsPlugin()
-        //         ]);
-        // }
-        //
-        // config.plugins = config.plugins.concat(plugins);
-        //
-        // gutil.log(config);
-        // webpack(config, function(err, stats) {
-        //     if(err) throw new gutil.PluginError("webpack:build", err);
-        //     gutil.log("[webpack:build]", stats.toString({
-        //         colors: true
-        //     }));
-        //     callback();
-        // });
+gulp.task("css", ["sass"], function(){
+    gulp.src(paths.build.cssbundle + "/" + paths.dest.styleName)
+    .pipe(gulp.dest(paths.dest.css));
+});
+
+gulp.task("css:compress", ["sass"], function(){
+    gulp.src(paths.build.cssbundle + "/" + paths.dest.styleName)
+    .pipe(cleanCSS())
+    .pipe(gulp.dest(paths.dest.css));
+});
+
+gulp.task("bundle:prod", ["bundle", "set-prod-node-env"]);
+
+gulp.task("set-prod-node-env", function() {
+    return process.env.NODE_ENV = "production";
+});
+
+gulp.task("build:node", ["clean:node", "transpile:node", "sass:node", "fonts:node"]);
+gulp.task("build:node-noclean", ["transpile:node", "sass:node", "fonts:node"]);
+gulp.task("build:cloud-dev", ["build:node-noclean", "move:cloud"]);
+gulp.task("build:cloud", ["build:node", "move:cloud"]);
+gulp.task("compress", ["css:compress"]);
+gulp.task("build:frontend", ["compress","bundle", "sass", "fonts", "lint"]);
+gulp.task("build:all", ["compress","bundle", "sass", "fonts", "build:cloud"]);
+
+gulp.task("build:dev", ["bundle","css", "build:cloud-dev"]);
+
+gulp.task("watch", ["build:dev"], function () {
+    gulp.watch(paths.src.styles, ["css", "sass"]);
+    gulp.watch(paths.src.frontend, ["bundle"]);
+    gulp.watch(paths.src.node, ["build:cloud-dev"]);
+    gulp.watch(paths.src.nodetemplates, ["build:cloud-dev"]);
+});
 
 
+gulp.task("watch:prod", ["build:all"], function () {
+    gulp.watch(paths.src.styles, ["css:compress"]);
+    gulp.watch(paths.src.frontend, ["bundle"]);
+    gulp.watch(paths.src.node, ["build:cloud"]);
+});
 
+gulp.task("clean:npm-log", function () {
+    del(["./npm-debug.log"]);
+    return file("npm-debug.log", "", {src: true}).pipe(gulp.dest("./"));
+});
 
-
-
-
-        //     return gulp.src(paths.src.jsEntry)
-        //           .pipe(webpack( webpackConfig ))
-        //           .pipe(gulp.dest(paths.dest.frontendjs));
-    })
-
-    // gulp.task("bundle", ["transpile"], function () {
-    //     var b = browserify({
-    //         entries: paths.build.sourceFile,
-    //         debug: true
-    //     });
-    //
-    //     return plumber({
-    //         handleError: function (err) {
-    //             console.log(err);
-    //             this.emit("end");
-    //         }
-    //     })
-    //     .pipe(b.bundle()
-    //         .on("error", function (err) {
-    //             gutil.log(gutil.colors.red("[Task \"bundle\"][Browserify.bundle() Error]"));
-    //             gutil.log(gutil.colors.red(err.message));
-    //         })
-    //     )
-    //     .pipe(source(paths.build.sourceFile))
-    //     .pipe(buffer())
-    //     .pipe(sourcemaps.init({loadMaps: true}))
-    //     // .pipe( browserify({debug: true}) )
-    //     .on("error", function (err) {
-    //         gutil.log(gutil.colors.red("[Task \"bundle\"][Browserify Error]"));
-    //         gutil.log(gutil.colors.red(err.message));
-    //     })
-    //     .pipe(concat(paths.dest.scriptName))
-    //     // .pipe( sourcemaps.write("./maps") )
-    //     .pipe(plumber.stop())
-    //     .pipe(gulp.dest(paths.build.jsbundle));
-    // });
-
-    gulp.task("ugly:css", ["sass"], function(){
-        gulp.src(paths.build.cssbundle + "/" + paths.dest.styleName)
-        .pipe(gulp.dest(paths.dest.css));
-    });
-
-    gulp.task("compress:css", ["sass"], function(){
-        gulp.src(paths.build.cssbundle + "/" + paths.dest.styleName)
-        .pipe(cleanCSS())
-        .pipe(gulp.dest(paths.dest.css));
-    });
-
-    gulp.task("bundle:prod", ["bundle", "set-prod-node-env"]);
-
-    gulp.task("compress:js", ["bundle:prod", "set-prod-node-env"], function(){
-        gulp.src(paths.build.jsbundle + "/*.js")
-        .pipe(minify({
-            ext:{
-                src:".js",
-                min:".js"
-            },
-            exclude: ["tasks"],
-            ignoreFiles: ["-min.js"],
-            noSource: true
-        }))
-        .pipe(gulp.dest(paths.dest.frontendjs));
-    });
-
-    gulp.task("ugly:js", ["bundle"], function(){
-        gulp.src(paths.build.jsbundle +"/*.js")
-        .pipe(concat(paths.dest.scriptName))
-        .pipe(gulp.dest(paths.dest.frontendjs));
-    });
-
-    gulp.task("set-prod-node-env", function() {
-        return process.env.NODE_ENV = "production";
-    });
-
-    gulp.task("build:node", ["clean:node", "transpile:node", "sass:node", "fonts:node"]);
-    gulp.task("build:node-noclean", ["transpile:node", "sass:node", "fonts:node"]);
-    gulp.task("build:cloud-dev", ["build:node-noclean", "move:cloud"]);
-    gulp.task("build:cloud", ["build:node", "move:cloud"]);
-    gulp.task("compress", ["compress:css", "compress:js"]);
-    gulp.task("build:frontend", ["compress","bundle", "sass", "fonts", "lint"]);
-    gulp.task("build:all", ["compress","bundle", "sass", "fonts", "build:cloud"]);
-
-    gulp.task("build:dev", ["ugly:js","ugly:css", "build:cloud-dev"]);
-
-    gulp.task("watch", ["build:dev"], function () {
-        gulp.watch(paths.src.styles, ["ugly:css", "sass"]);
-        gulp.watch(paths.src.frontend, ["ugly:js"]);
-        gulp.watch(paths.src.node, ["build:cloud-dev"]);
-        gulp.watch(paths.src.nodetemplates, ["build:cloud-dev"]);
-    });
-
-
-    gulp.task("watch:prod", ["build:all"], function () {
-        gulp.watch(paths.src.styles, ["compress:css"]);
-        gulp.watch(paths.src.frontend, ["compress:js"]);
-        gulp.watch(paths.src.node, ["build:cloud"]);
-    });
-
-    gulp.task("clean:npm-log", function () {
-        del(["./npm-debug.log"]);
-        return file("npm-debug.log", "", {src: true}).pipe(gulp.dest("./"));
-    });
-
-    gulp.task("inspect", function () {
-        gulp.src([]).pipe(nodeInspector({  // You"ll need to tweak these settings per your setup
-        debugPort: 5858,
-        webHost: "localhost",
-        webPort: "8085",
-        preload: false
-    }));
+gulp.task("inspect", function () {
+    gulp.src([]).pipe(nodeInspector({  // You"ll need to tweak these settings per your setup
+    debugPort: 5858,
+    webHost: "localhost",
+    webPort: "8085",
+    preload: false
+}));
 });
 
 gulp.task("start:prod", ["watch:prod"], function(){
@@ -341,8 +272,8 @@ function runCommand(command) {
         gutil.log(gutil.colors.yellow(stdout))
 
         gutil.log(stderr.toString({
-                colors: true
-            }));
+            colors: true
+        }));
         if (err !== null) {
             console.log("exec error: " + err);
         }

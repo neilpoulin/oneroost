@@ -1,12 +1,12 @@
 import React, { PropTypes } from "react"
-import {linkState} from "./../util/LinkState"
-import RoostNav from "./../navigation/RoostNav";
+import {linkState} from "LinkState"
+import RoostNav from "RoostNav";
 import ParseReact from "parse-react"
 import Parse from "parse"
-import LoadingTakeover from "./../util/LoadingTakeover"
-import RoostUtil from "./../util/RoostUtil"
-import FourOhFourPage from "./../FourOhFourPage"
-import LoginComponent from "./../LoginComponent"
+import LoadingTakeover from "LoadingTakeover"
+import RoostUtil from "RoostUtil"
+import FourOhFourPage from "FourOhFourPage"
+import LoginComponent from "LoginComponent"
 import ReactGA from "react-ga"
 import { withRouter } from "react-router"
 

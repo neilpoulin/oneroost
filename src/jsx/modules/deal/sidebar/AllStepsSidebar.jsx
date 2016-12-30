@@ -1,8 +1,8 @@
 import Parse from "parse";
 import React from "react";
 import ParseReact from "parse-react";
-import NavLink from "./../../NavLink";
-import AddNextStepButton from "./../../nextsteps/AddNextStepButton";
+import NavLink from "NavLink";
+import AddNextStepButton from "nextsteps/AddNextStepButton";
 
 const AllStepsSidebar = React.createClass({
     mixins: [ParseReact.Mixin],

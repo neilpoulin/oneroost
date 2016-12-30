@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
-import NavLink from "./NavLink"
+import NavLink from "NavLink"
 import { withRouter } from "react-router"
 
 const LandingPage = withRouter( React.createClass({

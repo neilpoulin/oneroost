@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react";
-import Modal from "./OneRoostModal";
+import Modal from "OneRoostModal";
 
 const ModalButton = React.createClass({
     propTypes: {

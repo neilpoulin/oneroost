@@ -9,9 +9,9 @@ import Parse from "parse";
 Parse.serverURL = OneRoost.Config.parseSeverURL;
 
 import SpinnerIcon from "./SpinnerIcon"
-import RoostUtil from "./util/RoostUtil"
+import RoostUtil from "RoostUtil"
 import ReactGA from "react-ga"
-import {linkState} from "./util/LinkState"
+import {linkState} from "LinkState"
 
 export default React.createClass({
     propTypes: {

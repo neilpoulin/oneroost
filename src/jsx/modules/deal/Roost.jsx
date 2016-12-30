@@ -3,14 +3,14 @@ import {withRouter} from "react-router"
 import Parse from "parse";
 Parse.serverURL = OneRoost.Config.parseSeverURL;
 import ParseReact from "parse-react";
-import LoadingTakeover from "./../util/LoadingTakeover";
-import NextStepsBanner from "./../nextsteps/NextStepsBanner";
-import DealProfile from "./DealProfile";
-import DealNavMobile from "./DealNavMobile";
-import DealPageBottom from "./DealPageBottom";
-import AccountSidebar from "./../account/AccountSidebar";
-import RoostNav from "./../navigation/RoostNav";
-import RoostUtil from "./../util/RoostUtil"
+import LoadingTakeover from "LoadingTakeover";
+import NextStepsBanner from "nextsteps/NextStepsBanner";
+import DealProfile from "DealProfile";
+import DealNavMobile from "DealNavMobile";
+import DealPageBottom from "DealPageBottom";
+import AccountSidebar from "account/AccountSidebar";
+import RoostNav from "RoostNav";
+import RoostUtil from "RoostUtil"
 
 const Deal = withRouter( React.createClass({
     mixins: [ParseReact.Mixin],

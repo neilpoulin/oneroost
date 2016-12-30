@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react"
-import RoostNav from "./RoostNav"
+import RoostNav from "RoostNav"
 const NavPage = React.createClass({
     propTypes: {
         showHome: PropTypes.bool

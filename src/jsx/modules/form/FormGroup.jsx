@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react"
-import FormUtil from "./../util/FormUtil"
+import FormUtil from "FormUtil"
 
 const FormGroup = React.createClass({
     propTypes: {

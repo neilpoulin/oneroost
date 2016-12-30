@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
-import DocumentDownloadItem from "./DocumentDownloadItem"
-import DocumentLinkItem from "./DocumentLinkItem"
+import DocumentDownloadItem from "sidebar/DocumentDownloadItem"
+import DocumentLinkItem from "sidebar/DocumentLinkItem"
 
 const DocumentItem = React.createClass({
     propTypes: {

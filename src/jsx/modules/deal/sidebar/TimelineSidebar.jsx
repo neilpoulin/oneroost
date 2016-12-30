@@ -1,5 +1,5 @@
 import React from "react"
-import TimelineForm from "./../TimelineForm";
+import TimelineForm from "TimelineForm";
 
 const TimelineSidebar = React.createClass({
     render(){

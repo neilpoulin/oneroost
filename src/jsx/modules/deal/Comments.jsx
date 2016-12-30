@@ -1,12 +1,12 @@
 import React, {PropTypes} from "react";
 import Parse from "parse";
 import ParseReact from "parse-react";
-import AddComment from "./AddComment";
-import CommentItem from "./CommentItem";
-import CommentDateSeparator from "./CommentDateSeparator";
-import Notification from "./../Notification";
+import AddComment from "AddComment";
+import CommentItem from "CommentItem";
+import CommentDateSeparator from "CommentDateSeparator";
+import Notification from "Notification";
 import io from "socket.io-client"
-import RoostUtil from "./../util/RoostUtil"
+import RoostUtil from "RoostUtil"
 
 export default React.createClass({
     mixins: [ParseReact.Mixin],

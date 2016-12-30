@@ -1,8 +1,8 @@
 import React, { PropTypes } from "react"
-import AddStakeholderButton from "./../AddStakeholderButton";
+import AddStakeholderButton from "AddStakeholderButton";
 import ParseReact from "parse-react";
 import Parse from "parse";
-import Stakeholder from "./../Stakeholder";
+import Stakeholder from "Stakeholder";
 
 const StakeholderSidebar = React.createClass({
     mixins: [ParseReact.Mixin],

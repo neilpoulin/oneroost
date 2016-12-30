@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import FormUtil, {Validation} from "./../util/FormUtil"
-import {linkState} from "./../util/LinkState"
+import {linkState} from "LinkState"
 
 const OpportunityDetail = React.createClass({
     propTypes: {

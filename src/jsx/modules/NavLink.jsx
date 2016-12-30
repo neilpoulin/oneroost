@@ -1,5 +1,5 @@
 import React, {PropTypes} from "react"
-import activeComponent from "./navigation/ActiveComponent"
+import activeComponent from "navigation/ActiveComponent"
 
 export default React.createClass({
     propTypes: {

@@ -1,6 +1,6 @@
 import React from "react"
-import FAQ from "./FAQ"
-import RoostNav from "./../navigation/RoostNav"
+import FAQ from "help/FAQ"
+import RoostNav from "RoostNav"
 
 const HelpPage = React.createClass({
 

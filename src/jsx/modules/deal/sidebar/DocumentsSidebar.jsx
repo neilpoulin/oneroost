@@ -1,8 +1,8 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
 import ParseReact from "parse-react"
-import DocumentItem from "./DocumentItem"
-import AddDocumentButton from "./../AddDocumentButton"
+import DocumentItem from "sidebar/DocumentItem"
+import AddDocumentButton from "AddDocumentButton"
 
 const DocumentsSidebar = React.createClass({
     mixins: [ParseReact.Mixin],

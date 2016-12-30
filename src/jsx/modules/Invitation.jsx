@@ -2,8 +2,8 @@ import React, { PropTypes } from "react"
 import Parse from "parse"
 import {withRouter} from "react-router"
 import ParseReact from "parse-react"
-import {linkState} from "./util/LinkState"
-import RoostUtil from "./util/RoostUtil"
+import {linkState} from "LinkState"
+import RoostUtil from "RoostUtil"
 
 const Invitation = withRouter( React.createClass({
     mixins: [ParseReact.Mixin],

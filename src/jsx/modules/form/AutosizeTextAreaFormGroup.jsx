@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react"
-import FormGroup from "./FormGroup"
+import FormGroup from "FormGroup"
 import AutosizeTextarea from "react-textarea-autosize";
 
 const AutosizeTextAreaFormGroup = React.createClass({
@@ -38,7 +38,7 @@ const AutosizeTextAreaFormGroup = React.createClass({
             fieldName={this.props.fieldName}>
             <AutosizeTextarea
                 className="form-control"
-                maxRows={this.props.maxRows}                
+                maxRows={this.props.maxRows}
                 minRows={this.props.minRows}
                 onChange={this.handleChange}
                 value={this.props.value}

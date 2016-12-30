@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
-import AccountSidebarItem from "./AccountSidebarItem"
-import RoostUtil from "./../util/RoostUtil"
+import AccountSidebarItem from "account/AccountSidebarItem"
+import RoostUtil from "RoostUtil"
 
 const AccountSidebarList = React.createClass({
     propTypes: {

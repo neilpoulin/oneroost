@@ -1,6 +1,6 @@
 import React from "react";
-import ModalButton from "./../util/ModalButton";
-import StakeholderForm from "./StakeholderForm";
+import ModalButton from "ModalButton";
+import StakeholderForm from "StakeholderForm";
 
 export default React.createClass({
     getDefaultProps: function(){

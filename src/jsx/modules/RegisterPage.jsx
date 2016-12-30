@@ -1,8 +1,8 @@
 import React from "react"
 import { browserHistory, withRouter } from "react-router"
-import LoginComponent from "./LoginComponent"
-import RoostNav from "./navigation/RoostNav"
-import Logo from "./Logo"
+import LoginComponent from "LoginComponent"
+import RoostNav from "navigation/RoostNav"
+import Logo from "Logo"
 
 const LoginPage = withRouter( React.createClass({
     handleLoginError: function(user, error)

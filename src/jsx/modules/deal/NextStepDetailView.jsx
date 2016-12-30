@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import moment from "moment";
-import NextStepActions from "./NextStepActions";
+import NextStepActions from "NextStepActions";
 
 const NextStepDetailView = React.createClass({
     propTypes: {

@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react"
-import Takeover from "./Takeover"
+import Takeover from "Takeover"
 
 const TakeoverButton = React.createClass({
     propTypes: {

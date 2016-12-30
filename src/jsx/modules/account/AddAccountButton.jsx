@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
-import ModalButton from "./../util/ModalButton";
-import CreateAccountForm from "./CreateAccountForm";
+import ModalButton from "ModalButton";
+import CreateAccountForm from "account/CreateAccountForm";
 
 const AddAccountButton = React.createClass({
     openModal: function(){

@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
-import ModalButton from "./../util/ModalButton"
-import DocumentUploadForm from "./DocumentUploadForm"
+import ModalButton from "ModalButton"
+import DocumentUploadForm from "DocumentUploadForm"
 
 const AddDocumentButton = React.createClass({
     propTypes: {

@@ -1,12 +1,12 @@
 import React, { PropTypes } from "react"
-import RoostNav from "./../navigation/RoostNav";
+import RoostNav from "RoostNav";
 import ParseReact from "parse-react"
 import Parse from "parse"
-import LoadingTakeover from "./../util/LoadingTakeover"
-import FourOhFourPage from "./../FourOhFourPage"
+import LoadingTakeover from "LoadingTakeover"
+import FourOhFourPage from "FourOhFourPage"
 import ReactGA from "react-ga"
 import { withRouter } from "react-router"
-import Onboarding from "./../readyroost/Onboarding"
+import Onboarding from "readyroost/Onboarding"
 
 const ReadyRoostPage = withRouter( React.createClass({
     mixins: [ParseReact.Mixin],

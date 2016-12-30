@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react"
-import NavLink from "./../NavLink"
+import NavLink from "NavLink"
 
 
 const PublicProfileLink = React.createClass({

@@ -1,9 +1,9 @@
 import React from "react"
 import Parse, {PropTypes} from "parse"
 import ParseReact from "parse-react"
-import Stakeholder from "./Stakeholder"
-import AddStakeholderButton from "./AddStakeholderButton"
-import {linkState} from "./../util/LinkState"
+import Stakeholder from "Stakeholder"
+import AddStakeholderButton from "AddStakeholderButton"
+import {linkState} from "LinkState"
 
 export default React.createClass({
 	propTypes: {

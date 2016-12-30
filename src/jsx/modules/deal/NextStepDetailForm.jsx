@@ -1,8 +1,8 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
 import ParseReact from "parse-react"
-import NextStepDetailView from "./NextStepDetailView"
-import NextStepDetailEdit from "./NextStepDetailEdit"
+import NextStepDetailView from "NextStepDetailView"
+import NextStepDetailEdit from "NextStepDetailEdit"
 import { browserHistory } from "react-router"
 
 const NextStepDetailForm = React.createClass({

@@ -1,7 +1,7 @@
 import React, { PropTypes } from "react"
 import ParseReact from "parse-react";
 import Parse from "parse";
-import NextStepDetailForm from "./../NextStepDetailForm";
+import NextStepDetailForm from "NextStepDetailForm";
 
 const NextStepSidebar = React.createClass({
     mixins: [ParseReact.Mixin],

@@ -1,5 +1,5 @@
 import React from "react";
-import StakeholderForm from "./StakeholderForm";
+import StakeholderForm from "StakeholderForm";
 import {Modal, ModalClose} from "react-modal-bootstrap";
 
 export default React.createClass({

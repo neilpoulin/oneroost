@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react"
-import FormGroup from "./FormGroup"
+import FormGroup from "FormGroup"
 
 const FormInputGroup = React.createClass({
     propTypes: {

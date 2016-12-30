@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import InfiniteCalendar from "react-infinite-calendar"
-import TakeoverButton from "./TakeoverButton"
+import TakeoverButton from "TakeoverButton"
 
 const DateTakeoverButton = React.createClass({
     propTypes: {

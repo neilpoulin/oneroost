@@ -1,9 +1,9 @@
 import React from "react";
 import Parse from "parse";
 import ParseReact from "parse-react";
-import NavLink from "./../NavLink";
-import AddNextStepButton from "./AddNextStepButton";
-import NextStepItem from "./NextStepItem";
+import NavLink from "NavLink";
+import AddNextStepButton from "nextsteps/AddNextStepButton";
+import NextStepItem from "nextsteps/NextStepItem";
 
 export default React.createClass({
     mixins: [ParseReact.Mixin],

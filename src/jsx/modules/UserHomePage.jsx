@@ -2,10 +2,10 @@ import Parse from "parse"
 import React from "react"
 import ParseReact from "parse-react"
 import { withRouter } from "react-router"
-import RoostNav from "./navigation/RoostNav"
-import AddAccountButton from "./account/AddAccountButton"
-import AccountSidebarList from "./account/AccountSidebarList"
-import BetaUserWelcome from "./BetaUserWelcome"
+import RoostNav from "navigation/RoostNav"
+import AddAccountButton from "account/AddAccountButton"
+import AccountSidebarList from "account/AccountSidebarList"
+import BetaUserWelcome from "BetaUserWelcome"
 
 export default withRouter( React.createClass({
     mixins: [ParseReact.Mixin],

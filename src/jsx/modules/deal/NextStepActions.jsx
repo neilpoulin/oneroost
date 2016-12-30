@@ -1,9 +1,9 @@
 import React, { PropTypes } from "react"
-import NextStepDeleteButton from "./NextStepDeleteButton"
-import NextStepSaveButton from "./NextStepSaveButton"
-import NextStepEditButton from "./NextStepEditButton"
-import NextStepStatusChangeButton from "./NextStepStatusChangeButton"
-import NextStepCancelButton from "./NextStepCancelButton"
+import NextStepDeleteButton from "NextStepDeleteButton"
+import NextStepSaveButton from "NextStepSaveButton"
+import NextStepEditButton from "NextStepEditButton"
+import NextStepStatusChangeButton from "NextStepStatusChangeButton"
+import NextStepCancelButton from "NextStepCancelButton"
 
 const NextStepActions = React.createClass({
     propTypes: {

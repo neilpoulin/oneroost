@@ -2,7 +2,8 @@ import {paths} from "./build-paths"
 import webpack from "webpack"
 
 module.exports = {
-    entry: paths.src.jsEntry,
+    entry: "index.jsx",
+    context: __dirname + "/src/jsx",
     output: {
         path: __dirname + "/public/bundle",
         filename: paths.dest.scriptName
@@ -23,11 +24,11 @@ module.exports = {
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
-            Tether: "tether"
+            Tether: "tether",
         })
     ],
     resolve: {
         extensions: [".js", ".jsx", ".json"],
-        modules: ["jsx", "jsx/modules", "node_modules"],
+        modules: ["jsx", "modules", "util", "admin", "deal", "form", "navigation", "node_modules"],
     }
 };

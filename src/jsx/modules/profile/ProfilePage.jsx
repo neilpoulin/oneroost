@@ -1,9 +1,9 @@
 import React from "react"
 import Parse from "parse"
 // import RoostUtil from "./../util/RoostUtil.js"
-import BasicInfo from "./BasicInfo"
-import RoostNav from "./../navigation/RoostNav"
-import PublicProfileLink from "./../profile/PublicProfileLink"
+import BasicInfo from "profile/BasicInfo"
+import RoostNav from "RoostNav"
+import PublicProfileLink from "profile/PublicProfileLink"
 
 const ProfilePage = React.createClass({
     getCurrentUser(){

@@ -1,5 +1,5 @@
 import React from "react"
-import RoostNav from "./navigation/RoostNav";
+import RoostNav from "navigation/RoostNav";
 
 const UnauthorizedPage = React.createClass({
     render () {

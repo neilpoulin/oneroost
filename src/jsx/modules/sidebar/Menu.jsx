@@ -1,6 +1,6 @@
 import $ from "jquery";
 import React from "react";
-import {linkState} from "./../util/LinkState"
+import {linkState} from "LinkState"
 
 export default React.createClass({
     getInitialState: function() {

@@ -1,8 +1,8 @@
 import React, { PropTypes } from "react"
 import Parse from "parse";
 import ParseReact from "parse-react";
-import NavLink from "./../NavLink";
-import RoostUtil from "./../util/RoostUtil"
+import NavLink from "NavLink";
+import RoostUtil from "RoostUtil"
 
 const DealProfile = React.createClass({
     mixins: [ParseReact.Mixin],

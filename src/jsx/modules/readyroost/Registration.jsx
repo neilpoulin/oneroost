@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react"
-import LoginComponent from "./../LoginComponent"
+import LoginComponent from "LoginComponent"
 import ReactGA from "react-ga"
 import Parse from "parse"
 

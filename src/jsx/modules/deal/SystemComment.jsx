@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import moment from "moment";
-import NavLink from "./../NavLink";
+import NavLink from "NavLink";
 
 const SystemComment = React.createClass({
     propTypes: {

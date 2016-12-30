@@ -1,6 +1,6 @@
 import React, {PropTypes} from "react"
 import {Link} from "react-router"
-import NavLink from "./../NavLink";
+import NavLink from "NavLink";
 import Parse from "parse";
 import Bootstrap from "bootstrap";
 

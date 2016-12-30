@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
-import Comments from "./../deal/Comments";
-import FixedSidebar from "./FixedSidebar";
+import Comments from "Comments";
+import FixedSidebar from "FixedSidebar";
 
 const DealPageBottom = React.createClass({
     propTypes: {

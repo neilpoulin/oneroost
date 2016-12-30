@@ -1,7 +1,7 @@
 import React, {PropTypes} from "react";
 import Parse from "parse";
 import ParseReact from "parse-react";
-import RoostUtil from "./../util/RoostUtil"
+import RoostUtil from "RoostUtil"
 import ReactGA from "react-ga"
 
 export default React.createClass({

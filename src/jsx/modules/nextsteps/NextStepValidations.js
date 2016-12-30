@@ -1,4 +1,4 @@
-import FormUtil, {Validation} from "./../util/FormUtil"
+import FormUtil, {Validation} from "FormUtil"
 
 export const validations = {
     "title": new Validation(FormUtil.notNullOrEmpty, "error", "A title is reqired"),

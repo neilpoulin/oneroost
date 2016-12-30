@@ -1,7 +1,7 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
 import ParseReact from "parse-react"
-import {linkState} from "./../util/LinkState"
+import {linkState} from "LinkState"
 import AutosizeTextarea from "react-textarea-autosize"
 
 const TimelineSidebar = React.createClass({

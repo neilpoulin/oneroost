@@ -1,8 +1,8 @@
 import React from "react"
 import Parse from "parse"
 import ParseReact from "parse-react"
-import AccountSidebarList from "./AccountSidebarList"
-import AddAccountButton from "./AddAccountButton"
+import AccountSidebarList from "account/AccountSidebarList"
+import AddAccountButton from "account/AddAccountButton"
 
 export default React.createClass({
     mixins: [ParseReact.Mixin],

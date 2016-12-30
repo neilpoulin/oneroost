@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react"
-import {linkState} from "./../util/LinkState"
+import {linkState} from "LinkState"
 
 const BasicInfoForm = React.createClass({
     propTypes: {

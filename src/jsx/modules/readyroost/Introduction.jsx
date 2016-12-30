@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react"
-import RoostUtil from "./../util/RoostUtil"
+import RoostUtil from "RoostUtil"
 
 const Introduction = React.createClass({
     propTypes: {

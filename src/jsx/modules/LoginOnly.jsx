@@ -9,7 +9,7 @@ import Parse from "parse";
 Parse.serverURL = OneRoost.Config.parseSeverURL;
 import SpinnerIcon from "./SpinnerIcon"
 import { browserHistory, withRouter } from "react-router"
-import {linkState} from "./util/LinkState"
+import {linkState} from "LinkState"
 
 const LoginOnly = withRouter(
     React.createClass({
