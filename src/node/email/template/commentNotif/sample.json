@@ -1,5 +1,9 @@
- {
-    "authorName": "Neil Poulin",
+ {    
+    "author": {
+        "firstName": "Neil",
+        "lastName": "Poulin",
+        "company": "OneRoost"
+    },
     "message": "Bacon ipsum dolor amet ribeye ham hock ea drumstick fatback eiusmod incididunt picanha pork belly. Pork veniam shank leberkas jowl, minim esse eu chicken exercitation mollit do deserunt tongue corned beef. Brisket ribeye consectetur turkey beef cillum. Capicola deserunt duis, salami jerky pariatur exercitation tail proident tri-tip ut ut shank.\n\nHam hock cow flank, pancetta chuck nisi ut fugiat leberkas brisket. Quis ut mollit enim pastrami bresaola prosciutto. Aliqua voluptate pariatur sed, prosciutto nostrud cow in eiusmod kielbasa boudin anim spare ribs irure. Salami sunt landjaeger sirloin biltong eu. Est non bresaola sint tail ribeye alcatra aliquip anim ham hock shoulder minim kielbasa veniam labore. Andouille eu aliquip labore voluptate ad nostrud est sausage. Elit laboris sausage cupim mollit, biltong excepteur id pancetta tri-tip andouille.",
     "dealName": "My Test Deal",
     "dealLink": "http://dev.oneroost.com/myilnk",

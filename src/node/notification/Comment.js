@@ -27,9 +27,9 @@ async function sendCommentEmail( comment ){
             let recipients = await EmailUtil.getActualRecipientsForDeal(deal, authorEmail);
             var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
             var data = {
-                authorName: author.get("firstName") + " " + author.get("lastName"),
                 message: comment.get("message"),
                 dealName: deal.get("dealName"),
+                author: author.toJSON(),
                 dealLink: dealLink,
                 messageId: deal.id
             };
