@@ -1,5 +1,27 @@
 <div>
-    {{formatUserName invitedBy}} at {{invitedBy.company}} would like you join {{dealName}}. To join the Roost and participate in the opportunity, accept the invitation below! 
+    {{formatUserName invitedBy}} at {{invitedBy.company}} would like your feedback on an opportunity. Here's some details:
+</div>
+
+<table class="table table-condensed table-bordered">
+    <tbody>
+        <tr scope="row">
+            <th>Problem Summary</th>
+            <td>{{deal.dealName}}</td>
+        </tr>
+        <tr scope="row">
+            <th>
+                Offering Overview
+            </th>
+            <td>{{trimText deal.description}}</td>
+        </tr>
+        <tr scope="row">
+            <th>Investment</th>
+            <td>${{formatCurrency deal.budget.low}} - ${{formatCurrency deal.budget.high}}</td>
+        </tr>
+    </tbody>
+</table>
+<div>
+    To join the Roost and participate in the opportunity, accept the invitation below!
 </div>
 <div>
     <a href={{inviteLink}} class="btn btn-primary roostLink">Accept Invitation</a>

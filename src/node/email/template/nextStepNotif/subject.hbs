@@ -1,11 +1,11 @@
 {{#if existed}}
     {{#if completedDate}}
-        {{{dealName}}} | {{{modifiedByName}}} has completed a next step
+        {{{formatUserName modifiedBy}}} at {{{modifiedBy.company}}} has completed a next step
     {{else}}
-        {{{dealName}}} | {{{modifiedByName}}} has updated a next step
+        {{{formatUserName modifiedBy}}} at {{{modifiedBy.company}}} has updated a next step
     {{/if}}
 {{else if assignedUserName}}
-    {{{dealName}}} | {{{modifiedByName}}} has assigned a next step to {{{assignedUserName}}}
+    {{{formatUserName modifiedBy}}} at {{{modifiedBy.company}}} has assigned a next step to {{{assignedUserName}}}
 {{else}}
-    {{{dealName}}} | {{{modifiedByName}}} has created a next step
+    {{{formatUserName modifiedBy}}} at {{{modifiedBy.company}}} has created a next step
 {{/if}}

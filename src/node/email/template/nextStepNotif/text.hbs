@@ -1,27 +1,26 @@
 {{#if existed}}
     {{#if completedDate}}
-        {{{modifiedByName}}} has completed {{{stepTitle}}}
+        {{{formatUserName modifiedBy}}} at {{{modifiedBy.company}}}  has completed {{{stepTitle}}}
     {{else}}
-        {{{modifiedByName}}} has updated {{{stepTitle}}}
+        {{{formatUserName modifiedBy}}} at {{{modifiedBy.company}}}  has updated {{{stepTitle}}}
     {{/if}}
 {{else if assignedUserName}}
-    {{{modifiedByName}}} has assigned a next step to {{{assignedUserName}}}
+    {{{formatUserName modifiedBy}}} at {{{modifiedBy.company}}}  has assigned a next step to {{{assignedUserName}}}
 {{else}}
-    {{{modifiedByName}}} has created {{{stepTitle}}}
+    {{{formatUserName modifiedBy}}} at {{{modifiedBy.company}}}  has created {{{stepTitle}}}
 {{/if}}
 
-Opportunity Name:
+Problem Summary:
 {{{dealName}}}
 
 Next Step Creator:
-{{{authorName}}}
+{{{formatUserName author}}}
 
 Assigned User:
-{{{assignedUserName}}}
+{{{formatUserName assignedUser}}}
 
 Description:
 {{{description}}}
-
 
 Due Date:
 {{formatDate dueDate}}

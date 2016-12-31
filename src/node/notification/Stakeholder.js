@@ -37,6 +37,7 @@ exports.afterSave = function(){
                 invitedBy: invitedBy.toJSON(),
                 dealName: dealName,
                 role: role,
+                deal: deal.toJSON(),
                 dealLink: dealLink,
                 messageId: deal.id
             }
@@ -60,6 +61,7 @@ exports.afterSave = function(){
                     user: user.toJSON(),
                     dealName: dealName,
                     role: role,
+                    deal: deal.toJSON(),
                     dealLink: dealLink,
                     messageId: deal.id,
                     inviteLink: envUtil.getHost() + "/invitations/" + req.object.id

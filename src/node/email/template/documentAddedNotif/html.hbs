@@ -1,12 +1,12 @@
 <div>
     <p>
-        {{firstName}} {{lastName}} uploaded a new document on <i>{{dealName}}</i>
+        {{{formatUserName user}}} at {{{user.company}}} uploaded a new document.
     </p>
     {{#if externalLink}}
         <a href={{externalLink}}>{{documentName}}</a>
     {{else}}
         <p class="document">{{documentName}}</p>
-    {{/if}}    
+    {{/if}}
 </div>
 <div>
     {{>roost-link-html}}

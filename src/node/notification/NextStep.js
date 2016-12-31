@@ -30,36 +30,21 @@ exports.afterSave = function(){
                 var assignedUser = step.get("assignedUser");
                 var modifiedBy = step.get("modifiedBy");
 
-                let authorName = author ? author.get("firstName") + " " + author.get("lastName") : "OneRoost";
-
-                var assignedUserName = null
-                if ( assignedUser ){
-                    assignedUserName = assignedUser.get("firstName") + " " + assignedUser.get("lastName");
-                }
-
-                var modifiedByName = null
-                if ( modifiedBy ){
-                    modifiedByName = modifiedBy.get("firstName") + " " + modifiedBy.get("lastName");
-                }
-                modifiedByName = modifiedByName || authorName;
-
                 var status = "Not Done";
                 if ( step.get("completedDate") != null )
                 {
                     status = "Completed";
                 }
 
-
-                let authorEmail = author ? author.get("email") : [];
                 var data = {
                     dealName: deal.get("dealName"),
-                    modifiedByName: modifiedByName,
+                    modifiedBy: modifiedBy.toJSON(),
                     stepTitle: step.get("title"),
-                    authorName: authorName,
+                    author: author.toJSON(),
                     incompleteSteps: incompleteSteps,
                     completedDate: step.get("completedDate"),
                     stepStatus: status,
-                    assignedUserName: assignedUserName,
+                    assignedUser: assignedUser ? assignedUser.toJSON() : null,
                     dueDate: step.get("dueDate"),
                     description: step.get("description"),
                     dealLink: envUtil.getHost() + "/roosts/" + deal.id,
@@ -68,7 +53,7 @@ exports.afterSave = function(){
                 }
                 console.log("sending Next Step after Save Email with data", data);
                 // var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, author.get("email") );
-                let recipients = await EmailUtil.getActualRecipientsForDeal(deal, authorEmail);
+                let recipients = await EmailUtil.getActualRecipientsForDeal(deal, modifiedBy.get("email"));
                 EmailSender.sendTemplate( "nextStepNotif", data, recipients );
             }
         }

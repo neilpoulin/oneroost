@@ -51,9 +51,8 @@ exports.afterSave = function(){
                     attachments.push(attachment);
                 }
 
-                var data = {
-                    firstName: uploadedBy.get("firstName"),
-                    lastName: uploadedBy.get("lastName"),
+                var data = {                    
+                    user: uploadedBy.toJSON(),
                     dealName: deal.get("dealName"),
                     documentName: doc.get("fileName"),
                     externalLink: doc.get("externalLink"),

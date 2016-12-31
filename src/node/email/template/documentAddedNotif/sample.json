@@ -1,6 +1,9 @@
 {
-    "firstName": "Neil",
-    "lastName": "Poulin",
+    "user": {
+        "firstName": "Neil",
+        "lastName": "Poulin",
+        "company": "OneRoost"
+    },
     "documentName": "my_sample_document.pdf",
     "dealName": "Sample Roost",
     "icon": "fa-file-pdf-o",
