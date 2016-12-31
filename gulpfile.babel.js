@@ -176,7 +176,7 @@ gulp.task("css:compress", ["sass"], function(){
     .pipe(gulp.dest(paths.dest.css));
 });
 
-gulp.task("bundle:prod", ["bundle", "set-prod-node-env"]);
+gulp.task("bundle:prod", ["set-prod-node-env", "bundle"]);
 
 gulp.task("set-prod-node-env", function() {
     return process.env.NODE_ENV = "production";
@@ -188,7 +188,7 @@ gulp.task("build:cloud-dev", ["build:node-noclean", "move:cloud"]);
 gulp.task("build:cloud", ["build:node", "move:cloud"]);
 gulp.task("compress", ["css:compress"]);
 gulp.task("build:frontend", ["compress","bundle", "sass", "fonts", "lint"]);
-gulp.task("build:all", ["compress","bundle:prod", "sass", "fonts", "build:cloud"]);
+gulp.task("build:all", ["compress","bundle:prod", "sass", "fonts", "build:cloud", "set-prod-node-env"]);
 
 gulp.task("build:dev", ["bundle","css", "build:cloud-dev"]);
 
