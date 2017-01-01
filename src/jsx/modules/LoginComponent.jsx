@@ -255,6 +255,7 @@ const LoginComponent = React.createClass({
         let companyInput = null;
         let firstNameInput = null;
         let lastNameInput = null;
+        let forgotLink = null;
         if ( !this.state.isLogin ){
             if ( this.props.showCompany ){
                 companyInput =
@@ -282,6 +283,12 @@ const LoginComponent = React.createClass({
                 errors={errors}
                 onChange={val => this.setState({"lastName": val})}
                 />
+        }
+        else{
+            forgotLink =
+            <div className={"forgotPassword"}>
+                {"Forgot your password?"} <span className="link" onClick={this.resetPassword}>Click here</span> to reset it.
+            </div>
         }
 
         let actionButton = null;
@@ -320,9 +327,7 @@ const LoginComponent = React.createClass({
                     onChange={val => this.setState({"password": val})}
                     />
                 {actionButton}
-                <div className={"forgotPassword " + (this.state.isLogin ? "" : "hidden")}>
-                    {"Forgot your password?"} <a href="#" onClick={this.resetPassword}>Click here</a> to reset it.
-                </div>
+                {forgotLink}
             </form>
         </div>
 
