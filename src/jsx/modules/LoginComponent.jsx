@@ -52,12 +52,12 @@ const LoginComponent = React.createClass({
             isLogin: true,
             showRegister: true,
             afterLoginPath: "/roosts",
-            success: user => {
-                const { location } = this.props;
+            success: function(user){
+                const { location, router , afterLoginPath} = this;
                 if (location && location.state && location.state.nextPathname && window.location.pathname != location.state.nextPathname) {
-                    this.props.router.replace(location.state.nextPathname)
+                    router.replace(location.state.nextPathname)
                 } else {
-                    this.props.router.replace(this.props.afterLoginPath)
+                    router.replace(afterLoginPath)
                 }
             }
         }
@@ -250,16 +250,18 @@ const LoginComponent = React.createClass({
         let firstNameInput = null;
         let lastNameInput = null;
         if ( !this.state.isLogin ){
-            companyInput =
-            <FormInputGroup
-                fieldName="company"
-                value={company}
-                label="Company"
-                errors={errors}
-                maxLength={40}
-                onChange={val => this.setState({"company": val})}
-                />
-
+            if ( this.props.showCompany ){
+                companyInput =
+                <FormInputGroup
+                    fieldName="company"
+                    value={company}
+                    label="Company"
+                    errors={errors}
+                    maxLength={40}
+                    onChange={val => this.setState({"company": val})}
+                    />
+            }
+            
             firstNameInput = <FormInputGroup
                     fieldName="firstName"
                     value={firstName}
