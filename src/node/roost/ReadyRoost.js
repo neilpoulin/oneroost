@@ -158,10 +158,10 @@ function createDocs(createdBy, roost, config){
 
 function getReadyRoostMessage(createdByUser, roostName){
     let fullName = createdByUser.get("firstName") + " " + createdByUser.get("lastName");
-
+    let company = createdByUser.get("company");
     return `Hi ${fullName},` +
     "\n" +
-    `Congratulations on creating the ${roostName} Roost! OneRoost is a tool to get buyers and sellers on the same page by aggregating all the different elements of an opportunity: Product/service details, documents, next steps, participants, and investment requirements.` +
+    `Congratulations on creating a Roost for ${fullName} at ${company}! OneRoost is a tool to get buyers and sellers on the same page by aggregating all the different elements of an opportunity: Product/service details, documents, next steps, participants, and investment requirements.` +
     "\n\n" +
     "We know this is a new experience for many sellers, so we've already created a few next steps to get you started (see above). If you have any questions about how to use OneRoost or best practices, check out the Frequently Asked Questions by clicking \"Documents\" above. Still need help after reviewing the FAQs, feel free to send us a note at help@oneroost.com" +
     "\n\n" +

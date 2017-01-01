@@ -13,17 +13,20 @@ const ProfilePage = React.createClass({
         document.title= "My Account | OneRost";
     },
     render(){
+        let userId = this.getCurrentUser().id;
         var page =
         <div className="ProfilePage">
             <RoostNav showHome={true}/>
-            <div className="container col-md-6 col-md-offset-3">
+            <div className="container col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
                 <h1 className="pageTitle">Account Settings</h1>
                 <div className="section">
                     <BasicInfo user={this.getCurrentUser()}/>
                 </div>
                 <div className="section">
-                    <h2>Links</h2>
-                    <PublicProfileLink userId={this.getCurrentUser().id}>My Public Profile</PublicProfileLink>
+                    <h2>My Ready Roost Link</h2>
+                    <p className="ReadyRoostLink link-container">
+                        <PublicProfileLink userId={userId}/>
+                    </p>                    
                 </div>
                 <div className="section">
                     <h2>Email Preferences</h2>

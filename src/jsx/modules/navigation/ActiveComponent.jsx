@@ -90,12 +90,12 @@ module.exports = function activeComponent(Component, options) {
             }
 
             return <Component className={props.className}>
-                <Link className={options.linkClassName} {...linkProps} to={location}>
+                <Link className={props.linkClassName} {...linkProps} to={location}>
                     {this.props.children}
                 </Link>
             </Component>
         }
     })
-    
+
     return withRouter(ActiveComponent)
 }

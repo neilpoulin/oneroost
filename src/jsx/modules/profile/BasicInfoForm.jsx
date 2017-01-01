@@ -1,11 +1,13 @@
 import React, { PropTypes } from "react"
-import {linkState} from "LinkState"
+import {profileValidation} from "profile/ProfileValidations"
+import FormUtil from "FormUtil"
+import FormInputGroup from "FormInputGroup"
 
 const BasicInfoForm = React.createClass({
     propTypes: {
         user: PropTypes.object.isRequired,
         doCancel: PropTypes.func.isRequired,
-        doSave: PropTypes.func.isRequired
+        doSave: PropTypes.func.isRequired,
     },
     getDefaultProps(){
         return {
@@ -24,18 +26,26 @@ const BasicInfoForm = React.createClass({
             firstName: user.get("firstName") || "",
             lastName: user.get("lastName") || "",
             jobTitle: user.get("jobTitle") || "",
-            company: user.get("company") || ""
+            company: user.get("company") || "",
+            errors: {},
         }
     },
     doSave(){
-        console.log("saving user info");
-        this.props.user.set("email", this.state.email)
-        this.props.user.set("firstName", this.state.firstName)
-        this.props.user.set("lastName", this.state.lastName)
-        this.props.user.set("company", this.state.company)
-        this.props.user.set("jobTitle", this.state.jobTitle)
-        this.props.user.save()
-        this.props.doSave()
+        let errors = FormUtil.getErrors(this.state, profileValidation);
+        if (!FormUtil.hasErrors(errors)){
+            console.log("saving user info");
+            this.props.user.set("email", this.state.email)
+            this.props.user.set("firstName", this.state.firstName)
+            this.props.user.set("lastName", this.state.lastName)
+            this.props.user.set("company", this.state.company)
+            this.props.user.set("jobTitle", this.state.jobTitle)
+            this.props.user.save()
+            this.props.doSave()
+            this.setState({errors: {}});
+            return true;
+        }
+        this.setState({errors: errors});
+        return false;
     },
     doCancel(){
         console.log("canceling changes to user info");
@@ -43,48 +53,51 @@ const BasicInfoForm = React.createClass({
         this.props.doCancel();
     },
     render () {
+        let {errors, firstName, lastName, company, jobTitle, email} = this.state;
         var form =
         <div className="">
             <h2>Edit your info</h2>
             <div className="form-inline-equal">
-                <div className="form-group">
-                    <label>First Name</label>
-                    <input type="text"
-                        className="form-control"
-                        value={this.state.firstName}
-                        onChange={linkState(this,"firstName")}/>
-                </div>
-                <div className="form-group">
-                    <label>Last Name</label>
-                    <input type="text"
-                        className="form-control"
-                        value={this.state.lastName}
-                        onChange={linkState(this,"lastName")}/>
-                </div>
+                <FormInputGroup
+                    label="First Name"
+                    fieldName="firstName"
+                    value={firstName}
+                    onChange={val => this.setState({"firstName": val})}
+                    errors={errors}
+                    />
+                <FormInputGroup
+                    label="Last Name"
+                    fieldName="lastName"
+                    value={lastName}
+                    onChange={val => this.setState({"lastName": val})}
+                    errors={errors}
+                    />
             </div>
 
-            <div className="form-group">
-                <label>Email</label>
-                <input type="text"
-                    className="form-control"
-                    value={this.state.email}
-                    onChange={linkState(this,"email")}/>
-            </div>
+            <FormInputGroup
+                label="Email"
+                fieldName="email"
+                value={email}
+                onChange={val => this.setState({"email": val})}
+                errors={errors}
+                />
 
-            <div className="form-group">
-                <label>Company</label>
-                <input type="text"
-                    className="form-control"
-                    value={this.state.company}
-                    onChange={linkState(this,"company")}/>
-            </div>
-            <div className="form-group">
-                <label>Job Title</label>
-                <input type="text"
-                    className="form-control"
-                    value={this.state.jobTitle}
-                    onChange={linkState(this,"jobTitle")}/>
-            </div>
+            <FormInputGroup
+                label="Company"
+                value={company}
+                fieldName="company"
+                onChange={val => this.setState({"company": val})}
+                errors={errors}
+                />
+
+            <FormInputGroup
+                label="Job Title"
+                value={jobTitle}
+                fieldName="jobTitle"
+                onChange={val => this.setState({"jobTitle": val})}
+                errors={errors}
+                />
+
             <div className="actions">
                 <button className="btn btn-link pull-left" onClick={this.doCancel}>Cancel</button>
                 <button className="btn btn-primary pull-right" onClick={this.doSave}>Save</button>

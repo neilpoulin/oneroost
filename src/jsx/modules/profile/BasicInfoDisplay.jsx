@@ -1,4 +1,6 @@
 import React, { PropTypes } from "react"
+import FormGroupStatic from "FormGroupStatic"
+import RoostUtil from "RoostUtil"
 
 const BasicInfoDisplay = React.createClass({
     propTypes: {
@@ -13,36 +15,38 @@ const BasicInfoDisplay = React.createClass({
         }
     },
     render () {
+        const {user} = this.props
         var info =
         <div>
             <div className="title action">
                 <h2>Basic Info</h2><a href='#' onClick={this.props.doEdit}>Edit</a>
             </div>
             <div className="row">
-                <div className="form-group">
-                    <label className="col-sm-2 control-label">Name</label>
-                    <div className="col-sm-10">
-                        <p className="form-control-static">{this.props.user.get("firstName") + " " + this.props.user.get("lastName")}</p>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label className="col-sm-2 control-label">Email</label>
-                    <div className="col-sm-10">
-                        <p className="form-control-static">{this.props.user.get("email")}</p>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label className="col-sm-2 control-label">Company</label>
-                    <div className="col-sm-10">
-                        <p className="form-control-static">{this.props.user.get("company")}</p>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label className="col-sm-2 control-label">Job Title</label>
-                    <div className="col-sm-10">
-                        <p className="form-control-static">{this.props.user.get("jobTitle")}</p>
-                    </div>
-                </div>
+
+                <FormGroupStatic
+                    value={RoostUtil.getFullName(user)}
+                    label="Name"
+                    horizontal={true}
+                    />
+
+
+                <FormGroupStatic
+                    value={user.get("email")}
+                    label="Email"
+                    horizontal={true}
+                    />
+
+                <FormGroupStatic
+                    value={user.get("company")}
+                    label="Company"
+                    horizontal={true}
+                    />
+                <FormGroupStatic
+                    value={user.get("jobTitle")}
+                    label="Job Title"
+                    horizontal={true}
+                    />
+
             </div>
         </div>
 

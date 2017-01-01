@@ -17,6 +17,7 @@ const FormInputGroup = React.createClass({
         onKeyUp: PropTypes.func,
         onKeyDown: PropTypes.func,
         onBlur: PropTypes.func,
+        horizontal: PropTypes.bool,
     },
     getDefaultProps(){
         return {
@@ -31,6 +32,7 @@ const FormInputGroup = React.createClass({
             onKeyDown: e => {},
             onBlur: e => {},
             onChange: (val) => {console.log("called default onChange", val)},
+            horizontal: false,
         }
     },
     handleChange(e){
@@ -81,6 +83,7 @@ const FormInputGroup = React.createClass({
             errors={this.props.errors}
             fieldName={this.props.fieldName}
             required={this.props.required}
+            horizontal={this.props.horizontal} 
             >
             {input}
             {this.props.children}

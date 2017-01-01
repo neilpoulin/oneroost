@@ -4,6 +4,12 @@ $default-margin: 5px;
     &.required:after{
         content: "* "
     }
+    &.label-left{
+        text-align: left;
+    }
+    &.label-right{
+        text-align: right;
+    }
 }
 
 @mixin flex-group{

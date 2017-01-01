@@ -6,13 +6,15 @@ export default React.createClass({
         tag: PropTypes.string,
         to: PropTypes.string.isRequired,
         activeClassName: PropTypes.string,
-        className: PropTypes.string
+        className: PropTypes.string,
+        linkClassName: PropTypes.string,
     },
     getDefaultProps: function(){
         return {
             tag: "li",
             activeClassName: "active",
-            className: null
+            className: null,
+            linkClassName: null,
         }
     },
     render() {
@@ -21,6 +23,7 @@ export default React.createClass({
             to={this.props.to}
             activeClassName={this.props.activeClassName}
             className={this.props.className}
+            linkClassName={this.props.linkClassName}
             >
             {this.props.children}
         </ActiveComponent>
