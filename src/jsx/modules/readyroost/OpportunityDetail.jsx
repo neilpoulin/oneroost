@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import FormUtil, {Validation} from "./../util/FormUtil"
-import {linkState} from "LinkState"
+import FormInputGroup from "FormInputGroup"
 
 const OpportunityDetail = React.createClass({
     propTypes: {
@@ -44,31 +44,31 @@ const OpportunityDetail = React.createClass({
         this.setState({errors: errors});
     },
     render () {
+        let {errors, company, problem} = this.state;
         let page =
         <div>
             <div className="lead">
                 The most successful business offerings solve a major pain point for a company. Describe what problem your offering is solving for {this.props.readyRoostUser.comapny} below.
             </div>
             <div>
-                <div className={"form-group " + FormUtil.getErrorClass("company", this.state.errors)}>
-                    <label htmlFor="companyInput" className="control-label">Company</label>
-                    <input id="companyInput"
-                        type="text"
-                        className="form-control"
-                        value={this.state.company}
-                        onChange={linkState(this,"company")}/>
-                    {FormUtil.getErrorHelpMessage("company", this.state.errors)}
-                </div>
-                <div className={"form-group " + FormUtil.getErrorClass("problem", this.state.errors)}>
-                    <label htmlFor="problemInput" className="control-label">Problem Summary</label>
-                    <input id="problemInput"
-                        type="text"
-                        maxLength={40}
-                        className="form-control"
-                        value={this.state.problem}
-                        onChange={linkState(this,"problem")}/>
-                    {FormUtil.getErrorHelpMessage("problem", this.state.errors)}
-                </div>
+                <FormInputGroup
+                    fieldName="company"
+                    label="Your Company"
+                    errors={errors}
+                    value={company}
+                    required={true}
+                    onChange={val => this.setState({"company": val})}
+                    />
+
+                <FormInputGroup
+                    fieldName="problem"
+                    label="Problem Summary"
+                    errors={errors}
+                    value={problem}
+                    required={true}
+                    maxLength={40}
+                    onChange={val => this.setState({"problem": val})}
+                    />
             </div>
             <div className="actions">
                 <button className="btn btn-outline-secondary" onClick={this.props.previousStep}>Previous Step</button>

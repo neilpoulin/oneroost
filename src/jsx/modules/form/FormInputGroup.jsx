@@ -13,6 +13,8 @@ const FormInputGroup = React.createClass({
         required: PropTypes.bool,
         addonBefore: PropTypes.string,
         addonAfter: PropTypes.string,
+        maxLength: PropTypes.number,
+
     },
     getDefaultProps(){
         return {
@@ -22,6 +24,7 @@ const FormInputGroup = React.createClass({
             required: false,
             addonBefore: null,
             addonAfter: null,
+            maxLength: null,
             onChange: (val) => {console.log("called default onChange", val)},
         }
     },
@@ -51,7 +54,9 @@ const FormInputGroup = React.createClass({
             className="form-control"
             value={this.props.value}
             placeholder={this.props.placeholder}
-            onChange={this.handleChange}/>
+            onChange={this.handleChange}
+            maxLength={this.props.maxLength}
+            />
 
         if ( this.props.addonBefore || this.props.addonAfter ){
             input =
