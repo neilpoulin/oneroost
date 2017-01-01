@@ -144,7 +144,10 @@ const LoginComponent = React.createClass({
         }
         return registerValidation;
     },
-    doSubmit(){
+    doSubmit(e){
+        if ( e ){
+            e.preventDefault();
+        }
         let errors = FormUtil.getErrors(this.state, this.getValidation());
         if ( !FormUtil.hasErrors(errors) ){
             var component = this;
@@ -285,14 +288,18 @@ const LoginComponent = React.createClass({
         if ( this.props.showButton ){
             actionButton =
             <div className="">
-                <span className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doSubmit}>{btnText} <SpinnerIcon visible={this.state.loading}/></span>
+                <button className="btn btn-primary btn-block"
+                    id="loginSubmitBtn"
+                    type="submit">
+                    {btnText} <SpinnerIcon visible={this.state.loading}/>
+                </button>
             </div>
         }
 
         var result =
         <div className="LoginComponent">
             {tabs}
-            <form className="">
+            <form className="" onSubmit={this.doSubmit}>
                 {alert}
                 <FormInputGroup
                     fieldName="email"
