@@ -1,20 +1,21 @@
 import React, {PropTypes} from "react"
 import Parse from "parse";
 import FormInputGroup from "FormInputGroup"
+import {withRouter} from "react-router"
 import SpinnerIcon from "./SpinnerIcon"
 import FormUtil from "FormUtil"
 import ReactGA from "react-ga"
 import {loginValidation, registerValidation} from "RegistrationValidations"
 
-export default React.createClass({
+const LoginComponent = React.createClass({
     propTypes: {
-        logoutSuccess: PropTypes.func.isRequired,
-        success: PropTypes.func.isRequired,
+        success: PropTypes.func,
         company: PropTypes.string,
         showCompany: PropTypes.bool,
         showButton: PropTypes.bool,
         isLogin: PropTypes.bool,
         showRegister: PropTypes.bool,
+        afterLoginPath: PropTypes.string,
     },
     getInitialState: function(){
         var username;
@@ -50,10 +51,18 @@ export default React.createClass({
             showButton: true,
             isLogin: true,
             showRegister: true,
+            afterLoginPath: "/roosts",
+            success: user => {
+                const { location } = this.props;
+                if (location && location.state && location.state.nextPathname && window.location.pathname != location.state.nextPathname) {
+                    this.props.router.replace(location.state.nextPathname)
+                } else {
+                    this.props.router.replace(this.props.afterLoginPath)
+                }
+            }
         }
     },
-    doLogin: function(e){
-        e.preventDefault();
+    doLogin: function(){
         var component = this;
         this.showLoading();
         if ( this.state.isLogin )
@@ -78,14 +87,6 @@ export default React.createClass({
                 error: component.handleLoginError
             });
         }
-    },
-    doLogout: function(e){
-        e.preventDefault();
-        var component = this;
-        this.showLoading();
-        Parse.User.logOut()
-        .done(component.handleLogoutSuccess)
-        .fail(component.handleLogoutError);
     },
     showLoading(){
         this.setState({loading: true});
@@ -116,29 +117,7 @@ export default React.createClass({
         return this.handleLoginSuccess(user);
     },
     handleLoginSuccess: function(user){
-        if ( this.props.success )
-        {
-            return this.props.success();
-        }
-    },
-    handleLogoutSuccess: function()
-    {
-        this.setState({
-            isLoggedIn: false,
-            username: null,
-            password: null,
-            email: null
-        });
-
-        if ( this.props.logoutSuccess )
-        {
-            this.props.logoutSuccess();
-        }
-        return this.render();
-    },
-    handleLogoutError: function( user, error ){
-        console.error( "failed to log out" );
-        console.error( error );
+        this.props.success();
     },
     setIsRegister: function(e){
         this.setState({isLogin: false,
@@ -245,15 +224,18 @@ export default React.createClass({
 
         var btnText = this.state.isLogin ? "Log In" : "Sign Up";
 
-        var tabs =
-        <ul className="nav nav-tabs nav-justified" >
-            <li role="presentation " className={"pointer " + ( this.state.isLogin ? "" : "active" )} >
-                <a onClick={this.setIsRegister}>Sign Up</a>
-            </li>
-            <li role="presentation" className={"pointer " + ( this.state.isLogin ? "active" : "" )} >
-                <a onClick={this.setIsLogin}>Login</a>
-            </li>
-        </ul>;
+        let tabs = null;
+        if ( this.props.showRegister ){
+            tabs =
+            <ul className="nav nav-tabs nav-justified" >
+                <li role="presentation " className={"pointer " + ( this.state.isLogin ? "" : "active" )} >
+                    <a onClick={this.setIsRegister}>Sign Up</a>
+                </li>
+                <li role="presentation" className={"pointer " + ( this.state.isLogin ? "active" : "" )} >
+                    <a onClick={this.setIsLogin}>Login</a>
+                </li>
+            </ul>;
+        }
 
         let alert = null;
         if ( errors.alert )
@@ -304,10 +286,8 @@ export default React.createClass({
 
         var result =
         <div className="LoginComponent">
-            <div className="">
-                {tabs}
-            </div>
-            <form className="container-fluid">
+            {tabs}
+            <form className="">
                 {alert}
                 <FormInputGroup
                     fieldName="email"
@@ -336,4 +316,6 @@ export default React.createClass({
 
         return result;
     }
-});
+})
+
+export default withRouter( LoginComponent, {withRef: true} );

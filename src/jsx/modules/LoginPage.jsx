@@ -1,5 +1,5 @@
 import React from "react"
-import LoginOnly from "LoginOnly"
+import LoginComponent from "LoginComponent"
 import RoostNav from "RoostNav"
 import Logo from "Logo"
 
@@ -9,8 +9,10 @@ const LoginPage = React.createClass({
         let page =
         <div className="LoginPage">
             <RoostNav/>
-            <Logo className="header"/>
-            <LoginOnly/>
+            <div className="col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+                <Logo className="header"/>
+                <LoginComponent showRegister={false}/>
+            </div>
         </div>
 
         return page;

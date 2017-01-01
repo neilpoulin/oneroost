@@ -37,18 +37,13 @@ const Registration = React.createClass({
         this.props.saveValues({currentUser: Parse.User.current()});
         this.props.nextStep();
     },
-    logoutSuccess(){
-        console.log("logout success")
-        this.setState({currentUser: null})
-    },
     doLogin(e){
-        this.refs.loginComponent.doSubmit()
+        this.refs.loginComponent.getWrappedInstance().doSubmit()
     },
     render () {
         let loginComponent =
         <LoginComponent
             success={this.loginSuccess}
-            logoutSuccess={this.logoutSuccess}
             showCompany={false}
             company={this.props.company}
             showButton={false}
