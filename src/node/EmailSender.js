@@ -155,6 +155,39 @@ function getUnsubscribeEmail( recipientId ){
     return address;
 }
 
+exports.sendPlainEmail = async function({subject, text, html, to}){
+    console.log("Send Plain Email called");
+    const config = await Parse.Config.get();
+    var actualRecipients = getActualRecipients(to, config);
+    console.log("Actual Recipients:", actualRecipients);
+    if ( !actualRecipients ){
+        console.log("No actual recpients found, not sending email.");
+        return false
+    }
+
+    actualRecipients.forEach( function( actualTo ){
+        try{
+            let recipient = findRecipient(actualTo)
+            var email = new SESEmailSender.Mail();
+            email.setRecipients( [actualTo] );
+            email.subject = subject;
+            email.text = text;
+            email.html = html;
+            // email.messageId = data.messageId;
+            email.unsubscribeLink = getUnsubscribeUrl(recipient.id);
+            email.unsubscribeEmail = getUnsubscribeEmail(recipient.id);
+            email.emailRecipientId = recipient.id;
+            email.headers = buildHeaders(email);
+            SESEmailSender.sendEmail( email );
+            return;
+        }
+        catch( e ){
+            console.log("Something went wrong", e);
+            return
+        }
+    } );
+}
+
 function sendEmail( templateResults, data, to ){
     console.log("Template Results", templateResults);
     Parse.Config.get().then( function(config){

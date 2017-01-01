@@ -152,7 +152,7 @@ function formatAddresses( to ){
 
     var addresses = [];
     to.forEach( function( addr ){
-        addresses.push( addr.name + " <" + addr.email + ">" );
+        addresses.push( (addr.name || addr.email) + " <" + addr.email + ">" );
     } )
     return addresses;
 }

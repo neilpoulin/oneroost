@@ -6,11 +6,12 @@ var SESParseAdapter = sesOptions => {
         var message = {
             subject: mail.subject,
             text: mail.text,
-            html: mail.text
+            html: mail.text,
+            to: [mail.to]
         };
         console.log("sending reset email: ", mail);
         return new Promise((resolve, reject) => {
-            EmailSender.sendEmail(message, [mail.to]);
+            EmailSender.sendPlainEmail(message);
             resolve(null);
         });
     }

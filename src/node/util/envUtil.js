@@ -15,6 +15,7 @@ var ENV_NAME = process.env.ENV_NAME || "dev"
 var DOCUMENTS_S3_BUCKET = "oneroost-documents";
 var DOCUMENTS_PATH = "documents"
 var GA_TRACKING_ID = process.env.GA_TRACKING_ID || "UA-87950724-3"
+var PUBLIC_SERVER_URL = HOSTNAME + PARSE_MOUNT;
 
 if ( SERVER_URL.trim().indexOf("http:") != 0 )
 {
@@ -37,6 +38,7 @@ console.log("DATABASE_URL: " + DATABASE_URL);
 console.log("PORT: " + PARSE_PORT);
 console.log("PARSE_MOUNT: " + PARSE_MOUNT);
 console.log("SERVER_URL: " + SERVER_URL);
+console.log("PUBLIC_SERVER_URL:" + PUBLIC_SERVER_URL);
 console.log("ENV_NAME: " + ENV_NAME);
 console.log("HOSTNAME: " + HOSTNAME);
 console.log("node title: ", process.title);
@@ -44,6 +46,10 @@ console.log("GA Tracking ID", GA_TRACKING_ID);
 
 exports.getParseServerUrl = function(){
     return SERVER_URL;
+}
+
+exports.getPublicServerUrl = function(){
+    return PUBLIC_SERVER_URL;
 }
 
 exports.getParseAppId = function(){

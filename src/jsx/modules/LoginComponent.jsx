@@ -96,16 +96,21 @@ const LoginComponent = React.createClass({
     },
     handleLoginError: function(user, error)
     {
+        let message = ""
         switch( error.code )
         {
             case 101: //invalid login params
-            break;
+                message = "Invalid login credentials, please try again"
+                break;
             case 202: //username taken
-            break;
+                message = "That username is not available, please use another"
+                break;
             default:
-            break;
+                message = "Something went wrong logging in. Please try again."
+                break;
         }
-        this.setState({"error": error});
+        let alert = {alert: {message: message, level: "danger"}};
+        this.setState({"errors": alert});
         console.error(error);
         this.hideLoading();
     },
@@ -179,33 +184,31 @@ const LoginComponent = React.createClass({
         var self = this;
         if ( self.state.email )
         {
-            if ( !self.isValidEmail() )
+            if ( !FormUtil.isValidEmail(self.state.email) )
             {
-                self.setState({error: {message:"Please enter your email and try again."}});
+                let errors = self.state.errors;
+                errors.alert = {message:"Please enter a valid email and try again.", level: "warning"}
+                self.setState({errors: errors});
                 return
             }
 
             Parse.User.requestPasswordReset(self.state.email, {
                 success: function() {
-                    // Password reset request was sent successfully
-                    alert("reset request successful");
-                    let errors = this.state.errors;
-                    errors.alert = null;
+                    let errors = self.state.errors;
+                    errors.alert = {message: "An email has been sent to you with instructions for resetting your password.", level: "success"};
                     self.setState({error: errors});
                 },
                 error: function(error) {
-                    // Show the error message somewhere
-                    let errors = this.state.errors;
-                    errors.alert = "Please enter your email and try again."
+                    let errors = self.state.errors;
+                    errors.alert = {message: "Something went wrong when sending reset instructions. Please try again.", level: "danger"};
                     self.setState({error: errors});
                 }
             });
         }
         else
         {
-            //todo: tell the use to enter an email
-            let errors = this.state.errors;
-            errors.alert = "Please enter your email and try again."
+            let errors = self.state.errors;
+            errors.alert = errors.alert = {message: "Please enter your email and try again.", level: "warning"};
             self.setState({error: errors});
         }
     },
@@ -241,8 +244,8 @@ const LoginComponent = React.createClass({
         if ( errors.alert )
         {
             alert =
-            <div className="errorMessage alert alert-danger">
-                {this.state.errors.alert}
+            <div className={`errorMessage alert alert-${this.state.errors.alert.level}`}>
+                {this.state.errors.alert.message}
             </div>;
         }
 
@@ -261,7 +264,7 @@ const LoginComponent = React.createClass({
                     onChange={val => this.setState({"company": val})}
                     />
             }
-            
+
             firstNameInput = <FormInputGroup
                     fieldName="firstName"
                     value={firstName}
