@@ -3,8 +3,13 @@ import React from "react"
 export default React.createClass({
     getInitialState: function(){
         return {
-            isVisible: false,
+            isVisible: this.props.visible,
             isSpinning: true
+        }
+    },
+    getDefaultProps(){
+        return {
+            visible: false
         }
     },
     doShow: function(){
@@ -17,7 +22,7 @@ export default React.createClass({
       },
     render: function(){
         return (
-            <i className={"fa fa-spinner " + (this.state.isSpinning ? "fa-spin " : "") + (this.state.isVisible ? "" : "hidden ")}></i>
+            <i className={"fa fa-spinner " + (this.state.isSpinning ? "fa-spin " : "") + (this.props.visible ? "" : "hidden ")}></i>
         );
     }
 });

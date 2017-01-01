@@ -14,7 +14,9 @@ const FormInputGroup = React.createClass({
         addonBefore: PropTypes.string,
         addonAfter: PropTypes.string,
         maxLength: PropTypes.number,
-
+        onKeyUp: PropTypes.func,
+        onKeyDown: PropTypes.func,
+        onBlur: PropTypes.func,
     },
     getDefaultProps(){
         return {
@@ -25,6 +27,9 @@ const FormInputGroup = React.createClass({
             addonBefore: null,
             addonAfter: null,
             maxLength: null,
+            onKeyUp: (e) => {},
+            onKeyDown: e => {},
+            onBlur: e => {},
             onChange: (val) => {console.log("called default onChange", val)},
         }
     },
@@ -56,6 +61,9 @@ const FormInputGroup = React.createClass({
             placeholder={this.props.placeholder}
             onChange={this.handleChange}
             maxLength={this.props.maxLength}
+            onKeyUp={this.props.onKeyUp}
+            onKeyDown={this.props.onKeyDown}
+            onBlur={this.props.onBlur}
             />
 
         if ( this.props.addonBefore || this.props.addonAfter ){

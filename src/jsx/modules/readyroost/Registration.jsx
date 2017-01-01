@@ -42,7 +42,7 @@ const Registration = React.createClass({
         this.setState({currentUser: null})
     },
     doLogin(e){
-        this.refs.loginComponent.doLogin(e)
+        this.refs.loginComponent.doSubmit()
     },
     render () {
         let loginComponent =

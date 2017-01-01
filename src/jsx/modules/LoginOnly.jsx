@@ -1,15 +1,10 @@
-/*global OneRoost*/
-/*global window*/
-/*global console*/
-/*global alert*/
-/*global clearTimeout*/
-/*global setTimeout*/
 import React from "react"
-import Parse from "parse";
-Parse.serverURL = OneRoost.Config.parseSeverURL;
-import SpinnerIcon from "./SpinnerIcon"
+import Parse from "parse"
+import SpinnerIcon from "SpinnerIcon"
 import { browserHistory, withRouter } from "react-router"
-import {linkState} from "LinkState"
+import FormInputGroup from "FormInputGroup"
+import {loginValidation} from "RegistrationValidations"
+import FormUtil from "FormUtil"
 
 const LoginOnly = withRouter(
     React.createClass({
@@ -35,33 +30,10 @@ const LoginOnly = withRouter(
                 error: "",
                 isTyping: false,
                 emailValidation: "",
-                passwordValidation: ""
+                passwordValidation: "",
+                loading: false,
+                errors: {},
             };
-        },
-        doLogin: function(e){
-            e.preventDefault();
-            var component = this;
-            this.showLoading();
-            if ( this.state.isLogin )
-            {
-                Parse.User.logIn(this.state.email.toLowerCase(), this.state.password, {
-                    success: component.handleLoginSuccess,
-                    error: component.handleLoginError
-                });
-            }
-            else {
-                var user = new Parse.User();
-                user.set("username", this.state.email.toLowerCase());
-                user.set("email", this.state.email.toLowerCase());
-                user.set("password", this.state.password);
-                user.set("firstName", this.state.firstName);
-                user.set("lastName", this.state.lastName);
-                user.set("passwordChangeRequired", false);
-                user.signUp( null, {
-                    success: component.handleLoginSuccess,
-                    error: component.handleLoginError
-                });
-            }
         },
         doLogout: function(e){
             e.preventDefault();
@@ -72,13 +44,14 @@ const LoginOnly = withRouter(
             .fail(component.handleLogoutError);
         },
         showLoading(){
-            this.refs.spinner.doShow();
+            this.setState({loading: true});
         },
         hideLoading(){
-            this.refs.spinner.doHide();
+            this.setState({loading: false});
         },
         handleLoginError: function(user, error)
         {
+            let {errors} = this.state;
             console.error(error);
             switch( error.code )
             {
@@ -89,7 +62,8 @@ const LoginOnly = withRouter(
                 default:
                 break;
             }
-            this.setState({"error": error});
+            errors.alert = error.message;
+            this.setState({"errors": errors});
 
             this.hideLoading();
         },
@@ -136,35 +110,24 @@ const LoginOnly = withRouter(
                     success: function() {
                         // Password reset request was sent successfully
                         alert("reset request successful");
-                        self.setState({error: null});
+                        let errors = this.state.errors;
+                        errors.alert = null;
+                        self.setState({error: errors});
                     },
                     error: function(error) {
                         // Show the error message somewhere
-                        self.setState({error: {message:"Please enter your email and try again."}});
+                        let errors = this.state.errors;
+                        errors.alert = "Please enter your email and try again."
+                        self.setState({error: errors});
                     }
                 });
             }
             else
             {
                 //todo: tell the use to enter an email
-                self.setState({error: {message:"Please enter your email and try again."}});
-            }
-        },
-        emailKeyUp: function(){
-            var self = this;
-            if ( this.emailTypingTimeout != null )
-            {
-                clearTimeout( self.emailTypingTimeout );
-            }
-            if ( self.state.emailValidation != null && self.isValidEmail() )
-            {
-                self.doEmailValidation();
-            }
-            else
-            {
-                self.emailTypingTimeout = setTimeout( function(){
-                    self.doEmailValidation();
-                } , 500 );
+                let errors = this.state.errors;
+                errors.alert = "Please enter your email and try again."
+                self.setState({error: errors});
             }
         },
         doEmailValidation: function()
@@ -182,47 +145,44 @@ const LoginOnly = withRouter(
                 this.setState({emailValidation: null});
             }
         },
-        isValidEmail: function(){
-            var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return re.test(this.state.email);
-        },
-        emailTypingTimeout: null,
-        passwordKeyUp: function(){
-            var self = this;
-            if ( self.passwordTypingTimeout != null )
-            {
-                clearTimeout( self.passwordTypingTimeout );
+        doSubmit(){
+            let errors = FormUtil.getErrors(this.state, loginValidation);
+            if ( !FormUtil.hasErrors(errors) ){
+                var component = this;
+                this.showLoading();
+                if ( this.state.isLogin )
+                {
+                    Parse.User.logIn(this.state.email.toLowerCase(), this.state.password, {
+                        success: () =>{
+                            this.setState({errors: {}});
+                            component.handleLoginSuccess();
+                        },
+                        error: component.handleLoginError
+                    });
+                    return true;
+                }
+                else {
+                    var user = new Parse.User();
+                    user.set("username", this.state.email.toLowerCase());
+                    user.set("email", this.state.email.toLowerCase());
+                    user.set("password", this.state.password);
+                    user.set("firstName", this.state.firstName);
+                    user.set("lastName", this.state.lastName);
+                    user.set("passwordChangeRequired", false);
+                    user.signUp( null, {
+                        success: () => {
+                            this.setState({errors: {}});
+                            component.handleLoginSuccess()
+                        },
+                        error: component.handleLoginError
+                    });
+                }
+                return true;
             }
-            if ( self.state.passwordValidation != null && self.isValidPassword() )
-            {
-                self.doPasswordValidation();
-            }
-            else {
-                this.passwordTypingTimeout = setTimeout( function(){
-                    self.doPasswordValidation();
-                }, 500 );
-            }
-        },
-        doPasswordValidation: function(){
-            var password = this.state.password;
-            if ( password && password.length > 1 && !this.isValidPassword() )
-            {
-                this.setState({passwordValidation: {
-                    message: "Your password must be at least 4 characters long",
-                    level: "error"
-                }});
-            }
-            else
-            {
-                this.setState({passwordValidation: null});
-            }
-        },
-        passwordTypingTimeout: null,
-        isValidPassword: function(){
-            var password = this.state.password || "";
-            return password.length > 3;
+            this.setState({errors: errors});
         },
         render: function(){
+            let {email, errors, password} = this.state
             if ( this.state.isLoggedIn )
             {
                 return false;
@@ -230,66 +190,38 @@ const LoginOnly = withRouter(
 
             var btnText = this.state.isLogin ? "Log In" : "Sign Up";
 
-            var error = <div></div>
-            if ( this.state.error )
+            var alert = null;
+            if ( errors.alert )
             {
-                error =
+                alert =
                 <div className="errorMessage alert alert-danger">
-                    {this.state.error.message}
+                    {this.state.errors.alert}
                 </div>;
             }
-
-            var emailHelpBlock = "";
-            var emailValidationClass = "";
-
-            var passwordHelpBlock = "";
-            var passwordValidationClass = "";
-
-
-            if ( this.state.emailValidation )
-            {
-                emailHelpBlock = this.state.emailValidation.message;
-                emailValidationClass = "has-" + this.state.emailValidation.level;
-            }
-
-            if ( this.state.passwordValidation )
-            {
-                passwordHelpBlock = this.state.passwordValidation.message;
-                passwordValidationClass = "has-" + this.state.passwordValidation.level;
-            }
-
-
 
             var result =
             <div className="LoginOnly">
                 <form className="container-fluid col-md-offset-4 col-md-4">
-                    {error}
-                    <div className={"form-group " + emailValidationClass}>
-                        <label htmlFor="loginUsernameInput" className="control-label">Email</label>
-                        <input type="email"
-                            id="loginEmailInput"
-                            className="form-control"
-                            value={this.state.email}
-                            onChange={linkState(this,"email")}
-                            onKeyUp={this.emailKeyUp}
-                            placeholder=""
-                            aria-describedby="emailHelpBlock"/>
-                        <span className="help-block" id="emailHelpBlock">{emailHelpBlock}</span>
-                    </div>
-                    <div className={"form-group " + passwordValidationClass}>
-                        <label htmlFor="loginPasswordInput" className="control-label">Password</label>
-                        <input type="password"
-                            id="loginPasswordInput"
-                            className="form-control"
-                            value={this.state.password}
-                            onChange={linkState(this,"password")}
-                            onKeyUp={this.passwordKeyUp}
-                            aria-describedby="passwordHelpBlock"/>
-                        <span className="help-block" id="passwordHelpBlock">{passwordHelpBlock}</span>
-                    </div>
-                    <div className="form-group">
-                        <br/>
-                        <button className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doLogin}>{btnText} <SpinnerIcon ref="spinner"></SpinnerIcon></button>
+                    {alert}
+                    <FormInputGroup
+                        fieldName="email"
+                        value={email}
+                        label="Email"
+                        errors={errors}
+                        onChange={val => this.setState({"email": val})}
+                        />
+
+                    <FormInputGroup
+                        fieldName="password"
+                        value={password}
+                        label="Password"
+                        errors={errors}
+                        type={"password"}
+                        onChange={val => this.setState({"password": val})}
+                        />
+
+                    <div className="">
+                        <span className="btn btn-primary btn-block" id="loginSubmitBtn" onClick={this.doSubmit}>{btnText} <SpinnerIcon visible={this.state.loading}/></span>
                     </div>
                     <div className="forgotPassword">
                         Forgot your password{"?"} <a href="#" onClick={this.resetPassword}>Click here</a> to reset it.
