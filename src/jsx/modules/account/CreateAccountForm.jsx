@@ -2,7 +2,7 @@ import React from "react";
 import ParseReact from "parse-react"
 import Parse from "parse"
 import FormUtil from "FormUtil"
-import AccountValidation from "account/AccountValidation"
+import {validations} from "account/AccountValidation"
 import FormInputGroup from "FormInputGroup"
 
 export default React.createClass({
@@ -26,7 +26,7 @@ export default React.createClass({
     doSubmit: function()
     {
         var self = this;
-        var errors = FormUtil.getErrors(this.state, AccountValidation);
+        var errors = FormUtil.getErrors(this.state, validations);
         console.log(errors);
         if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
             this.saveDeal();
@@ -93,7 +93,7 @@ export default React.createClass({
                     fieldName="accountName"
                     label="Company Name"
                     errors={this.state.errors}
-                    onChange={val => this.setState("accountName", val)}
+                    onChange={val => this.setState({"accountName": val})}
                     value={this.state.accountName}
                     />
 
@@ -101,7 +101,7 @@ export default React.createClass({
                     fieldName="dealName"
                     label="Problem Summary"
                     errors={this.state.errors}
-                    onChange={val => this.setState("dealName", val)}
+                    onChange={val => this.setState({"dealName": val})}
                     value={this.state.dealName}
                     >
                     <span className="help-block">briefly explain your offering in 40 characters or less</span>
