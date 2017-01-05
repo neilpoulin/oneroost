@@ -116,7 +116,9 @@ render(
         <Route path="/" component={App}>
             <IndexRoute component={Landing}/>
             <Route path="/login" component={LoginPage} onEnter={requireAnonymous}></Route>
-            <Route path="/beta/register" component={RegisterPage} onEnter={requireAnonymous}></Route>
+            <Redirect from="/beta/register" to="/signup" />
+            // <Route path="/beta/register" component={RegisterPage} onEnter={requireAnonymous}></Route>
+            <Route path="/signup" component={RegisterPage} onEnter={requireAnonymous}></Route>
             <Route path="/logout" component={Landing} onEnter={doLogout}></Route>
             <Redirect from="/deals" to="/roosts" />
             <Route path="/account" component={ProfilePage} onEnter={requireAuthOrParam}>

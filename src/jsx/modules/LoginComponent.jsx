@@ -51,6 +51,7 @@ const LoginComponent = React.createClass({
             showButton: true,
             isLogin: true,
             showRegister: true,
+            showCompany: true,
             afterLoginPath: "/roosts",
             success: function(user){
                 const { location, router , afterLoginPath} = this;
@@ -256,6 +257,7 @@ const LoginComponent = React.createClass({
         let firstNameInput = null;
         let lastNameInput = null;
         let forgotLink = null;
+        let nameInput = null;
         if ( !this.state.isLogin ){
             if ( this.props.showCompany ){
                 companyInput =
@@ -283,6 +285,12 @@ const LoginComponent = React.createClass({
                 errors={errors}
                 onChange={val => this.setState({"lastName": val})}
                 />
+
+            nameInput =
+            <div className="form-inline-half">
+                {firstNameInput}
+                {lastNameInput}
+            </div>
         }
         else{
             forgotLink =
@@ -308,6 +316,7 @@ const LoginComponent = React.createClass({
             {tabs}
             <form className="" onSubmit={this.doSubmit}>
                 {alert}
+                {nameInput}
                 <FormInputGroup
                     fieldName="email"
                     value={email}
@@ -315,8 +324,6 @@ const LoginComponent = React.createClass({
                     errors={errors}
                     onChange={val => this.setState({"email": val})}
                     />
-                {firstNameInput}
-                {lastNameInput}
                 {companyInput}
                 <FormInputGroup
                     fieldName="password"

@@ -8,10 +8,11 @@ const LoginPage = React.createClass({
 
         let page =
         <div className="LoginPage">
-            <RoostNav/>
-            <div className="col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+            <RoostNav showRegister={true} showLogin={true} showHome={false}/>
+            <div className="col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4">
                 <Logo className="header"/>
-                <LoginComponent showRegister={false}/>
+                <p className="lead text-center">Please login below</p>
+                <LoginComponent showRegister={true} isLogin={true} showCompany={true} />
             </div>
         </div>
 

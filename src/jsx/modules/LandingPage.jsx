@@ -2,6 +2,7 @@ import React, { PropTypes } from "react"
 import Parse from "parse"
 import NavLink from "NavLink"
 import { withRouter } from "react-router"
+import RoostNav from "RoostNav"
 
 const LandingPage = withRouter( React.createClass({
     PropTypes: {
@@ -25,6 +26,7 @@ const LandingPage = withRouter( React.createClass({
         var loginLink = this.getLoginLink();
         var page =
         <div className={"LandingPage "} >
+            <RoostNav showLogin={true} showRegister={true}/>
             <div className="container">
                 <NavLink className="loginLink" to={loginLink.path} activeClassName="active" tag="span">
                     {loginLink.name}

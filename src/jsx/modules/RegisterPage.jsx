@@ -10,11 +10,11 @@ const LoginPage = React.createClass({
     },
     render () {
         let page =
-        <div className="RegisterPage col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+        <div className="RegisterPage col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4">
             <RoostNav showHome={false}/>
             <Logo/>
-            <p className="lead">Please fill out the form below to get started.</p>
-            <LoginComponent />
+            <p className="lead text-center">Please fill out the form below to get started.</p>
+            <LoginComponent showCompany={true}/>
         </div>
 
         return page;

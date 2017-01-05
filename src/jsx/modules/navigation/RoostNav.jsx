@@ -7,11 +7,15 @@ import Bootstrap from "bootstrap";
 const RoostNav = React.createClass({
     propTypes: {
         deal: PropTypes.object,
-        showHome: PropTypes.bool
+        showHome: PropTypes.bool,
+        showRegister: PropTypes.bool,
+        showLogin: PropTypes.bool,
     },
     getDefaultProps: function(){
         return {
-            showHome: true
+            showHome: true,
+            showRegister: true,
+            showLogin: true,
         }
     },
     render () {
@@ -26,7 +30,9 @@ const RoostNav = React.createClass({
         if ( !isAdmin ){
             adminLink = null;
         }
-        var rightNav = null
+        var rightNav = null;
+        var loginNav = null;
+        var registerNav = null;
         if ( user ){
             rightNav =
             <li className="dropdown">
@@ -41,8 +47,14 @@ const RoostNav = React.createClass({
                     <NavLink to="/logout">Logout</NavLink>
                 </ul>
             </li>
+        } else{
+            if ( this.props.showRegister ){
+                registerNav = <Link to="/signup" className="btn btn-primary navbar-btn navbar-right">Sign Up</Link>
+            }
+            if ( this.props.showLogin ){
+                loginNav = <NavLink to ="/login" >Log In</NavLink>
+            }
         }
-
 
         var nav =
         <nav className="navbar navbar-default navbar-fixed-top RoostNav">
@@ -61,11 +73,16 @@ const RoostNav = React.createClass({
                 </div>
 
                 <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                    {registerNav}
                     <ul className="nav navbar-nav navbar-right">
                         <NavLink tag="li" to="/help" className="">Help</NavLink>
                         {adminLink}
+
+                        {loginNav}
                         {rightNav}
                     </ul>
+
                 </div>
             </div>
         </nav>;

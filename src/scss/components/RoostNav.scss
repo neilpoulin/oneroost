@@ -5,7 +5,7 @@
             @extend .logo-font;
             font-size: 2em;
         }
-    
+
         &:hover{
             color: $navbar-default-link-hover-color;
             .logo-chicken{
@@ -22,6 +22,10 @@
             width: 40px;
         }
     }
+    .navbar-btn.navbar-right{
+        margin-right: 0px;
+    }
+
     .accountLink{
         a{
             &:hover{
