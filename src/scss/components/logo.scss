@@ -7,11 +7,12 @@
     @extend .cursive;
 }
 
+
 .logo{
     @extend .logo-font;
     text-align: center;
     font-size: 1.4em;
     &.header{
-        font-size: 4em;        
+        font-size: 4em;
     }
 }

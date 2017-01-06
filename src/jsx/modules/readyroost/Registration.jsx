@@ -2,6 +2,7 @@ import React, { PropTypes } from "react"
 import LoginComponent from "LoginComponent"
 import ReactGA from "react-ga"
 import Parse from "parse"
+import TermsOfServiceDisclaimer from "TermsOfServiceDisclaimer"
 
 const Registration = React.createClass({
     propTypes: {
@@ -47,7 +48,8 @@ const Registration = React.createClass({
             showCompany={false}
             company={this.props.company}
             showButton={false}
-            ref="loginComponent" />
+            ref="loginComponent"
+            showTermsOfService={false} />
         let continueButton = <button className="btn btn-primary" onClick={this.doLogin}>{this.props.nextText}</button>
 
         if ( this.props.currentUser ){
@@ -64,7 +66,7 @@ const Registration = React.createClass({
                 <button className="btn btn-outline-secondary" onClick={this.props.previousStep}>{this.props.previousText}</button>
                 {continueButton}
             </div>
-
+            <TermsOfServiceDisclaimer/>
         </div>
         return page
     }

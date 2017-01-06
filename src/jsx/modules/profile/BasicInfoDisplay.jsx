@@ -19,7 +19,7 @@ const BasicInfoDisplay = React.createClass({
         var info =
         <div>
             <div className="title action">
-                <h2>Basic Info</h2><a href='#' onClick={this.props.doEdit}>Edit</a>
+                <h2>Basic Info</h2><span className="link" onClick={this.props.doEdit}>Edit</span>
             </div>
             <div className="row">
 

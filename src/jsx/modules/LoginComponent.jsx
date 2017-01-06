@@ -5,6 +5,7 @@ import {withRouter} from "react-router"
 import SpinnerIcon from "./SpinnerIcon"
 import FormUtil from "FormUtil"
 import ReactGA from "react-ga"
+import TermsOfServiceDisclaimer from "TermsOfServiceDisclaimer"
 import {loginValidation, registerValidation} from "RegistrationValidations"
 
 const LoginComponent = React.createClass({
@@ -16,6 +17,7 @@ const LoginComponent = React.createClass({
         isLogin: PropTypes.bool,
         showRegister: PropTypes.bool,
         afterLoginPath: PropTypes.string,
+        showTermsOfService: PropTypes.bool,
     },
     getInitialState: function(){
         var username;
@@ -53,6 +55,7 @@ const LoginComponent = React.createClass({
             showRegister: true,
             showCompany: true,
             afterLoginPath: "/roosts",
+            showTermsOfService: true,
             success: function(user){
                 const { location, router , afterLoginPath} = this;
                 if (location && location.state && location.state.nextPathname && window.location.pathname != location.state.nextPathname) {
@@ -299,6 +302,11 @@ const LoginComponent = React.createClass({
             </div>
         }
 
+        let terms = null;
+        if (this.props.showTermsOfService){
+            terms = <TermsOfServiceDisclaimer/>
+        }
+
         let actionButton = null;
         if ( this.props.showButton ){
             actionButton =
@@ -336,6 +344,7 @@ const LoginComponent = React.createClass({
                 {actionButton}
                 {forgotLink}
             </form>
+            {terms}
         </div>
 
         return result;

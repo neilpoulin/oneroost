@@ -30,6 +30,8 @@ import UnauthorizedPage from "UnauthorizedPage"
 import EmailTemplates from "admin/EmailTemplates"
 import HelpPage from "help/HelpPage"
 import ReactGA from "react-ga"
+import TermsOfServicePage from "TermsOfServicePage"
+import PrivacyPage from "PrivacyPage"
 
 Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;
@@ -126,6 +128,8 @@ render(
             </Route>
             <Route path="/proposals/:userId" component={ReadyRoostPage}/>
             <Route path="/help" component={HelpPage}/>
+            <Route path="/terms" component={TermsOfServicePage}/>
+            <Route path="/privacy" component={PrivacyPage}/>
             <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
                 <IndexRoute component={UserHomePage}/>
                 <Route path="unauthorized" component={Unauthorized}/>
