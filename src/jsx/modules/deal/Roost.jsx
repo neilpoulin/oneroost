@@ -107,7 +107,7 @@ const Deal = withRouter( React.createClass({
         var mobileClassesDealTop = "hidden-sm hidden-xs";
         var dealPage =
         <div className="RoostPage">
-            <RoostNav deal={deal}/>
+            <RoostNav mobileTitle={deal.dealName} showHome={true}/>
             <div className="RoostBody">
                 <AccountSidebar/>
                 <div className="Deal">

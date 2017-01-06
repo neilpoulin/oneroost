@@ -8,6 +8,9 @@ const LoginPage = React.createClass({
         console.error( "failed to log out" );
         console.error( error );
     },
+    componentDidMount(){
+        document.title = "Sign Up | OneRoost"
+    },
     render () {
         let page =
         <div className="RegisterPage col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4">

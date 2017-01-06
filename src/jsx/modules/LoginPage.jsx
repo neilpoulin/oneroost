@@ -4,8 +4,10 @@ import RoostNav from "RoostNav"
 import Logo from "Logo"
 
 const LoginPage = React.createClass({
+    componentDidMount(){
+        document.title = "Log In | OneRoost"
+    },
     render () {
-
         let page =
         <div className="LoginPage">
             <RoostNav showRegister={true} showLogin={true} showHome={false}/>
