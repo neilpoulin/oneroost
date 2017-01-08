@@ -26,6 +26,7 @@ import Documents from "./documents/Documents"
 import ReadyRoost from "./roost/ReadyRoost"
 import BeforeSave from "./triggers/BeforeSave"
 import AWSXRay from "aws-xray-sdk";
+import compression from "compression";
 AWSXRay.setDefaultName(envUtil.getEnvName());
 AWSXRay.config([AWSXRay.plugins.EC2]);
 AWSXRay.config([AWSXRay.plugins.ElasticBeanstalk]);
@@ -39,6 +40,7 @@ app.engine("ejs", ejs.__express);
 app.use(bodyParser.json());
 app.use("/parse", getParseServer());
 app.use("/admin/dashboard", getParseDashboard());
+app.use(compression({ threshold: 0, level: 9 }));
 app.use("/static", express.static(__dirname + "./../public"));
 app.use(favicon(__dirname + "./../public/favicon.ico"));
 app.set("views", "cloud/views");
