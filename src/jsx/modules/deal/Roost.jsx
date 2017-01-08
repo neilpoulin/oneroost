@@ -2,7 +2,6 @@ import React, { PropTypes } from "react"
 import {withRouter} from "react-router"
 import Parse from "parse";
 Parse.serverURL = OneRoost.Config.parseSeverURL;
-import ParseReact from "parse-react";
 import LoadingTakeover from "LoadingTakeover";
 import NextStepsBanner from "nextsteps/NextStepsBanner";
 import DealProfile from "DealProfile";
@@ -10,14 +9,25 @@ import DealNavMobile from "DealNavMobile";
 import DealPageBottom from "DealPageBottom";
 import AccountSidebar from "account/AccountSidebar";
 import RoostNav from "RoostNav";
-import RoostUtil from "RoostUtil"
+import RoostUtil from "RoostUtil";
+import {Pointer} from "models/Models";
 
-const Deal = withRouter( React.createClass({
-    mixins: [ParseReact.Mixin],
+const Roost = withRouter( React.createClass({
     propTypes: {
         params: PropTypes.shape({
             dealId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
         })
+    },
+    getInitialState(){
+        return {
+            deal: null,
+            dealLoading: true,
+            stakeholders: [],
+            stakeholdersLoading: true,
+            nextSteps: [],
+            nextStepsLoading: true,
+            documentsLoading: true,
+        }
     },
     handleUnauthorized()
     {
@@ -33,41 +43,93 @@ const Deal = withRouter( React.createClass({
             this.props.router.replace("/roosts/unauthorized")
         }
     },
-    observe: function(props, state){
-        var user = Parse.User.current();
-        var stakeholders = new Parse.Query("Stakeholder");
-        stakeholders.include("deal");
-        stakeholders.include(["deal.account"]);
-        stakeholders.equalTo("user", user );
-
+    subscriptions: {},
+    setupSubscriptions(){
+        const dealId = this.props.dealId;
         let dealQuery = new Parse.Query("Deal");
-        dealQuery.equalTo("objectId", props.params.dealId );
+        dealQuery.equalTo("objectId", dealId );
         dealQuery.include("readyRoostUser");
         dealQuery.include("createdBy");
-        dealQuery.include("account")
-        return {
-            deal: dealQuery,
-            myStakeholders: stakeholders
+        dealQuery.include("account");
+        let dealSubscription = dealQuery.subscribe();
+
+        this.subscriptions = {
+            deal: dealSubscription,
+        }
+        return this.subscriptions;
+    },
+    removeSubscriptions(){
+        const subscriptions = this.subscriptions;
+        for (const name in this.subscriptions ){
+            if ( subscriptions.hasOwnProperty(name)){
+                subscriptions[name].unsubscribe()
+            }
         }
     },
-    componentDidUpdate(){
-        if ( this.data.deal && this.data.deal[0] ){
-            var deal = this.data.deal[0];
+    componentWillMount(){
+        const self = this;
+        let {dealId} = this.props.params;
+
+        let dealQuery = new Parse.Query("Deal");
+        dealQuery.include("readyRoostUser");
+        dealQuery.include("createdBy");
+        dealQuery.include("account");
+        dealQuery.get(dealId).then(deal => {
             var dealName = RoostUtil.getRoostDisplayName(deal);
             document.title = dealName + " | OneRoost";
-        }
-        else{
-            document.title = "OneRoost";
-        }
+            self.setState({
+                deal: deal,
+                dealLoading: false
+            });
+        }).catch(error => {
+            console.error(error);
+        });
+
+
+        let deal = Pointer("Deal", dealId);
+        var stakeholderQuery = new Parse.Query("Stakeholder");
+        stakeholderQuery.equalTo("deal", deal);
+        stakeholderQuery.include("user");
+        stakeholderQuery.find().then(stakeholders => {
+            self.setState({
+                stakeholdersLoading: false,
+                stakeholders: stakeholders
+            });
+        }).catch(error => console.error(error));
+
+
+        let stepQuery = new Parse.Query("NextStep")
+        stepQuery.equalTo( "deal", deal);
+        stepQuery.ascending("dueDate");
+        stepQuery.find().then(steps => {
+            self.setState({
+                nextSteps: steps,
+                nextStepsLoading: false
+            });
+        }).catch(error => console.error(error));
+
+        const documentsQuery = new Parse.Query("Document");
+        documentsQuery.equalTo( "deal", deal.id )
+        documentsQuery.find().then(documents => {
+            self.setState({
+                documentsLoading: false,
+                documents: documents.map(doc => doc.toJSON())
+            });
+        });
+    },
+    componentWillUnmount(){
 
     },
     componentWillUpdate(nextProps, nextState)
     {
-        var dealId = nextProps.params.dealId;
-        const self = this;
-        Parse.Cloud
-        .run("validateStakeholder", {dealId: dealId})
-        .then(({message, authorized, stakeholder}) => {
+        let self = this;
+        // let {params} = nextProps;
+        // let {dealId=self.props.params.dealId} = params;
+        var dealId = nextProps.params.dealId || this.props.params.dealId;
+
+        Parse.Cloud.run("validateStakeholder", {
+            dealId: dealId
+        }).then(({message, authorized, stakeholder}) => {
             console.log("validateStakeholder response", message);
             if ( !authorized ){
                 self.handleUnauthorized();
@@ -82,16 +144,81 @@ const Deal = withRouter( React.createClass({
                 self.props.router.replace("/invitations/" + stakeholder.objectId)
             }
         });
+
+        // this.removeSubscriptions();
+        // this.subscriptions = this.setupSubscriptions();
+        if ( nextProps.params.dealId !== this.props.params.dealId ){
+            this.getData(nextProps.params.dealId);
+        }
+
+    },
+    getData(dealId){
+        let self = this;
+        let dealQuery = new Parse.Query("Deal");
+        dealQuery.include("readyRoostUser");
+        dealQuery.include("createdBy");
+        dealQuery.include("account");
+        dealQuery.get(dealId).then(deal => {
+            var dealName = RoostUtil.getRoostDisplayName(deal);
+            document.title = dealName + " | OneRoost";
+            self.setState({
+                deal: deal,
+                dealLoading: false
+            });
+        }).catch(error => {
+            console.error(error);
+        });
+
+
+        let deal = Pointer("Deal", dealId);
+        var stakeholderQuery = new Parse.Query("Stakeholder");
+        stakeholderQuery.equalTo("deal", deal);
+        stakeholderQuery.include("user");
+        stakeholderQuery.find().then(stakeholders => {
+            self.setState({
+                stakeholdersLoading: false,
+                stakeholders: stakeholders
+            });
+        }).catch(error => console.error(error));
+
+
+        let stepQuery = new Parse.Query("NextStep")
+        stepQuery.equalTo( "deal", deal);
+        stepQuery.ascending("dueDate");
+        stepQuery.find().then(steps => {
+            self.setState({
+                nextSteps: steps,
+                nextStepsLoading: false
+            });
+        }).catch(error => console.error(error));
+
+        const documentsQuery = new Parse.Query("Document");
+        documentsQuery.equalTo( "deal", deal.id )
+        documentsQuery.find().then(documents => {
+            self.setState({
+                documentsLoading: false,
+                documents: documents.map(doc => doc.toJSON())
+            });
+        });
     },
     render () {
-        if ( this.pendingQueries().length > 0 )
+        let {deal,
+            nextSteps,
+            stakeholders,
+            dealLoading,
+            documents,
+            documentsLoading,
+            stakeholdersLoading,
+            nextStepsLoading} = this.state;
+
+        if ( dealLoading || stakeholdersLoading || nextStepsLoading || documentsLoading)
         {
             var message = "Loading...";
             return (
                 <LoadingTakeover size="3x" message={message} />
             );
         }
-        var deal = this.data.deal[0];
+
         if ( !deal )
         {
             return (
@@ -99,28 +226,36 @@ const Deal = withRouter( React.createClass({
             )
         }
 
-        var childrenWithProps = null;
-        if ( this.props.children ){
-            childrenWithProps = React.cloneElement(this.props.children, {deal: deal});
-        }
+        // var childrenWithProps = null;
+        // if ( this.props.children ){
+        //     childrenWithProps = React.cloneElement(this.props.children, {
+        //         deal: deal,
+        //         nextSteps: nextSteps,
+        //         stakeholders: stakeholders
+        //     });
+        // }
         // var mobileClassesDealTop = "visible-lg visible-md";
         var mobileClassesDealTop = "hidden-sm hidden-xs";
         var dealPage =
         <div className="RoostPage">
-            <RoostNav mobileTitle={deal.dealName} showHome={true}/>
+            <RoostNav mobileTitle={deal.get("dealName")} showHome={true}/>
             <div className="RoostBody">
                 <AccountSidebar/>
                 <div className="Deal">
                     <div className="deal-top">
                         <div className={mobileClassesDealTop}>
-                            <NextStepsBanner deal={deal} />
-                            <DealProfile deal={deal} />
+                            <NextStepsBanner deal={deal} stakeholders={stakeholders} nextSteps={nextSteps} />
+                            <DealProfile deal={deal} stakeholders={stakeholders} documents={documents}/>
                         </div>
                         <DealNavMobile deal={deal}></DealNavMobile>
                     </div>
                     <div className="dealPageBottomContainer">
-                        <DealPageBottom ref="dealPageBottom" deal={deal}>
-                            {childrenWithProps}
+                        <DealPageBottom ref="dealPageBottom"
+                            nextSteps={nextSteps}
+                            stakeholders={stakeholders}
+                            deal={deal}
+                            sidebar={this.props.children}
+                            >
                         </DealPageBottom>
                     </div>
                 </div>
@@ -132,4 +267,4 @@ const Deal = withRouter( React.createClass({
     }
 }) )
 
-export default Deal
+export default Roost

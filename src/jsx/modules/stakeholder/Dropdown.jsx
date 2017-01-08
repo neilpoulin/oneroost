@@ -1,22 +1,10 @@
 import React, { PropTypes } from "react"
-import ParseReact from "parse-react";
-import Parse from "parse";
-import Select from "react-select";
+import Select from "react-select"
+import RoostUtil from "RoostUtil"
 
 const Dropdown = React.createClass({
-    mixins: [ ParseReact.Mixin],
     propTypes: {
-        deal: PropTypes.object.isRequired
-    },
-    observe: function () {
-        var stakeholderQuery = new Parse.Query("Stakeholder");
-        stakeholderQuery.include("user");
-        stakeholderQuery.include("invitedBy");
-        stakeholderQuery.ascending("role");
-        stakeholderQuery.equalTo("deal", this.props.deal);
-        return {
-            stakeholders: stakeholderQuery
-        }
+        stakeholders: PropTypes.array.isRequired
     },
     getInitialState(){
         return {
@@ -28,7 +16,8 @@ const Dropdown = React.createClass({
             handleChange: function () {
                 console.error("You did not implement a change handler for the stakeholder dropdown")
             },
-            value: null
+            value: null,
+            stakeholders: [],
         }
     },
     handleChange(val){
@@ -39,11 +28,9 @@ const Dropdown = React.createClass({
     },
     render(){
         var options = [];
-        if (this.pendingQueries().length == 0) {
-            options = this.data.stakeholders.map(function (stakeholder) {
-                return {value: stakeholder.user.objectId, label: stakeholder.user.firstName + " " + stakeholder.user.lastName}
-            });
-        }
+        options = this.props.stakeholders.map(function (stakeholder) {
+            return {value: stakeholder.get("user").objectId, label: RoostUtil.getFullName(stakeholder.get("user"))}
+        });
         return (
             <Select
                 name="form-field-name"

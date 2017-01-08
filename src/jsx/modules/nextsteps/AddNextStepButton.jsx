@@ -1,8 +1,11 @@
-import React from "react";
+import React, {PropTypes} from "react";
 import ModalButton from "ModalButton";
 import NextStepForm from "nextsteps/NextStepForm";
 
-export default React.createClass({
+const AddNextStepButton = React.createClass({
+    propTypes: {
+        stakeholders: PropTypes.array.isRequired
+    },
     getInitialState: function(){
         return {};
     },
@@ -27,8 +30,11 @@ export default React.createClass({
                 >
                 <NextStepForm
                     ref="addNextStepForm"
-                    deal={this.props.deal} />
+                    deal={this.props.deal}
+                    stakeholders={this.props.stakeholders} />
             </ModalButton>
         )
     }
 });
+
+export default AddNextStepButton;

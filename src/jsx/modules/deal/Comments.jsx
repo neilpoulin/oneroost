@@ -1,6 +1,5 @@
 import React, {PropTypes} from "react";
 import Parse from "parse";
-import ParseReact from "parse-react";
 import AddComment from "AddComment";
 import CommentItem from "CommentItem";
 import CommentDateSeparator from "CommentDateSeparator";
@@ -9,7 +8,6 @@ import io from "socket.io-client"
 import RoostUtil from "RoostUtil"
 
 export default React.createClass({
-    mixins: [ParseReact.Mixin],
     propTypes: {
         deal: PropTypes.object.isRequired,
         sidebarOpen: PropTypes.bool
@@ -22,17 +20,14 @@ export default React.createClass({
     getInitialState: function(){
         return {
             commentLimit: 200,
+            comments: [],
             additionalComments: [],
             page: 0,
-            lastFetchCount: null
+            lastFetchCount: null,
+            loading: true,
         }
     },
-    observe: function(props, state){
-        var self = this;
-        return {
-            dealComments: (new Parse.Query("DealComment")).include("author").equalTo( "deal", self.props.deal ).descending("createdAt").limit( self.state.commentLimit )
-        }
-    },
+
     getNextPage(){
         var self = this;
         var currentPage = this.state.page;
@@ -40,7 +35,7 @@ export default React.createClass({
         var additionalComments = this.state.additionalComments
         var query = new Parse.Query("DealComment")
         query.include("author")
-        query.equalTo( "deal", this.props.deal )
+        query.equalTo( "deal", this.props.deal.id )
         query.descending("createdAt")
         query.skip( this.state.commentLimit * nextPage )
         query.limit( this.state.commentLimit );
@@ -55,12 +50,27 @@ export default React.createClass({
                 nextPage = currentPage
             }
             self.setState( {additionalComments: additionalComments, page: nextPage, lastFetchCount: results.length} )
-        });
+        }).catch(error => console.error(error));
 
+    },
+    componentWillMount(){
+        const self = this;
+        const {deal} = this.props;
+        const {commentLimit} = this.state;
+        const commentQuery = new Parse.Query("DealComment")
+        commentQuery.include("author").equalTo( "deal", deal ).descending("createdAt").limit( commentLimit );
+
+        commentQuery.find().then(comments => {
+            self.setState({
+                comments: comments,
+                loading: false,
+            });
+        }).catch(error => console.error(error));
     },
     componentDidMount: function() {
         // window.addEventListener("resize", this.scrollToBottom);
         var self = this;
+        const {deal} = this.props;
         var socket = io("/DealComment");
         socket.on("connect", function() {
             // Connected, let's sign-up for to receive messages for this room
@@ -68,14 +78,14 @@ export default React.createClass({
         });
 
         socket.on("comment", function(comment){
-            var deal = self.props.deal;
-            var senderName = comment.author.firstName + " " + comment.author.lastName;
+            var senderName = RoostUtil.getFullName(comment.author);
             Notification.sendNotification({
-                title: senderName + " | " + deal.dealName,
+                title: senderName + " | " + deal.get("dealName"),
                 body: comment.message,
                 tag: comment.objectId
             });
-            self.refreshQueries(["dealComments"]);
+            //TODO: refresh queries on new comments
+            // self.refreshQueries(["dealComments"]);
         });
         //doing this so that iOS records the scrollTop position correctly.
         var messageContainer = this.refs.messagesContainer;
@@ -138,11 +148,11 @@ export default React.createClass({
         return !isSameDate || elapsedMinutes > 30;
     },
     render: function(){
-        var component = this;
-        var deal = this.props.deal;
-
+        const component = this;
+        const {deal} = this.props;
+        const {comments, commentLimit, lastFetchCount} = this.state;
         var commentsSection = null;
-        if (component.pendingQueries().length > 0 && this.data.dealComments.length == 0)
+        if (this.state.loading)
         {
             commentsSection =
             <div className="loadingComments lead">
@@ -150,7 +160,7 @@ export default React.createClass({
                 &nbsp; Loading Comments...
             </div>;
         }
-        else if ( this.data.dealComments.length == 0 )
+        else if ( this.state.comments.length == 0 )
         {
             commentsSection =
             <div className="emptyComments lead">
@@ -159,21 +169,21 @@ export default React.createClass({
         }
         else
         {
-            var comments = this.data.dealComments.slice(0).concat(this.state.additionalComments);
-            comments = comments.reverse();
+            var allComments = comments.slice(0).concat(this.state.additionalComments);
+            allComments = allComments.reverse();
             var items = [];
             var previousComment = null;
-            comments.forEach(function(comment){
-                var currentDate = comment.createdAt
-                var previousDate = previousComment != null ? previousComment.createdAt : null;
+            allComments.forEach(function(comment){
+                var currentDate = comment.get("createdAt");
+                var previousDate = previousComment != null ? previousComment.get("createdAt") : null;
                 var isSameDate = RoostUtil.isSameDate( currentDate, previousDate );
 
                 if ( !isSameDate || previousComment == null )
                 {
                     var separator =
                     <CommentDateSeparator
-                        key={"dateSeparator_comment_" + comment.objectId }
-                        previousDate={previousComment != null ? previousComment.createdAt : null}
+                        key={"dateSeparator_comment_" + comment.id }
+                        previousDate={previousDate}
                         nextDate={comment.createdAt}
                         />
                     items.push( separator );
@@ -181,7 +191,7 @@ export default React.createClass({
 
                 var forceShowUsername = component.forceShowUsername(currentDate, previousDate);
                 var item =
-                <CommentItem key={"commentItem_" + comment.objectId}
+                <CommentItem key={"commentItem_" + comment.id}
                     comment={comment}
                     previousComment={previousComment}
                     forceShowUsername={forceShowUsername}
@@ -198,11 +208,11 @@ export default React.createClass({
         }
 
         var moreButton = null
-        if ( this.state.lastFetchCount == null && this.data.dealComments.length === this.state.commentLimit || this.state.lastFetchCount === this.state.commentLimit )
+        if ( lastFetchCount == null && comments.length === commentLimit || lastFetchCount === commentLimit )
         {
             moreButton = <button className="btn btn-outline-primary loadMore" onClick={this.getNextPage}>Load Previous Comments</button>
         }
-        else if ( this.state.lastFetchCount != null && this.state.lastFetchCount < this.state.commentLimit ){
+        else if ( lastFetchCount != null && lastFetchCount < commentLimit ){
              moreButton = <div className="messageStart">This is the start of the message history</div>
         }
 

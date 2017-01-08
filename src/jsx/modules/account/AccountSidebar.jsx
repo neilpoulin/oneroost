@@ -1,23 +1,32 @@
 import React from "react"
 import Parse from "parse"
-import ParseReact from "parse-react"
 import AccountSidebarList from "account/AccountSidebarList"
 import AddAccountButton from "account/AddAccountButton"
 
 export default React.createClass({
-    mixins: [ParseReact.Mixin],
-    observe: function(props, state){
-        var user = Parse.User.current();
-        var stakeholders = new Parse.Query("Stakeholder");
-        stakeholders.include("deal");
-        stakeholders.include(["deal.account"]);
-        stakeholders.include("deal.createdBy");
-        stakeholders.include("deal.readyRoostUser");
-        stakeholders.equalTo("user", user );
-        stakeholders.equalTo("inviteAccepted", true);
+    getInitialState(){
         return {
-            stakeholders: stakeholders
+            stakeholders: [],
+            loading: true,
         }
+    },
+    componentWillMount(){
+        let self = this;
+        var user = Parse.User.current();
+        var stakeholdersQuery = new Parse.Query("Stakeholder");
+        stakeholdersQuery.include("deal");
+        stakeholdersQuery.include(["deal.account"]);
+        stakeholdersQuery.include("deal.createdBy");
+        stakeholdersQuery.include("deal.readyRoostUser");
+        stakeholdersQuery.equalTo("user", user );
+        stakeholdersQuery.equalTo("inviteAccepted", true);
+
+        stakeholdersQuery.find().then(stakeholders => {
+            self.setState({
+                stakeholders: stakeholders,
+                loading: false
+            })
+        })
     },
     getDefaultProps: function(){
         return {
@@ -28,13 +37,13 @@ export default React.createClass({
         this.refreshQueries(["stakeholders"]);
     },
     render () {
-        var contents;
-        if ( this.pendingQueries().length > 0 ){
+        var contents;        
+        if ( this.state.loading ){
             contents = <div>Loading....</div>;
         }
         else {
-            var deals = this.data.stakeholders.map(function(stakeholder){
-                    return stakeholder.deal
+            var deals = this.state.stakeholders.map(function(stakeholder){
+                    return stakeholder.get("deal")
                 })
             contents = <AccountSidebarList deals={deals} />
         }

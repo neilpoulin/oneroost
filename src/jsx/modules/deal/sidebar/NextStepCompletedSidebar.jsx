@@ -1,17 +1,17 @@
-import Parse from "parse";
-import React from "react";
-import ParseReact from "parse-react";
-import NavLink from "NavLink";
+import Parse from "parse"
+import React, {PropTypes} from "react"
+import NavLink from "NavLink"
+// import RoostUtil from "RoostUtil"
 
 const NextStepCompletedSidebar = React.createClass({
-    mixins: [ParseReact.Mixin],
-    observe: function(props, state){
-        var Deal = Parse.Object.extend("Deal");
-        var deal = new Deal();
-        deal.id = props.params.dealId;
+    propTypes: {
+        deal: PropTypes.instanceOf(Parse.Object),
+        nextSteps: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
+    },
+    getDefaultProps(){
         return {
-            nextSteps: new Parse.Query("NextStep").equalTo( "deal", deal).ascending("dueDate")
-        };
+            nextSteps: []
+        }
     },
     formatDate: function( date )
     {
@@ -19,34 +19,27 @@ const NextStepCompletedSidebar = React.createClass({
         {
             date = new Date( date );
         }
-
         var month = date.getMonth() + 1;
         return month + "/" + date.getDate() + "/" + date.getFullYear()
     },
     render () {
-        if ( this.pendingQueries().length > 0 )
-        {
-            var spinner = <div><i className="fa fa-spinner fa-spin"></i></div>
-            return spinner;
-        }
-
-        var completedSteps = this.data.nextSteps.filter(function( step ){
-            return step.completedDate != null;
+        let self = this;
+        let {nextSteps, deal} = this.props;
+        var completedSteps = nextSteps.filter(function( step ){
+            return step.get("completedDate") != null;
         });
 
-        var dealId = this.props.params.dealId;
-        var self = this;
         var sidebar =
         <div>
             <h3>Completed Steps</h3>
             {completedSteps.map(function(step){
                 var step =
-                <NavLink tag="div" to={"/roosts/" + dealId + "/steps/" + step.objectId }
+                <NavLink tag="div" to={"/roosts/" + deal.id + "/steps/" + step.id }
                     className={ "NextStepSidebarItemContainer" }
-                    key={"roost_" + dealId + "_step_" + step.objectId + "_completed"} >
-                    <div className="nextStepTitle">{step.title}</div>
+                    key={"roost_" + deal.id + "_step_" + step.id + "_completed"} >
+                    <div className="nextStepTitle">{step.get("title")}</div>
                     <div className="nextStepDueDate">
-                        Completed Date: {self.formatDate(step.completedDate)}
+                        Completed Date: {self.formatDate(step.get("completedDate"))}
                     </div>
                 </NavLink>
                 return step;

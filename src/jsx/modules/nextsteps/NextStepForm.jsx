@@ -1,4 +1,4 @@
-import React from "react"
+import React, {PropTypes} from "react"
 import Parse from "parse"
 import ParseReact from "parse-react"
 import moment from "moment"
@@ -12,6 +12,10 @@ import FormGroup from "FormGroup"
 import {validations} from "nextsteps/NextStepValidations"
 
 export default React.createClass({
+    propTypes: {
+        stakeholders: PropTypes.array.isRequired,
+        deal: PropTypes.instanceOf(Parse.Object)
+    },
     getInitialState: function () {
         return {
             title: "",
@@ -121,7 +125,10 @@ export default React.createClass({
                 label="Assigned User"
                 errors={this.state.errors}
                 fieldName="assignedUser" >
-                <Dropdown deal={this.props.deal} handleChange={this.handleUserChange} value={this.props.assignedUser != null ? this.props.step.assignedUser.objectId : null}/>
+                <Dropdown stakeholders={this.props.stakeholders} 
+                    deal={this.props.deal}
+                    handleChange={this.handleUserChange}
+                    value={this.props.assignedUser != null ? this.props.step.assignedUser.objectId : null}/>
             </FormGroup>
         </div>
         return form;

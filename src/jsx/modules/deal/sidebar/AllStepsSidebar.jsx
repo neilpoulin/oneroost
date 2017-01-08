@@ -1,18 +1,17 @@
 import Parse from "parse";
-import React from "react";
-import ParseReact from "parse-react";
+import React, {PropTypes} from "react";
 import NavLink from "NavLink";
 import AddNextStepButton from "nextsteps/AddNextStepButton";
 
 const AllStepsSidebar = React.createClass({
-    mixins: [ParseReact.Mixin],
-    observe: function(props, state){
-        var Deal = Parse.Object.extend("Deal");
-        var deal = new Deal();
-        deal.id = props.params.dealId;
+    propTypes: {
+        nextSteps: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)).isRequired,
+        deal: PropTypes.instanceOf(Parse.Object).isRequired
+    },
+    getDefaultProps(){
         return {
-            nextSteps: new Parse.Query("NextStep").equalTo( "deal", deal)
-        };
+            nextSteps: [],
+        }
     },
     formatDate: function( date )
     {
@@ -25,30 +24,24 @@ const AllStepsSidebar = React.createClass({
         return month + "/" + date.getDate() + "/" + date.getFullYear()
     },
     render () {
-        if ( this.pendingQueries().length > 0 )
-        {
-            var spinner = <div><i className="fa fa-spinner fa-spin"></i> Loading steps...</div>
-            return spinner;
-        }
+        const {nextSteps, deal} = this.props;
+        const self = this;
 
-        var completedSteps = this.data.nextSteps.filter(function( step ){
+        var completedSteps = nextSteps.filter(function( step ){
             return step.completedDate != null;
         });
 
-        var activeSteps = this.data.nextSteps.filter(function( step ){
+        var activeSteps = nextSteps.filter(function( step ){
             return step.completedDate == null;
         });
 
-        var dealId = this.props.params.dealId;
-        var self = this;
+        var dealId = deal.id;
+
 
         var addStepsBtn = null;
         if ( activeSteps.length < 5 )
         {
-            var Deal = Parse.Object.extend("Deal");
-            var deal = new Deal();
-            deal.id = this.props.params.dealId;
-            addStepsBtn = <AddNextStepButton deal={deal}
+            addStepsBtn = <AddNextStepButton deal={this.props.deal}
                 containerClass=""
                 btnClassName="btn-outline-primary btn-block"/>
         }
@@ -59,12 +52,12 @@ const AllStepsSidebar = React.createClass({
             <div>
                 {activeSteps.map(function(step){
                     var step =
-                    <NavLink tag="div" to={"/roosts/" + dealId + "/steps/" + step.objectId }
-                            key={"deal_" + dealId + "_active_step_" + step.objectId}
+                    <NavLink tag="div" to={"/roosts/" + dealId + "/steps/" + step.id }
+                            key={"deal_" + dealId + "_active_step_" + step.id}
                         className={ "NextStepSidebarItemContainer active" } >
-                        <div className="nextStepTitle">{step.title}</div>
+                        <div className="nextStepTitle">{step.get("title")}</div>
                         <div className="nextStepDueDate">
-                            Due Date: {self.formatDate(step.dueDate)}
+                            Due Date: {self.formatDate(step.get("dueDate"))}
                         </div>
                     </NavLink>
                     return step;

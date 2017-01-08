@@ -9,7 +9,8 @@ const AccountSidebarList = React.createClass({
     },
     getDefaultProps(){
         return {
-            className: ""
+            className: "",
+            deals: [],
         }
     },
     render () {
@@ -20,7 +21,7 @@ const AccountSidebarList = React.createClass({
             {deals.map(function(deal, i){
                 var item =
                 <AccountSidebarItem
-                    key={"account_" + deal.account.objectId + "_deal_" + deal.objectId + "_" + i}
+                    key={"account_" + deal.get("account").objectId + "_deal_" + deal.objectId + "_" + i}
                     deal={deal}
                     />
                 return item;

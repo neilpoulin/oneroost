@@ -100,9 +100,19 @@ server.listen(port, function() {
     console.log("parse-server OneRoost running on port " + port + ".");
 });
 
+getLiveQueryServer(server);
+
 function getParseDashboard()
 {
     return new ParseDashboard(ParseDashboardConfig);
+}
+
+function getLiveQueryServer(httpServer){
+    ParseServer.createLiveQueryServer(httpServer, {
+        appId: envUtil.getParseAppId(),
+        masterKey: envUtil.getParseMasterKey(),
+        serverURL: envUtil.getParseServerUrl(),
+    });
 }
 
 function getParseServer()
@@ -110,13 +120,13 @@ function getParseServer()
     return new ParseServer({
         databaseURI: envUtil.getDatabaseUrl(),
         cloud: "main.js",
-        appId: envUtil.getParseAppId(), //dev
+        appId: envUtil.getParseAppId(),
         fileKey: "myFileKey",
         masterKey: envUtil.getParseMasterKey(),
         push: {}, // See the Push wiki page
         liveQuery: {
             // classNames: ["User", "Account", "Deal", "DealComment", "NextStep", "Stakeholder"]
-            classNames: ["DealComment"]
+            classNames: ["DealComment", "Deal", "Stakeholder", "NextStep"]
         },
         serverURL: envUtil.getParseServerUrl(),
         publicServerURL: envUtil.getPublicServerUrl(),

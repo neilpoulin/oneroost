@@ -36,7 +36,7 @@ async function sendCommentEmail( comment ){
             EmailSender.sendTemplate( "commentNotif", data, recipients );
         }
     }
-    catch(e){
+    catch(e){        
         console.error("something went wrong with the comment sender", e);
     }
 }

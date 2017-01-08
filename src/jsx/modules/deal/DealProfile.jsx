@@ -1,23 +1,42 @@
 import React, { PropTypes } from "react"
 import Parse from "parse";
-import ParseReact from "parse-react";
 import NavLink from "NavLink";
 import RoostUtil from "RoostUtil"
 
 const DealProfile = React.createClass({
-    mixins: [ParseReact.Mixin],
     propTypes: {
-        deal: PropTypes.object.isRequired
+        deal: PropTypes.instanceOf(Parse.Object).isRequired,
+        stakeholders: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
+        documents: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
     },
-    observe(props, state){
-        var stakeholderQuery = new Parse.Query("Stakeholder");
-        stakeholderQuery.equalTo("deal", props.deal);
-
+    getDefaultProps(){
         return {
-            stakeholders: stakeholderQuery,
-            documents: (new Parse.Query("Document")).equalTo( "deal", props.deal )
+            stakeholders: [],
+            documents: []
         }
     },
+    // componentWillMount(){
+    //     const self = this;
+    //     const {deal} = this.props;
+    //
+    //     var stakeholderQuery = new Parse.Query("Stakeholder");
+    //     stakeholderQuery.equalTo("deal", deal.id);
+    //     stakeholderQuery.find().then(stakeholders => {
+    //         self.setState({
+    //             stakeholdersLoading: false,
+    //             stakeholders: stakeholders.map(stakeholder => stakeholder.toJSON())
+    //         });
+    //     });
+    //
+    //     const documentsQuery = new Parse.Query("Document");
+    //     documentsQuery.equalTo( "deal", deal.id )
+    //     documentsQuery.find().then(documents => {
+    //         self.setState({
+    //             documentsLoading: false,
+    //             documents: documents.map(doc => doc.toJSON())
+    //         });
+    //     });
+    // },
     getBudgetString(){
         var deal = this.props.deal;
         var budget = deal.budget;
@@ -33,25 +52,21 @@ const DealProfile = React.createClass({
         return RoostUtil.formatMoney(budget.low, true) + " - " + RoostUtil.formatMoney(budget.high, false);
     },
     render () {
-        var deal = this.props.deal
+        const {deal, stakeholders, documents} = this.props;
         var widgetClassName = "widget"
         var titleClassName = "col-xs-2 widget"
         var iconSizeClassname = "fa-lg"
         var budget = this.getBudgetString()
 
-        var stakeholderCount = ""
-        var documentCount = 0
-        if (this.pendingQueries().length == 0) {
-            stakeholderCount = this.data.stakeholders.length > 0 ? this.data.stakeholders.length : ""
-            documentCount = this.data.documents.length
-        }
+        var stakeholderCount = stakeholders.length > 0 ? stakeholders.length : ""
+        var documentCount = documents.length > 0 ? documents.length : ""
 
         var formattedRoostAge = RoostUtil.formatDurationAsDays( deal.createdAt )
         // var stage = Stages.get(deal.currentStage) || Stages.get("EXPLORE");
         var dealTitleBlock =
         <div className={titleClassName}>
             <h1>
-                {deal.dealName}
+                {deal.get("dealName")}
             </h1>
         </div>;
 
@@ -63,7 +78,7 @@ const DealProfile = React.createClass({
             <div className="widgetContainer">
                 <div className={widgetClassName}>
                     <div className="text-center">
-                        <NavLink tag="div" to={"/roosts/" + deal.objectId + "/budget" } className="widgetLink">
+                        <NavLink tag="div" to={"/roosts/" + deal.id + "/budget" } className="widgetLink">
                             <div>
                                 <i className={"fa fa-money " + iconSizeClassname}></i>
                                 &nbsp; Investment
@@ -75,8 +90,8 @@ const DealProfile = React.createClass({
                     </div>
                 </div>
                 <div className={widgetClassName}>
-                    <div className={"text-center " + (deal.profile.timeline ? "" : "invisible")}>
-                        <NavLink tag="div" to={"/roosts/" + deal.objectId + "/timeline" } className="widgetLink">
+                    <div className={"text-center " + (deal.get("profile").timeline ? "" : "invisible")}>
+                        <NavLink tag="div" to={"/roosts/" + deal.id + "/timeline" } className="widgetLink">
                             <div>
                                 <i className={"fa fa-calendar " + iconSizeClassname}></i>
                                 &nbsp; Opportunity Created
@@ -90,7 +105,7 @@ const DealProfile = React.createClass({
                 </div>
                 <div className={widgetClassName}>
                     <div className="text-center">
-                        <NavLink tag="div" to={"/roosts/" + deal.objectId + "/participants" } className="widgetLink">
+                        <NavLink tag="div" to={"/roosts/" + deal.id + "/participants" } className="widgetLink">
                             <div>
                                 <i className={"fa fa-users " + iconSizeClassname}></i>
                                     &nbsp; Participants
@@ -103,7 +118,7 @@ const DealProfile = React.createClass({
                 </div>
                 <div className={widgetClassName}>
                     <div className="text-center">
-                        <NavLink tag="div" to={"/roosts/" + deal.objectId + "/documents" } className="widgetLink">
+                        <NavLink tag="div" to={"/roosts/" + deal.id + "/documents" } className="widgetLink">
                             <div>
                                 <i className={"fa fa-files-o " + iconSizeClassname}></i>
                                     &nbsp; Documents

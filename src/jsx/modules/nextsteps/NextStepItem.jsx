@@ -1,8 +1,11 @@
 import Parse from "parse";
-import React from "react";
+import React, {PropTypes} from "react";
 import NavLink from "NavLink";
 
-export default React.createClass({
+const NextStepItem = React.createClass({
+    propTypes: {
+        deal: PropTypes.instanceOf(Parse.Object)
+    },
     getInitialState: function(){
         return {
             deal: this.props.deal,
@@ -22,18 +25,18 @@ export default React.createClass({
     },
     render: function(){
         var dateLabel = "Due"
-        var date = this.props.step.dueDate;
-        if ( this.props.step.completedDate != null )
+        var date = this.props.step.get("dueDate");
+        if ( this.props.step.get("completedDate") != null )
         {
             dateLabel = "Completed Date: ";
-            date = this.props.step.completedDate;
+            date = this.props.step.get("completedDate");
         }
 
         var stepItem =
 
-        <NavLink tag="div" to={"/roosts/" + this.props.deal.objectId + "/steps/" + this.props.step.objectId }
-            className={"arrow-right NextStepItemContainer " + ( this.props.step.completedDate != null ? "complete " : "" ) + (this.state.active ? "active " : "")} >
-            <div className="nextStepTitle">{this.props.step.title}</div>
+        <NavLink tag="div" to={"/roosts/" + this.props.deal.id + "/steps/" + this.props.step.id }
+            className={"arrow-right NextStepItemContainer " + ( this.props.step.get("completedDate") != null ? "complete " : "" ) + (this.state.active ? "active " : "")} >
+            <div className="nextStepTitle">{this.props.step.get("title")}</div>
             <div className="nextStepDueDate">
                 {dateLabel} {this.formatDate(date)}
             </div>
@@ -41,3 +44,5 @@ export default React.createClass({
         return stepItem;
     }
 });
+
+export default NextStepItem;

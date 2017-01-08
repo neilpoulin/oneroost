@@ -91,10 +91,14 @@ exports.isCurrentUser = function(user){
 
 /** Get the display name for the roost, contextual to the user passed in**/
 exports.getRoostDisplayName = function(deal, displayFor){
-    let readyRoostUser = deal.readyRoostUser;
-    let account = deal.account;
+    if (!(deal instanceof Parse.Object)){
+        throw "Attempting to get roost name from a non parse object", deal;
+    }
+
+    let readyRoostUser = deal.get("readyRoostUser");
+    let account = deal.get("account");
     displayFor = displayFor || this.getCurrentUser();
-    let createdBy = deal.createdBy;
+    let createdBy = deal.get("createdBy");
 
     let isCreator = this.isCurrentUser(createdBy);
     let isReadyRoostUser = this.isCurrentUser(readyRoostUser);
@@ -104,12 +108,12 @@ exports.getRoostDisplayName = function(deal, displayFor){
     }
 
     let roostName = "";
-    if ( createdBy && !isCreator && createdBy.company ){
-        roostName = createdBy.company
-    } else if ( readyRoostUser && !isReadyRoostUser && readyRoostUser.company ){
-        roostName = readyRoostUser.company;
+    if ( createdBy && !isCreator && createdBy.get("company") ){
+        roostName = createdBy.get("company")
+    } else if ( readyRoostUser && !isReadyRoostUser && readyRoostUser.get("company") ){
+        roostName = readyRoostUser.get("company");
     } else{
-        roostName = account.accountName;
+        roostName = account.get("accountName");
     }
     return roostName;
 }

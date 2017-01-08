@@ -1,57 +1,50 @@
-import React from "react";
+import React, {PropTypes} from "react";
 import Parse from "parse";
-import ParseReact from "parse-react";
 import NavLink from "NavLink";
 import AddNextStepButton from "nextsteps/AddNextStepButton";
 import NextStepItem from "nextsteps/NextStepItem";
 
-export default React.createClass({
-    mixins: [ParseReact.Mixin],
-    observe: function(props, state){
-        return {
-            nextSteps: new Parse.Query("NextStep").equalTo( "deal", props.deal ).ascending("dueDate")
-        };
+const NextStepBanner = React.createClass({
+    propTypes: {
+        deal: PropTypes.instanceOf(Parse.Object),
+        stakeholders: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)).isRequired,
+        nextSteps: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)).isRequired,
     },
-    getInitialState: function(){
+    getDefaultProps(){
         return {
-            deal: this.props.deal,
-            user: Parse.User.current()
-        };
+            nextSteps: []
+        }
     },
     render: function(){
-        var addButton = <div className="width-0"></div>;
-        var self = this;
-
-        if ( this.pendingQueries().length > 0 )
-        {
-            return <div><i className="fa fa-spin fa-spinner"></i>Loading Steps...</div>
-        }
-
+        const {deal, stakeholders, nextSteps} = this.props;
         var completedSteps = [];
-        var nextSteps = [];
+        var activeSteps = [];
 
-        this.data.nextSteps.forEach(function(step){
-            if ( step.completedDate == null ){
-                nextSteps.push(step)
+        nextSteps.forEach(function(step){
+            if ( step.get("completedDate") == null ){
+                activeSteps.push(step)
             }
             else{
                 completedSteps.push(step)
             }
         });
 
-        if ( nextSteps.length < 5 )
+        var addButton = null;
+        if ( activeSteps.length < 5 )
         {
             addButton = <div className="NextStepBannerItem AddStepContainer">
-                <AddNextStepButton deal={self.state.deal} containerClass="AddNextStepButton"/>
+                <AddNextStepButton stakeholders={stakeholders} containerClass="AddNextStepButton"/>
             </div>
         }
 
         var completedStepsItem = null
         if ( completedSteps.length > 0 )
         {
+            // TODO: dont think i need this... removed from the NavLink below
+            // className={"NextStepBannerItem CompletedStepsContainer" + (this.state.active ? "active " : "")} >
             completedStepsItem =
-            <NavLink tag="div" to={"/roosts/" + this.props.deal.objectId + "/steps/completed" }
-                className={"NextStepBannerItem CompletedStepsContainer" + (this.state.active ? "active " : "")} >
+            <NavLink tag="div" to={"/roosts/" + this.props.deal.id + "/steps/completed" }
+                className={"NextStepBannerItem CompletedStepsContainer"} >
                 <div className="">{completedSteps.length} <i className="fa fa-check"></i></div>
             </NavLink>
         }
@@ -60,12 +53,12 @@ export default React.createClass({
         <div id="NextStepsBannerContainer" className="">
             {completedStepsItem}
             <div className="NextStepBannerItem NextStepsContainer">
-                {nextSteps.map(function(step){
+                {activeSteps.map(step => {
                     var item =
                     <NextStepItem
                         step={step}
-                        deal={self.state.deal}
-                        key={"deal_" + self.state.deal.objectId + "step_" + step.objectId} >
+                        deal={deal}
+                        key={"deal_" + deal.id + "step_" + step.id} >
                     </NextStepItem>
                     return item;
                 })}
@@ -73,8 +66,8 @@ export default React.createClass({
             {addButton}
         </div>
 
-
-
-        return banner
+        return banner;
     }
 });
+
+export default NextStepBanner;
