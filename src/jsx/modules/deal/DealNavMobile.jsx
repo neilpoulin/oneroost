@@ -1,12 +1,13 @@
 import React, { PropTypes } from "react"
-import NavLink from "NavLink";
+import Parse from "parse"
+import NavLink from "NavLink"
 
 const DealNavMobile = React.createClass({
     propTypes: {
-        deal: PropTypes.object.isRequired
+        deal: PropTypes.instanceOf(Parse.Object).isRequired
     },
     render () {
-        var dealId = this.props.deal.objectId;
+        var dealId = this.props.deal.id;
         var colSize = "col-xs-3";
         var mobileNav =
         <div className="conatiner-fluid text-center hidden-lg hidden-md DealNavMobile">

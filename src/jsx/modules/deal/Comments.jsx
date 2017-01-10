@@ -65,8 +65,10 @@ export default React.createClass({
                 comments: comments
             });
 
+            let authorName = RoostUtil.getFullName(comment.get("author"));
+            let title = authorName ? authorName + " | " + self.props.deal.get("dealName") : self.props.deal.get("dealName");
             Notification.sendNotification({
-                title: RoostUtil.getFullName(comment.get("author")) + " | " + self.props.deal.get("dealName"),
+                title: title,
                 body: comment.get("message"),
                 tag: comment.id
             });
