@@ -67,55 +67,8 @@ const Roost = withRouter( React.createClass({
         }
     },
     componentWillMount(){
-        const self = this;
         let {dealId} = this.props.params;
-
-        let dealQuery = new Parse.Query("Deal");
-        dealQuery.include("readyRoostUser");
-        dealQuery.include("createdBy");
-        dealQuery.include("account");
-        dealQuery.get(dealId).then(deal => {
-            var dealName = RoostUtil.getRoostDisplayName(deal);
-            document.title = dealName + " | OneRoost";
-            self.setState({
-                deal: deal,
-                dealLoading: false
-            });
-        }).catch(error => {
-            console.error(error);
-        });
-
-
-        let deal = Pointer("Deal", dealId);
-        var stakeholderQuery = new Parse.Query("Stakeholder");
-        stakeholderQuery.equalTo("deal", deal);
-        stakeholderQuery.include("user");
-        stakeholderQuery.find().then(stakeholders => {
-            self.setState({
-                stakeholdersLoading: false,
-                stakeholders: stakeholders
-            });
-        }).catch(error => console.error(error));
-
-
-        let stepQuery = new Parse.Query("NextStep")
-        stepQuery.equalTo( "deal", deal);
-        stepQuery.ascending("dueDate");
-        stepQuery.find().then(steps => {
-            self.setState({
-                nextSteps: steps,
-                nextStepsLoading: false
-            });
-        }).catch(error => console.error(error));
-
-        const documentsQuery = new Parse.Query("Document");
-        documentsQuery.equalTo( "deal", deal.id )
-        documentsQuery.find().then(documents => {
-            self.setState({
-                documentsLoading: false,
-                documents: documents.map(doc => doc.toJSON())
-            });
-        });
+        this.getData(dealId);
     },
     componentWillUnmount(){
 
@@ -148,6 +101,7 @@ const Roost = withRouter( React.createClass({
         // this.removeSubscriptions();
         // this.subscriptions = this.setupSubscriptions();
         if ( nextProps.params.dealId !== this.props.params.dealId ){
+            this.resetLoading();
             this.getData(nextProps.params.dealId);
         }
 
@@ -192,13 +146,23 @@ const Roost = withRouter( React.createClass({
             });
         }).catch(error => console.error(error));
 
-        const documentsQuery = new Parse.Query("Document");
-        documentsQuery.equalTo( "deal", deal.id )
+        let documentsQuery = new Parse.Query("Document");
+        documentsQuery.equalTo( "deal", deal )
+        documentsQuery.include("user")
+        documentsQuery.include("createdBy")
         documentsQuery.find().then(documents => {
             self.setState({
                 documentsLoading: false,
-                documents: documents.map(doc => doc.toJSON())
+                documents: documents,
             });
+        });
+    },
+    resetLoading(){
+        this.setState({
+            stakeholdersLoading: true,
+            nextStepsLoading: true,
+            documentsLoading: true,
+            dealLoading: true,
         });
     },
     render () {
@@ -254,6 +218,7 @@ const Roost = withRouter( React.createClass({
                             nextSteps={nextSteps}
                             stakeholders={stakeholders}
                             deal={deal}
+                            documents={documents}
                             sidebar={this.props.children}
                             >
                         </DealPageBottom>

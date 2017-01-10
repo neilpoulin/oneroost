@@ -1,13 +1,11 @@
 import React, { PropTypes } from "react"
-import moment from "moment";
-import NavLink from "NavLink";
+import Parse from "parse"
+import moment from "moment"
+import NavLink from "NavLink"
 
 const SystemComment = React.createClass({
     propTypes: {
-        comment: PropTypes.shape({
-            author: PropTypes.object
-            // createdAt: PropTypes.instanceOf(Date).isRequired
-        }).isRequired
+        comment: PropTypes.instanceOf(Parse.Object),
     },
     formatCommentDate: function( comment )
     {
@@ -15,11 +13,11 @@ const SystemComment = React.createClass({
         return moment(date).format("h:mm A");
     },
     buildLink: function(comment){
-        if ( comment.navLink )
+        if ( comment.get("navLink") )
         {
             var path = "/";
 
-            switch (comment.navLink.type) {
+            switch (comment.get("navLink").type) {
                 case "step":
                     path = "/steps"
                     break;
@@ -38,10 +36,10 @@ const SystemComment = React.createClass({
                 default:
                     break;
             }
-            var link = "/roosts/" + comment.deal.objectId + path;
-            if ( comment.navLink.id )
+            var link = "/roosts/" + comment.get("deal").id + path;
+            if ( comment.get("navLink").id )
             {
-                link += "/" + comment.navLink.id;
+                link += "/" + comment.get("navLink").id;
             }
 
             return link;
@@ -49,8 +47,8 @@ const SystemComment = React.createClass({
         return null;
     },
     render () {
-        var comment = this.props.comment;
-        var onboarding = this.props.comment.onboarding;
+        var {comment} = this.props;
+        var onboarding = comment.get("onboarding");
         var postTime = <span className="postTime">{this.formatCommentDate(comment)}</span>
         var author = null;
         if ( onboarding){
@@ -64,18 +62,18 @@ const SystemComment = React.createClass({
         }
 
         var link = this.buildLink(comment);
-        var message = <span className="message">{comment.message}</span>
+        var message = <span className="message">{comment.get("message")}</span>
         if ( link )
         {
             message =
             <NavLink tag="span" to={link} className="messageLink message">
-                {comment.message}
+                {comment.get("message")}
             </NavLink>
         }
 
         var result =
         <li className={"comment system" + ( onboarding ? " onboarding": "" )}
-            key={"dealComment_" + comment.objectId } >
+            key={"dealComment_" + comment.id } >
             <div className="container-fluid">
                 {author}
                 <div className="row">

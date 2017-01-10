@@ -13,9 +13,7 @@ const re = /(?:\.([^.]+))?$/;
 
 const DocumentUploadForm = React.createClass({
     propTypes: {
-        deal: PropTypes.shape({
-            objectId: PropTypes.string.isRequired
-        })
+        deal: PropTypes.instanceOf(Parse.Object),
     },
     getInitialState(){
         return {
@@ -24,7 +22,6 @@ const DocumentUploadForm = React.createClass({
             uploadSuccess: false,
             dragover: false,
             fileName: "",
-            deal: this.props.deal,
             externalLink: "",
             s3key: "",
             type: "",
@@ -48,7 +45,7 @@ const DocumentUploadForm = React.createClass({
     saveDocument(){
         var self = this;
         var user = Parse.User.current().toPlainObject();
-        var deal = self.state.deal;
+        var {deal} = self.props;
         var upload = {
             createdBy: user,
             deal: deal,
@@ -56,7 +53,7 @@ const DocumentUploadForm = React.createClass({
             s3key: this.state.s3key,
             externalLink: this.state.externalLink,
             type: this.state.type,
-            size: this.state.size,
+            size: this.state.size, 
             fileExtension: this.state.fileExtension
         }
         ParseReact.Mutation.Create("Document", upload)
@@ -76,11 +73,12 @@ const DocumentUploadForm = React.createClass({
     onDrop: function(files){
         console.log(files);
         var self = this;
+        let {deal} = this.props;
         files.forEach(function(file){
             var fileName = file.name;
             Parse.Cloud.run("getPresignedUploadUrl", {
                 fileName: fileName,
-                dealId: self.props.deal.objectId,
+                dealId: deal.id,
                 type: file.type
             }).then(function( result ) {
                 console.log("recieved presignedurl", result);
@@ -143,8 +141,6 @@ const DocumentUploadForm = React.createClass({
         var errors = this.state.errors;
         var progress = null;
         var formAction =
-
-
         <FormInputGroup
             fieldName="externalLink"
             value={this.state.externalLink}

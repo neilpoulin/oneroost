@@ -24,7 +24,7 @@ export default React.createClass({
 
         var commentAuthorId = comment.get("author") != null ? comment.get("author").id : null;
         var previousCommentAuthor = previousComment != null ? previousComment.get("author") : null;
-        var previousCommentAuthorId = previousCommentAuthor != null ? previousComment.author.id : null;
+        var previousCommentAuthorId = previousCommentAuthor != null ? previousCommentAuthor.id : null;
         var sameAuthorAsPrevious = commentAuthorId == previousCommentAuthorId && commentAuthorId != null;
         var showAuthor = forceShowUsername || !sameAuthorAsPrevious;
 

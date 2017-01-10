@@ -8,6 +8,7 @@ const DealPageBottom = React.createClass({
         deal: PropTypes.object.isRequired,
         stakeholders: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
         nextSteps: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
+        documents: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
         sidebar: PropTypes.any,
     },
     beforeOpen(){
@@ -24,7 +25,7 @@ const DealPageBottom = React.createClass({
     },
     sidebarOpen: false,
     render: function() {
-        const {deal, nextSteps, stakeholders} = this.props;
+        const {deal, nextSteps, stakeholders, documents} = this.props;
         var sidebar = null;
         var isOpen = false
         if ( this.props.sidebar )
@@ -33,7 +34,8 @@ const DealPageBottom = React.createClass({
             sidebarWithProps = React.cloneElement(this.props.sidebar, {
                 deal: deal,
                 nextSteps: nextSteps,
-                stakeholders: stakeholders
+                stakeholders: stakeholders,
+                documents: documents
             });
 
             sidebar =

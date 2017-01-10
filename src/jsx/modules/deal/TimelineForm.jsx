@@ -5,19 +5,16 @@ import moment from "moment"
 import Select from "react-select"
 import Stages from "Stages"
 import FormGroup from "FormGroup"
+import RoostUtil from "RoostUtil"
 
-const TimelineForm = React.createClass({
-    mixins: [ParseReact.Mixin],
-    observe(){
-        return {};
-    },
+const TimelineForm = React.createClass({    
     propTypes: {
-        timeline: PropTypes.string
+        deal: PropTypes.instanceOf(Parse.Object).isRequired
     },
     getInitialState(){
         return {
-            timeline: moment(this.props.timeline),
-            stage: this.props.deal.currentStage || "EXPLORE",
+            timeline: moment(this.props.deal.get("timeline")),
+            stage: this.props.deal.get("currentStage") || "EXPLORE",
             saveSuccess: false,
             saveError: false,
             errors: {},
@@ -35,11 +32,12 @@ const TimelineForm = React.createClass({
         });
     },
     doSubmit(){
-        var deal = this.props.deal;
-        deal.profile.timeline = this.state.timeline.format();
+        let {deal} = this.props;
+        let profile = deal.get("profile")
+        profile.timeline = this.state.timeline.format();
 
         var setter = ParseReact.Mutation.Set(deal, {
-            profile: deal.profile,
+            profile: profile,
             currentStage: this.state.stage.value,
             stageUpdatedAt: new Date()
         });
@@ -49,7 +47,7 @@ const TimelineForm = React.createClass({
     sendComment( deal )
     {
         var user = Parse.User.current();
-        var message = user.get("firstName") + " " + user.get("lastName") + " updated the Timeline";
+        var message = RoostUtil.getFullName(user) + " updated the Timeline";
         var comment = {
             deal: deal,
             message: message,
@@ -77,7 +75,7 @@ const TimelineForm = React.createClass({
         }, 2000);
     },
     getFormattedAge(){
-        var deal = this.props.deal;
+        var {deal} = this.props;
         var created = deal.createdAt;
         return this.formatDurationAsDays( created );
     },
@@ -86,7 +84,7 @@ const TimelineForm = React.createClass({
         return formatted;
     },
     getFormattedCreatedDate(){
-        var deal = this.props.deal;
+        var {deal} = this.props;
         var created = deal.createdAt;
         return this.formatDate(created);
     },
@@ -105,14 +103,13 @@ const TimelineForm = React.createClass({
     },
     render(){
         let {errors} = this.state;
-        var deal = this.props.deal;
+        var {deal} = this.props;
         var age = this.getFormattedAge();
         var stages = this.getStageValues();
         var created = this.getFormattedCreatedDate();
-        var stageUpdated = deal.stageUpdatedAt || deal.createdAt;
+        var stageUpdated = deal.get("stageUpdatedAt") || deal.createdAt;
         var stageUpdatedFormatted = this.formatDate( stageUpdated );
         var stageUpdatedAge = this.formatDurationAsDays( stageUpdated );
-
         var saveMessage = null;
         var saveClass = null
         if ( this.state.saveSuccess ){

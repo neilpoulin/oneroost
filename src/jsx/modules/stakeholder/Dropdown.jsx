@@ -29,7 +29,10 @@ const Dropdown = React.createClass({
     render(){
         var options = [];
         options = this.props.stakeholders.map(function (stakeholder) {
-            return {value: stakeholder.get("user").objectId, label: RoostUtil.getFullName(stakeholder.get("user"))}
+            return {
+                value: stakeholder.get("user").id,
+                label: RoostUtil.getFullName(stakeholder.get("user"))
+            }
         });
         return (
             <Select

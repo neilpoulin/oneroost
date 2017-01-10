@@ -10,6 +10,7 @@ import FormInputGroup from "FormInputGroup"
 import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormGroup from "FormGroup"
 import {validations} from "nextsteps/NextStepValidations"
+import {Pointer} from "models/Models"
 
 export default React.createClass({
     propTypes: {
@@ -80,8 +81,7 @@ export default React.createClass({
     handleUserChange(val){
         var user = null;
         if (val != null) {
-            user = {className: "_User", objectId: val.value}
-
+            user = Pointer("_User", val.value)
         }
         this.setState({
             assignedUser: user
@@ -125,10 +125,10 @@ export default React.createClass({
                 label="Assigned User"
                 errors={this.state.errors}
                 fieldName="assignedUser" >
-                <Dropdown stakeholders={this.props.stakeholders} 
+                <Dropdown stakeholders={this.props.stakeholders}
                     deal={this.props.deal}
                     handleChange={this.handleUserChange}
-                    value={this.props.assignedUser != null ? this.props.step.assignedUser.objectId : null}/>
+                    value={this.props.assignedUser != null ? this.props.step.get("assignedUser").id : null}/>
             </FormGroup>
         </div>
         return form;

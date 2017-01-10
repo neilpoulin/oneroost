@@ -38,8 +38,8 @@ const DealProfile = React.createClass({
     //     });
     // },
     getBudgetString(){
-        var deal = this.props.deal;
-        var budget = deal.budget;
+        var {deal} = this.props;
+        var budget = deal.get("budget");
         if (!budget) {
             return "Not Quoted";
         }

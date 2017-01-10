@@ -5,19 +5,20 @@ import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormInputGroup from "FormInputGroup"
 import InvestmentValidation from "InvestmentValidation"
 import FormUtil from "FormUtil"
+import RoostUtil from "RoostUtil"
 
 const TimelineSidebar = React.createClass({
     propTypes: {
-        deal: PropTypes.object.isRequired
+        deal: PropTypes.instanceOf(Parse.Object).isRequired
     },
     getInitialState(){
         return {
-            high: this.props.deal.budget.high || 0,
-            low: this.props.deal.budget.low || 0,
-            description: this.props.deal.description || "",
+            high: this.props.deal.get("budget").high || 0,
+            low: this.props.deal.get("budget").low || 0,
+            description: this.props.deal.get("description") || "",
             saveSuccess: false,
             saveError: false,
-            dealName: this.props.deal.dealName,
+            dealName: this.props.deal.get("dealName"),
             errors: {},
         }
     },
@@ -26,14 +27,14 @@ const TimelineSidebar = React.createClass({
         let errors = FormUtil.getErrors(this.state, InvestmentValidation);
         if ( !FormUtil.hasErrors(errors) ){
             this.setState({errors: {}});
-            var deal = this.props.deal;
+            var {deal} = this.props;
             var budget = {high: this.state.high, low: this.state.low};
-            var setter = ParseReact.Mutation.Set(deal, {
-                budget: budget,
-                description: this.state.description,
-                dealName: this.state.dealName
-            });
-            setter.dispatch().then(this.sendComment);
+
+            deal.set("budget", budget);
+            deal.set("description", this.state.description);
+            deal.set("dealName", this.state.dealName);
+
+            deal.save().then(this.sendComment).catch(error => console.error(error));
             self.showSuccess();
 
             return true;
@@ -51,7 +52,7 @@ const TimelineSidebar = React.createClass({
     sendComment( deal )
     {
         var user = Parse.User.current();
-        var message = user.get("firstName") + " " + user.get("lastName") + " updated the Investment Details";
+        var message = RoostUtil.getFullName(user) + " updated the Investment Details";
         var comment = {
             deal: deal,
             message: message,
@@ -64,8 +65,8 @@ const TimelineSidebar = React.createClass({
     render(){
         var saveMessage = null;
         var saveClass = "";
-        let {errors} = this.state;
-        if ( this.state.saveSuccess ){
+        let {errors, saveSuccess} = this.state;
+        if ( saveSuccess ){
             saveMessage = <div className="help-block">Success <i className="fa fa-check"></i></div>
             saveClass = "has-success";
         }

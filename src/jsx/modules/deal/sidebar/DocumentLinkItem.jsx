@@ -1,10 +1,11 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
 import moment from "moment"
+import RoostUtil from "RoostUtil"
 
 const DocumentLinkItem = React.createClass({
     propTypes: {
-        doc: PropTypes.object.isRequired
+        doc: PropTypes.instanceOf(Parse.Object).isRequired
     },
     getInitialState(){
         return {
@@ -13,10 +14,10 @@ const DocumentLinkItem = React.createClass({
     },
     doDownload(){
         var self = this;
-        var doc = this.props.doc;
+        let {doc} = this.props
         Parse.Cloud.run("getPresignedGetUrl", {
-            documentId: doc.objectId
-        }).then(function( result ) {
+            documentId: doc.id
+        }).then(result => {
             self.setState({downloadUrl: result.url});
         });
     },
@@ -28,8 +29,8 @@ const DocumentLinkItem = React.createClass({
         return moment(date).format("MMM D, YYYY");
     },
     render () {
-        var doc = this.props.doc;
-        var link = doc.externalLink;
+        var {doc} = this.props;
+        var link = doc.get("externalLink");
         if ( link.indexOf("//") == -1 ){
             link = "http://" + link;
         }
@@ -45,10 +46,10 @@ const DocumentLinkItem = React.createClass({
                     </div>
                     <div>
                         <div>
-                            <span className="fileName">{doc.fileName}</span>
+                            <span className="fileName">{doc.get("fileName")}</span>
                         </div>
                         <div>
-                            <span className="uploadedBy">{doc.createdBy.firstName + " " + doc.createdBy.lastName}</span>
+                            <span className="uploadedBy">{RoostUtil.getFullName(doc.get("createdBy"))}</span>
                             <span className="createdAt">{this.formatDate(doc.createdAt)}</span>
                         </div>
                     </div>

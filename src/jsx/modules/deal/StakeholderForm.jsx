@@ -7,9 +7,7 @@ import FormInputGroup from "FormInputGroup"
 
 export default React.createClass({
     propTypes: {
-        deal: PropTypes.shape({
-            objectId: PropTypes.string.isRequired
-        })
+        deal: PropTypes.instanceOf(Parse.Object)
     },
     getInitialState: function(){
         return {
@@ -46,7 +44,7 @@ export default React.createClass({
             role: this.state.role
         };
         Parse.Cloud.run("addStakeholder", {
-            dealId: self.state.deal.objectId,
+            dealId: self.state.deal.id,
             stakeholder: stakeholderRequest
         }).then(function( result ) {
             if ( result.exists ){

@@ -1,12 +1,11 @@
 import React, { PropTypes } from "react"
 import ModalButton from "ModalButton"
+import Parse from "parse"
 import DocumentUploadForm from "DocumentUploadForm"
 
 const AddDocumentButton = React.createClass({
     propTypes: {
-        deal: PropTypes.shape({
-            objectId: PropTypes.string.isRequired
-        }),
+        deal: PropTypes.instanceOf(Parse.Object).isRequired,
         btnClassName: PropTypes.string
     },
     getDefaultProps(){
@@ -15,17 +14,18 @@ const AddDocumentButton = React.createClass({
         }
     },
     render () {
+        let {deal, btnClassName} = this.props;
         var button =
         <ModalButton
             buttonText=" Add a Document"
             buttonIcon="plus"
             containerClass="AddDocumentButton"
-            buttonClass={this.props.btnClassName}
+            buttonClass={btnClassName}
             modalTitle="Add a Document"
             >
             <DocumentUploadForm
                 ref="addDocumentForm"
-                deal={this.props.deal} />
+                deal={deal} />
         </ModalButton>
 
         return button;

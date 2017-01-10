@@ -1,10 +1,11 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
 import moment from "moment"
+import RoostUtil from "RoostUtil"
 
 const DocumentDownloadItem = React.createClass({
     propTypes: {
-        doc: PropTypes.object.isRequired
+        doc: PropTypes.instanceOf(Parse.Object).isRequired
     },
     urlAttempts: 0,
     getInitialState(){
@@ -13,15 +14,15 @@ const DocumentDownloadItem = React.createClass({
         }
     },
     getPresignedGetUrl(){
-        var self = this;
-        var doc = this.props.doc;
+        let self = this;
+        let {doc} = this.props;
         if ( this.state.downloadUrl ){
             console.log("already has a download url, not fetching it again");
             return
         }
         Parse.Cloud.run("getPresignedGetUrl", {
-            documentId: doc.objectId
-        }).then(function( result ) {
+            documentId: doc.id
+        }).then(result => {
             console.log(result);
             if (result.url.indexOf( "https://s3.amazonaws.com") != -1 ){
                 console.warn("Failed to get a valid S3 url, trying again.", result.url)
@@ -38,9 +39,9 @@ const DocumentDownloadItem = React.createClass({
         });
     },
     getIconType(){
-        var doc = this.props.doc;
+        var {doc} = this.props;
         var icon = "fa-file-o";
-        var type = doc.type;
+        var type = doc.get("type");
         if ( type.indexOf("image") == 0 ){
             return "fa-file-image-o";
         }
@@ -99,19 +100,17 @@ const DocumentDownloadItem = React.createClass({
         return moment(date).format("MMM D, YYYY");
     },
     render () {
-        var doc = this.props.doc;
+        var {doc} = this.props;
+        let {downloadUrl} = this.state;
         var actions = null;
-        if ( this.state.downloadUrl ){
+        if ( downloadUrl ){
             actions =
             <div className="downloadActions">
-                <a href={this.state.downloadUrl} download={doc.fileName} className="btn btn-primary btn-block" target="_blank"><i className="fa fa-download"></i> Download {"\"" + doc.fileName + "\""}</a>
+                <a href={downloadUrl} download={doc.get("fileName")} className="btn btn-primary btn-block" target="_blank">
+                    <i className="fa fa-download"></i> Download {"\"" + doc.get("fileName") + "\""}
+                </a>
             </div>
         }
-
-        var iframe = <iframe width="1"
-                height="1"
-                frameBorder="0"
-                src={this.state.downloadUrl}></iframe>
 
         return (
             <div className="DocumentItem pointer" onClick={this.getPresignedGetUrl}>
@@ -121,10 +120,10 @@ const DocumentDownloadItem = React.createClass({
                     </div>
                     <div>
                         <div>
-                            <span className="fileName">{doc.fileName}</span>
+                            <span className="fileName">{doc.get("fileName")}</span>
                         </div>
                         <div>
-                            <span className="uploadedBy">{doc.createdBy.firstName + " " + doc.createdBy.lastName}</span>
+                            <span className="uploadedBy">{RoostUtil.getFullName(doc.get("createdBy"))}</span>
                             <span className="createdAt">{this.formatDate(doc.createdAt)}</span>
                         </div>
                     </div>

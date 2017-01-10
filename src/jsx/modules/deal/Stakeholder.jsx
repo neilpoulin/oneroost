@@ -6,18 +6,19 @@ import ReactGA from "react-ga"
 
 export default React.createClass({
     propTypes: {
-        isEdit: PropTypes.bool
+        isEdit: PropTypes.bool,
+        stakeholder: PropTypes.instanceOf(Parse.Object).isRequired,
+        deal: PropTypes.instanceOf(Parse.Object).isRequired,
     },
     getDefaultProps(){
         return {
             isEdit: false
         }
     },
-    deleteStakeholder: function (stakeholder) {
+    deleteStakeholder: function () {
         var self = this;
-        var stakeholder = this.props.stakeholder;
+        var {stakeholder} = this.props;
         var confirm = window.confirm("Are you sure you want to remove this user?" );
-
         if ( confirm ){
             ParseReact.Mutation.Destroy(stakeholder)
             .dispatch()
@@ -25,17 +26,17 @@ export default React.createClass({
                 self.sendComment(stakeholder)
             });
         }
-
     },
     sendComment(stakeholder)
     {
+        var {deal} = this.props;
         var user = Parse.User.current();
+        let stakeholderUser = stakeholder.get("user");
         var fullName = RoostUtil.getFullName(user)
-        var message = fullName + " removed a stakeholder: "
-        + stakeholder.user.firstName + " " + stakeholder.user.lastName + " (" + stakeholder.user.email + ")";
+        var message = fullName + " removed a stakeholder: " + RoostUtil.getFUllName(stakeholderUser) + " (" + stakeholder.user.email + ")";
 
         var comment = {
-            deal: stakeholder.deal,
+            deal: deal,
             message: message,
             author: null,
             username: "OneRoost Bot",
@@ -45,11 +46,10 @@ export default React.createClass({
     },
     submitRoost(){
         var self = this;
-        var stakeholder = self.props.stakeholder;
-        var deal = self.props.stakeholder.deal
+        var {stakeholder, deal} = self.props
         Parse.Cloud.run("submitReadyRoost", {
-            dealId: deal.objectId || deal.id,
-            stakeholderId: stakeholder.objectId || stakeholder.id
+            dealId: deal.id,
+            stakeholderId: stakeholder.id
         }).then(function( result ) {
             console.log(result);
             alert("We have let " + RoostUtil.getFullName(stakeholder.user) + " know that the Roost is ready for them to review.")
@@ -62,24 +62,16 @@ export default React.createClass({
         });
     },
     render: function () {
-        var stakeholder = this.props.stakeholder;
-        var user = stakeholder.user;
+        var {stakeholder, isEdit, deal} = this.props;
+        var user = stakeholder.get("user");
         var fullName = RoostUtil.getFullName( user )
-        var email = user.email || user.username
-        var company = null
-        try{
-            company = user.company || user.get("comapny")
-        }
-        catch(e){
-            console.log("failed to get comapny from user object", user);
-        }
+        var email = user.get("email") || user.get("username")
+        var company = user.get("company")        
         // var roleClass = stakeholder.role.toLowerCase();
         var pendingText = null;
-        var deal = stakeholder.deal;
 
         var removeButton = null
-        if ( this.props.isEdit )
-        {
+        if ( isEdit ){
             removeButton =
             <button className="btn btn-outline-danger delete-button"
                 onClick={this.deleteStakeholder}>
@@ -92,17 +84,17 @@ export default React.createClass({
         // var label = null
         // label = <span className={"roleName label " + roleClass}>{stakeholder.role}</span>
 
-        if ( stakeholder.readyRoostApprover && !stakeholder.inviteAccepted && !deal.readyRoostSubmitted){
+        if ( stakeholder.get("readyRoostApprover") && !stakeholder.get("inviteAccepted") && !deal.get("readyRoostSubmitted")){
             actionButton =
             <button onClick={this.submitRoost} className="btn btn-primary">
                 <i className="fa fa-check"></i> Submit Ready Roost
             </button>;
         }
-        else if (stakeholder.readyRoostApprover && deal.readyRoostSubmitted && !stakeholder.inviteAccepted ){
-            pendingText = <span>Ready Roost submitted on {RoostUtil.formatDate(deal.readyRoostSubmitted)}</span>
+        else if (stakeholder.get("readyRoostApprover") && deal.get("readyRoostSubmitted") && !stakeholder.get("inviteAccepted") ){
+            pendingText = <span>Ready Roost submitted on {RoostUtil.formatDate(deal.get("readyRoostSubmitted"))}</span>
             actionButton = null;
         }
-        else if ( !stakeholder.inviteAccepted ){
+        else if ( !stakeholder.get("inviteAccepted") ){
             pendingText = <span className="pending">(Invite Pending)</span>;
         }
 
