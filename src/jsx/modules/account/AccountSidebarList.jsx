@@ -21,7 +21,7 @@ const AccountSidebarList = React.createClass({
             {deals.map(function(deal, i){
                 var item =
                 <AccountSidebarItem
-                    key={"account_" + deal.get("account").objectId + "_deal_" + deal.objectId + "_" + i}
+                    key={"account_" + deal.get("account").id + "_deal_" + deal.id + "_" + i}
                     deal={deal}
                     />
                 return item;

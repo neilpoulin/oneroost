@@ -85,6 +85,14 @@ const Roost = withRouter( React.createClass({
             self.setState({documents: documents});
         })
 
+        let opportunitiesSubscription = queries.opportunities.subscribe();
+        opportunitiesSubscription.on("create", stakeholder => {
+            let opportunity = stakeholder.get("deal");
+            let opportunities = self.state.opportunities;
+            opportunities.push(opportunity);
+            self.setState({opportunities: opportunities});
+        })
+
         this.subscriptions = {
             deal: dealSubscription,
             steps: stepSubscription,
@@ -192,11 +200,27 @@ const Roost = withRouter( React.createClass({
             });
         });
 
+        var opportunitiesQuery = new Parse.Query("Stakeholder");
+        opportunitiesQuery.include("deal");
+        opportunitiesQuery.include(["deal.account"]);
+        opportunitiesQuery.include("deal.createdBy");
+        opportunitiesQuery.include("deal.readyRoostUser");
+        opportunitiesQuery.equalTo("user", Parse.User.current() );
+        opportunitiesQuery.equalTo("inviteAccepted", true);
+        opportunitiesQuery.find().then(stakeholders => {
+            let opportunities = stakeholders.map(s => s.get("deal"));
+            self.setState({
+                opportunities: opportunities,
+                loading: false
+            });
+        })
+
         let queries = {
             documents: documentsQuery,
             steps: stepQuery,
             stakeholders: stakeholderQuery,
-            deal: dealQuery
+            deal: dealQuery,
+            opportunities: opportunitiesQuery,
         }
         this.setupSubscriptions(queries)
     },
@@ -214,65 +238,66 @@ const Roost = withRouter( React.createClass({
             stakeholders,
             dealLoading,
             documents,
+            opportunities,
             documentsLoading,
             stakeholdersLoading,
             nextStepsLoading} = this.state;
 
-        if ( dealLoading || stakeholdersLoading || nextStepsLoading || documentsLoading)
-        {
-            var message = "Loading...";
-            return (
-                <LoadingTakeover size="3x" message={message} />
-            );
-        }
+            if ( dealLoading || stakeholdersLoading || nextStepsLoading || documentsLoading)
+            {
+                var message = "Loading...";
+                return (
+                    <LoadingTakeover size="3x" message={message} />
+                );
+            }
 
-        if ( !deal )
-        {
-            return (
-                <div>ERROR</div>
-            )
-        }
+            if ( !deal )
+            {
+                return (
+                    <div>ERROR</div>
+                )
+            }
 
-        // var childrenWithProps = null;
-        // if ( this.props.children ){
-        //     childrenWithProps = React.cloneElement(this.props.children, {
-        //         deal: deal,
-        //         nextSteps: nextSteps,
-        //         stakeholders: stakeholders
-        //     });
-        // }
-        // var mobileClassesDealTop = "visible-lg visible-md";
-        var mobileClassesDealTop = "hidden-sm hidden-xs";
-        var dealPage =
-        <div className="RoostPage">
-            <RoostNav mobileTitle={deal.get("dealName")} showHome={true}/>
-            <div className="RoostBody">
-                <AccountSidebar/>
-                <div className="Deal">
-                    <div className="deal-top">
-                        <div className={mobileClassesDealTop}>
-                            <NextStepsBanner deal={deal} stakeholders={stakeholders} nextSteps={nextSteps} />
-                            <DealProfile deal={deal} stakeholders={stakeholders} documents={documents}/>
+            // var childrenWithProps = null;
+            // if ( this.props.children ){
+            //     childrenWithProps = React.cloneElement(this.props.children, {
+            //         deal: deal,
+            //         nextSteps: nextSteps,
+            //         stakeholders: stakeholders
+            //     });
+            // }
+            // var mobileClassesDealTop = "visible-lg visible-md";
+            var mobileClassesDealTop = "hidden-sm hidden-xs";
+            var dealPage =
+            <div className="RoostPage">
+                <RoostNav mobileTitle={deal.get("dealName")} showHome={true}/>
+                <div className="RoostBody">
+                    <AccountSidebar deals={opportunities}/>
+                    <div className="Deal">
+                        <div className="deal-top">
+                            <div className={mobileClassesDealTop}>
+                                <NextStepsBanner deal={deal} stakeholders={stakeholders} nextSteps={nextSteps} />
+                                <DealProfile deal={deal} stakeholders={stakeholders} documents={documents}/>
+                            </div>
+                            <DealNavMobile deal={deal}></DealNavMobile>
                         </div>
-                        <DealNavMobile deal={deal}></DealNavMobile>
-                    </div>
-                    <div className="dealPageBottomContainer">
-                        <DealPageBottom ref="dealPageBottom"
-                            nextSteps={nextSteps}
-                            stakeholders={stakeholders}
-                            deal={deal}
-                            documents={documents}
-                            sidebar={this.props.children}
-                            >
-                        </DealPageBottom>
+                        <div className="dealPageBottomContainer">
+                            <DealPageBottom ref="dealPageBottom"
+                                nextSteps={nextSteps}
+                                stakeholders={stakeholders}
+                                deal={deal}
+                                documents={documents}
+                                sidebar={this.props.children}
+                                >
+                            </DealPageBottom>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
 
-        return dealPage;
-    }
-}) )
+            return dealPage;
+        }
+    }) )
 
-export default Roost
+    export default Roost

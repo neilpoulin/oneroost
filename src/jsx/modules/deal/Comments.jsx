@@ -70,7 +70,6 @@ export default React.createClass({
                 body: comment.get("message"),
                 tag: comment.id
             });
-
         })
 
         this.subscriptions.push(commentSubscription)
