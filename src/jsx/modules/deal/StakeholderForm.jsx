@@ -1,9 +1,11 @@
 import React, {PropTypes} from "react"
 import Parse from "parse"
-import ParseReact from "parse-react"
+import Stakeholder from "models/Stakeholder"
+import DealComment from "models/DealComment"
 import StakeholderValidation from "StakeholderValidation"
 import FormUtil from "FormUtil"
 import FormInputGroup from "FormInputGroup"
+import RoostUtil from "RoostUtil"
 
 export default React.createClass({
     propTypes: {
@@ -56,33 +58,30 @@ export default React.createClass({
             createdUser.lastName = createdUser.get("lastName");
             createdUser.email = createdUser.get("email");
             createdUser.company = createdUser.get("company");
-            var stakeholder = {
+            let stakeholder = new Stakeholder();
+            stakeholder.set({
                 "user": createdUser,
                 "deal": self.state.deal,
                 "role": stakeholderRequest.role,
                 "inviteAccepted": false,
                 "invitedBy": self.state.user
-            };
+            });
+            stakeholder.save().catch(console.error);
 
-            ParseReact.Mutation.Create("Stakeholder", stakeholder).dispatch();
-
-            var message = self.state.user.get("firstName") + " " + self.state.user.get("lastName") + " added a stakeholder: "
-            + createdUser.get("firstName") + " " + createdUser.get("lastName") + " (" + createdUser.get("email") + ")";
-
-            var comment = {
+            let comment = new DealComment();
+            comment.set({
                 deal: self.props.deal,
-                message: message,
+                message: RoostUtil.getFullName(Parse.User.current()) + " added " + RoostUtil.getFullName(createdUser) + " to the opportunity.",
                 author: null,
                 username: "OneRoost Bot",
                 navLink: {type:"participant"}
-            };
-            ParseReact.Mutation.Create("DealComment", comment).dispatch();
+            });
+            comment.save().catch(console.error);
 
         }, function(error){
             alert("this user is already a stakeholder on this opportunity.");
             console.error(error);
         });
-
     },
     render: function(){
         let {errors, firstName, lastName, email, company} = this.state

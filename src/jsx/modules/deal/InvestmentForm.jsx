@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
-import ParseReact from "parse-react"
+import DealComment from "models/DealComment"
 import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormInputGroup from "FormInputGroup"
 import InvestmentValidation from "InvestmentValidation"
@@ -53,14 +53,16 @@ const TimelineSidebar = React.createClass({
     {
         var user = Parse.User.current();
         var message = RoostUtil.getFullName(user) + " updated the Investment Details";
-        var comment = {
+        let comment = new DealComment();
+        comment.set({
             deal: deal,
             message: message,
             author: null,
             username: "OneRoost Bot",
             navLink: {type: "investment"}
-        };
-        return ParseReact.Mutation.Create("DealComment", comment).dispatch();
+        });
+        comment.save().catch(error => console.error);
+
     },
     render(){
         var saveMessage = null;

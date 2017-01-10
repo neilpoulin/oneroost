@@ -17,8 +17,8 @@ var fieldValues = {
 
 const Onboarding = withRouter( React.createClass({
     propTypes: {
-        readyRoostUser: PropTypes.object.isRequired,
-        currentUser: PropTypes.object
+        readyRoostUser: PropTypes.instanceOf(Parse.Object).isRequired,
+        currentUser: PropTypes.instanceOf(Parse.Object)
     },
     getInitialState(){
         return {
@@ -54,7 +54,7 @@ const Onboarding = withRouter( React.createClass({
         this.createReadyRoost();
     },
     createReadyRoost(){
-        var profileUserId = this.props.readyRoostUser.objectId
+        var profileUserId = this.props.readyRoostUser.id
         var self = this;
         Parse.Cloud.run("createReadyRoost", {
             profileUserId: profileUserId,

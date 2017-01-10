@@ -1,10 +1,12 @@
 import React, {PropTypes} from "react";
+import Parse from "parse";
 import ModalButton from "ModalButton";
 import NextStepForm from "nextsteps/NextStepForm";
 
 const AddNextStepButton = React.createClass({
     propTypes: {
-        stakeholders: PropTypes.array.isRequired
+        stakeholders: PropTypes.array.isRequired,
+        deal: PropTypes.instanceOf(Parse.Object).isRequired
     },
     getInitialState: function(){
         return {};

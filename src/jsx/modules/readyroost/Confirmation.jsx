@@ -1,8 +1,9 @@
 import React, { PropTypes } from "react"
+import Parse from "parse"
 
 const Confirmation = React.createClass({
     propTypes: {
-        readyRoostUser: PropTypes.object.isRequired,
+        readyRoostUser: PropTypes.instanceOf(Parse.Object).isRequired,
         currentUser: PropTypes.object,
         submit: PropTypes.func.isRequired,
         previousStep: PropTypes.func.isRequired,

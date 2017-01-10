@@ -1,13 +1,15 @@
 import React, { PropTypes } from "react"
 import FormUtil from "FormUtil"
 import Parse from "parse";
-import ParseReact from "parse-react"
+import Document from "models/Document"
+import DealComment from "models/DealComment"
 import Dropzone from "react-dropzone"
 import request from "superagent"
 import numeral from "numeral"
 import {linkValidation, fileValidation} from "DocumentValidation"
 import FormInputGroup from "FormInputGroup"
 import FormGroup from "FormGroup"
+import RoostUtil from "RoostUtil"
 
 const re = /(?:\.([^.]+))?$/;
 
@@ -44,31 +46,33 @@ const DocumentUploadForm = React.createClass({
     },
     saveDocument(){
         var self = this;
-        var user = Parse.User.current().toPlainObject();
+        var user = Parse.User.current();
         var {deal} = self.props;
-        var upload = {
+
+        let document = new Document();
+        document.set({
             createdBy: user,
             deal: deal,
             fileName: this.state.fileName,
             s3key: this.state.s3key,
             externalLink: this.state.externalLink,
             type: this.state.type,
-            size: this.state.size, 
+            size: this.state.size,
             fileExtension: this.state.fileExtension
-        }
-        ParseReact.Mutation.Create("Document", upload)
-        .dispatch()
-        .then(function(){
-            var message = user.firstName + " " + user.lastName + " has uploaded " + upload.fileName;
-            var comment = {
+        });
+        document.save().then(saved => {
+            var message = RoostUtil.getFullName(user) + " has uploaded " + saved.get("fileName");
+
+            let comment = new DealComment();
+            comment.set({
                 deal: deal,
                 message: message,
                 author: null,
                 username: "OneRoost Bot",
                 navLink: {type: "document", id: null}
-            };
-            ParseReact.Mutation.Create("DealComment", comment).dispatch();
-        });
+            });
+            return comment.save();
+        }).catch(error => console.error)
     },
     onDrop: function(files){
         console.log(files);

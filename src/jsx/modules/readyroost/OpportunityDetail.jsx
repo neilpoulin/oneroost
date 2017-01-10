@@ -48,7 +48,7 @@ const OpportunityDetail = React.createClass({
         let page =
         <div>
             <div className="lead">
-                The most successful business offerings solve a major pain point for a company. Describe what problem your offering is solving for {this.props.readyRoostUser.comapny} below.
+                The most successful business offerings solve a major pain point for a company. Describe what problem your offering is solving for {this.props.readyRoostUser.get("comapny")} below.
             </div>
             <div>
                 <FormInputGroup

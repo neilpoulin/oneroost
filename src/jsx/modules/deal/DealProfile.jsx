@@ -15,28 +15,6 @@ const DealProfile = React.createClass({
             documents: []
         }
     },
-    // componentWillMount(){
-    //     const self = this;
-    //     const {deal} = this.props;
-    //
-    //     var stakeholderQuery = new Parse.Query("Stakeholder");
-    //     stakeholderQuery.equalTo("deal", deal.id);
-    //     stakeholderQuery.find().then(stakeholders => {
-    //         self.setState({
-    //             stakeholdersLoading: false,
-    //             stakeholders: stakeholders.map(stakeholder => stakeholder.toJSON())
-    //         });
-    //     });
-    //
-    //     const documentsQuery = new Parse.Query("Document");
-    //     documentsQuery.equalTo( "deal", deal.id )
-    //     documentsQuery.find().then(documents => {
-    //         self.setState({
-    //             documentsLoading: false,
-    //             documents: documents.map(doc => doc.toJSON())
-    //         });
-    //     });
-    // },
     getBudgetString(){
         var {deal} = this.props;
         var budget = deal.get("budget");
@@ -58,7 +36,8 @@ const DealProfile = React.createClass({
         var iconSizeClassname = "fa-lg"
         var budget = this.getBudgetString()
 
-        var stakeholderCount = stakeholders.length > 0 ? stakeholders.length : ""
+        let activeStakeholders = stakeholders.filter(s => s.get("active") !== false);
+        var stakeholderCount = activeStakeholders.length > 0 ? activeStakeholders.length : ""
         var documentCount = documents.length > 0 ? documents.length : ""
 
         var formattedRoostAge = RoostUtil.formatDurationAsDays( deal.createdAt )

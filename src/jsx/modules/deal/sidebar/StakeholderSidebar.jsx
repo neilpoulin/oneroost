@@ -30,6 +30,28 @@ const StakeholderSidebar = React.createClass({
             actionButton = <button className="btn btn-secondary" onClick={this.toggleEditStakeholders}><i className="fa fa-check"></i>&nbsp;Done</button>
         }
 
+        let activeParticipants = stakeholders.filter(stakeholder => {
+            return stakeholder.get("active") !== false;
+        });
+
+        let inactiveParticipants = stakeholders.filter(stakeholder => {
+            return stakeholder.get("active") === false;
+        });
+
+        let inactiveBlock = null;
+        if ( inactiveParticipants.length > 0 ){
+            inactiveBlock =
+            <div className="inactive-participants">
+                <h4>Inactive Participants</h4>
+                {inactiveParticipants.map(stakeholder => {
+                    return <Stakeholder key={"stakeholder_" + stakeholder.id}
+                        stakeholder={stakeholder}
+                        deal={deal}
+                        isEdit={false}/>
+                })}
+            </div>
+        }
+
         return (
             <div className="StakeholderSidebar">
                 <h3 className="title">Participants</h3>
@@ -41,14 +63,15 @@ const StakeholderSidebar = React.createClass({
                         disabled={isEdit}
                         />
                 </div>
-                <div>
-                    {stakeholders.map(stakeholder => {
+                <div className="active-participants">
+                    {activeParticipants.map(stakeholder => {
                         return <Stakeholder key={"stakeholder_" + stakeholder.id}
                             stakeholder={stakeholder}
                             deal={deal}
                             isEdit={isEdit}/>
                     })}
                 </div>
+                {inactiveBlock}
             </div>
         )
     }

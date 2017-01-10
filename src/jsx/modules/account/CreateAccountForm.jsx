@@ -1,5 +1,7 @@
 import React from "react";
-import ParseReact from "parse-react"
+import Account from "models/Account"
+import Deal from "models/Deal"
+import Stakeholder from "models/Stakeholder"
 import Parse from "parse"
 import FormUtil from "FormUtil"
 import {validations} from "account/AccountValidation"
@@ -38,7 +40,9 @@ export default React.createClass({
     },
     saveDeal(){
         let self = this;
-        var account = {
+        var dealName = self.state.dealName;
+        let account = new Account();
+        account.set({
             createdBy: Parse.User.current(),
             accountName: this.state.accountName,
             primaryContact: this.state.primaryContact,
@@ -46,45 +50,45 @@ export default React.createClass({
             city: this.state.city,
             state: this.state.state,
             zipCode: this.state.zipCode
-        }
-        var dealName = self.state.dealName;
-        ParseReact.Mutation.Create("Account", account)
-        .dispatch()
-        .then( function( acct ){
+        });
+        account.save().then(acct => {
             self.createDeal( acct, dealName );
+        }).catch(error => {
+            console.error(error);
         });
     },
     createDeal: function( account, dealName ){
         var self = this;
-        var deal = {
+
+        let deal = new Deal();
+        deal.set({
             createdBy: Parse.User.current(),
             account: account,
             dealName: dealName,
             profile: {"timeline": "2016-05-13"},
             budget: {"low": 0, "high": 0}
-        }
-
-        ParseReact.Mutation.Create( "Deal", deal )
-        .dispatch()
-        .then(function( newDeal ){
+        });
+        deal.save().then(newDeal => {
             self.createStakeholder(newDeal);
+        }).catch(error => {
+            console.error(error);
         });
     },
     createStakeholder(deal)
     {
         var self = this;
         var user = Parse.User.current();
-        var stakeholder = {
+
+        let stakeholder = new Stakeholder();
+        stakeholder.set({
             "user": user,
             "deal": deal,
             "role": "CREATOR",
             "inviteAccepted": true,
             "invitedBy": user
-        };
+        });
 
-        ParseReact.Mutation.Create("Stakeholder", stakeholder)
-        .dispatch({waitForServer: true})
-        .then( self.props.onSuccess );
+        stakeholder.save().then(self.props.onSuccess).catch(console.error)
     },
     render: function(){
         return (

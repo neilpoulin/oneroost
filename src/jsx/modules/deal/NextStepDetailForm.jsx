@@ -1,6 +1,7 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
-import ParseReact from "parse-react"
+import DealComment from "models/DealComment"
+import RoostUtil from "RoostUtil"
 import NextStepDetailView from "NextStepDetailView"
 import NextStepDetailEdit from "NextStepDetailEdit"
 import { browserHistory } from "react-router"
@@ -12,8 +13,8 @@ const NextStepDetailForm = React.createClass({
         }
     },
     propTypes: {
-        step: PropTypes.object.isRequired,
-        deal: PropTypes.object.isRequired
+        step: PropTypes.instanceOf(Parse.Object).isRequired,
+        deal: PropTypes.instanceOf(Parse.Object).isRequired
     },
     handleEdit: function(){
         this.setState({isEdit: true});
@@ -26,20 +27,21 @@ const NextStepDetailForm = React.createClass({
     },
     afterDelete: function(){
         this.addStepDeletedComment();
-        browserHistory.push("/roosts/" + this.props.deal.objectId );
+        browserHistory.push("/roosts/" + this.props.deal.id );
     },
     addStepDeletedComment: function( ){
         var self = this;
         var user = Parse.User.current();
         var step = this.props.step;
-        var message = user.get("firstName") + " " + user.get("lastName") + " deleted Next Step: " + step.title;
-        var comment = {
+        var message = RoostUtil.getFullName(user) + " deleted Next Step: " + step.get("title");
+        let comment = new DealComment();
+        comment.set({
             deal: self.props.deal,
             message: message,
             author: null,
             username: "OneRoost Bot",
-        };
-        ParseReact.Mutation.Create("DealComment", comment).dispatch();
+        });
+        comment.save().catch(error => console.error);
     },
     render () {
         var form = null;

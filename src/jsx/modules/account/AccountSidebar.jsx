@@ -34,10 +34,10 @@ export default React.createClass({
         }
     },
     onSuccess: function(){
-        this.refreshQueries(["stakeholders"]);
+        
     },
     render () {
-        var contents;        
+        var contents;
         if ( this.state.loading ){
             contents = <div>Loading....</div>;
         }

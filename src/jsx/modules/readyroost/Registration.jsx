@@ -6,8 +6,8 @@ import TermsOfServiceDisclaimer from "TermsOfServiceDisclaimer"
 
 const Registration = React.createClass({
     propTypes: {
-        readyRoostUser: PropTypes.object.isRequired,
-        currentUser: PropTypes.object,
+        readyRoostUser: PropTypes.instanceOf(Parse.Object).isRequired,
+        currentUser: PropTypes.instanceOf(Parse.Object),
         nextStep: PropTypes.func.isRequired,
         previousStep: PropTypes.func.isRequired,
         saveValues: PropTypes.func.isRequired,

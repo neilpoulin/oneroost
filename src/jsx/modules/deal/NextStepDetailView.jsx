@@ -1,10 +1,11 @@
 import React, { PropTypes } from "react"
 import moment from "moment";
-import NextStepActions from "NextStepActions";
+import NextStepActions from "NextStepActions"
+import Parse from "parse";
 
 const NextStepDetailView = React.createClass({
     propTypes: {
-        step: PropTypes.object.isRequired,
+        step: PropTypes.instanceOf(Parse.Object).isRequired,
         handleEdit: PropTypes.func.isRequired
     },
     formatDate(date){

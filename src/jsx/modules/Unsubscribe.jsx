@@ -1,9 +1,9 @@
 import React, { PropTypes } from "react"
-import Parse from "parse";
-import ParseReact from "parse-react";
+import Parse from "parse"
+import RoostNav from "RoostNav"
+import Logo from "Logo"
 
 const Unsubscribe = React.createClass({
-    mixins: [ParseReact.Mixin],
     propTypes:{
         params: PropTypes.shape({
             emailRecipientId: PropTypes.string.isRequired
@@ -12,70 +12,98 @@ const Unsubscribe = React.createClass({
     getInitialState()
     {
         return {
-            success: false
+            success: false,
+            loading: true,
+            recipient: null,
         }
     },
-    observe(props, state){
-        var recipientQuery = new Parse.Query("EmailRecipient");
-        recipientQuery.equalTo("objectId", props.params.emailRecipientId);
-        return {
-            recipients: recipientQuery
+    fetchData(recipientId){
+        let self = this;
+        let recipientQuery = new Parse.Query("EmailRecipient");
+        recipientQuery.get(recipientId).then(recipient => {
+            self.setState({
+                loading: false,
+                recipient: recipient,
+                success: recipient.get("unsubscribe")
+            });
+        }).catch(error => {
+            console.log("failed to get a recipient", error);
+            self.setState({
+                loading: false,
+                recipient: null
+            });
+        })
+    },
+    componentWillMount(){
+        this.fetchData(this.props.params.emailRecipientId);
+    },
+    componentWillUpdate(nextProps, nextState){
+        if ( this.props.params.emailRecipientId !== nextProps.params.emailRecipientId ){
+            let emailRecipientId = nextProps.params.emailRecipientId;
+            this.setState({
+                loading: true,
+                recipient: null
+            });
+            this.fetchData(emailRecipientId)
         }
     },
     confirm(){
         console.log("will unsubscribe from all emails.");
-
-        var recipient = this.data.recipients[0];
-
-        ParseReact.Mutation.Set(recipient, {
+        let self = this;
+        var recipient = this.state.recipient;
+        this.setState({loading: true});
+        recipient.set({
             unsubscribe: true,
-            unsubsribeDate: new Date()
-        })
-        .dispatch();
-        this.setState({success: true});
+            unsubscribeDate: new Date()
+        });
+        recipient.save().then(success => {
+            self.setState({
+                success: true,
+                loading: false,
+            });
+        }).catch(error => console.error("failed to save recipient", error));
     },
     render () {
-        var content = null
-        if ( this.state.success ){
+        var content = null;
+        let {recipient, loading, success} = this.state;
+        if ( success ){
             content =
-            <div>
-                You have successfully unsubscribed from OneRoost emails.
+            <div className="lead text-center">
+                {"You have successfully unsubscribed from OneRoost emails."}
             </div>
         }
-        else if ( this.pendingQueries().length > 0 ){
+        else if (loading){
             content = "Loading..."
         }
-        else if ( this.data.recipients.length == 0 ){
-            content = <div>
-                User not found, if this is in error, please conact info@oneroost.com
+        else if ( !recipient ){
+            content =
+            <div>
+                {"User not found, if this is in error, please conact "} <a href="mailto:info@oneroost.com">info@oneroost.com</a>
             </div>
-
         }
         else {
-            var recipient = this.data.recipients[0];
+            let email = recipient.get("email");
             if ( recipient.unsubscribe )
             {
-                content = <div>{recipient.email} is already unsubscribed from all OneRoost emails.</div>
+                content = <div>{`${email} is already unsubscribed from all OneRoost emails.`}</div>
             }
             else {
                 content =
                 <div>
-                    <p>
-                        Please confirm you would like to unsubscribe {recipient.email} from all emails from OneRoost.com
+                    <p className="lead text-center">
+                        {"Please confirm you would like to unsubscribe "}<b>{email}</b>{" from all OneRoost emails"}
                     </p>
                     <button onClick={this.confirm} className="btn btn-primary btn-block" >Unsubscribe</button>
                 </div>;
             }
         }
-
-        return <div className="Unsubscribe container col-md-6 col-md-offset-3">
-            <div>
-                <h1 className="logo cursive">
-                    OneRoost
-                </h1>
-            </div>
+        let page =
+        <div className="Unsubscribe container col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+            <RoostNav/>
+            <Logo className="header"/>
             {content}
-        </div>;
+        </div>
+        return page;
 
     }
 })

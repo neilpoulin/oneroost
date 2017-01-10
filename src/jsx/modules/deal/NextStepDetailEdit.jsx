@@ -1,9 +1,10 @@
 import React, { PropTypes } from "react"
-import ParseReact from "parse-react"
+import DealComment from "models/DealComment"
 import Parse from "parse"
 import NextStepActions from "NextStepActions"
 import moment from "moment"
 import Dropdown from "stakeholder/Dropdown"
+import {Pointer} from "models/Models"
 import DateTakeoverButton from "DateTakeoverButton"
 import RoostUtil from "RoostUtil"
 import FormUtil from "FormUtil"
@@ -22,12 +23,12 @@ const NextStepDetailEdit = React.createClass({
     },
     getInitialState: function () {
         return {
-            title: this.props.step.title,
-            description: this.props.step.description,
-            dueDate: moment(this.props.step.dueDate),
-            assignedUser: this.props.step.assignedUser,
+            title: this.props.step.get("title"),
+            description: this.props.step.get("description"),
+            dueDate: moment(this.props.step.get("dueDate")),
+            assignedUser: this.props.step.get("assignedUser"),
             deal: this.props.deal,
-            completedDate: this.props.step.completedDate,
+            completedDate: this.props.step.get("completedDate"),
             user: Parse.User.current(),
             errors: {},
         };
@@ -38,7 +39,8 @@ const NextStepDetailEdit = React.createClass({
         var errors = FormUtil.getErrors(this.state, validations)
         console.log(errors);
         if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
-            var changes = {
+            let step = this.props.step;
+            step.set({
                 "title": this.state.title,
                 "description": this.state.description,
                 "dueDate": this.state.dueDate.toDate(),
@@ -46,12 +48,9 @@ const NextStepDetailEdit = React.createClass({
                 "deal": this.state.deal,
                 "completedDate": this.state.completedDate != null ? new Date(this.state.completedDate) : null,
                 "modifiedBy": this.state.user
-            };
-            ParseReact.Mutation.Set(this.props.step, changes)
-            .dispatch()
-            .then(function(step) {
-                self.addStepSavedComment(step);
             });
+
+            step.save().then(self.addStepSavedComment).catch(error => console.error);
             self.clear();
             this.props.afterSave();
             return true;
@@ -62,15 +61,16 @@ const NextStepDetailEdit = React.createClass({
     addStepSavedComment: function (step) {
         var self = this;
         var user = Parse.User.current()
-        var message = user.get("firstName") + " " + user.get("lastName") + " updated the details of Next Step: " + step.title;
-        var comment = {
+
+        let comment = new DealComment();
+        comment.set({
             deal: self.props.deal,
-            message: message,
+            message: RoostUtil.getFullName(user) + " updated the details of Next Step: " + step.get("title"),
             author: null,
             username: "OneRoost Bot",
-            navLink: {type: "step", id: step.objectId}
-        };
-        ParseReact.Mutation.Create("DealComment", comment).dispatch();
+            navLink: {type: "step", id: step.id}
+        })
+        comment.save().catch(error => console.error);
     },
     clear: function () {
         this.setState(this.getInitialState());
@@ -86,7 +86,11 @@ const NextStepDetailEdit = React.createClass({
         user.id = selection.value;
         if (selection != null) {
             var name = selection.label.trim().split(" ");
-            user = {className: "_User", objectId: selection.value, firstName: name[0] || "", lastName: name[1] || ""}
+            // user = {className: "_User", objectId: selection.value, firstName: name[0] || "", lastName: name[1] || ""}
+            user = Pointer("_User", selection.value, {
+                firstName: name[0] || "",
+                lastName: name[1] || ""
+            });
         }
         this.setState({
             assignedUser: user
@@ -130,7 +134,9 @@ const NextStepDetailEdit = React.createClass({
                 label="Assigned User"
                 errors={this.state.errors}
                 fieldName="assignedUser" >
-                <Dropdown deal={this.props.deal} handleChange={this.handleUserChange} value={this.props.step.assignedUser != null ? this.props.step.assignedUser.objectId : null}/>
+                <Dropdown deal={this.props.deal}
+                    handleChange={this.handleUserChange}
+                    value={this.props.step.get("assignedUser") != null ? this.props.step.get("assignedUser").id : null}/>
             </FormGroup>
 
             <NextStepActions step={this.props.step}

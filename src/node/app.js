@@ -40,7 +40,7 @@ app.engine("ejs", ejs.__express);
 app.use(bodyParser.json());
 app.use("/parse", getParseServer());
 app.use("/admin/dashboard", getParseDashboard());
-app.use(compression({ threshold: 0, level: 9 }));
+app.use(compression({level: 9}));
 app.use("/static", express.static(__dirname + "./../public"));
 app.use(favicon(__dirname + "./../public/favicon.ico"));
 app.set("views", "cloud/views");

@@ -1,7 +1,7 @@
 import React, {PropTypes} from "react";
 import Parse from "parse";
-import ParseReact from "parse-react";
 import RoostUtil from "RoostUtil"
+import DealComment from "models/DealComment"
 import ReactGA from "react-ga"
 
 export default React.createClass({
@@ -20,11 +20,8 @@ export default React.createClass({
         var {stakeholder} = this.props;
         var confirm = window.confirm("Are you sure you want to remove this user?" );
         if ( confirm ){
-            ParseReact.Mutation.Destroy(stakeholder)
-            .dispatch()
-            .then(function(){
-                self.sendComment(stakeholder)
-            });
+            stakeholder.set({active: false});
+            stakeholder.save().then(self.sendComment).catch(console.error)
         }
     },
     sendComment(stakeholder)
@@ -33,16 +30,16 @@ export default React.createClass({
         var user = Parse.User.current();
         let stakeholderUser = stakeholder.get("user");
         var fullName = RoostUtil.getFullName(user)
-        var message = fullName + " removed a stakeholder: " + RoostUtil.getFUllName(stakeholderUser) + " (" + stakeholder.user.email + ")";
-
-        var comment = {
+        var message = fullName + " removed " + RoostUtil.getFullName(stakeholderUser) + " as from the opportunity.";
+        let comment = new DealComment();
+        comment.set({
             deal: deal,
             message: message,
             author: null,
             username: "OneRoost Bot",
             navLink: {type:"participant"}
-        };
-        ParseReact.Mutation.Create("DealComment", comment).dispatch();
+        });
+        comment.save();
     },
     submitRoost(){
         var self = this;
@@ -53,7 +50,9 @@ export default React.createClass({
         }).then(function( result ) {
             console.log(result);
             alert("We have let " + RoostUtil.getFullName(stakeholder.user) + " know that the Roost is ready for them to review.")
-            ParseReact.Mutation.Set(deal, {readyRoostSubmitted: new Date()}).dispatch();
+
+            deal.set({readyRoostSubmitted: new Date()});
+            deal.save().catch(console.error);
             ReactGA.set({ userId: Parse.User.current().objectId });
             ReactGA.event({
               category: "ReadyRoost",
@@ -66,10 +65,10 @@ export default React.createClass({
         var user = stakeholder.get("user");
         var fullName = RoostUtil.getFullName( user )
         var email = user.get("email") || user.get("username")
-        var company = user.get("company")        
+        var company = user.get("company")
         // var roleClass = stakeholder.role.toLowerCase();
         var pendingText = null;
-
+        var inactive = stakeholder.get("active") === false;
         var removeButton = null
         if ( isEdit ){
             removeButton =
@@ -99,7 +98,7 @@ export default React.createClass({
         }
 
         var result =
-        <div data-name={fullName} data-email={email} className="Stakeholder row">
+        <div data-name={fullName} data-email={email} className={"Stakeholder row " + (inactive ? "inactive" : "") }>
             <div className="">
                 <div>
                     <span className="participantName">{fullName}</span>

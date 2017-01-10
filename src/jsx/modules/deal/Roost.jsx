@@ -11,6 +11,7 @@ import AccountSidebar from "account/AccountSidebar";
 import RoostNav from "RoostNav";
 import RoostUtil from "RoostUtil";
 import {Pointer} from "models/Models";
+import {updateById} from "SubscriptionUtil"
 
 const Roost = withRouter( React.createClass({
     propTypes: {
@@ -26,6 +27,7 @@ const Roost = withRouter( React.createClass({
             stakeholdersLoading: true,
             nextSteps: [],
             nextStepsLoading: true,
+            documents: [],
             documentsLoading: true,
         }
     },
@@ -44,21 +46,54 @@ const Roost = withRouter( React.createClass({
         }
     },
     subscriptions: {},
-    setupSubscriptions(){
-        const dealId = this.props.dealId;
-        let dealQuery = new Parse.Query("Deal");
-        dealQuery.equalTo("objectId", dealId );
-        dealQuery.include("readyRoostUser");
-        dealQuery.include("createdBy");
-        dealQuery.include("account");
-        let dealSubscription = dealQuery.subscribe();
+    setupSubscriptions(queries){
+        const self = this;
+        let dealSubscription = queries.deal.subscribe();
+        dealSubscription.on("update", deal => {
+            self.setState({deal: deal});
+        });
+
+        let stepSubscription = queries.steps.subscribe();
+        stepSubscription.on("create", step => {
+            let steps = self.state.nextSteps;
+            steps.push(step);
+            self.setState({nextSteps: steps});
+        });
+
+        stepSubscription.on("update", step => {
+            let steps = self.state.nextSteps;
+            updateById(steps, step);
+            self.setState({nextSteps: steps});
+        })
+
+        let stakeholderSubscription = queries.stakeholders.subscribe();
+        stakeholderSubscription.on("create", stakeholder => {
+            let stakeholders = self.state.stakeholders;
+            stakeholders.push(stakeholder);
+            self.setState({stakeholders: stakeholders});
+        });
+        stakeholderSubscription.on("update", stakeholder => {
+            let stakeholders = self.state.stakeholders;
+            updateById(stakeholders, stakeholder);
+            self.setState({stakeholders: stakeholders});
+        })
+
+        let documentSubscription = queries.documents.subscribe();
+        documentSubscription.on("create", document => {
+            let documents = self.state.documents;
+            documents.push(document);
+            self.setState({documents: documents});
+        })
 
         this.subscriptions = {
             deal: dealSubscription,
+            steps: stepSubscription,
+            stakeholders: stakeholderSubscription,
+            documents: documentSubscription,
         }
-        return this.subscriptions;
     },
     removeSubscriptions(){
+        console.log("removing subscriptions");
         const subscriptions = this.subscriptions;
         for (const name in this.subscriptions ){
             if ( subscriptions.hasOwnProperty(name)){
@@ -71,7 +106,7 @@ const Roost = withRouter( React.createClass({
         this.getData(dealId);
     },
     componentWillUnmount(){
-
+        this.removeSubscriptions()
     },
     componentWillUpdate(nextProps, nextState)
     {
@@ -98,8 +133,6 @@ const Roost = withRouter( React.createClass({
             }
         });
 
-        // this.removeSubscriptions();
-        // this.subscriptions = this.setupSubscriptions();
         if ( nextProps.params.dealId !== this.props.params.dealId ){
             this.resetLoading();
             this.getData(nextProps.params.dealId);
@@ -107,6 +140,8 @@ const Roost = withRouter( React.createClass({
 
     },
     getData(dealId){
+        console.log("setting up roost queries and subscriptions");
+        this.removeSubscriptions();
         let self = this;
         let dealQuery = new Parse.Query("Deal");
         dealQuery.include("readyRoostUser");
@@ -156,6 +191,14 @@ const Roost = withRouter( React.createClass({
                 documents: documents,
             });
         });
+
+        let queries = {
+            documents: documentsQuery,
+            steps: stepQuery,
+            stakeholders: stakeholderQuery,
+            deal: dealQuery
+        }
+        this.setupSubscriptions(queries)
     },
     resetLoading(){
         this.setState({

@@ -5,6 +5,7 @@ import RoostNav from "navigation/RoostNav"
 import AddAccountButton from "account/AddAccountButton"
 import AccountSidebarList from "account/AccountSidebarList"
 import BetaUserWelcome from "BetaUserWelcome"
+import {updateById, removeItem} from "SubscriptionUtil"
 
 const UserHomePage = React.createClass({
     getInitialState(){
@@ -23,8 +24,59 @@ const UserHomePage = React.createClass({
     componentDidMount(){
         document.title = "My Opportunities | OneRoost"
     },
+    componentWillUnmount(){
+        this.removeSubscriptions();
+    },
     componentWillMount(){
+        this.fetchData();
+    },
+    componentWillUpdate(){
+        console.log("UserHomePage component will update");
+    },
+    subscriptions: {},
+    setupSubscriptions(queries){
         const self = this;
+        let stakeholdersSubscription = queries.stakeholders.subscribe();
+        stakeholdersSubscription.on("create", stakeholder => {
+            let stakeholders = self.state.stakeholders;
+            stakeholders.push(stakeholder);
+            self.setState({stakeholders: stakeholders});
+        });
+
+        stakeholdersSubscription.on("update", stakeholder => {
+            let stakeholders = self.state.stakeholders;
+            updateById(stakeholders, stakeholder)
+            self.setState({stakeholders: stakeholders});
+        });
+
+        stakeholdersSubscription.on("enter", stakeholder => {
+            let stakeholders = self.state.stakeholders;
+            stakeholders.push(stakeholder);
+            self.setState({stakeholders: stakeholders});
+        });
+
+        stakeholdersSubscription.on("leave", stakeholder => {
+            let stakeholders = self.state.stakeholders;
+            removeItem(stakeholders, stakeholder)
+            self.setState({stakeholders: stakeholders});
+        });
+
+        this.subscriptions = {
+            stakeholders: stakeholdersSubscription
+        }
+    },
+    removeSubscriptions(){
+        console.log("removing subscriptions");
+        const subscriptions = this.subscriptions;
+        for (const name in this.subscriptions ){
+            if ( subscriptions.hasOwnProperty(name)){
+                subscriptions[name].unsubscribe()
+            }
+        }
+    },
+    fetchData(){
+        const self = this;
+        this.removeSubscriptions();
         var user = Parse.User.current();
         var stakeholdersQuery = new Parse.Query("Stakeholder");
         stakeholdersQuery.include("deal");
@@ -39,6 +91,11 @@ const UserHomePage = React.createClass({
                 loading: false
             })
         })
+
+        let queries = {
+            stakeholders: stakeholdersQuery
+        }
+        this.setupSubscriptions(queries);
     },
     render(){
         let contents = null;

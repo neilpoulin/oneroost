@@ -1,5 +1,4 @@
 import React, { PropTypes } from "react"
-import ParseReact from "parse-react"
 
 const NextStepDeleteButton = React.createClass({
     propTypes: {
@@ -7,9 +6,8 @@ const NextStepDeleteButton = React.createClass({
         afterDelete: PropTypes.func.isRequired
     },
     handleDelete(){
-        this.props.afterDelete() ;
-        ParseReact.Mutation.Destroy( this.props.step )
-        .dispatch();
+        this.props.afterDelete();
+        this.props.step.destroy().catch(error => console.error);
     },
     render () {
         var button =

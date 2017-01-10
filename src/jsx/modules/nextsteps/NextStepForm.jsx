@@ -1,6 +1,5 @@
 import React, {PropTypes} from "react"
 import Parse from "parse"
-import ParseReact from "parse-react"
 import moment from "moment"
 import Dropdown from "stakeholder/Dropdown"
 import FormUtil from "FormUtil"
@@ -11,6 +10,8 @@ import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormGroup from "FormGroup"
 import {validations} from "nextsteps/NextStepValidations"
 import {Pointer} from "models/Models"
+import NextStep from "models/NextStep"
+import DealComment from "models/DealComment"
 
 export default React.createClass({
     propTypes: {
@@ -42,33 +43,32 @@ export default React.createClass({
     },
     saveNextStep: function () {
         var self = this;
-        var step = {
-            "createdBy": this.state.createdBy,
-            "title": this.state.title,
-            "description": this.state.description,
-            "dueDate": this.state.dueDate.toDate(),
-            "assignedUser": this.state.assignedUser,
-            "deal": this.state.deal,
-            "completedDate": this.state.completedDate ? new Date(this.state.completedDate) : null
-        };
-        ParseReact.Mutation.Create("NextStep", step)
-        .dispatch()
-        .then(function (step) {
-            self.addStepCreatedComment(step);
+        let step = new NextStep();
+        step.set({
+            createdBy: this.state.createdBy,
+            title: this.state.title,
+            description: this.state.description,
+            dueDate: this.state.dueDate.toDate(),
+            assignedUser: this.state.assignedUser,
+            deal: this.props.deal,
+            completedDate: this.state.completedDate ? new Date(this.state.completedDate) : null
         });
+        step.save().then(self.addStepCreatedComment).catch(console.error)
         self.clear();
     },
     addStepCreatedComment: function (step) {
         var self = this;
-        var message = self.state.user.get("firstName") + " " + self.state.user.get("lastName") + " created Next Step: " + step.title;
-        var comment = {
+        var message = RoostUtil.getFullName(Parse.User.current()) + " created Next Step: " + step.get("title");
+        let comment = new DealComment();
+        comment.set({
             deal: self.state.deal,
             message: message,
             author: null,
             username: "OneRoost Bot",
-            navLink: {type: "step", id: step.objectId }
-        };
-        ParseReact.Mutation.Create("DealComment", comment).dispatch();
+            navLink: {type: "step", id: step.id }
+        });
+
+        comment.save().catch(console.error);
     },
     clear: function () {
         this.setState(this.getInitialState());

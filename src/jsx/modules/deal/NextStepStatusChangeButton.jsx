@@ -1,13 +1,14 @@
 import React, { PropTypes } from "react"
-import ParseReact from "parse-react"
+import DealComment from "models/DealComment"
 import Parse from "parse"
+import RoostUtil from "RoostUtil"
 
 const NextStepStatusChangeButton = React.createClass({
     propTypes: {
-        step: PropTypes.object.isRequired
+        step: PropTypes.instanceOf(Parse.Object).isRequired
     },
     toggleComplete: function(){
-        if ( this.props.step.completedDate == null )
+        if ( this.props.step.get("completedDate") == null )
         {
             this.markAsDone();
         }
@@ -18,47 +19,42 @@ const NextStepStatusChangeButton = React.createClass({
     markAsDone: function(){
         var self = this;
         var step = this.props.step;
-        ParseReact.Mutation.Set( step, {
+
+        step.set({
             "completedDate": new Date(),
             "modifiedBy": Parse.User.current()
-        })
-        .dispatch()
-        .then(function( step ){
-            self.addStepStatusChangeComment( step );
-            self.setState({step: step});
         });
+
+        step.save().then(self.addStepStatusChangeComment).catch(error => console.error);
     },
     markAsNotDone: function(){
         var self = this;
         var step = this.props.step;
-        ParseReact.Mutation.Set( step, {
-            "completedDate": null,
-            "modifiedBy": Parse.User.current()
-        })
-        .dispatch()
-        .then(function( step ){
-            self.addStepStatusChangeComment( step );
-            self.setState({step: step});
+        step.set({
+            completedDate: null,
+            modifiedBy: Parse.User.current()
         });
-    },
-    addStepStatusChangeComment: function( step ){
-        var self = this;
-        var status = self.props.step.completedDate != null ? "Complete" : "Not Complete";
-        var user = Parse.User.current();
-        var message = user.get("firstName") + " "+ user.get("lastName") + " marked " + step.title + " as \"" + status + "\"";
 
-        var comment = {
-            deal: self.props.step.deal,
-            message: message,
+        step.save().then(self.addStepStatusChangeComment).catch(error => console.error);
+    },
+    addStepStatusChangeComment( step ){
+        console.log("step changed...setting up comment");
+        var status = step.get("completedDate") != null ? "Complete" : "Not Complete";
+        var user = Parse.User.current();
+
+        let comment = new DealComment();
+        comment.set({
+            deal: step.get("deal"),
+            message: RoostUtil.getFullName(user) + " marked " + step.get("title") + " as \"" + status + "\"",
             author: null,
             username: "OneRoost Bot",
-            navLink: {type: "step", id: step.objectId}
-        };
-        ParseReact.Mutation.Create("DealComment", comment).dispatch();
+            navLink: {type: "step", id: step.id}
+        });
+        return comment.save();
     },
     render () {
         var completeButton;
-        if ( this.props.step.completedDate != null ){
+        if ( this.props.step.get("completedDate") != null ){
             completeButton =
             <button className="btn btn-primary" onClick={this.toggleComplete}>
                 <i className="fa fa-times"/> &nbsp;Not Completed

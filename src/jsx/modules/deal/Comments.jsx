@@ -51,7 +51,35 @@ export default React.createClass({
             }
             self.setState( {additionalComments: additionalComments, page: nextPage, lastFetchCount: results.length} )
         }).catch(error => console.error(error));
+    },
+    subscriptions: [],
+    queries: {},
+    setupSubscriptions(){
+        let commentSubscription = this.queries.comments.subscribe();
+        const self = this;
+        console.log("setting up comment subscription");
+        commentSubscription.on("create", comment => {
+            let comments = self.state.comments;
+            comments.unshift(comment);
+            self.setState({
+                comments: comments
+            });
 
+            Notification.sendNotification({
+                title: RoostUtil.getFullName(comment.get("author")) + " | " + self.props.deal.get("dealName"),
+                body: comment.get("message"),
+                tag: comment.id
+            });
+
+        })
+
+        this.subscriptions.push(commentSubscription)
+    },
+    removeSubscriptions(){
+        this.subscriptions.forEach(subscription => {
+            console.log("removing subscription");
+            subscription.unsubscribe();
+        })
     },
     componentWillMount(){
         const self = this;
@@ -59,34 +87,30 @@ export default React.createClass({
         const {commentLimit} = this.state;
         const commentQuery = new Parse.Query("DealComment")
         commentQuery.include("author").equalTo( "deal", deal ).descending("createdAt").limit( commentLimit );
-
+        this.queries["comments"] = commentQuery;
         commentQuery.find().then(comments => {
             self.setState({
                 comments: comments,
                 loading: false,
             });
         }).catch(error => console.error(error));
+
+        this.setupSubscriptions();
     },
-    componentDidMount: function() {
-        // window.addEventListener("resize", this.scrollToBottom);
+    componentWillUnmount(){
+        this.removeSubscriptions();
+    },
+    componentDidMount() {
         var self = this;
-        const {deal} = this.props;
         var socket = io("/DealComment");
         socket.on("connect", function() {
             // Connected, let's sign-up for to receive messages for this room
             socket.emit("deal", self.props.deal.objectId);
         });
-
         socket.on("comment", function(comment){
-            var senderName = RoostUtil.getFullName(comment.author);
-            Notification.sendNotification({
-                title: senderName + " | " + deal.get("dealName"),
-                body: comment.message,
-                tag: comment.objectId
-            });
-            //TODO: refresh queries on new comments
-            // self.refreshQueries(["dealComments"]);
+            //no op, moved to the subscription
         });
+
         //doing this so that iOS records the scrollTop position correctly.
         var messageContainer = this.refs.messagesContainer;
         messageContainer.ontouchstart = function () {

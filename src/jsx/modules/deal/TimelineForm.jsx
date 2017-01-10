@@ -1,13 +1,13 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
-import ParseReact from "parse-react"
 import moment from "moment"
+import DealComment from "models/DealComment"
 import Select from "react-select"
 import Stages from "Stages"
 import FormGroup from "FormGroup"
 import RoostUtil from "RoostUtil"
 
-const TimelineForm = React.createClass({    
+const TimelineForm = React.createClass({
     propTypes: {
         deal: PropTypes.instanceOf(Parse.Object).isRequired
     },
@@ -36,26 +36,27 @@ const TimelineForm = React.createClass({
         let profile = deal.get("profile")
         profile.timeline = this.state.timeline.format();
 
-        var setter = ParseReact.Mutation.Set(deal, {
+        deal.set({
             profile: profile,
             currentStage: this.state.stage.value,
             stageUpdatedAt: new Date()
         });
-        setter.dispatch().then(this.sendComment);
+        deal.save().then(this.sendComment).catch(console.error);
         this.showSuccess();
     },
     sendComment( deal )
     {
         var user = Parse.User.current();
         var message = RoostUtil.getFullName(user) + " updated the Timeline";
-        var comment = {
+        let comment = new DealComment();
+        comment.set({
             deal: deal,
             message: message,
             author: null,
             username: "OneRoost Bot",
             navLink: {type: "timeline"}
-        };
-        ParseReact.Mutation.Create("DealComment", comment).dispatch();
+        });
+        comment.save().catch(console.error);
     },
     formatDurationAsDays( past ){
         var numDays = Math.floor( moment.duration( moment().diff(past)).asDays() );

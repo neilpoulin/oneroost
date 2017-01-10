@@ -1,6 +1,5 @@
 import React, { PropTypes } from "react"
 import RoostNav from "RoostNav";
-import ParseReact from "parse-react"
 import Parse from "parse"
 import LoadingTakeover from "LoadingTakeover"
 import FourOhFourPage from "FourOhFourPage"
@@ -9,16 +8,34 @@ import { withRouter } from "react-router"
 import Onboarding from "readyroost/Onboarding"
 
 const ReadyRoostPage = withRouter( React.createClass({
-    mixins: [ParseReact.Mixin],
     propTypes: {
         params: PropTypes.shape({
             userId: PropTypes.string.isRequired
         }).isRequired
     },
-    observe(props, state){
-        var userId= props.params.userId;
-        return {
-            readyRoostUser: (new Parse.Query("User")).equalTo( "objectId", userId )
+    fetchData(userId){
+        let self = this;
+        let userQuery = new Parse.Query("User");
+        userQuery.get(userId).then(user => {
+            self.setState({
+                readyRoostUser: user,
+                loading: false
+            })
+        }).catch(error => {
+            console.log("errror getting user", error);
+            self.setState({
+                readyRoostUser: null,
+                loading: false
+            })
+        });
+    },
+    componentWillMount(){
+        this.fetchData(this.props.params.userId);
+    },
+    componentWillUpdate(nextProps, nextState){
+        if ( this.props.params.userId !== nextProps.params.userId ){
+            let userId = nextProps.params.userId;
+            this.fetchData(userId);
         }
     },
     getInitialState(){
@@ -26,7 +43,9 @@ const ReadyRoostPage = withRouter( React.createClass({
             currentUser: Parse.User.current(),
             roostName: null,
             canSubmit: false,
-            error: null
+            error: null,
+            readyRoostUser: null,
+            loading: true
         }
     },
     loginSuccess(){
@@ -72,16 +91,16 @@ const ReadyRoostPage = withRouter( React.createClass({
         }
     },
     render () {
-        if ( this.pendingQueries().length > 0 ){
+        if ( this.state.loading ){
             return <LoadingTakeover messsage={"Loading Profile"}/>
         }
-        if( this.data.readyRoostUser.length < 1 )
+        if( !this.state.readyRoostUser )
         {
             return <FourOhFourPage/>
         }
 
         var currentUser = this.state.currentUser;
-        var readyRoostUser = this.data.readyRoostUser[0];
+        var readyRoostUser = this.state.readyRoostUser;
 
         var page =
         <div className="ReadyRoostPage">

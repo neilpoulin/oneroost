@@ -1,7 +1,7 @@
-import React, {PropTypes} from "react";
-import ParseReact from "parse-react";
-import Parse from "parse";
-import AutosizeTextarea from "react-textarea-autosize";
+import React, {PropTypes} from "react"
+import Parse from "parse"
+import DealComment from "models/DealComment"
+import AutosizeTextarea from "react-textarea-autosize"
 
 export default React.createClass({
     getInitialState: function(){
@@ -21,26 +21,19 @@ export default React.createClass({
             }
         }
     },
-    saveComment: function( comment )
+    saveComment()
     {
-        var msg = this.formatMessage( this.state.message )
-        var parseUser = Parse.User.current();
-        var user = {
-            firstName: parseUser.get("firstName"),
-            lastName: parseUser.get("lastName"),
-            email: parseUser.get("email"),
-            className: "_User",
-            objectId: parseUser.id
-        };
-
-        var comment = {
+        var msg = this.formatMessage( this.state.message )        
+        let comment = new DealComment();
+        comment.set({
             message: msg,
-            author: user,
+            author: Parse.User.current(),
             username: this.state.user.get("username"),
             deal: this.props.deal
-        };
-
-        ParseReact.Mutation.Create("DealComment", comment).dispatch();
+        });
+        comment.save().then(saved => {
+            //no op
+        }).catch(error => console.error);
         this.setState({message: ""});
     },
     formatMessage(msg)

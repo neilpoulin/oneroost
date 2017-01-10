@@ -33,7 +33,9 @@ const NextStepBanner = React.createClass({
         if ( activeSteps.length < 5 )
         {
             addButton = <div className="NextStepBannerItem AddStepContainer">
-                <AddNextStepButton stakeholders={stakeholders} containerClass="AddNextStepButton"/>
+                <AddNextStepButton stakeholders={stakeholders}
+                    deal={deal}
+                    containerClass="AddNextStepButton"/>
             </div>
         }
 

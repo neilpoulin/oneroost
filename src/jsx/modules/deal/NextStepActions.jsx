@@ -1,4 +1,5 @@
 import React, { PropTypes } from "react"
+import Parse from "parse"
 import NextStepDeleteButton from "NextStepDeleteButton"
 import NextStepSaveButton from "NextStepSaveButton"
 import NextStepEditButton from "NextStepEditButton"
@@ -7,7 +8,7 @@ import NextStepCancelButton from "NextStepCancelButton"
 
 const NextStepActions = React.createClass({
     propTypes: {
-        step: PropTypes.object.isRequired,
+        step: PropTypes.instanceOf(Parse.Object).isRequired,
         isEdit: PropTypes.bool.isRequired,
         handleSave: PropTypes.func,
         handleEdit: PropTypes.func,
@@ -33,19 +34,25 @@ const NextStepActions = React.createClass({
         }
     },
     getStateChangeButton(){
-        return <NextStepStatusChangeButton step={this.props.step} key={"next_step_action_status_" + this.props.step.objectId}/>
+        return <NextStepStatusChangeButton
+            step={this.props.step}
+            deal={this.props.deal}
+            key={"next_step_action_status_" + this.props.step.id}/>
     },
     getEditButton(){
-        return <NextStepEditButton handleEdit={this.props.handleEdit} key={"next_step_action_edit_" + this.props.step.objectId}/>
+        return <NextStepEditButton handleEdit={this.props.handleEdit}
+            key={"next_step_action_edit_" + this.props.step.id}/>
     },
     getSaveButton(){
-        return <NextStepSaveButton step={this.props.step} handleSave={this.props.handleSave} key={"next_step_action_save_" + this.props.step.objectId}/>
+        return <NextStepSaveButton step={this.props.step}
+            handleSave={this.props.handleSave} key={"next_step_action_save_" + this.props.step.id}/>
     },
     getDeleteButton(){
-        return <NextStepDeleteButton step={this.props.step} afterDelete={this.props.afterDelete} key={"next_step_action_delete_" + this.props.step.objectId}/>
+        return <NextStepDeleteButton step={this.props.step}
+            afterDelete={this.props.afterDelete} key={"next_step_action_delete_" + this.props.step.id}/>
     },
     getCancelButton(){
-        return <NextStepCancelButton handleCancel={this.props.handleCancel} key={"next_step_action_cancel_" + this.props.step.objectId} />
+        return <NextStepCancelButton handleCancel={this.props.handleCancel} key={"next_step_action_cancel_" + this.props.step.id} />
     },
     render () {
         var actions = [];

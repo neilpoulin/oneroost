@@ -1,38 +1,53 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
 import {withRouter} from "react-router"
-import ParseReact from "parse-react"
+import RoostUtil from "RoostUtil"
 
 const ReviewInvitation = withRouter( React.createClass({
-    mixins: [ParseReact.Mixin],
     propTypes: {
-        router: PropTypes.object.isRequired
+        router: PropTypes.object.isRequired,
+        params: PropTypes.shape({
+            stakeholderId: PropTypes.string.isRequired
+        })
     },
-    observe: function(props, state){
+    fetchData(stakeholderId){
+        let self = this;
         var stakeholderQuery = new Parse.Query("Stakeholder");
         stakeholderQuery.include("user");
         stakeholderQuery.include("deal");
         stakeholderQuery.include("invitedBy");
-        stakeholderQuery.equalTo("objectId", props.params.stakeholderId);
-        stakeholderQuery
-        return {
-            stakeholder: stakeholderQuery
-        }
+        stakeholderQuery.get(stakeholderId).then(stakeholder => {
+            self.setState({
+                loading: false,
+                stakeholder: stakeholder
+            })
+        }).catch(error => {
+            console.log("failed to get stakeholder", error);
+            self.setState({
+                loading: false,
+                stakeholder: false
+            })
+        })
     },
     getInitialState: function(){
         return {
             password: null,
-            confirmPassword: null
+            confirmPassword: null,
+            stakeholder: null,
+            loading: true,
         }
     },
+    componentWillMount(){
+        this.fetchData(this.props.params.stakeholderId)
+    },
     componentWillUpdate(props, state){
-        if ( this.pendingQueries().length == 0 ) {
-            var stakeholder = this.data.stakeholder[0];
-            var stakeholderUser = stakeholder.user;
+        if (!this.state.loading) {
+            var stakeholder = this.state.stakeholder;
+            var stakeholderUser = stakeholder.get("user");
             var currentUser = Parse.User.current();
-            var dealId = stakeholder.deal.objectId;
+            var dealId = stakeholder.get("deal").id;
 
-            if ( stakeholder.inviteAccepted || !currentUser && !stakeholderUser.passwordChangeRequired )  // OR the user needs to log in
+            if ( stakeholder.get("inviteAccepted") || !currentUser && !stakeholderUser.get("passwordChangeRequired") )  // OR the user needs to log in
             {
                 this.sendToRoost( dealId );
             }
@@ -45,23 +60,22 @@ const ReviewInvitation = withRouter( React.createClass({
     acceptInvite: function(){
         var self = this;
 
-        var toSave = this.data.stakeholder[0].id;
-
-        ParseReact.Mutation
-        .Set(toSave, {inviteAccepted: true})
-        .dispatch({waitForServer: true});
-        self.sendToRoost( self.data.stakeholder[0].deal.objectId );
+        let stakeholder = this.state.stakeholder;
+        stakeholder.set("inviteAccepted", true);
+        stakeholder.save().then(result => {
+            self.sendToRoost( stakeholder.get("deal").id );
+        }).catch(error => console.error("failed to save the stakeholder", error))
     },
     render () {
-        if ( this.pendingQueries().length > 0 )
+        let stakeholder = this.state.stakeholder;
+        if (this.state.loading)
         {
             return <div>Loading....</div>
         }
-        else if ( this.data.stakeholder.length == 0)
+        else if (!stakeholder)
         {
             return <div>No invites found for that ID</div>
         }
-        var stakeholder = this.data.stakeholder[0];
 
         var result =
         <div className="container col-md-6 col-md-offset-3">
@@ -69,9 +83,9 @@ const ReviewInvitation = withRouter( React.createClass({
                 <div className="container-fluid">
                     <h2>Review Opportunity</h2>
                     <p className="lead">
-                        <span className="">{stakeholder.user.firstName},</span>
+                        <span className="">{stakeholder.get("user").get("firstName")},</span>
                         <br/>
-                        {stakeholder.invitedBy.firstName} {stakeholder.invitedBy.lastName} from {stakeholder.invitedBy.company} has submitted a proposal called <i>{stakeholder.deal.dealName}</i> for you to review
+                        {RoostUtil.getFullName(stakeholder.get("invitedBy"))} from {stakeholder.get("invitedBy").get("company")} has submitted a proposal called <i>{stakeholder.get("deal").get("dealName")}</i> for you to review
                     </p>
                 </div>
             </div>
