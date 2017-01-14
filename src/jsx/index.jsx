@@ -3,6 +3,9 @@
 import { render } from "react-dom"
 import Parse from "parse"
 import React from "react"
+
+import { Provider } from "react-redux"
+
 import { Router, Route, browserHistory, IndexRoute, Redirect } from "react-router"
 import LoginPage from "LoginPage"
 import RegisterPage from "RegisterPage"
@@ -32,13 +35,17 @@ import HelpPage from "help/HelpPage"
 import ReactGA from "react-ga"
 import TermsOfServicePage from "TermsOfServicePage"
 import PrivacyPage from "PrivacyPage"
-
+import configureStore from "./store/configureStore"
 Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;
 Parse.serverURL = window.location.origin + "/parse";
 
-
 ReactGA.initialize(OneRoost.Config.gaTrackingId, getGaOptions());
+
+const store = configureStore()
+let unsubscribe = store.subscribe(() =>
+  console.log(store.getState())
+)
 
 function getGaOptions(){
     var gaOptions = {};
@@ -114,51 +121,53 @@ function doLogout(nextState, replace){
 }
 
 render(
-    <Router history={browserHistory} onUpdate={logPageView}>
-        <Route path="/" component={App}>
-            <IndexRoute component={Landing}/>
-            <Route path="/login" component={LoginPage} onEnter={requireAnonymous}></Route>
-            <Redirect from="/beta/register" to="/signup" />
-            // <Route path="/beta/register" component={RegisterPage} onEnter={requireAnonymous}></Route>
-            <Route path="/signup" component={RegisterPage} onEnter={requireAnonymous}></Route>
-            <Route path="/logout" component={Landing} onEnter={doLogout}></Route>
-            <Redirect from="/deals" to="/roosts" />
-            <Route path="/account" component={ProfilePage} onEnter={requireAuthOrParam}>
+    <Provider store={store}>
+        <Router history={browserHistory} onUpdate={logPageView}>
+            <Route path="/" component={App}>
+                <IndexRoute component={Landing}/>
+                <Route path="/login" component={LoginPage} onEnter={requireAnonymous}></Route>
+                <Redirect from="/beta/register" to="/signup" />
+                // <Route path="/beta/register" component={RegisterPage} onEnter={requireAnonymous}></Route>
+                <Route path="/signup" component={RegisterPage} onEnter={requireAnonymous}></Route>
+                <Route path="/logout" component={Landing} onEnter={doLogout}></Route>
+                <Redirect from="/deals" to="/roosts" />
+                <Route path="/account" component={ProfilePage} onEnter={requireAuthOrParam}>
 
-            </Route>
-            <Route path="/proposals/:userId" component={ReadyRoostPage}/>
-            <Route path="/help" component={HelpPage}/>
-            <Route path="/terms" component={TermsOfServicePage}/>
-            <Route path="/privacy" component={PrivacyPage}/>
-            <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
-                <IndexRoute component={UserHomePage}/>
-                <Route path="unauthorized" component={Unauthorized}/>
-                <Redirect from=":dealId" to="/roosts/:dealId/messages" />
-                <Route path=":dealId" component={Roost}>
-                    <Redirect from="/deals/:dealId" to="/roosts/:dealId" />
-                    <Route path="messages"/>
-                    <Route path="participants" component={StakeholderSidebar}/>
-                    <Route path="timeline" component={TimelineSidebar}/>
-                    <Route path="budget" component={InvestmentSidebar}/>
-                    <Route path="documents" component={DocumentsSidebar}/>
-                    <Route path="steps" >
-                        <IndexRoute component={AllStepsSidebar}/>
-                        <Route path="completed" component={NextStepCompletedSidebar}/>
-                        <Route path=":stepId" component={NextStepSidebar}/>
+                </Route>
+                <Route path="/proposals/:userId" component={ReadyRoostPage}/>
+                <Route path="/help" component={HelpPage}/>
+                <Route path="/terms" component={TermsOfServicePage}/>
+                <Route path="/privacy" component={PrivacyPage}/>
+                <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
+                    <IndexRoute component={UserHomePage}/>
+                    <Route path="unauthorized" component={Unauthorized}/>
+                    <Redirect from=":dealId" to="/roosts/:dealId/messages" />
+                    <Route path=":dealId" component={Roost}>
+                        <Redirect from="/deals/:dealId" to="/roosts/:dealId" />
+                        <Route path="messages"/>
+                        <Route path="participants" component={StakeholderSidebar}/>
+                        <Route path="timeline" component={TimelineSidebar}/>
+                        <Route path="budget" component={InvestmentSidebar}/>
+                        <Route path="documents" component={DocumentsSidebar}/>
+                        <Route path="steps" >
+                            <IndexRoute component={AllStepsSidebar}/>
+                            <Route path="completed" component={NextStepCompletedSidebar}/>
+                            <Route path=":stepId" component={NextStepSidebar}/>
+                        </Route>
                     </Route>
                 </Route>
+                <Route path="/invitations/:stakeholderId" component={Invitation}/>
+                <Route path="/review/:stakeholderId" component={ReviewInvitation}/>
+                <Route path="/unsubscribe">
+                    <Route path=":emailRecipientId" component={Unsubscribe}></Route>
+                </Route>
+                <Route path="/admin" component={NavPage} onEnter={requireAdmin}>
+                    <IndexRoute component={AdminHome}/>
+                    <Route path="emails" component={EmailTemplates}/>
+                </Route>
+                <Route path="/unauthorized" component={UnauthorizedPage}></Route>
             </Route>
-            <Route path="/invitations/:stakeholderId" component={Invitation}/>
-            <Route path="/review/:stakeholderId" component={ReviewInvitation}/>
-            <Route path="/unsubscribe">
-                <Route path=":emailRecipientId" component={Unsubscribe}></Route>
-            </Route>
-            <Route path="/admin" component={NavPage} onEnter={requireAdmin}>
-                <IndexRoute component={AdminHome}/>
-                <Route path="emails" component={EmailTemplates}/>
-            </Route>
-            <Route path="/unauthorized" component={UnauthorizedPage}></Route>
-        </Route>
-    </Router>
+        </Router>
+    </Provider>
     , document.getElementById("app")
 );

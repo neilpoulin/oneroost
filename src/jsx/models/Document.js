@@ -1,5 +1,16 @@
 import Parse from "parse";
+import { schema } from "normalizr"
+import {normalizeOpts} from "models/Models"
+import * as Deal from "models/Deal"
+import * as User from "models/User"
 
-const Document = Parse.Object.extend("Document");
+export const Schema = new schema.Entity("documents", {
+    createdBy: User.Schema,
+    deal: Deal.Schema
+}, {    
+    ...normalizeOpts
+});
 
-export default Document;
+export const className = "Document"
+
+export default Parse.Object.extend(className);

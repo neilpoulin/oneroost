@@ -1,9 +1,30 @@
 import React, {PropTypes} from "react"
 import Parse from "parse"
-import DealComment from "models/DealComment"
 import AutosizeTextarea from "react-textarea-autosize"
+import {createComment} from "ducks/comments"
+import { connect } from "react-redux"
 
-export default React.createClass({
+const mapStateToProps = (state, ownProps) => {
+  return {
+    active: ownProps.filter === state.visibilityFilter
+  }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        addComment: (message) => {
+            let user = Parse.User.current();
+            dispatch(createComment({
+                message: message,
+                author: user,
+                username: user.get("username"),
+                deal: ownProps.deal
+            }))
+        }
+    }
+}
+
+const AddComment = React.createClass({
     getInitialState: function(){
         return {
             message: "",
@@ -23,18 +44,20 @@ export default React.createClass({
     },
     saveComment()
     {
-        var msg = this.formatMessage( this.state.message )        
-        let comment = new DealComment();
-        comment.set({
-            message: msg,
-            author: Parse.User.current(),
-            username: this.state.user.get("username"),
-            deal: this.props.deal
-        });
-        comment.save().then(saved => {
-            //no op
-        }).catch(error => console.error);
-        this.setState({message: ""});
+        var msg = this.formatMessage( this.state.message )
+        // let comment = new DealComment();
+        this.props.addComment(msg);
+
+        // comment.set({
+        //     message: msg,
+        //     author: Parse.User.current(),
+        //     username: this.state.user.get("username"),
+        //     deal: this.props.deal
+        // });
+        // comment.save().then(saved => {
+        //     //no op
+        // }).catch(error => console.error);
+        // this.setState({message: ""});
     },
     formatMessage(msg)
     {
@@ -54,6 +77,7 @@ export default React.createClass({
         this.props.onHeightChange(height);
     },
     render: function(){
+
         var addComment =
         <div className="addCommentContainer row-fluid">
             <div className="input-group">
@@ -73,10 +97,14 @@ export default React.createClass({
                     <button
                         ref="addButton"
                         className="btn btn-secondary"
-                        onClick={this.saveComment} >Send</button>
+                        onClick={this.saveComment}
+                        >
+                        Send</button>
                 </div>
             </div>
         </div>
         return addComment;
     }
 });
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddComment)

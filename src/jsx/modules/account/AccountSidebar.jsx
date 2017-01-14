@@ -1,16 +1,17 @@
 import React, {PropTypes} from "react"
-import Parse from "parse"
 import AccountSidebarList from "account/AccountSidebarList"
 import AddAccountButton from "account/AddAccountButton"
 
 export default React.createClass({
     propTypes: {
-        deals: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)).isRequired
+        deals: PropTypes.arrayOf(PropTypes.object).isRequired,
+        archivedDeals: PropTypes.arrayOf(PropTypes.object)
     },
     getDefaultProps: function(){
         return {
             isMobile: false,
-            stakeholders: [],
+            deals: [],
+            archivedDeals: [],
         }
     },
     onSuccess: function(){

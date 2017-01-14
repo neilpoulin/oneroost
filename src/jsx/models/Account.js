@@ -1,5 +1,13 @@
 import Parse from "parse";
+import {normalizeOpts} from "models/Models"
+import { schema } from "normalizr"
 
-const Account = Parse.Object.extend("Account");
+export const className = "Account"
+const Account = Parse.Object.extend(className);
+
+export const AccountSchema = new schema.Entity("accounts", {}, {    
+    ...normalizeOpts
+});
+
 
 export default Account;
