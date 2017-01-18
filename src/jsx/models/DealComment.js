@@ -1,14 +1,15 @@
 import Parse from "parse";
 import { schema } from "normalizr"
-import {normalizeOpts} from "models/Models"
 import * as User from "models/User"
 import * as Deal from "models/Deal"
 
-export const CommentSchema = new schema.Entity("comments", {
+export const Schema = new schema.Entity("comments", {
     createdBy: User.Schema,
     deal: Deal.Schema
 }, {
-    ...normalizeOpts
+    idAttribute: (entity) => {
+        return entity.objectId || entity.id || entity.get("objectId");
+    }
 });
 
 

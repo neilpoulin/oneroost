@@ -1,5 +1,6 @@
 // import { createAction } from "redux-actions";
 import DealComment from "models/DealComment";
+import {Map, List} from "immutable"
 
 export const ADD_COMMENT = "ADD_COMMENT"
 export const COMMENTS_LOAD_REQUEST = "COMMENTS_LOAD_REQUEST"
@@ -8,36 +9,29 @@ export const COMMENTS_LOAD_SUCCESS = "COMMENTS_LOAD_SUCCESS"
 // import { normalize, schema } from "normalizr"
 
 // Reducer
-const initialState = {
+const initialState = Map({
     isLoading: false,
-    ids: []
-};
+    ids: List([])
+})
+
 export default function reducer(state=initialState, action){
     switch (action.type) {
         case ADD_COMMENT:
             let {payload} = action;
-            return {
-                ...state,
-                ids: [...state.ids,
-                    payload.id
-                ]
-            }
+            let id = payload.get("objectId");
+            state = state.set("ids", state.get("ids").push(id))
+            break;
         case COMMENTS_LOAD_REQUEST:
-            return {
-                ...state,
-                isLoading: true
-            }
+            state = state.set("isLoading", false)
+            break;
         case COMMENTS_LOAD_SUCCESS:
-            return {
-                ...state,
-
-                isLoading: false,
-                ids: action.payoad.map(comment => comment.objectId)
-
-            }
+            state = state.set("isLoading", false)
+            state.set("ids", List(action.payoad.map(comment => comment.objectId)))
+            break;
         default:
-            return state
+            break;
     }
+    return state;
 }
 
 // Actions
@@ -56,7 +50,7 @@ export const loadComments = function(dealId){
 export const addComment = function(comment){
     return {
         type: ADD_COMMENT,
-        dealId: comment.get("deal").id,
+        dealId: comment.get("deal").id || comment.get("deal").get("objectId"),
         payload: comment
     }
 }
@@ -66,9 +60,7 @@ exports.createComment = function(message){
         let comment = new DealComment();
         comment.set(message);
         comment.save().then(saved => {
-
-
-            dispatch(addComment(saved));
+            dispatch(addComment(Map(saved.toJSON())));
         })
     }
 }

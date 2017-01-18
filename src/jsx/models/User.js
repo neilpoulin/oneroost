@@ -1,13 +1,15 @@
 import Parse from "parse"
 import { schema } from "normalizr"
-import {Pointer as ModelPointer, normalizeOpts} from "models/Models"
+import {Pointer as ModelPointer} from "models/Models"
 
 export default Parse.User;
 
 export const className = "User"
 
 export const Schema = new schema.Entity("users", {}, {
-    ...normalizeOpts
+    idAttribute: (entity) => {
+        return entity.objectId || entity.id || entity.get("objectId");
+    }
 });
 
 

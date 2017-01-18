@@ -3,8 +3,11 @@
 import Parse from "parse"
 import Deal from "models/Deal";
 import roost, {roostActions} from "./roost"
+import { Map } from "immutable";
 
-const roosts = (state = {}, action) => {
+const initialState = Map({});
+
+const roosts = (state = initialState, action) => {
     if ( roostActions.indexOf(action.type) === -1 )
     {
         return state;
@@ -20,11 +23,13 @@ const roosts = (state = {}, action) => {
         }
     }
 
-    if (typeof key !== "string") {
+    if (typeof key !== "string" && !action.error) {
         throw new Error("Expected key to be a string.")
     }
-    return { ...state,
-        [key]: roost(state[key], action)
-    }
+    return state.set(key, roost(state.get(key), action))
+
+    // return { ...state,
+    //     [key]: roost(state[key], action)
+    // }
 }
 export default roosts;

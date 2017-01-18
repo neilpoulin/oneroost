@@ -18,7 +18,12 @@ import {loadDocuments} from "ducks/documents"
 import {loadStakeholders} from "ducks/stakeholders"
 import {loadOpportunities} from "ducks/opportunities"
 import {denormalize} from "normalizr"
+import {Map, List} from "immutable"
 import * as Deal from "models/Deal"
+import * as Stakeholder from "models/Stakeholder"
+import * as Document from "models/Document"
+// import * as DealComment from "models/DealComment"
+
 
 const Roost = withRouter( React.createClass({
     propTypes: {
@@ -31,6 +36,12 @@ const Roost = withRouter( React.createClass({
     getDefaultProps(){
         return {
             dealLoading: false,
+            opportunities: {
+                deals: [],
+                archivedDeals: []
+            },
+            documents: [],
+            stakeholders: []
         }
     },
     getInitialState(){
@@ -168,79 +179,6 @@ const Roost = withRouter( React.createClass({
         if (this.props.loadData ) {
             this.props.loadData();
         }
-        // let dealQuery = new Parse.Query("Deal");
-        // dealQuery.include("readyRoostUser");
-        // dealQuery.include("createdBy");
-        // dealQuery.include("account");
-        // dealQuery.get(dealId).then(deal => {
-        //     var dealName = RoostUtil.getRoostDisplayName(deal);
-        //     document.title = dealName + " | OneRoost";
-        //     self.setState({
-        //         deal: deal,
-        //         dealLoading: false
-        //     });
-        // }).catch(error => {
-        //     console.error(error);
-        // });
-
-
-
-        // let deal = Pointer("Deal", dealId);
-        // var stakeholderQuery = new Parse.Query("Stakeholder");
-        // stakeholderQuery.equalTo("deal", deal);
-        // stakeholderQuery.include("user");
-        // stakeholderQuery.find().then(stakeholders => {
-        //     self.setState({
-        //         stakeholdersLoading: false,
-        //         stakeholders: stakeholders
-        //     });
-        // }).catch(error => console.error(error));
-
-
-        // let stepQuery = new Parse.Query("NextStep")
-        // stepQuery.equalTo( "deal", deal);
-        // stepQuery.ascending("dueDate");
-        // stepQuery.find().then(steps => {
-        //     self.setState({
-        //         nextSteps: steps,
-        //         nextStepsLoading: false
-        //     });
-        // }).catch(error => console.error(error));
-
-        // let documentsQuery = new Parse.Query("Document");
-        // documentsQuery.equalTo( "deal", deal )
-        // documentsQuery.include("user")
-        // documentsQuery.include("createdBy")
-        // documentsQuery.find().then(documents => {
-        //     self.setState({
-        //         documentsLoading: false,
-        //         documents: documents,
-        //     });
-        // });
-
-        // var opportunitiesQuery = new Parse.Query("Stakeholder");
-        // opportunitiesQuery.include("deal");
-        // opportunitiesQuery.include(["deal.account"]);
-        // opportunitiesQuery.include("deal.createdBy");
-        // opportunitiesQuery.include("deal.readyRoostUser");
-        // opportunitiesQuery.equalTo("user", Parse.User.current() );
-        // opportunitiesQuery.equalTo("inviteAccepted", true);
-        // opportunitiesQuery.find().then(stakeholders => {
-        //     let opportunities = stakeholders.map(s => s.get("deal"));
-        //     self.setState({
-        //         opportunities: opportunities,
-        //         loading: false
-        //     });
-        // })
-
-        let queries = {
-            // documents: documentsQuery,
-            // steps: stepQuery,
-            // stakeholders: stakeholderQuery,
-            // deal: dealQuery,
-            // opportunities: opportunitiesQuery,
-        }
-        this.setupSubscriptions(queries)
     },
     resetLoading(){
         this.setState({
@@ -251,15 +189,15 @@ const Roost = withRouter( React.createClass({
         });
     },
     render () {
-        let {nextSteps,
-            stakeholders,
-            documents} = this.state;
 
-            const {deal,
-                dealLoading,
+        const {deal,
+            stakeholders,
+            nextSteps,
+            documents,
+            dealLoading,
             opportunities} = this.props;
 
-            if ( dealLoading || this.props.stakeholders.isLoading || this.props.nextSteps.isLoading || this.props.documents.isLoading)
+            if ( dealLoading || this.props.stakeholders.get("isLoading") || this.props.nextSteps.get("isLoading") || this.props.documents.get("isLoading") )
             {
                 var message = "Loading...";
                 return (
@@ -274,15 +212,6 @@ const Roost = withRouter( React.createClass({
                 )
             }
 
-            // var childrenWithProps = null;
-            // if ( this.props.children ){
-            //     childrenWithProps = React.cloneElement(this.props.children, {
-            //         deal: deal,
-            //         nextSteps: nextSteps,
-            //         stakeholders: stakeholders
-            //     });
-            // }
-            // var mobileClassesDealTop = "visible-lg visible-md";
             var mobileClassesDealTop = "hidden-sm hidden-xs";
             var dealPage =
             <div className="RoostPage">
@@ -319,40 +248,60 @@ const Roost = withRouter( React.createClass({
     }) )
 
     const mapStateToProps = (state, ownProps) => {
+        console.log("Roost logging state", Map(state).toJS());
         const currentUser = Parse.User.current()
         let userId = currentUser.id;
-        let dealId = ownProps.params.dealId;
-        let deal = state.entities.deals[ownProps.params.dealId];
-        if (deal){
-            deal.className = "Deal"
+        const dealId = ownProps.params.dealId;
+        const {entities, roosts} = state;
+        if ( !entities || !entities.has("deals") ){
+            console.log("entitites not loaded yet");
+            return {};
         }
-        let parseDeal = deal ? Parse.Object.fromJSON(deal): null
-
-        let roost = state.roosts[dealId]
-        if ( !roost ){
+        let deals = entities.get("deals");
+        if( !deals ){
+            console.warn("failed to get deals key");
+            return {dealLoading: true};
+        }
+        let deal = deals.get(dealId);
+        let roost = roosts.get(dealId)
+        if ( !roost || !deal || roost.get("dealLoading") ){
             return {
-                deal: parseDeal,
                 dealLoading: true,
             }
         }
 
-        let opportunities = {
+        let stakeholders = denormalize(
+            roost.get("stakeholders").get("ids"),
+            [Stakeholder.Schema],
+            state.entities.toJS()
+        )
+        stakeholders = List(stakeholders.map(Map))
+
+        let documents = denormalize(
+            roost.get("documents").get("ids"),
+            [Document.Schema],
+            state.entities.toJS()
+        ).map(Map)
+
+        let opportunities = Map({
             isLoading: false,
             deals: [],
             archivedDeals: []
-        }
-        let myOpportunities = state.opportunitiesByUser[userId]
+        })
+        let myOpportunities = state.opportunitiesByUser.get(userId)
         if ( myOpportunities ){
-             opportunities.deals = denormalize( myOpportunities.deals, [Deal.Schema], state.entities)
-             opportunities.archivedDeals = denormalize( myOpportunities.archivedDeals, [Deal.Schema], state.entities)
+            let deals = denormalize(myOpportunities.get("deals").toJS(), [Deal.Schema], state.entities.toJS())
+            let archivedDeals = denormalize(myOpportunities.get("archivedDeals").toJS(), [Deal.Schema], state.entities.toJS() )
+            opportunities.set("deals", List(deals.map(Map)))
+            opportunities.set("archivedDeals", List(archivedDeals.map(Map)))
         }
 
+
         return {
-            parseDeal,
-            deal: parseDeal,
+            deal,
             opportunities,
-            ...deal,
-            ...roost
+            stakeholders,
+            documents,
         }
     }
 

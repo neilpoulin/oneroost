@@ -1,11 +1,14 @@
 import Parse from "parse"
 import React from "react"
+import { connect } from "react-redux"
 import { withRouter } from "react-router"
 import RoostNav from "navigation/RoostNav"
 import AddAccountButton from "account/AddAccountButton"
-import AccountSidebarList from "account/AccountSidebarList"
+import OpportunityList from "account/OpportunityList"
 import BetaUserWelcome from "BetaUserWelcome"
-import {updateById, removeItem} from "SubscriptionUtil"
+import {loadOpportunities} from "ducks/opportunities"
+import {denormalize} from "normalizr"
+import * as Deal from "models/Deal"
 
 const UserHomePage = React.createClass({
     getInitialState(){
@@ -25,81 +28,24 @@ const UserHomePage = React.createClass({
         document.title = "My Opportunities | OneRoost"
     },
     componentWillUnmount(){
-        this.removeSubscriptions();
+
     },
     componentWillMount(){
-        this.fetchData();
+        if ( this.props.loadData ){
+            this.props.loadData()
+        }
     },
-    componentWillUpdate(){
+    componentWillUpdate(nextProps, nextState){
         console.log("UserHomePage component will update");
-    },
-    subscriptions: {},
-    setupSubscriptions(queries){
-        const self = this;
-        let stakeholdersSubscription = queries.stakeholders.subscribe();
-        stakeholdersSubscription.on("create", stakeholder => {
-            let stakeholders = self.state.stakeholders;
-            stakeholders.push(stakeholder);
-            self.setState({stakeholders: stakeholders});
-        });
-
-        stakeholdersSubscription.on("update", stakeholder => {
-            let stakeholders = self.state.stakeholders;
-            updateById(stakeholders, stakeholder)
-            self.setState({stakeholders: stakeholders});
-        });
-
-        stakeholdersSubscription.on("enter", stakeholder => {
-            let stakeholders = self.state.stakeholders;
-            stakeholders.push(stakeholder);
-            self.setState({stakeholders: stakeholders});
-        });
-
-        stakeholdersSubscription.on("leave", stakeholder => {
-            let stakeholders = self.state.stakeholders;
-            removeItem(stakeholders, stakeholder)
-            self.setState({stakeholders: stakeholders});
-        });
-
-        this.subscriptions = {
-            stakeholders: stakeholdersSubscription
+        if ( this.props.userId != nextProps.useId && this.props.loadData ){
+            // this.props.loadData()
         }
-    },
-    removeSubscriptions(){
-        console.log("removing subscriptions");
-        const subscriptions = this.subscriptions;
-        for (const name in this.subscriptions ){
-            if ( subscriptions.hasOwnProperty(name)){
-                subscriptions[name].unsubscribe()
-            }
-        }
-    },
-    fetchData(){
-        const self = this;
-        this.removeSubscriptions();
-        var user = Parse.User.current();
-        var stakeholdersQuery = new Parse.Query("Stakeholder");
-        stakeholdersQuery.include("deal");
-        stakeholdersQuery.include(["deal.account"]);
-        stakeholdersQuery.include("deal.createdBy");
-        stakeholdersQuery.include("deal.readyRoostUser");
-        stakeholdersQuery.equalTo("user", user );
-        stakeholdersQuery.equalTo("inviteAccepted", true);
-        stakeholdersQuery.find().then(stakeholders => {
-            self.setState({
-                stakeholders: stakeholders,
-                loading: false
-            })
-        })
-
-        let queries = {
-            stakeholders: stakeholdersQuery
-        }
-        this.setupSubscriptions(queries);
     },
     render(){
+        const {deals, archivedDeals, isLoading, userId} = this.props
+
         let contents = null;
-        if ( this.state.loading ){
+        if ( isLoading ){
             contents =
             <div>
                 <i className="fa fa-spin fa-spinner"></i>
@@ -108,14 +54,11 @@ const UserHomePage = React.createClass({
         }
         else
         {
-            var deals = this.state.stakeholders.map(function(stakeholder){
-                return stakeholder.get("deal")
-            })
             if ( deals.length > 0){
-                contents = <AccountSidebarList deals={deals} className="bg-inherit"></AccountSidebarList>
+                contents = <OpportunityList deals={deals} archivedDeals={archivedDeals} className="bg-inherit"></OpportunityList>
             }
             else{
-                contents = <BetaUserWelcome userId={this.getCurrentUser().id}/>
+                contents = <BetaUserWelcome userId={userId}/>
             }
         }
 
@@ -136,4 +79,35 @@ const UserHomePage = React.createClass({
     }
 });
 
-export default withRouter( UserHomePage );
+const mapStateToProps = (state, ownProps) => {
+    const currentUser = Parse.User.current()
+    let userId = currentUser.id;
+    let entities = state.entities.toJS()
+    let myOpportunities = state.opportunitiesByUser.get(userId)
+    let deals = []
+    let archivedDeals = []
+    let isLoading = true
+    if ( myOpportunities ){
+        myOpportunities = myOpportunities.toJS()
+        isLoading = myOpportunities.isLoading;
+        deals = denormalize( myOpportunities.deals, [Deal.Schema], entities)
+        archivedDeals = denormalize( myOpportunities.deals, [Deal.Schema], entities)
+    }
+    return {
+        deals: deals,
+        archivedDeals: archivedDeals,
+        isLoading: isLoading,
+        userId,
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const currentUser = Parse.User.current()
+    return {
+        loadData: () => {
+            dispatch(loadOpportunities(currentUser.id))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)( withRouter( UserHomePage ));

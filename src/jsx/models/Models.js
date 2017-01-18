@@ -4,19 +4,21 @@ import Parse from "parse";
 exports.Deal = Deal;
 
 export const processStrategy = (entity) => {
-    if ( entity instanceof Parse.Object ){
-        let json = entity.toJSON()
-        json.className = entity.className
-        return json
-    }
+    // if ( entity instanceof Parse.Object ){
+    //     let json = entity.toJSON()
+    //     json.className = entity.className
+    //     return json
+    // }
     return entity;
 }
 
-export const idAttribute = (entity) => entity.objectId || entity.id;
+export const idAttribute = function(entity){    
+    return entity.objectId || entity.id || entity.get("objectId");
+}
 
 export const normalizeOpts = {
-    processStrategy,
-    idAttribute
+    processStrategy: processStrategy,
+    idAttribute: idAttribute,
 }
 
 exports.Pointer = function(className, id, opts){

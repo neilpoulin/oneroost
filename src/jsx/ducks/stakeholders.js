@@ -2,38 +2,34 @@ import * as Stakeholder from "models/Stakeholder"
 import * as Deal from "models/Deal"
 import {normalize} from "normalizr"
 import Parse from "parse"
+import {Map, List} from "immutable"
 
 export const ADD_STAKEHOLDER = "ADD_STAKEHOLDER"
 export const STAKEHOLDER_LOAD_REQUEST = "STAKEHOLDER_LOAD_REQUEST"
 export const STAKEHOLDER_LOAD_SUCCESS = "STAKEHOLDER_LOAD_SUCCESS"
 export const STAKEHOLDER_LOAD_ERROR = "STAKEHOLDER_LOAD_ERROR"
 
-const initialState = {
+const initialState = Map({
     isLoading: false,
-    ids: [],
-}
+    ids: List([]),
+})
 
 export default function reducer(state=initialState, action){
     switch (action.type) {
         case STAKEHOLDER_LOAD_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
-            }
+            state = state.set("isLoading", true)
+            break;
         case STAKEHOLDER_LOAD_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
-                ids: action.payload.map(stakeholder => stakeholder.objectId)
-            }
+            state = state.set("isLoading", false);
+            state = state.set("ids", List(action.payload.map(stakeholder => stakeholder.objectId)))
+            break;
         case STAKEHOLDER_LOAD_ERROR:
-            return{
-                ...state,
-                isLoading: false,
-            }
+            state = state.set("isLoading", false);
+            break;
         default:
-            return state;
+            break;
     }
+    return state;
 }
 
 export const loadStakeholders = (dealId) => (dispatch) => {
@@ -46,12 +42,12 @@ export const loadStakeholders = (dealId) => (dispatch) => {
     stakeholderQuery.include("user");
     stakeholderQuery.find().then(stakeholders => {
         let json = stakeholders.map(stakeholder => stakeholder.toJSON())
-        let normalized = normalize(json, [Stakeholder.Schema])
+        let entities = normalize(json, [Stakeholder.Schema]).entities || {}
         dispatch({
             type: STAKEHOLDER_LOAD_SUCCESS,
             dealId: dealId,
             payload: json,
-            entities: normalized.entities || {}
+            entities: Map(entities)
         })
     }).catch(error => {
         console.error(error)

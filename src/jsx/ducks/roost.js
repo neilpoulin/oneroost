@@ -6,6 +6,7 @@ import * as documents from "./documents"
 import * as stakeholders from "./stakeholders"
 import Parse from "parse"
 import * as Deal from "models/Deal"
+import { Map } from "immutable";
 
 export const DEAL_LOAD_REQUEST = "DEAL_LOAD_REQUSET"
 export const DEAL_LOAD_SUCCESS = "DEAL_LOAD_SUCCESS"
@@ -21,6 +22,15 @@ export const roostActions = [
     DEAL_LOAD_ERROR,
 ];
 
+
+const initialState = Map({
+    dealLoading: false,
+    error: null,
+    comments: Map({}),
+    nextSteps: Map({}),
+    documents: Map({}),
+    stakeholders: Map({}),
+})
 
 export const loadDeal = (dealId) => {
     return (dispatch) => {
@@ -53,51 +63,36 @@ export const loadDeal = (dealId) => {
     }
 }
 
-const roostReducer = (state, action) => {
+const roostReducer = (state=initialState, action) => {
     switch (action.type) {
         case DEAL_LOAD_REQUEST:
-            return {
-                ...state,
-                dealLoading: true,
-            }
+            state = state.set("dealLoading", true)
+            break;
         case DEAL_LOAD_SUCCESS:
-            return {
-                ...state,
-                dealLoading: false,
-                error: null
-            }
+            state = state.set("dealLoading", false);
+            state = state.set("error", null);
+            break;
         case DEAL_LOAD_ERROR:
             let error = action.payload;
-
-            return {
-                ...state,
-                dealLoading: false,
-                error: {
-                    level: "ERROR",
-                    message: "Failed to fetch the roost",
-                    error: error
-                }
-            }
+            state = state.set("dealLoading", false);
+            state = state.set("error", {
+                level: "ERROR",
+                message: "Failed to fetch the roost",
+                error: error
+            })
+            break;
         default:
             return state;
     }
-}
-const initialState = {
-    dealLoading: false,
-    error: null,
-    comments: {},
-    nextSteps: {},
-    documents: {},
-    stakeholders: {},
+    return state;
 }
 const roost = (state=initialState, action) => {
-    const nextState = roostReducer(state, action)
-    return {
-        ...nextState,
-        comments: comments.default(nextState.comments, action),
-        nextSteps: nextSteps.default(nextState.nextSteps, action),
-        documents: documents.default(nextState.documents, action),
-        stakeholders: stakeholders.default(nextState.stakeholders, action),
-    }
+    state = roostReducer(state, action)
+
+    state = state.set("comments", comments.default(state.get("comments"), action))
+    state = state.set("nextSteps", nextSteps.default(state.get("nextSteps"), action))
+    state = state.set("documents",documents.default(state.get("documents"), action))
+    state = state.set("stakeholders", stakeholders.default(state.get("stakeholders"), action))
+    return state;
 }
 export default roost;

@@ -18,7 +18,7 @@ exports.getFullName = function( parseUser ){
     } catch (e){
         console.warn("unable to parse user name, returning empty");
     }
-    
+
     return fullName.trim()
 }
 
@@ -91,14 +91,7 @@ exports.isCurrentUser = function(user){
     return false;
 }
 
-
-
-/** Get the display name for the roost, contextual to the user passed in**/
-exports.getRoostDisplayName = function(deal, displayFor){
-    if (!(deal instanceof Parse.Object)){
-        throw "Attempting to get roost name from a non parse object", deal;
-    }
-
+function getRoostNameForParseUser( deal, displayFor ){
     let readyRoostUser = deal.get("readyRoostUser");
     let account = deal.get("account");
     displayFor = displayFor || this.getCurrentUser();
@@ -118,6 +111,36 @@ exports.getRoostDisplayName = function(deal, displayFor){
         roostName = readyRoostUser.get("company");
     } else{
         roostName = account.get("accountName");
+    }
+    return roostName;
+}
+
+/** Get the display name for the roost, contextual to the user passed in**/
+exports.getRoostDisplayName = function(deal, displayFor){
+    if (deal instanceof Parse.Object){
+        // throw "Attempting to get roost name from a non parse object", deal;
+        return getRoostNameForParseUser(deal, displayFor)
+    }
+
+    let readyRoostUser = deal.readyRoostUser;
+    let account = deal.account;
+    displayFor = displayFor || this.getCurrentUser();
+    let createdBy = deal.createdBy;
+
+    let isCreator = this.isCurrentUser(createdBy);
+    let isReadyRoostUser = this.isCurrentUser(readyRoostUser);
+
+    if ( !createdBy ){
+        console.warn("There is no created by on the deal object", deal);
+    }
+
+    let roostName = "";
+    if ( createdBy && !isCreator && createdBy.company ){
+        roostName = createdBy.company
+    } else if ( readyRoostUser && !isReadyRoostUser && readyRoostUser.company ){
+        roostName = readyRoostUser.company;
+    } else{
+        roostName = account.accountName;
     }
     return roostName;
 }

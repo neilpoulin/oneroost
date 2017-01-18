@@ -43,7 +43,8 @@ Parse.serverURL = window.location.origin + "/parse";
 ReactGA.initialize(OneRoost.Config.gaTrackingId, getGaOptions());
 
 const store = configureStore()
-let unsubscribe = store.subscribe(() =>
+// let unsubscribe =
+store.subscribe(() =>
   console.log(store.getState())
 )
 

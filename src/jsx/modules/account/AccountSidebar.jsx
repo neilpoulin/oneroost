@@ -1,5 +1,5 @@
 import React, {PropTypes} from "react"
-import AccountSidebarList from "account/AccountSidebarList"
+import OpportunityList from "account/OpportunityList"
 import AddAccountButton from "account/AddAccountButton"
 
 export default React.createClass({
@@ -23,7 +23,7 @@ export default React.createClass({
         return (
             <div id={"accountSidebar" + (this.props.isMobile ? "Mobile" : "")} className="container-fluid hidden-sm hidden-xs">
                 <h3>Opportunities</h3>
-                <AccountSidebarList deals={deals} />
+                <OpportunityList deals={deals} />
                 <AddAccountButton
                     btnClassName="btn-outline-secondary btn-block"
                     onSuccess={this.onSuccess}

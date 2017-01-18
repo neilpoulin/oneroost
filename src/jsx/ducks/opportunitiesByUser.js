@@ -1,11 +1,12 @@
 import * as opportunities from "ducks/opportunities"
 import {getActions} from "DuckUtil"
+import {Map} from "immutable"
 
 let opportunityActoins = [
     ...getActions(opportunities)
 ]
 
-const initialState={}
+const initialState = Map({})
 export default function reducer(state=initialState, action){
     if ( opportunityActoins.indexOf(action.type) === -1){
         return state;
@@ -14,7 +15,5 @@ export default function reducer(state=initialState, action){
     if ( !userId ){
         return state;
     }
-    return { ...state,
-        [userId]: opportunities.default(state[userId], action)
-    }
+    return state.set(userId, opportunities.default(state.get("userId"), action))
 }
