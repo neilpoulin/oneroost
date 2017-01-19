@@ -169,7 +169,7 @@ const Roost = withRouter( React.createClass({
 
         if ( nextProps.params.dealId !== this.props.params.dealId ){
             this.resetLoading();
-            this.getData(nextProps.params.dealId);
+            this.getData(nextProps.params.dealId || this.props.params.dealId);
         }
 
     },
@@ -178,7 +178,7 @@ const Roost = withRouter( React.createClass({
         this.removeSubscriptions();
         // let self = this;
         if (this.props.loadData ) {
-            this.props.loadData();
+            this.props.loadData(dealId);
         }
     },
     resetLoading(){
@@ -311,10 +311,10 @@ const Roost = withRouter( React.createClass({
     }
 
     const mapDispatchToProps = (dispatch, ownProps) => {
-        const dealId = ownProps.params.dealId;
+        // let dealId = ownProps.params.dealId;
         const currentUser = Parse.User.current()
         return {
-            loadData: () => {
+            loadData: (dealId) => {
                 dispatch(loadDeal(dealId))
                 dispatch(loadNextSteps(dealId))
                 dispatch(loadDocuments(dealId))

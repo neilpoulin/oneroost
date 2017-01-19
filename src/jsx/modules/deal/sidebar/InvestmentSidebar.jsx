@@ -1,10 +1,9 @@
 import React, { PropTypes } from "react"
-import Parse from "parse";
-import InvestmentForm from "InvestmentForm";
+import InvestmentForm from "InvestmentForm"
 
 const InvestmentSidebar = React.createClass({
   propTypes: {
-    deal: PropTypes.instanceOf(Parse.Object)
+    deal: PropTypes.object
   },
   render(){
     var {deal} = this.props;
