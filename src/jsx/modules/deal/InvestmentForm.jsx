@@ -13,12 +13,12 @@ const TimelineSidebar = React.createClass({
     },
     getInitialState(){
         return {
-            high: this.props.deal.get("budget").high || 0,
-            low: this.props.deal.get("budget").low || 0,
-            description: this.props.deal.get("description") || "",
+            high: this.props.deal.budget.high || 0,
+            low: this.props.deal.budget.low || 0,
+            description: this.props.deal.description || "",
             saveSuccess: false,
             saveError: false,
-            dealName: this.props.deal.get("dealName"),
+            dealName: this.props.deal.dealName,
             errors: {},
         }
     },

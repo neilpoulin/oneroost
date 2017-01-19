@@ -18,10 +18,11 @@ import {loadDocuments} from "ducks/documents"
 import {loadStakeholders} from "ducks/stakeholders"
 import {loadOpportunities} from "ducks/opportunities"
 import {denormalize} from "normalizr"
-import {Map, List} from "immutable"
+import {Map} from "immutable"
 import * as Deal from "models/Deal"
 import * as Stakeholder from "models/Stakeholder"
 import * as Document from "models/Document"
+import * as NextStep from "models/NextStep"
 // import * as DealComment from "models/DealComment"
 
 
@@ -112,7 +113,7 @@ const Roost = withRouter( React.createClass({
 
         // let opportunitiesSubscription = queries.opportunities.subscribe();
         // opportunitiesSubscription.on("create", stakeholder => {
-        //     let opportunity = stakeholder.get("deal");
+        //     let opportunity = stakeholder.deal;
         //     let opportunities = self.state.opportunities;
         //     opportunities.push(opportunity);
         //     self.setState({opportunities: opportunities});
@@ -197,7 +198,7 @@ const Roost = withRouter( React.createClass({
             dealLoading,
             opportunities} = this.props;
 
-            if ( dealLoading || this.props.stakeholders.get("isLoading") || this.props.nextSteps.get("isLoading") || this.props.documents.get("isLoading") )
+            if ( dealLoading )
             {
                 var message = "Loading...";
                 return (
@@ -215,7 +216,7 @@ const Roost = withRouter( React.createClass({
             var mobileClassesDealTop = "hidden-sm hidden-xs";
             var dealPage =
             <div className="RoostPage">
-                <RoostNav mobileTitle={deal.get("dealName")} showHome={true}/>
+                <RoostNav mobileTitle={deal.dealName} showHome={true}/>
                 <div className="RoostBody">
                     <AccountSidebar deals={opportunities.deals} archivedDeals={opportunities.archivedDeals}/>
                     <div className="Deal">
@@ -229,9 +230,7 @@ const Roost = withRouter( React.createClass({
                         <div className="dealPageBottomContainer">
                             <DealPageBottom ref="dealPageBottom"
                                 nextSteps={nextSteps}
-                                nextStepIds={this.props.nextSteps.ids}
                                 stakeholders={stakeholders}
-                                stakeholderIds={this.props.stakeholders.ids}
                                 deal={deal}
                                 documents={documents}
                                 sidebar={this.props.children}
@@ -248,61 +247,67 @@ const Roost = withRouter( React.createClass({
     }) )
 
     const mapStateToProps = (state, ownProps) => {
-        console.log("Roost logging state", Map(state).toJS());
+        let stateJS = Map(state).toJS()
+        console.log("Roost logging state", stateJS);
         const currentUser = Parse.User.current()
+        const entities = stateJS.entities
+        const roosts = stateJS.roosts
         let userId = currentUser.id;
-        const dealId = ownProps.params.dealId;
-        const {entities, roosts} = state;
-        if ( !entities || !entities.has("deals") ){
+        let dealId = ownProps.params.dealId
+        if ( !entities || !entities.deals ){
             console.log("entitites not loaded yet");
             return {};
         }
-        let deals = entities.get("deals");
+        let deals = entities.deals;
         if( !deals ){
             console.warn("failed to get deals key");
             return {dealLoading: true};
         }
-        let deal = deals.get(dealId);
-        let roost = roosts.get(dealId)
-        if ( !roost || !deal || roost.get("dealLoading") ){
+        let deal = deals[dealId]
+        let roost = roosts[dealId]
+        if ( !roost || !deal || roost.dealLoading ){
             return {
                 dealLoading: true,
             }
         }
-
+        deal = deal
+        roost = roost
         let stakeholders = denormalize(
-            roost.get("stakeholders").get("ids"),
+            roost.stakeholders.ids,
             [Stakeholder.Schema],
-            state.entities.toJS()
+            entities
         )
-        stakeholders = List(stakeholders.map(Map))
 
         let documents = denormalize(
-            roost.get("documents").get("ids"),
+            roost.documents.ids,
             [Document.Schema],
-            state.entities.toJS()
-        ).map(Map)
+            entities
+        )
 
-        let opportunities = Map({
+        let nextSteps = denormalize(
+            roost.nextSteps.ids,
+            [NextStep.Schema],
+            entities
+        )
+
+        let opportunities = {
             isLoading: false,
             deals: [],
             archivedDeals: []
-        })
-        let myOpportunities = state.opportunitiesByUser.get(userId)
+        }
+        let myOpportunities = stateJS.opportunitiesByUser[userId]
         if ( myOpportunities ){
-            let deals = denormalize(myOpportunities.get("deals").toJS(), [Deal.Schema], state.entities.toJS())
-            let archivedDeals = denormalize(myOpportunities.get("archivedDeals").toJS(), [Deal.Schema], state.entities.toJS() )
-            opportunities.set("deals", List(deals.map(Map)))
-            opportunities.set("archivedDeals", List(archivedDeals.map(Map)))
+            opportunities.deals = denormalize(myOpportunities.deals, [Deal.Schema], entities)
+            opportunities.archivedDeals = denormalize(myOpportunities.archivedDeals, [Deal.Schema], entities)
         }
 
-
-        return {
-            deal,
-            opportunities,
-            stakeholders,
-            documents,
-        }
+        return Map({
+            deal: deal,
+            opportunities: opportunities,
+            stakeholders: stakeholders,
+            documents: documents,
+            nextSteps: nextSteps,
+        }).toJS()
     }
 
     const mapDispatchToProps = (dispatch, ownProps) => {

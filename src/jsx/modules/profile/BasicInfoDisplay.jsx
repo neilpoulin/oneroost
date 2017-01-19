@@ -16,6 +16,7 @@ const BasicInfoDisplay = React.createClass({
     },
     render () {
         const {user} = this.props
+        const {email, company, jobTitle} = user
         var info =
         <div>
             <div className="title action">
@@ -31,18 +32,18 @@ const BasicInfoDisplay = React.createClass({
 
 
                 <FormGroupStatic
-                    value={user.get("email")}
+                    value={email}
                     label="Email"
                     horizontal={true}
                     />
 
                 <FormGroupStatic
-                    value={user.get("company")}
+                    value={company}
                     label="Company"
                     horizontal={true}
                     />
                 <FormGroupStatic
-                    value={user.get("jobTitle")}
+                    value={jobTitle}
                     label="Job Title"
                     horizontal={true}
                     />

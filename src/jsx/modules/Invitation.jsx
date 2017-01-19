@@ -61,16 +61,16 @@ const Invitation = withRouter( React.createClass({
 
         if ( !this.state.loading && this.state.stakeholder ){ //stakeholder loaded
             var stakeholder = this.state.stakeholder;
-            var stakeholderUser = stakeholder.get("user");
+            var stakeholderUser = stakeholder.user
             var currentUser = Parse.User.current();
-            var dealId = stakeholder.get("deal").id;
+            var dealId = stakeholder.deal.objectId;
 
             if ( currentUser && stakeholderUser.id !== currentUser.id ){
                 this.sendToUnauthorized();
                 return;
             }
 
-            if ( stakeholder.get("inviteAccepted") || !currentUser && !stakeholderUser.get("passwordChangeRequired") ){  // OR the user needs to log in
+            if ( stakeholder.inviteAccepted || !currentUser && !stakeholderUser.passwordChangeRequired ){  // OR the user needs to log in
                 this.sendToRoost( dealId );
             }
         }
@@ -87,24 +87,24 @@ const Invitation = withRouter( React.createClass({
         let stakeholder = this.state.stakeholder;
         stakeholder.set("inviteAccepted", true);
         stakeholder.save().then(response => {
-            self.sendToRoost(stakeholder.get("deal").id)}
+            self.sendToRoost(stakeholder.deal.objectId)}
         )
     },
     submitPassword: function(){
         let self = this;
         let stakeholder = this.state.stakeholder;
-        let deal = stakeholder.get("deal");
-        let dealId = deal.id;
-        let user = stakeholder.get("user");
-        let userId = user.id;
+        let deal = stakeholder.deal
+        let dealId = deal.objectId;
+        let user = stakeholder.user
+        let userId = user.objectId;
         let validation = loginValidatoin;
-        if ( user.get("passwordChangeRequired") ){
+        if ( user.passwordChangeRequired ){
             validation = confirmValidation;
         }
         let errors = FormUtil.getErrors(this.state, validation);
         console.log(errors);
         if ( !FormUtil.hasErrors(errors) ){
-            if ( user.get("passwordChangeRequired") ){
+            if ( user.passwordChangeRequired ){
                 Parse.Cloud.run("saveNewPassword", {
                     password: self.state.password,
                     stakeholderId: stakeholder.id,
@@ -115,7 +115,8 @@ const Invitation = withRouter( React.createClass({
                     stakeholder.save().then(result => {
                         Parse.Cloud.run("getUserWithEmail", {userId: userId})
                         .then(function(emailUser){
-                            let email = emailUser.user.get("email");
+                            emailUser = emailUser.toJSON()
+                            let email = emailUser.user.email
                             Parse.User.logIn(email, self.state.password, {
                                 success: function(){
                                     self.sendToRoost(dealId)
@@ -173,9 +174,9 @@ const Invitation = withRouter( React.createClass({
         }
         let {errors, password, confirmPassword, stakeholder} = this.state;
         var currentUser = Parse.User.current();
-        let deal = stakeholder.get("deal")
+        let deal = stakeholder.deal
         var form = null
-        if ( stakeholder.get("user").get("passwordChangeRequired") )
+        if ( stakeholder.user.passwordChangeRequired )
         {
             form =
             <div className="row-fluid">
@@ -210,7 +211,7 @@ const Invitation = withRouter( React.createClass({
 
             </div>
         }
-        else if( currentUser && !currentUser.get("passwordChangeRequired") ){
+        else if( currentUser && !currentUser.passwordChangeRequired ){
             form =
             <div className = "form">
                 <div className="form-group">
@@ -227,9 +228,9 @@ const Invitation = withRouter( React.createClass({
                     <div className="container-fluid">
                         <Logo className="header"/>
                         <p className="lead">
-                            <span className="">{RoostUtil.getFullName(stakeholder.get("user"))},</span>
+                            <span className="">{RoostUtil.getFullName(stakeholder.user)},</span>
                             <br/>
-                            {RoostUtil.getFullName(stakeholder.get("invitedBy"))} from {stakeholder.get("invitedBy").get("company")} has invited to you join {deal.get("dealName")} on OneRoost
+                            {RoostUtil.getFullName(stakeholder.invitedBy)} from {stakeholder.invitedBycompany} has invited to you join {deal.dealName} on OneRoost
                         </p>
                     </div>
                 </div>

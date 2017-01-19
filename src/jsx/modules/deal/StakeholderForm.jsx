@@ -9,7 +9,7 @@ import RoostUtil from "RoostUtil"
 
 export default React.createClass({
     propTypes: {
-        deal: PropTypes.instanceOf(Parse.Object)
+        deal: PropTypes.object.isRequired
     },
     getInitialState: function(){
         return {
@@ -53,11 +53,11 @@ export default React.createClass({
                 alert("this user is already a stakeholder on this opportunity.");
                 return;
             }
-            var createdUser = result.user;
-            createdUser.firstName = createdUser.get("firstName");
-            createdUser.lastName = createdUser.get("lastName");
-            createdUser.email = createdUser.get("email");
-            createdUser.company = createdUser.get("company");
+            var createdUser = result.user
+            // createdUser.firstName = createdUser.firstName
+            // createdUser.lastName = createdUser.lastName
+            // createdUser.email = createdUser.email
+            // createdUser.company = createdUser.company
             let stakeholder = new Stakeholder();
             stakeholder.set({
                 "user": createdUser,

@@ -16,7 +16,7 @@ const DocumentLinkItem = React.createClass({
         var self = this;
         let {doc} = this.props
         Parse.Cloud.run("getPresignedGetUrl", {
-            documentId: doc.id
+            documentId: doc.objectId
         }).then(result => {
             self.setState({downloadUrl: result.url});
         });
@@ -30,7 +30,8 @@ const DocumentLinkItem = React.createClass({
     },
     render () {
         var {doc} = this.props;
-        var link = doc.get("externalLink");
+        let {externalLink, createdBy, createdAt, fileName} = doc;
+        var link = externalLink
         if ( link.indexOf("//") == -1 ){
             link = "http://" + link;
         }
@@ -46,11 +47,11 @@ const DocumentLinkItem = React.createClass({
                     </div>
                     <div>
                         <div>
-                            <span className="fileName">{doc.get("fileName")}</span>
+                            <span className="fileName">{fileName}</span>
                         </div>
                         <div>
-                            <span className="uploadedBy">{RoostUtil.getFullName(doc.get("createdBy"))}</span>
-                            <span className="createdAt">{this.formatDate(doc.createdAt)}</span>
+                            <span className="uploadedBy">{RoostUtil.getFullName(createdBy)}</span>
+                            <span className="createdAt">{this.formatDate(createdAt)}</span>
                         </div>
                     </div>
                 </a>

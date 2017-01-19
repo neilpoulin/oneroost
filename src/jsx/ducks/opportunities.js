@@ -58,7 +58,7 @@ export const loadOpportunities = (userId) => (dispatch) => {
         dispatch({
             type: OPPORTUNITY_LOAD_SUCCESS,
             userId: userId,
-            entities: Map(entities),
+            entities: entities,
             payload: Map({
                 deals,
                 archivedDeals

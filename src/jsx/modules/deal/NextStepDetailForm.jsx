@@ -33,7 +33,7 @@ const NextStepDetailForm = React.createClass({
         var self = this;
         var user = Parse.User.current();
         var step = this.props.step;
-        var message = RoostUtil.getFullName(user) + " deleted Next Step: " + step.get("title");
+        var message = RoostUtil.getFullName(user) + " deleted Next Step: " + step.title
         let comment = new DealComment();
         comment.set({
             deal: self.props.deal,

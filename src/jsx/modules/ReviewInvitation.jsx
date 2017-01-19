@@ -43,11 +43,11 @@ const ReviewInvitation = withRouter( React.createClass({
     componentWillUpdate(props, state){
         if (!this.state.loading) {
             var stakeholder = this.state.stakeholder;
-            var stakeholderUser = stakeholder.get("user");
-            var currentUser = Parse.User.current();
-            var dealId = stakeholder.get("deal").id;
+            var stakeholderUser = stakeholder.user
+            var currentUser = Parse.User.current().toJSON();
+            var dealId = stakeholder.deal.objectId;
 
-            if ( stakeholder.get("inviteAccepted") || !currentUser && !stakeholderUser.get("passwordChangeRequired") )  // OR the user needs to log in
+            if ( stakeholder.inviteAccepted || !currentUser && !stakeholderUser.passwordChangeRequired )  // OR the user needs to log in
             {
                 this.sendToRoost( dealId );
             }
@@ -61,9 +61,10 @@ const ReviewInvitation = withRouter( React.createClass({
         var self = this;
 
         let stakeholder = this.state.stakeholder;
+        console.error("NEED TO USE ACTIONS, THIS WILL FAIL")
         stakeholder.set("inviteAccepted", true);
         stakeholder.save().then(result => {
-            self.sendToRoost( stakeholder.get("deal").id );
+            self.sendToRoost( stakeholder.deal.objectId );
         }).catch(error => console.error("failed to save the stakeholder", error))
     },
     render () {
@@ -83,9 +84,9 @@ const ReviewInvitation = withRouter( React.createClass({
                 <div className="container-fluid">
                     <h2>Review Opportunity</h2>
                     <p className="lead">
-                        <span className="">{stakeholder.get("user").get("firstName")},</span>
+                        <span className="">{stakeholder.user.firstName},</span>
                         <br/>
-                        {RoostUtil.getFullName(stakeholder.get("invitedBy"))} from {stakeholder.get("invitedBy").get("company")} has submitted a proposal called <i>{stakeholder.get("deal").get("dealName")}</i> for you to review
+                        {RoostUtil.getFullName(stakeholder.invitedBy)} from {stakeholder.invitedBy.company} has submitted a proposal called <i>{stakeholder.deal.dealName}</i> for you to review
                     </p>
                 </div>
             </div>

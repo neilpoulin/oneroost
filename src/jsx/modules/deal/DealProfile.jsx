@@ -1,13 +1,12 @@
 import React, { PropTypes } from "react"
-import Parse from "parse";
 import NavLink from "NavLink";
 import RoostUtil from "RoostUtil"
 
 const DealProfile = React.createClass({
     propTypes: {
-        deal: PropTypes.instanceOf(Parse.Object).isRequired,
-        stakeholders: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
-        documents: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
+        deal: PropTypes.object.isRequired,
+        stakeholders: PropTypes.arrayOf(PropTypes.object),
+        documents: PropTypes.arrayOf(PropTypes.object),
     },
     getDefaultProps(){
         return {
@@ -17,7 +16,7 @@ const DealProfile = React.createClass({
     },
     getBudgetString(){
         var {deal} = this.props;
-        var budget = deal.get("budget");
+        var budget = deal.budget
         if (!budget) {
             return "Not Quoted";
         }
@@ -34,18 +33,20 @@ const DealProfile = React.createClass({
         var widgetClassName = "widget"
         var titleClassName = "col-xs-2 widget"
         var iconSizeClassname = "fa-lg"
+        const dealId = deal.objectId
+        const {profile={}, createdAt, dealName} = deal
         var budget = this.getBudgetString()
 
-        let activeStakeholders = stakeholders.filter(s => s.get("active") !== false);
+        let activeStakeholders = stakeholders.filter(s => s.active !== false);
         var stakeholderCount = activeStakeholders.length > 0 ? activeStakeholders.length : ""
         var documentCount = documents.length > 0 ? documents.length : ""
 
-        var formattedRoostAge = RoostUtil.formatDurationAsDays( deal.createdAt )
-        // var stage = Stages.get(deal.currentStage) || Stages.get("EXPLORE");
+        var formattedRoostAge = RoostUtil.formatDurationAsDays( createdAt )
+
         var dealTitleBlock =
         <div className={titleClassName}>
             <h1>
-                {deal.get("dealName")}
+                {dealName}
             </h1>
         </div>;
 
@@ -57,7 +58,7 @@ const DealProfile = React.createClass({
             <div className="widgetContainer">
                 <div className={widgetClassName}>
                     <div className="text-center">
-                        <NavLink tag="div" to={"/roosts/" + deal.id + "/budget" } className="widgetLink">
+                        <NavLink tag="div" to={"/roosts/" + dealId + "/budget" } className="widgetLink">
                             <div>
                                 <i className={"fa fa-money " + iconSizeClassname}></i>
                                 &nbsp; Investment
@@ -69,8 +70,8 @@ const DealProfile = React.createClass({
                     </div>
                 </div>
                 <div className={widgetClassName}>
-                    <div className={"text-center " + (deal.get("profile").timeline ? "" : "invisible")}>
-                        <NavLink tag="div" to={"/roosts/" + deal.id + "/timeline" } className="widgetLink">
+                    <div className={"text-center " + (profile.timeline ? "" : "invisible")}>
+                        <NavLink tag="div" to={"/roosts/" + dealId + "/timeline" } className="widgetLink">
                             <div>
                                 <i className={"fa fa-calendar " + iconSizeClassname}></i>
                                 &nbsp; Opportunity Created
@@ -84,7 +85,7 @@ const DealProfile = React.createClass({
                 </div>
                 <div className={widgetClassName}>
                     <div className="text-center">
-                        <NavLink tag="div" to={"/roosts/" + deal.id + "/participants" } className="widgetLink">
+                        <NavLink tag="div" to={"/roosts/" + dealId + "/participants" } className="widgetLink">
                             <div>
                                 <i className={"fa fa-users " + iconSizeClassname}></i>
                                     &nbsp; Participants
@@ -97,7 +98,7 @@ const DealProfile = React.createClass({
                 </div>
                 <div className={widgetClassName}>
                     <div className="text-center">
-                        <NavLink tag="div" to={"/roosts/" + deal.id + "/documents" } className="widgetLink">
+                        <NavLink tag="div" to={"/roosts/" + dealId + "/documents" } className="widgetLink">
                             <div>
                                 <i className={"fa fa-files-o " + iconSizeClassname}></i>
                                     &nbsp; Documents

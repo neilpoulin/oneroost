@@ -1,12 +1,11 @@
 import React, { PropTypes } from "react"
 import Linkify from "react-linkify"
 import moment from "moment"
-import Parse from "parse"
 import RoostUtil from "RoostUtil"
 
 const UserComment = React.createClass({
     propTypes: {
-        comment: PropTypes.instanceOf(Parse.Object).isRequired,
+        comment: PropTypes.object.isRequired,
         showAuthor: PropTypes.bool.isRequired
     },
     formatCommentDate: function( comment )
@@ -16,7 +15,7 @@ const UserComment = React.createClass({
     },
     render () {
         const {comment, showAuthor} = this.props;
-        const author = comment.get("author");
+        const author = comment.author
         const authorName = RoostUtil.getFullName(author);
         var result =
         <li className={"comment " + (!showAuthor ? "repeatAuthor " : "")}
@@ -28,7 +27,7 @@ const UserComment = React.createClass({
                     <span className="postTime">{this.formatCommentDate(comment)}</span>
                 </div>
                 <div className="row">
-                    <Linkify properties={{target: "_blank"}}><span className="message">{comment.get("message")}</span></Linkify>
+                    <Linkify properties={{target: "_blank"}}><span className="message">{comment.message}</span></Linkify>
                 </div>
             </div>
         </li>

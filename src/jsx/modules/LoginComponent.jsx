@@ -26,9 +26,9 @@ const LoginComponent = React.createClass({
         var user = Parse.User.current();
         if ( user )
         {
-            username = user.get("username");
+            username = user.username
             isLoggedIn = true;
-            email = user.get("email");
+            email = user.email
         }
         return {
             isLoggedIn: isLoggedIn,

@@ -1,6 +1,7 @@
 import Parse from "parse"
 import moment from "moment"
 import numeral from "numeral"
+import {Map} from "immutable"
 
 exports.getCurrentUser = function(){
     return Parse.User.current();
@@ -117,7 +118,7 @@ function getRoostNameForParseUser( deal, displayFor ){
 
 /** Get the display name for the roost, contextual to the user passed in**/
 exports.getRoostDisplayName = function(deal, displayFor){
-    if (deal instanceof Parse.Object){
+    if (deal instanceof Parse.Object || Map.isMap(deal)){
         // throw "Attempting to get roost name from a non parse object", deal;
         return getRoostNameForParseUser(deal, displayFor)
     }

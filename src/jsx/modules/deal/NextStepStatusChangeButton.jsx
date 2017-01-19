@@ -8,7 +8,7 @@ const NextStepStatusChangeButton = React.createClass({
         step: PropTypes.instanceOf(Parse.Object).isRequired
     },
     toggleComplete: function(){
-        if ( this.props.step.get("completedDate") == null )
+        if ( this.props.step.completedDate == null )
         {
             this.markAsDone();
         }
@@ -17,19 +17,19 @@ const NextStepStatusChangeButton = React.createClass({
         }
     },
     markAsDone: function(){
-        var self = this;
-        var step = this.props.step;
-
-        step.set({
-            "completedDate": new Date(),
-            "modifiedBy": Parse.User.current()
-        });
-
-        step.save().then(self.addStepStatusChangeComment).catch(error => console.error);
+        // var self = this;
+        // var step = this.props.step;
+        console.error("This needs to be updated to use actions, and will not work now.")
+        // step.set({
+        //     "completedDate": new Date(),
+        //     "modifiedBy": Parse.User.current()
+        // });
+        //
+        // step.save().then(self.addStepStatusChangeComment).catch(error => console.error);
     },
     markAsNotDone: function(){
         var self = this;
-        var step = this.props.step;
+        var {step} = this.props;
         step.set({
             completedDate: null,
             modifiedBy: Parse.User.current()
@@ -39,22 +39,23 @@ const NextStepStatusChangeButton = React.createClass({
     },
     addStepStatusChangeComment( step ){
         console.log("step changed...setting up comment");
-        var status = step.get("completedDate") != null ? "Complete" : "Not Complete";
+        const {title, deal, completedDate} = step.toJSON();
         var user = Parse.User.current();
-
+        var status = completedDate != null ? "Complete" : "Not Complete";
         let comment = new DealComment();
         comment.set({
-            deal: step.get("deal"),
-            message: RoostUtil.getFullName(user) + " marked " + step.get("title") + " as \"" + status + "\"",
+            deal: deal,
+            message: RoostUtil.getFullName(user) + " marked " + title + " as \"" + status + "\"",
             author: null,
             username: "OneRoost Bot",
-            navLink: {type: "step", id: step.id}
+            navLink: {type: "step", id: step.objectId}
         });
         return comment.save();
     },
     render () {
+        const {completedDate} = this.props.step;
         var completeButton;
-        if ( this.props.step.get("completedDate") != null ){
+        if ( completedDate != null ){
             completeButton =
             <button className="btn btn-primary" onClick={this.toggleComplete}>
                 <i className="fa fa-times"/> &nbsp;Not Completed

@@ -41,7 +41,7 @@ const DocumentDownloadItem = React.createClass({
     getIconType(){
         var {doc} = this.props;
         var icon = "fa-file-o";
-        var type = doc.get("type");
+        var {type} = doc;
         if ( type.indexOf("image") == 0 ){
             return "fa-file-image-o";
         }
@@ -101,13 +101,14 @@ const DocumentDownloadItem = React.createClass({
     },
     render () {
         var {doc} = this.props;
+        let {fileName, createdBy, createdAt} = doc
         let {downloadUrl} = this.state;
         var actions = null;
         if ( downloadUrl ){
             actions =
             <div className="downloadActions">
-                <a href={downloadUrl} download={doc.get("fileName")} className="btn btn-primary btn-block" target="_blank">
-                    <i className="fa fa-download"></i> Download {"\"" + doc.get("fileName") + "\""}
+                <a href={downloadUrl} download={fileName} className="btn btn-primary btn-block" target="_blank">
+                    <i className="fa fa-download"></i> Download {"\"" + fileName + "\""}
                 </a>
             </div>
         }
@@ -120,16 +121,15 @@ const DocumentDownloadItem = React.createClass({
                     </div>
                     <div>
                         <div>
-                            <span className="fileName">{doc.get("fileName")}</span>
+                            <span className="fileName">{fileName}</span>
                         </div>
                         <div>
-                            <span className="uploadedBy">{RoostUtil.getFullName(doc.get("createdBy"))}</span>
-                            <span className="createdAt">{this.formatDate(doc.createdAt)}</span>
+                            <span className="uploadedBy">{RoostUtil.getFullName(createdBy)}</span>
+                            <span className="createdAt">{this.formatDate(createdAt)}</span>
                         </div>
                     </div>
                     {actions}
                 </div>
-
             </div>
         )
     }

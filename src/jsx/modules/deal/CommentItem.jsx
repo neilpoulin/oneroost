@@ -1,12 +1,11 @@
 import React, {PropTypes} from "react";
 import SystemComment from "SystemComment"
 import UserComment from "UserComment"
-import Parse from "parse";
 
 export default React.createClass({
     propTypes: {
-        comment: PropTypes.instanceOf(Parse.Object).isRequired,
-        previousComment: PropTypes.instanceOf(Parse.Object),
+        comment: PropTypes.object.isRequired,
+        previousComment: PropTypes.object,
         forceShowUsername: PropTypes.bool,
     },
     getDefaultProps: function(){
@@ -16,15 +15,15 @@ export default React.createClass({
     },
     render: function(){
         const {comment, previousComment, forceShowUsername} = this.props;
-        const isSystem = comment.get("author") == null;
+        const isSystem = comment.author == null;
         if ( isSystem )
         {
             return <SystemComment comment={comment}/>
         }
 
-        var commentAuthorId = comment.get("author") != null ? comment.get("author").id : null;
-        var previousCommentAuthor = previousComment != null ? previousComment.get("author") : null;
-        var previousCommentAuthorId = previousCommentAuthor != null ? previousCommentAuthor.id : null;
+        var commentAuthorId = comment.author != null ? comment.author.objectId : null;
+        var previousCommentAuthor = previousComment != null ? previousComment.author : null;
+        var previousCommentAuthorId = previousCommentAuthor != null ? previousCommentAuthor.objectId : null;
         var sameAuthorAsPrevious = commentAuthorId == previousCommentAuthorId && commentAuthorId != null;
         var showAuthor = forceShowUsername || !sameAuthorAsPrevious;
 

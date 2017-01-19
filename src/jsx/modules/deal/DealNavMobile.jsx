@@ -1,10 +1,10 @@
 import React, { PropTypes } from "react"
-import Parse from "parse"
+
 import NavLink from "NavLink"
 
 const DealNavMobile = React.createClass({
     propTypes: {
-        deal: PropTypes.instanceOf(Parse.Object).isRequired
+        deal: PropTypes.object.isRequired
     },
     render () {
         var dealId = this.props.deal.id;

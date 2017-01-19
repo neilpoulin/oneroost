@@ -35,7 +35,7 @@ const AllStepsSidebar = React.createClass({
             return step.completedDate == null;
         });
 
-        var dealId = deal.id;
+        var dealId = deal.objectId;
 
 
         var addStepsBtn = null;
@@ -51,13 +51,14 @@ const AllStepsSidebar = React.createClass({
             <h3>Active Steps</h3>
             <div>
                 {activeSteps.map(function(step){
+                    let {title, dueDate} = step
                     var step =
-                    <NavLink tag="div" to={"/roosts/" + dealId + "/steps/" + step.id }
-                            key={"deal_" + dealId + "_active_step_" + step.id}
+                    <NavLink tag="div" to={"/roosts/" + dealId + "/steps/" + step.objectId }
+                            key={"deal_" + dealId + "_active_step_" + step.objectId}
                         className={ "NextStepSidebarItemContainer active" } >
-                        <div className="nextStepTitle">{step.get("title")}</div>
+                        <div className="nextStepTitle">{title}</div>
                         <div className="nextStepDueDate">
-                            Due Date: {self.formatDate(step.get("dueDate"))}
+                            Due Date: {self.formatDate(dueDate)}
                         </div>
                     </NavLink>
                     return step;

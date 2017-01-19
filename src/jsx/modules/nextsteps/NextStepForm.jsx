@@ -16,7 +16,7 @@ import DealComment from "models/DealComment"
 export default React.createClass({
     propTypes: {
         stakeholders: PropTypes.array.isRequired,
-        deal: PropTypes.instanceOf(Parse.Object)
+        deal: PropTypes.object.isRequired
     },
     getInitialState: function () {
         return {
@@ -53,19 +53,21 @@ export default React.createClass({
             deal: this.props.deal,
             completedDate: this.state.completedDate ? new Date(this.state.completedDate) : null
         });
-        step.save().then(self.addStepCreatedComment).catch(console.error)
+        step.save().then(step => self.addStepCreatedComment(step.toJSON())).catch(console.error)
         self.clear();
     },
     addStepCreatedComment: function (step) {
         var self = this;
-        var message = RoostUtil.getFullName(Parse.User.current()) + " created Next Step: " + step.get("title");
+        //todo: make this use actions
+        console.error("NEED TO USE ACTIONS, THIS WILL BE BROKEN");
+        var message = RoostUtil.getFullName(Parse.User.current()) + " created Next Step: " + step.title
         let comment = new DealComment();
         comment.set({
             deal: self.state.deal,
             message: message,
             author: null,
             username: "OneRoost Bot",
-            navLink: {type: "step", id: step.id }
+            navLink: {type: "step", id: step.objectId }
         });
 
         comment.save().catch(console.error);
@@ -128,7 +130,7 @@ export default React.createClass({
                 <Dropdown stakeholders={this.props.stakeholders}
                     deal={this.props.deal}
                     handleChange={this.handleUserChange}
-                    value={this.props.assignedUser != null ? this.props.step.get("assignedUser").id : null}/>
+                    value={this.props.assignedUser != null ? this.props.step.assignedUser.objectId : null}/>
             </FormGroup>
         </div>
         return form;

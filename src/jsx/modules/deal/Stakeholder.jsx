@@ -28,7 +28,7 @@ export default React.createClass({
     {
         var {deal} = this.props;
         var user = Parse.User.current();
-        let stakeholderUser = stakeholder.get("user");
+        let stakeholderUser = stakeholder.user
         var fullName = RoostUtil.getFullName(user)
         var message = fullName + " removed " + RoostUtil.getFullName(stakeholderUser) + " as from the opportunity.";
         let comment = new DealComment();
@@ -45,8 +45,8 @@ export default React.createClass({
         var self = this;
         var {stakeholder, deal} = self.props
         Parse.Cloud.run("submitReadyRoost", {
-            dealId: deal.id,
-            stakeholderId: stakeholder.id
+            dealId: deal.objectId,
+            stakeholderId: stakeholder.objectId
         }).then(function( result ) {
             console.log(result);
             alert("We have let " + RoostUtil.getFullName(stakeholder.user) + " know that the Roost is ready for them to review.")
@@ -62,13 +62,13 @@ export default React.createClass({
     },
     render: function () {
         var {stakeholder, isEdit, deal} = this.props;
-        var user = stakeholder.get("user");
+        var user = stakeholder.user
         var fullName = RoostUtil.getFullName( user )
-        var email = user.get("email") || user.get("username")
-        var company = user.get("company")
+        var email = user.email || user.username
+        var company = user.company
         // var roleClass = stakeholder.role.toLowerCase();
         var pendingText = null;
-        var inactive = stakeholder.get("active") === false;
+        var inactive = stakeholder.active === false;
         var removeButton = null
         if ( isEdit ){
             removeButton =
@@ -83,17 +83,17 @@ export default React.createClass({
         // var label = null
         // label = <span className={"roleName label " + roleClass}>{stakeholder.role}</span>
 
-        if ( stakeholder.get("readyRoostApprover") && !stakeholder.get("inviteAccepted") && !deal.get("readyRoostSubmitted")){
+        if ( stakeholder.readyRoostApprover && !stakeholder.inviteAccepted && !deal.readyRoostSubmitted ){
             actionButton =
             <button onClick={this.submitRoost} className="btn btn-primary">
                 <i className="fa fa-check"></i> Submit Ready Roost
             </button>;
         }
-        else if (stakeholder.get("readyRoostApprover") && deal.get("readyRoostSubmitted") && !stakeholder.get("inviteAccepted") ){
-            pendingText = <span>Ready Roost submitted on {RoostUtil.formatDate(deal.get("readyRoostSubmitted"))}</span>
+        else if (stakeholder.readyRoostApprover && deal.readyRoostSubmitted && !stakeholder.inviteAccepted ){
+            pendingText = <span>Ready Roost submitted on {RoostUtil.formatDate(deal.readyRoostSubmitted)}</span>
             actionButton = null;
         }
-        else if ( !stakeholder.get("inviteAccepted") ){
+        else if ( !stakeholder.inviteAccepted ){
             pendingText = <span className="pending">(Invite Pending)</span>;
         }
 

@@ -22,14 +22,15 @@ const NextStepSidebar = React.createClass({
         // var deal = this.data.deal[0];
         const {deal, nextSteps, params} = this.props;
         const {stepId} = params
-        const step = nextSteps.find(step => step.id === stepId);
+        const step = nextSteps.find(step => step.objectId === stepId);
 
         var sidebar;
         if ( step )
         {
+            let stepTitle = step.title;
             sidebar =
             <div className="NextStepSidebar" key={"step_details_" + stepId}>
-                <h3 className="title">{step.get("title")}</h3>
+                <h3 className="title">{stepTitle}</h3>
                 <NextStepDetailForm
                     key={"stepForm_" + stepId}
                     step={step}

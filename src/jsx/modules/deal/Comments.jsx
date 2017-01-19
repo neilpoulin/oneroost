@@ -4,6 +4,7 @@ import AddComment from "AddComment";
 import CommentItem from "CommentItem";
 import CommentDateSeparator from "CommentDateSeparator";
 import Notification from "Notification";
+import {Pointer} from "models/Deal"
 import io from "socket.io-client"
 import RoostUtil from "RoostUtil"
 
@@ -35,7 +36,7 @@ export default React.createClass({
         var additionalComments = this.state.additionalComments
         var query = new Parse.Query("DealComment")
         query.include("author")
-        query.equalTo( "deal", this.props.deal.id )
+        query.equalTo( "deal", Pointer(this.props.deal.objectId) )
         query.descending("createdAt")
         query.skip( this.state.commentLimit * nextPage )
         query.limit( this.state.commentLimit );
@@ -59,18 +60,19 @@ export default React.createClass({
         const self = this;
         console.log("setting up comment subscription");
         commentSubscription.on("create", comment => {
+            comment = comment.toJSON()
             let comments = self.state.comments;
             comments.unshift(comment);
             self.setState({
                 comments: comments
             });
 
-            let authorName = RoostUtil.getFullName(comment.get("author"));
-            let title = authorName ? authorName + " | " + self.props.deal.get("dealName") : self.props.deal.get("dealName");
+            let authorName = RoostUtil.getFullName(comment.author);
+            let title = authorName ? authorName + " | " + self.props.deal.dealName : self.props.deal.dealName
             Notification.sendNotification({
                 title: title,
-                body: comment.get("message"),
-                tag: comment.id
+                body: comment.message,
+                tag: comment.objectId
             });
         })
 
@@ -83,15 +85,17 @@ export default React.createClass({
         })
     },
     componentWillMount(){
+        console.warn("SHOULD USE REDUX FOR LOADING COMMENTS")
         const self = this;
         const {deal} = this.props;
+        let dealId = deal.objectId
         const {commentLimit} = this.state;
         const commentQuery = new Parse.Query("DealComment")
-        commentQuery.include("author").equalTo( "deal", deal ).descending("createdAt").limit( commentLimit );
+        commentQuery.include("author").equalTo( "deal", Pointer(dealId) ).descending("createdAt").limit( commentLimit );
         this.queries["comments"] = commentQuery;
         commentQuery.find().then(comments => {
             self.setState({
-                comments: comments,
+                comments: comments.map(comment => comment.toJSON()),
                 loading: false,
             });
         }).catch(error => console.error(error));
@@ -104,9 +108,10 @@ export default React.createClass({
     componentDidMount() {
         var self = this;
         var socket = io("/DealComment");
+        let dealId = self.props.deal.objectId;
         socket.on("connect", function() {
             // Connected, let's sign-up for to receive messages for this room
-            socket.emit("deal", self.props.deal.objectId);
+            socket.emit("deal", dealId);
         });
         socket.on("comment", function(comment){
             //no op, moved to the subscription
@@ -199,15 +204,15 @@ export default React.createClass({
             var items = [];
             var previousComment = null;
             allComments.forEach(function(comment){
-                var currentDate = comment.get("createdAt");
-                var previousDate = previousComment != null ? previousComment.get("createdAt") : null;
+                var currentDate = comment.createdAt
+                var previousDate = previousComment != null ? previousComment.createdAt : null;
                 var isSameDate = RoostUtil.isSameDate( currentDate, previousDate );
 
                 if ( !isSameDate || previousComment == null )
                 {
                     var separator =
                     <CommentDateSeparator
-                        key={"dateSeparator_comment_" + comment.id }
+                        key={"dateSeparator_comment_" + comment.objectId }
                         previousDate={previousDate}
                         nextDate={comment.createdAt}
                         />
@@ -216,7 +221,7 @@ export default React.createClass({
 
                 var forceShowUsername = component.forceShowUsername(currentDate, previousDate);
                 var item =
-                <CommentItem key={"commentItem_" + comment.id}
+                <CommentItem key={"commentItem_" + comment.objectId}
                     comment={comment}
                     previousComment={previousComment}
                     forceShowUsername={forceShowUsername}

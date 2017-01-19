@@ -1,4 +1,4 @@
-import {Map} from "immutable"
+import {Map, fromJS} from "immutable"
 // reducers
 const initialState = Map({
     comments: Map({}),
@@ -17,8 +17,10 @@ const entities = (state = initialState, action) => {
     }
     let entities = action.entities;
     if ( !Map.isMap(entities) ){
-        entities = Map(entities)
-    }    
+        entities = fromJS(entities)
+    }else {
+        entities = fromJS(entities.toJS())
+    }
     state = state.mergeDeep(entities)
     return state;
 }

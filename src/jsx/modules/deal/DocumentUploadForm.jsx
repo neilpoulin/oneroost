@@ -61,7 +61,8 @@ const DocumentUploadForm = React.createClass({
             fileExtension: this.state.fileExtension
         });
         document.save().then(saved => {
-            var message = RoostUtil.getFullName(user) + " has uploaded " + saved.get("fileName");
+            saved = saved.toJSON();
+            var message = RoostUtil.getFullName(user) + " has uploaded " + saved.fileName
 
             let comment = new DealComment();
             comment.set({

@@ -25,24 +25,26 @@ const NextStepCompletedSidebar = React.createClass({
     render () {
         let self = this;
         let {nextSteps, deal} = this.props;
+        let dealId = deal.objectId
         var completedSteps = nextSteps.filter(function( step ){
-            return step.get("completedDate") != null;
+            return step.completedDate != null;
         });
 
         var sidebar =
         <div>
             <h3>Completed Steps</h3>
             {completedSteps.map(function(step){
-                var step =
-                <NavLink tag="div" to={"/roosts/" + deal.id + "/steps/" + step.id }
+                let {title, completedDate} = step
+                let stepId = step.objectId
+                return (
+                <NavLink tag="div" to={"/roosts/" + dealId + "/steps/" + stepId }
                     className={ "NextStepSidebarItemContainer" }
-                    key={"roost_" + deal.id + "_step_" + step.id + "_completed"} >
-                    <div className="nextStepTitle">{step.get("title")}</div>
+                    key={"roost_" + dealId + "_step_" + stepId + "_completed"} >
+                    <div className="nextStepTitle">{title}</div>
                     <div className="nextStepDueDate">
-                        Completed Date: {self.formatDate(step.get("completedDate"))}
+                        Completed Date: {self.formatDate(completedDate)}
                     </div>
-                </NavLink>
-                return step;
+                </NavLink>)
             })}
         </div>
 

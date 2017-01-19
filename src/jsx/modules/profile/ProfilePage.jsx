@@ -7,7 +7,7 @@ import PublicProfileLink from "profile/PublicProfileLink"
 
 const ProfilePage = React.createClass({
     getCurrentUser(){
-        return Parse.User.current();
+        return Parse.User.current().toJSON();
     },
     componentDidMount(){
         document.title= "My Account | OneRost";
@@ -26,7 +26,7 @@ const ProfilePage = React.createClass({
                     <h2>My Ready Roost Link</h2>
                     <p className="ReadyRoostLink link-container">
                         <PublicProfileLink userId={userId}/>
-                    </p>                    
+                    </p>
                 </div>
                 <div className="section">
                     <h2>Email Preferences</h2>

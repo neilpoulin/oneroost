@@ -1,14 +1,13 @@
 import React, {PropTypes} from "react";
-import Parse from "parse";
 import NavLink from "NavLink";
 import AddNextStepButton from "nextsteps/AddNextStepButton";
 import NextStepItem from "nextsteps/NextStepItem";
 
 const NextStepBanner = React.createClass({
     propTypes: {
-        deal: PropTypes.instanceOf(Parse.Object),
-        stakeholders: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)).isRequired,
-        nextSteps: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)).isRequired,
+        deal: PropTypes.object,
+        stakeholders: PropTypes.arrayOf(PropTypes.object).isRequired,
+        nextSteps: PropTypes.arrayOf(PropTypes.object).isRequired,
     },
     getDefaultProps(){
         return {
@@ -21,7 +20,7 @@ const NextStepBanner = React.createClass({
         var activeSteps = [];
 
         nextSteps.forEach(function(step){
-            if ( step.get("completedDate") == null ){
+            if ( step.completedDate == null ){
                 activeSteps.push(step)
             }
             else{
@@ -60,7 +59,7 @@ const NextStepBanner = React.createClass({
                     <NextStepItem
                         step={step}
                         deal={deal}
-                        key={"deal_" + deal.id + "step_" + step.id} >
+                        key={"deal_" + deal.objectId + "step_" + step.objectId} >
                     </NextStepItem>
                     return item;
                 })}

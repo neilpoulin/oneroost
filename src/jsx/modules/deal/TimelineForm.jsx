@@ -9,12 +9,12 @@ import RoostUtil from "RoostUtil"
 
 const TimelineForm = React.createClass({
     propTypes: {
-        deal: PropTypes.instanceOf(Parse.Object).isRequired
+        deal: PropTypes.object.isRequired
     },
     getInitialState(){
         return {
-            timeline: moment(this.props.deal.get("timeline")),
-            stage: this.props.deal.get("currentStage") || "EXPLORE",
+            timeline: moment(this.props.deal.timeline),
+            stage: this.props.deal.currentStage || "EXPLORE",
             saveSuccess: false,
             saveError: false,
             errors: {},
@@ -33,7 +33,7 @@ const TimelineForm = React.createClass({
     },
     doSubmit(){
         let {deal} = this.props;
-        let profile = deal.get("profile")
+        let profile = deal.profile
         profile.timeline = this.state.timeline.format();
 
         deal.set({
@@ -108,7 +108,7 @@ const TimelineForm = React.createClass({
         var age = this.getFormattedAge();
         var stages = this.getStageValues();
         var created = this.getFormattedCreatedDate();
-        var stageUpdated = deal.get("stageUpdatedAt") || deal.createdAt;
+        var stageUpdated = deal.stageUpdatedAt || deal.createdAt;
         var stageUpdatedFormatted = this.formatDate( stageUpdated );
         var stageUpdatedAge = this.formatDurationAsDays( stageUpdated );
         var saveMessage = null;

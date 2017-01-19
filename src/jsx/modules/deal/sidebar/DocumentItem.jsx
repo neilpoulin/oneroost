@@ -9,8 +9,8 @@ const DocumentItem = React.createClass({
     },
     render () {
         var {doc} = this.props;
-
-        if ( doc.get("externalLink") ){
+        let {externalLink} = doc
+        if ( externalLink ){
             return <DocumentLinkItem doc={doc}/>
         }
         return <DocumentDownloadItem doc={doc}/>

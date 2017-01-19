@@ -5,8 +5,8 @@ import Stakeholder from "Stakeholder"
 
 const StakeholderSidebar = React.createClass({
     propTypes: {
-        deal: PropTypes.instanceOf(Parse.Object),
-        stakeholders: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
+        deal: PropTypes.object.isRequired,
+        stakeholders: PropTypes.arrayOf(PropTypes.object).isRequired,
     },
     getInitialState(){
         return {
@@ -31,11 +31,11 @@ const StakeholderSidebar = React.createClass({
         }
 
         let activeParticipants = stakeholders.filter(stakeholder => {
-            return stakeholder.get("active") !== false;
+            return stakeholder.active !== false;
         });
 
         let inactiveParticipants = stakeholders.filter(stakeholder => {
-            return stakeholder.get("active") === false;
+            return stakeholder.active === false;
         });
 
         let inactiveBlock = null;
@@ -44,7 +44,7 @@ const StakeholderSidebar = React.createClass({
             <div className="inactive-participants">
                 <h4>Inactive Participants</h4>
                 {inactiveParticipants.map(stakeholder => {
-                    return <Stakeholder key={"stakeholder_" + stakeholder.id}
+                    return <Stakeholder key={"stakeholder_" + stakeholder.objectId}
                         stakeholder={stakeholder}
                         deal={deal}
                         isEdit={false}/>

@@ -23,12 +23,12 @@ const NextStepDetailEdit = React.createClass({
     },
     getInitialState: function () {
         return {
-            title: this.props.step.get("title"),
-            description: this.props.step.get("description"),
-            dueDate: moment(this.props.step.get("dueDate")),
-            assignedUser: this.props.step.get("assignedUser"),
+            title: this.props.step.title,
+            description: this.props.step.description,
+            dueDate: moment(this.props.step.dueDate),
+            assignedUser: this.props.step.assignedUser,
             deal: this.props.deal,
-            completedDate: this.props.step.get("completedDate"),
+            completedDate: this.props.step.completedDate,
             user: Parse.User.current(),
             errors: {},
         };
@@ -65,7 +65,7 @@ const NextStepDetailEdit = React.createClass({
         let comment = new DealComment();
         comment.set({
             deal: self.props.deal,
-            message: RoostUtil.getFullName(user) + " updated the details of Next Step: " + step.get("title"),
+            message: RoostUtil.getFullName(user) + " updated the details of Next Step: " + step.title,
             author: null,
             username: "OneRoost Bot",
             navLink: {type: "step", id: step.id}
@@ -136,7 +136,7 @@ const NextStepDetailEdit = React.createClass({
                 fieldName="assignedUser" >
                 <Dropdown deal={this.props.deal}
                     handleChange={this.handleUserChange}
-                    value={this.props.step.get("assignedUser") != null ? this.props.step.get("assignedUser").id : null}/>
+                    value={this.props.step.assignedUser != null ? this.props.step.assignedUser.objectId : null}/>
             </FormGroup>
 
             <NextStepActions step={this.props.step}

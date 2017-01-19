@@ -13,11 +13,11 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         addComment: (message) => {
-            let user = Parse.User.current();
+            let user = Parse.User.current().toJSON();
             dispatch(createComment({
                 message: message,
                 author: user,
-                username: user.get("username"),
+                username: user.username,
                 deal: ownProps.deal
             }))
         }
@@ -51,7 +51,7 @@ const AddComment = React.createClass({
         // comment.set({
         //     message: msg,
         //     author: Parse.User.current(),
-        //     username: this.state.user.get("username"),
+        //     username: this.state.user.username,
         //     deal: this.props.deal
         // });
         // comment.save().then(saved => {

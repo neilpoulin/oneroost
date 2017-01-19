@@ -4,7 +4,7 @@ import NavLink from "NavLink";
 
 const NextStepItem = React.createClass({
     propTypes: {
-        deal: PropTypes.instanceOf(Parse.Object)
+        deal: PropTypes.object.isRequired
     },
     getInitialState: function(){
         return {
@@ -25,20 +25,21 @@ const NextStepItem = React.createClass({
     },
     render: function(){
         var dateLabel = "Due"
-        var date = this.props.step.get("dueDate");
-        if ( this.props.step.get("completedDate") != null )
+        let {step, deal} = this.props
+        let {dueDate, completedDate, title} = step
+        if ( completedDate )
         {
             dateLabel = "Completed Date: ";
-            date = this.props.step.get("completedDate");
+            dueDate = completedDate
         }
 
         var stepItem =
 
-        <NavLink tag="div" to={"/roosts/" + this.props.deal.id + "/steps/" + this.props.step.id }
-            className={"arrow-right NextStepItemContainer " + ( this.props.step.get("completedDate") != null ? "complete " : "" ) + (this.state.active ? "active " : "")} >
-            <div className="nextStepTitle">{this.props.step.get("title")}</div>
+        <NavLink tag="div" to={"/roosts/" + deal.objectId + "/steps/" + step.objectId }
+            className={"arrow-right NextStepItemContainer " + ( completedDate ? "complete " : "" ) + (this.state.active ? "active " : "")} >
+            <div className="nextStepTitle">{title}</div>
             <div className="nextStepDueDate">
-                {dateLabel} {this.formatDate(date)}
+                {dateLabel} {this.formatDate(dueDate)}
             </div>
         </NavLink>
         return stepItem;

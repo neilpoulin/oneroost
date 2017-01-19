@@ -1,14 +1,13 @@
 import React, { PropTypes } from "react"
-import Parse from "parse"
 import Comments from "Comments"
 import FixedSidebar from "FixedSidebar"
 
 const DealPageBottom = React.createClass({
     propTypes: {
         deal: PropTypes.object.isRequired,
-        stakeholders: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
-        nextSteps: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
-        documents: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
+        stakeholders: PropTypes.arrayOf(PropTypes.object),
+        nextSteps: PropTypes.arrayOf(PropTypes.object),
+        documents: PropTypes.arrayOf(PropTypes.object),
         sidebar: PropTypes.any,
     },
     beforeOpen(){

@@ -1,11 +1,10 @@
 import React, { PropTypes } from "react"
-import Parse from "parse"
 import moment from "moment"
 import NavLink from "NavLink"
 
 const SystemComment = React.createClass({
     propTypes: {
-        comment: PropTypes.instanceOf(Parse.Object),
+        comment: PropTypes.object.isRequired,
     },
     formatCommentDate: function( comment )
     {
@@ -13,11 +12,11 @@ const SystemComment = React.createClass({
         return moment(date).format("h:mm A");
     },
     buildLink: function(comment){
-        if ( comment.get("navLink") )
+        if (comment.navLink)
         {
             var path = "/";
 
-            switch (comment.get("navLink").type) {
+            switch (comment.navLink.type) {
                 case "step":
                     path = "/steps"
                     break;
@@ -36,10 +35,10 @@ const SystemComment = React.createClass({
                 default:
                     break;
             }
-            var link = "/roosts/" + comment.get("deal").id + path;
-            if ( comment.get("navLink").id )
+            var link = "/roosts/" + comment.deal.objectId + path;
+            if ( comment.navLink.id )
             {
-                link += "/" + comment.get("navLink").id;
+                link += "/" + comment.navLink.id;
             }
 
             return link;
@@ -47,8 +46,9 @@ const SystemComment = React.createClass({
         return null;
     },
     render () {
-        var {comment} = this.props;
-        var onboarding = comment.get("onboarding");
+        var {comment} = this.props
+        var onboarding = comment.onboarding
+        let message = comment.message
         var postTime = <span className="postTime">{this.formatCommentDate(comment)}</span>
         var author = null;
         if ( onboarding){
@@ -62,12 +62,12 @@ const SystemComment = React.createClass({
         }
 
         var link = this.buildLink(comment);
-        var message = <span className="message">{comment.get("message")}</span>
+        var messageWrapper = <span className="message">{message}</span>
         if ( link )
         {
-            message =
+            messageWrapper =
             <NavLink tag="span" to={link} className="messageLink message">
-                {comment.get("message")}
+                {message}
             </NavLink>
         }
 
@@ -77,7 +77,7 @@ const SystemComment = React.createClass({
             <div className="container-fluid">
                 {author}
                 <div className="row">
-                    {message}
+                    {messageWrapper}
                     {postTime}
                 </div>
             </div>
