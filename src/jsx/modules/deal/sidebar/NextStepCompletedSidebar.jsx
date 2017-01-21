@@ -1,12 +1,11 @@
-import Parse from "parse"
 import React, {PropTypes} from "react"
 import NavLink from "NavLink"
 // import RoostUtil from "RoostUtil"
 
 const NextStepCompletedSidebar = React.createClass({
     propTypes: {
-        deal: PropTypes.instanceOf(Parse.Object),
-        nextSteps: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
+        deal: PropTypes.object,
+        nextSteps: PropTypes.arrayOf(PropTypes.object),
     },
     getDefaultProps(){
         return {
