@@ -6,6 +6,13 @@ const StakeholderSidebar = React.createClass({
     propTypes: {
         deal: PropTypes.object.isRequired,
         stakeholders: PropTypes.arrayOf(PropTypes.object).isRequired,
+        isLoading: PropTypes.bool.isRequired
+    },
+    getDefaultProps(){
+        return {
+            isLoading: true,
+            stakeholders: [],
+        }
     },
     getInitialState(){
         return {
@@ -64,7 +71,7 @@ const StakeholderSidebar = React.createClass({
                 </div>
                 <div className="active-participants">
                     {activeParticipants.map(stakeholder => {
-                        return <Stakeholder key={"stakeholder_" + stakeholder.id}
+                        return <Stakeholder key={"stakeholder_" + stakeholder.objectId}
                             stakeholder={stakeholder}
                             deal={deal}
                             isEdit={isEdit}/>

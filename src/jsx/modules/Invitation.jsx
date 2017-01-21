@@ -62,10 +62,10 @@ const Invitation = withRouter( React.createClass({
         if ( !this.state.loading && this.state.stakeholder ){ //stakeholder loaded
             var stakeholder = this.state.stakeholder;
             var stakeholderUser = stakeholder.user
-            var currentUser = Parse.User.current();
+            var currentUser = Parse.User.current().toJSON();
             var dealId = stakeholder.deal.objectId;
 
-            if ( currentUser && stakeholderUser.id !== currentUser.id ){
+            if ( currentUser && stakeholderUser.objectId !== currentUser.objectId ){
                 this.sendToUnauthorized();
                 return;
             }
@@ -107,7 +107,7 @@ const Invitation = withRouter( React.createClass({
             if ( user.passwordChangeRequired ){
                 Parse.Cloud.run("saveNewPassword", {
                     password: self.state.password,
-                    stakeholderId: stakeholder.id,
+                    stakeholderId: stakeholder.objectId,
                     userId: userId
                 })
                 .then( function(result) {

@@ -5,7 +5,7 @@ import RoostUtil from "RoostUtil"
 
 const DocumentDownloadItem = React.createClass({
     propTypes: {
-        doc: PropTypes.instanceOf(Parse.Object).isRequired
+        doc: PropTypes.object.isRequired
     },
     urlAttempts: 0,
     getInitialState(){
@@ -21,7 +21,7 @@ const DocumentDownloadItem = React.createClass({
             return
         }
         Parse.Cloud.run("getPresignedGetUrl", {
-            documentId: doc.id
+            documentId: doc.objectId
         }).then(result => {
             console.log(result);
             if (result.url.indexOf( "https://s3.amazonaws.com") != -1 ){

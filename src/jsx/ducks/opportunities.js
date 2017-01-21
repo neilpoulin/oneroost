@@ -10,6 +10,7 @@ export const OPPORTUNITY_LOAD_ERROR = "OPPORTUNITY_LOAD_ERROR"
 
 const initialState = Map({
     isLoading: false,
+    hasLoaded: false,
     deals: List([]),
     archivedDeals: List([])
 })
@@ -20,6 +21,7 @@ export default function reducer(state=initialState, action){
             break;
         case OPPORTUNITY_LOAD_SUCCESS:
             state = state.set("isLoading", false)
+            state = state.set("hasLoaded", true)
             state = state.set("deals", List(action.payload.get("deals").map(deal => deal.get("objectId")|| deal.id)))
             state = state.set("archivedDeals", List(action.payload.get("archivedDeals").map(deal => deal.get("objectId") || deal.id)))
             break;
@@ -33,7 +35,13 @@ export default function reducer(state=initialState, action){
 }
 
 
-export const loadOpportunities = (userId) => (dispatch) => {
+export const loadOpportunities = (userId, force=false) => (dispatch, getState) => {
+    let {opportunitiesByUser} = getState();
+    if ( opportunitiesByUser.has(userId) && opportunitiesByUser.get(userId).get("hasLoaded") && !opportunitiesByUser.get(userId).get("isLoading") && !force ){
+        console.warn("not loading opportunities as they were already fetched")
+        return null
+    }
+
     dispatch({
         type: OPPORTUNITY_LOAD_REQUEST,
         userId: userId,

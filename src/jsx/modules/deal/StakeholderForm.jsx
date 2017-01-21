@@ -46,7 +46,7 @@ export default React.createClass({
             role: this.state.role
         };
         Parse.Cloud.run("addStakeholder", {
-            dealId: self.state.deal.id,
+            dealId: self.state.deal.objectId,
             stakeholder: stakeholderRequest
         }).then(function( result ) {
             if ( result.exists ){

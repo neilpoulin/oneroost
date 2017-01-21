@@ -13,7 +13,7 @@ const ProfilePage = React.createClass({
         document.title= "My Account | OneRost";
     },
     render(){
-        let userId = this.getCurrentUser().id;
+        let userId = this.getCurrentUser().toJSON().objectId;
         var page =
         <div className="ProfilePage">
             <RoostNav showHome={true}/>

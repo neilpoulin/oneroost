@@ -7,7 +7,7 @@ const DealNavMobile = React.createClass({
         deal: PropTypes.object.isRequired
     },
     render () {
-        var dealId = this.props.deal.id;
+        var dealId = this.props.deal.objectId;
         var colSize = "col-xs-3";
         var mobileNav =
         <div className="conatiner-fluid text-center hidden-lg hidden-md DealNavMobile">

@@ -68,13 +68,14 @@ const ReadyRoostPage = withRouter( React.createClass({
             profileUserId: profileUserId,
             roostName: self.state.roostName
         }).then(function(result){
+            let createdRoost = result.toJSON()
             console.log("created ready roost, so happy", result);
             ReactGA.set({ userId: self.state.currentUser.objectId });
             ReactGA.event({
                   category: "ReadyRoost",
                   action: "Created ReadyRoost"
                 });
-            self.props.router.replace("/roosts/" + (result.roost.objectId || result.roost.id));
+            self.props.router.replace("/roosts/" + createdRoost.objectId);
         },
         function(error){
             console.error("can not create roost, already have one for this user", error);

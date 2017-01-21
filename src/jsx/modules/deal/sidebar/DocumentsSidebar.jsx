@@ -1,12 +1,11 @@
 import React, { PropTypes } from "react"
-import Parse from "parse"
 import DocumentItem from "sidebar/DocumentItem"
 import AddDocumentButton from "AddDocumentButton"
 
 const DocumentsSidebar = React.createClass({
     propTypes: {
-        documents: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
-        deal: PropTypes.instanceOf(Parse.Object)
+        documents: PropTypes.arrayOf(PropTypes.object),
+        deal: PropTypes.object
     },
     getInitialState: function(){
         return {
@@ -26,7 +25,7 @@ const DocumentsSidebar = React.createClass({
         <div className="documentContainer">
             {documents.map(function(doc){
                 return <DocumentItem
-                        key={"deal_" + deal.id + "_doc_" + doc.id}
+                        key={"deal_" + deal.objectId + "_doc_" + doc.objectId}
                         doc={doc} />
             })}
         </div>

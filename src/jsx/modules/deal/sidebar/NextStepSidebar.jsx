@@ -1,5 +1,4 @@
 import React, { PropTypes } from "react"
-import Parse from "parse";
 import NextStepDetailForm from "NextStepDetailForm";
 
 
@@ -10,8 +9,8 @@ const NextStepSidebar = React.createClass({
             stepId: PropTypes.any.isRequired
         }).isRequired,
         //TODO: these props are required, but throw errors. Get them from redux store instead
-        nextSteps: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)),
-        deal: PropTypes.instanceOf(Parse.Object)
+        nextSteps: PropTypes.arrayOf(PropTypes.object),
+        deal: PropTypes.object
     },
     getDefaultProps(){
         return {

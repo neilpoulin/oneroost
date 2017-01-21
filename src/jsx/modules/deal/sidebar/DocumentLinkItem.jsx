@@ -5,7 +5,7 @@ import RoostUtil from "RoostUtil"
 
 const DocumentLinkItem = React.createClass({
     propTypes: {
-        doc: PropTypes.instanceOf(Parse.Object).isRequired
+        doc: PropTypes.object.isRequired
     },
     getInitialState(){
         return {

@@ -1,11 +1,10 @@
 import React, { PropTypes } from "react"
 import ModalButton from "ModalButton"
-import Parse from "parse"
 import DocumentUploadForm from "DocumentUploadForm"
 
 const AddDocumentButton = React.createClass({
     propTypes: {
-        deal: PropTypes.instanceOf(Parse.Object).isRequired,
+        deal: PropTypes.object.isRequired,
         btnClassName: PropTypes.string
     },
     getDefaultProps(){

@@ -68,7 +68,7 @@ const NextStepDetailEdit = React.createClass({
             message: RoostUtil.getFullName(user) + " updated the details of Next Step: " + step.title,
             author: null,
             username: "OneRoost Bot",
-            navLink: {type: "step", id: step.id}
+            navLink: {type: "step", id: step.objectId}
         })
         comment.save().catch(error => console.error);
     },

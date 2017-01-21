@@ -1,6 +1,7 @@
 import Parse from "parse";
 import React, {PropTypes} from "react";
 import NavLink from "NavLink";
+import moment from "moment"
 
 const NextStepItem = React.createClass({
     propTypes: {
@@ -15,13 +16,7 @@ const NextStepItem = React.createClass({
     },
     formatDate: function( date )
     {
-        if ( !(date instanceof Date) )
-        {
-            date = new Date( date );
-        }
-
-        var month = date.getMonth() + 1;
-        return month + "/" + date.getDate() + "/" + date.getFullYear()
+        return moment(date).format("M/D/YY")
     },
     render: function(){
         var dateLabel = "Due"

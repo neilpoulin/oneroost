@@ -25,6 +25,7 @@ export const roostActions = [
 
 const initialState = Map({
     dealLoading: false,
+    hasLoaded: false,
     error: null,
     comments: comments.initialState,
     nextSteps: nextSteps.initialState,
@@ -32,8 +33,13 @@ const initialState = Map({
     stakeholders: stakeholders.initialState,
 })
 
-export const loadDeal = (dealId) => {
-    return (dispatch) => {
+export const loadDeal = (dealId, force=false) => {
+    return (dispatch, getState) => {
+        let {roosts} = getState();
+        if ( roosts.has(dealId) && roosts.get(dealId).get("hasLoaded") && !roosts.get(dealId).get("isLoading") && !force ){
+            console.warn("not loading deal, already loaded")
+            return null
+        }
         dispatch({
             type: DEAL_LOAD_REQUEST,
             dealId: dealId
@@ -70,6 +76,7 @@ const roostReducer = (state=initialState, action) => {
             break;
         case DEAL_LOAD_SUCCESS:
             state = state.set("dealLoading", false);
+            state = state.set("hasLoaded", true);
             state = state.set("error", null);
             break;
         case DEAL_LOAD_ERROR:

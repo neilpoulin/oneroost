@@ -73,7 +73,7 @@ const SystemComment = React.createClass({
 
         var result =
         <li className={"comment system" + ( onboarding ? " onboarding": "" )}
-            key={"dealComment_" + comment.id } >
+            key={"dealComment_" + comment.objectId } >
             <div className="container-fluid">
                 {author}
                 <div className="row">

@@ -7,8 +7,8 @@ import ReactGA from "react-ga"
 export default React.createClass({
     propTypes: {
         isEdit: PropTypes.bool,
-        stakeholder: PropTypes.instanceOf(Parse.Object).isRequired,
-        deal: PropTypes.instanceOf(Parse.Object).isRequired,
+        stakeholder: PropTypes.object.isRequired,
+        deal: PropTypes.object.isRequired,
     },
     getDefaultProps(){
         return {

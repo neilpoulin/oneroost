@@ -12,6 +12,7 @@ export const STEP_LOAD_ERROR = "STEP_LOAD_ERROR"
 
 export const initialState = Map({
     isLoading: false,
+    hasLoaded: false,
     ids: List([])
 })
 export default function reducer(state=initialState, action){
@@ -24,7 +25,8 @@ export default function reducer(state=initialState, action){
             state = state.set("isLoading", true);
             break;
         case STEP_LOAD_SUCCESS:
-            state = state.set("isLoading", true);
+            state = state.set("isLoading", false);
+            state = state.set("hasLoaded", true);
             state = state.set("ids", List(action.payload.map(step => step.get("objectId"))))
             break;
         case STEP_LOAD_ERROR:
@@ -38,7 +40,13 @@ export default function reducer(state=initialState, action){
 
 
 // Actions
-export const loadNextSteps = (dealId) => (dispatch) => {
+export const loadNextSteps = (dealId, force=false) => (dispatch, getState) => {
+    let {roosts} = getState();
+    if ( roosts.has(dealId) && roosts.get(dealId).get("nextSteps").get("hasLoaded") && !roosts.get(dealId).get("nextSteps").get("isLoading") && !force ){
+        console.warn("not loading steps as they are already loaded")
+        return null
+    }
+
     dispatch({
         type: STEP_LOAD_REQUEST,
         dealId: dealId

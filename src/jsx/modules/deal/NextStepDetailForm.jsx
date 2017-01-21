@@ -13,8 +13,8 @@ const NextStepDetailForm = React.createClass({
         }
     },
     propTypes: {
-        step: PropTypes.instanceOf(Parse.Object).isRequired,
-        deal: PropTypes.instanceOf(Parse.Object).isRequired
+        step: PropTypes.object.isRequired,
+        deal: PropTypes.object.isRequired
     },
     handleEdit: function(){
         this.setState({isEdit: true});
@@ -27,7 +27,7 @@ const NextStepDetailForm = React.createClass({
     },
     afterDelete: function(){
         this.addStepDeletedComment();
-        browserHistory.push("/roosts/" + this.props.deal.id );
+        browserHistory.push("/roosts/" + this.props.deal.objectId );
     },
     addStepDeletedComment: function( ){
         var self = this;

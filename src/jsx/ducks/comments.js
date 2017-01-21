@@ -13,6 +13,7 @@ const pageSize = 200
 // Reducer
 export const initialState = Map({
     isLoading: false,
+    hasLoaded: false,
     page: 0,
     lastFetchCount: 0,
     pageSize: pageSize,
@@ -31,6 +32,7 @@ export default function reducer(state=initialState, action){
             break;
         case COMMENTS_LOAD_SUCCESS:
             state = state.set("isLoading", false)
+            state = state.set("hasLoaded", true)
             state = state.set("ids", List(action.payload.map(comment => comment.objectId)))
             break;
         case COMMENTS_LOAD_ERROR:
@@ -44,8 +46,14 @@ export default function reducer(state=initialState, action){
 
 // Actions
 
-export const loadComments = function(dealId){
-    return (dispatch) =>{
+export const loadComments = function(dealId, force=false){
+    return (dispatch, getState) =>{
+        let {roosts} = getState();
+        if ( roosts.has(dealId) && roosts.get(dealId).get("comments").get("hasLoaded") && !roosts.get(dealId).get("comments").get("isLoading") && !force ){
+            console.warn("not loading comments as it has been loaded before")
+            return null
+        }
+
         dispatch({
             type: COMMENTS_LOAD_REQUEST,
             dealId: dealId

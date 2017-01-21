@@ -6,7 +6,8 @@ import * as User from "models/User"
 export const Schema = new schema.Entity("nextSteps", {
     deal: Deal.Schema,
     createdBy: User.Schema,
-    modifiedBy: User.Schema
+    modifiedBy: User.Schema,
+    assignedUser: User.Schema,
 }, {
     idAttribute: (entity) => {
         return entity.objectId || entity.id || entity.get("objectId");

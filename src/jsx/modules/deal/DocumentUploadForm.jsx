@@ -15,7 +15,7 @@ const re = /(?:\.([^.]+))?$/;
 
 const DocumentUploadForm = React.createClass({
     propTypes: {
-        deal: PropTypes.instanceOf(Parse.Object),
+        deal: PropTypes.object,
     },
     getInitialState(){
         return {
@@ -83,7 +83,7 @@ const DocumentUploadForm = React.createClass({
             var fileName = file.name;
             Parse.Cloud.run("getPresignedUploadUrl", {
                 fileName: fileName,
-                dealId: deal.id,
+                dealId: deal.objectId,
                 type: file.type
             }).then(function( result ) {
                 console.log("recieved presignedurl", result);

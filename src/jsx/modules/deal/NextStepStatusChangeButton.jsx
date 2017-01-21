@@ -5,7 +5,7 @@ import RoostUtil from "RoostUtil"
 
 const NextStepStatusChangeButton = React.createClass({
     propTypes: {
-        step: PropTypes.instanceOf(Parse.Object).isRequired
+        step: PropTypes.object.isRequired
     },
     toggleComplete: function(){
         if ( this.props.step.completedDate == null )

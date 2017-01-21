@@ -44,7 +44,7 @@ const NextStepBanner = React.createClass({
             // TODO: dont think i need this... removed from the NavLink below
             // className={"NextStepBannerItem CompletedStepsContainer" + (this.state.active ? "active " : "")} >
             completedStepsItem =
-            <NavLink tag="div" to={"/roosts/" + this.props.deal.id + "/steps/completed" }
+            <NavLink tag="div" to={"/roosts/" + this.props.deal.objectId + "/steps/completed" }
                 className={"NextStepBannerItem CompletedStepsContainer"} >
                 <div className="">{completedSteps.length} <i className="fa fa-check"></i></div>
             </NavLink>

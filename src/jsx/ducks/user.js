@@ -1,8 +1,9 @@
-import User from "models/User"
-import {Map, List} from "immutable"
+// import User from "models/User"
+import {Map} from "immutable"
 
 const initialState = Map({
     isLoading: false,
+    hasLoaded: false,
     userId: null,
     admin: false,
     user: null, // parse user representation
