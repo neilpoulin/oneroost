@@ -36,6 +36,7 @@ import ReactGA from "react-ga"
 import TermsOfServicePage from "TermsOfServicePage"
 import PrivacyPage from "PrivacyPage"
 import configureStore from "./store/configureStore"
+import { syncHistoryWithStore } from "react-router-redux"
 Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;
 Parse.serverURL = window.location.origin + "/parse";
@@ -43,6 +44,8 @@ Parse.serverURL = window.location.origin + "/parse";
 ReactGA.initialize(OneRoost.Config.gaTrackingId, getGaOptions());
 
 const store = configureStore()
+
+const history = syncHistoryWithStore(browserHistory, store)
 // let unsubscribe =
 store.subscribe(() =>
   console.log(store.getState())
@@ -123,7 +126,7 @@ function doLogout(nextState, replace){
 
 render(
     <Provider store={store}>
-        <Router history={browserHistory} onUpdate={logPageView}>
+        <Router history={history} onUpdate={logPageView}>
             <Route path="/" component={App}>
                 <IndexRoute component={Landing}/>
                 <Route path="/login" component={LoginPage} onEnter={requireAnonymous}></Route>

@@ -10,7 +10,7 @@ export const STEP_LOAD_REQUEST = "STEP_LOAD_REQUEST"
 export const STEP_LOAD_SUCCESS = "STEP_LOAD_SUCCESS"
 export const STEP_LOAD_ERROR = "STEP_LOAD_ERROR"
 
-const initialState = Map({
+export const initialState = Map({
     isLoading: false,
     ids: List([])
 })

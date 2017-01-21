@@ -1,6 +1,6 @@
 import {Map, fromJS} from "immutable"
 // reducers
-const initialState = Map({
+export const initialState = Map({
     comments: Map({}),
     deals: Map({}),
     nextSteps: Map({}),

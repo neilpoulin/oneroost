@@ -1,6 +1,5 @@
 import React, { PropTypes } from "react"
 import AddStakeholderButton from "AddStakeholderButton";
-import Parse from "parse";
 import Stakeholder from "Stakeholder"
 
 const StakeholderSidebar = React.createClass({

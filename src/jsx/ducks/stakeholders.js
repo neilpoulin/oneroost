@@ -9,7 +9,7 @@ export const STAKEHOLDER_LOAD_REQUEST = "STAKEHOLDER_LOAD_REQUEST"
 export const STAKEHOLDER_LOAD_SUCCESS = "STAKEHOLDER_LOAD_SUCCESS"
 export const STAKEHOLDER_LOAD_ERROR = "STAKEHOLDER_LOAD_ERROR"
 
-const initialState = Map({
+export const initialState = Map({
     isLoading: false,
     ids: List([]),
 })

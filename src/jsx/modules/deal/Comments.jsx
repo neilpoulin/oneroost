@@ -1,5 +1,6 @@
 import React, {PropTypes} from "react";
 import Parse from "parse";
+import { connect } from "react-redux"
 import AddComment from "AddComment";
 import CommentItem from "CommentItem";
 import CommentDateSeparator from "CommentDateSeparator";
@@ -7,8 +8,12 @@ import Notification from "Notification";
 import {Pointer} from "models/Deal"
 import io from "socket.io-client"
 import RoostUtil from "RoostUtil"
+import {Map} from "immutable"
+import {denormalize} from "normalizr"
+import * as Comment from "models/DealComment"
+import {loadComments} from "ducks/comments"
 
-export default React.createClass({
+const Comments = React.createClass({
     propTypes: {
         deal: PropTypes.object.isRequired,
         sidebarOpen: PropTypes.bool
@@ -85,22 +90,24 @@ export default React.createClass({
         })
     },
     componentWillMount(){
-        console.warn("SHOULD USE REDUX FOR LOADING COMMENTS")
-        const self = this;
+        // console.warn("SHOULD USE REDUX FOR LOADING COMMENTS")
+        // const self = this;
         const {deal} = this.props;
         let dealId = deal.objectId
-        const {commentLimit} = this.state;
-        const commentQuery = new Parse.Query("DealComment")
-        commentQuery.include("author").equalTo( "deal", Pointer(dealId) ).descending("createdAt").limit( commentLimit );
-        this.queries["comments"] = commentQuery;
-        commentQuery.find().then(comments => {
-            self.setState({
-                comments: comments.map(comment => comment.toJSON()),
-                loading: false,
-            });
-        }).catch(error => console.error(error));
+        // const {commentLimit} = this.state;
+        // const commentQuery = new Parse.Query("DealComment")
+        // commentQuery.include("author").equalTo( "deal", Pointer(dealId) ).descending("createdAt").limit( commentLimit );
+        // this.queries["comments"] = commentQuery;
+        // commentQuery.find().then(comments => {
+        //     self.setState({
+        //         comments: comments.map(comment => comment.toJSON()),
+        //         loading: false,
+        //     });
+        // }).catch(error => console.error(error));
 
-        this.setupSubscriptions();
+        this.props.loadData(dealId);
+
+        // this.setupSubscriptions();
     },
     componentWillUnmount(){
         this.removeSubscriptions();
@@ -119,6 +126,7 @@ export default React.createClass({
 
         //doing this so that iOS records the scrollTop position correctly.
         var messageContainer = this.refs.messagesContainer;
+        if (!messageContainer) return
         messageContainer.ontouchstart = function () {
             // console.log("touchstart scrollTop " + messageContainer.scrollTop )
         };
@@ -129,6 +137,7 @@ export default React.createClass({
     },
     componentWillUpdate: function(nextProps, nextState) {
         var node = this.refs.messagesContainer;
+        if (!node) return
         var buffer = 50;
         var currentPosition = node.scrollTop + node.offsetHeight;
         this.shouldScrollBottom = currentPosition + buffer >= node.scrollHeight;
@@ -138,6 +147,7 @@ export default React.createClass({
     },
     componentDidUpdate: function(prevProps, prevState) {
         var node = this.refs.messagesContainer;
+        if (!node) return
         if (this.shouldScrollBottom || this.scrollTop === 0) {
             this.scrollBottom();
         }
@@ -148,6 +158,7 @@ export default React.createClass({
     },
     scrollBottom(){
         var node = this.refs.messagesContainer;
+        if (!node) return
         node.scrollTop = node.scrollHeight;
         //Note: doing this so that mobile works a bit better
         setTimeout(function(){
@@ -156,6 +167,7 @@ export default React.createClass({
     },
     scrollBottomIfNeeded(height){
         var node = this.refs.messagesContainer;
+        if (!node) return
         var buffer = 25;
         var currentPosition = node.scrollTop + node.offsetHeight;
         var shouldScrollBottom = currentPosition + buffer >= node.scrollHeight;
@@ -180,9 +192,9 @@ export default React.createClass({
     render: function(){
         const component = this;
         const {deal} = this.props;
-        const {comments, commentLimit, lastFetchCount} = this.state;
+        const {comments, commentLimit, lastFetchCount, additionalComments} = this.props;
         var commentsSection = null;
-        if (this.state.loading)
+        if (this.props.isLoading)
         {
             commentsSection =
             <div className="loadingComments lead">
@@ -190,7 +202,7 @@ export default React.createClass({
                 &nbsp; Loading Comments...
             </div>;
         }
-        else if ( this.state.comments.length == 0 )
+        else if ( this.props.comments.length == 0 )
         {
             commentsSection =
             <div className="emptyComments lead">
@@ -199,7 +211,7 @@ export default React.createClass({
         }
         else
         {
-            var allComments = comments.slice(0).concat(this.state.additionalComments);
+            var allComments = comments.slice(0).concat(additionalComments);
             allComments = allComments.reverse();
             var items = [];
             var previousComment = null;
@@ -262,3 +274,38 @@ export default React.createClass({
         return result;
     }
 });
+
+const mapStateToProps = (immutableState, ownProps) => {
+    const state = Map(immutableState).toJS()
+    const {entities, roosts} = state
+    const deal = ownProps.deal;
+    const dealId = deal.objectId
+
+    if (!roosts[dealId]){
+        return {isLoading: true};
+    }
+    const roost = roosts[dealId]
+    const {isLoading} = roost;
+    const {ids, commentLimit, lastFetchCount} = roost.comments
+    const comments = denormalize(ids, [Comment.Schema], entities)
+    const additionalComments = []
+
+    return Map({
+        isLoading,
+        dealId,
+        comments,
+        additionalComments,
+        commentLimit,
+        lastFetchCount
+    }).toJS()
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        loadData: (dealId) =>{
+            dispatch(loadComments(dealId))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Comments)

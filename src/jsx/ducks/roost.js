@@ -26,10 +26,10 @@ export const roostActions = [
 const initialState = Map({
     dealLoading: false,
     error: null,
-    comments: Map({}),
-    nextSteps: Map({}),
-    documents: Map({}),
-    stakeholders: Map({}),
+    comments: comments.initialState,
+    nextSteps: nextSteps.initialState,
+    documents: documents.initialState,
+    stakeholders: stakeholders.initialState,
 })
 
 export const loadDeal = (dealId) => {

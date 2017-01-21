@@ -15,5 +15,5 @@ export const Schema = new schema.Entity("comments", {
 
 export const className = "DealComment"
 const DealComment = Parse.Object.extend(className);
-
+export const createQuery = () => new Parse.Query(className)
 export default DealComment;

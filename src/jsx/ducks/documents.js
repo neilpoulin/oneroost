@@ -10,7 +10,7 @@ export const DOCUMENT_LOAD_SUCCESS = "DOCUMENT_LOAD_SUCCESS"
 export const DOCUMENT_LOAD_ERROR = "DOCUMENT_LOAD_ERROR"
 
 
-const initialState = Map({
+export const initialState = Map({
     isLoading: false,
     ids: List([]),
 })

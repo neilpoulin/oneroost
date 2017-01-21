@@ -4,7 +4,7 @@ import {Pointer as ModelPointer} from "models/Models"
 
 export default Parse.User;
 
-export const className = "User"
+export const className = "_User"
 
 export const Schema = new schema.Entity("users", {}, {
     idAttribute: (entity) => {
