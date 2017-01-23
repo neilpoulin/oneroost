@@ -1,17 +1,17 @@
 import React, { PropTypes } from "react"
 import {withRouter} from "react-router"
 import { connect } from "react-redux"
-import Parse from "parse";
-Parse.serverURL = OneRoost.Config.parseSeverURL;
-import LoadingTakeover from "LoadingTakeover";
-import NextStepsBanner from "nextsteps/NextStepsBanner";
-import DealProfile from "DealProfile";
-import DealNavMobile from "DealNavMobile";
-import DealPageBottom from "DealPageBottom";
-import AccountSidebar from "account/AccountSidebar";
-import RoostNav from "RoostNav";
-// import RoostUtil from "RoostUtil";
-// import {updateById} from "SubscriptionUtil"
+import Parse from "parse"
+Parse.serverURL = OneRoost.Config.parseSeverURL
+import LoadingTakeover from "LoadingTakeover"
+import NextStepsBanner from "nextsteps/NextStepsBanner"
+import DealProfile from "DealProfile"
+import DealNavMobile from "DealNavMobile"
+import DealPageBottom from "DealPageBottom"
+import AccountSidebar from "account/AccountSidebar"
+import RoostNav from "RoostNav"
+// import RoostUtil from "RoostUtil"
+
 import {loadDeal} from "ducks/roost"
 import {loadNextSteps} from "ducks/nextSteps"
 import {loadDocuments} from "ducks/documents"
@@ -70,7 +70,7 @@ const Roost = withRouter( React.createClass({
         else {
             this.props.router.replace("/roosts/unauthorized")
         }
-    },    
+    },
     componentWillMount(){
         let {dealId} = this.props.params;
         this.getData(dealId);

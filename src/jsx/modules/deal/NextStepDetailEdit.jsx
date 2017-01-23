@@ -1,10 +1,10 @@
 import React, { PropTypes } from "react"
-import DealComment from "models/DealComment"
 import Parse from "parse"
 import NextStepActions from "NextStepActions"
 import moment from "moment"
 import Dropdown from "stakeholder/Dropdown"
 import {Pointer} from "models/Models"
+import {Pointer as UserPointer} from "models/User"
 import DateTakeoverButton from "DateTakeoverButton"
 import RoostUtil from "RoostUtil"
 import FormUtil from "FormUtil"
@@ -19,7 +19,8 @@ const NextStepDetailEdit = React.createClass({
         deal: PropTypes.object.isRequired,
         afterSave: PropTypes.func.isRequired,
         afterDelete: PropTypes.func.isRequired,
-        handleCancel: PropTypes.func.isRequired
+        handleCancel: PropTypes.func.isRequired,
+        updateStep: PropTypes.func.isRequired,
     },
     getInitialState: function () {
         return {
@@ -39,38 +40,23 @@ const NextStepDetailEdit = React.createClass({
         var errors = FormUtil.getErrors(this.state, validations)
         console.log(errors);
         if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
-            let step = this.props.step;
-            step.set({
+            // let step = this.props.step;
+            let message = RoostUtil.getFullName(this.state.user) + " updated the details of Next Step: " + this.state.title
+            this.props.updateStep({
                 "title": this.state.title,
                 "description": this.state.description,
                 "dueDate": this.state.dueDate.toDate(),
-                "assignedUser": this.state.assignedUser,
-                "deal": this.state.deal,
-                "completedDate": this.state.completedDate != null ? new Date(this.state.completedDate) : null,
+                "assignedUser": this.state.assignedUser ? UserPointer(this.state.assignedUser) : null,                
+                "completedDate": this.state.completedDate,
                 "modifiedBy": this.state.user
-            });
+            }, message)
 
-            step.save().then(self.addStepSavedComment).catch(error => console.error);
             self.clear();
             this.props.afterSave();
             return true;
         }
         this.setState({errors: errors});
         return false;
-    },
-    addStepSavedComment: function (step) {
-        var self = this;
-        var user = Parse.User.current()
-
-        let comment = new DealComment();
-        comment.set({
-            deal: self.props.deal,
-            message: RoostUtil.getFullName(user) + " updated the details of Next Step: " + step.title,
-            author: null,
-            username: "OneRoost Bot",
-            navLink: {type: "step", id: step.objectId}
-        })
-        comment.save().catch(error => console.error);
     },
     clear: function () {
         this.setState(this.getInitialState());
@@ -82,8 +68,6 @@ const NextStepDetailEdit = React.createClass({
     },
     handleUserChange(selection){
         var user = null;
-        var user = new Parse.User();
-        user.id = selection.value;
         if (selection != null) {
             var name = selection.label.trim().split(" ");
             // user = {className: "_User", objectId: selection.value, firstName: name[0] || "", lastName: name[1] || ""}
@@ -144,6 +128,7 @@ const NextStepDetailEdit = React.createClass({
                 handleSave={this.handleSave}
                 afterDelete={this.props.afterDelete}
                 handleCancel={this.props.handleCancel}
+                updateStep={this.props.updateStep}
                 />
         </div>
         return form;

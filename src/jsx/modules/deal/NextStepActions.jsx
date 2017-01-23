@@ -12,7 +12,8 @@ const NextStepActions = React.createClass({
         handleSave: PropTypes.func,
         handleEdit: PropTypes.func,
         afterDelete: PropTypes.func,
-        handleCancel: PropTypes.func
+        handleCancel: PropTypes.func,
+        updateStep: PropTypes.func.isRequired
     },
     getDefaultProps(){
         return {
@@ -36,7 +37,8 @@ const NextStepActions = React.createClass({
         return <NextStepStatusChangeButton
             step={this.props.step}
             deal={this.props.deal}
-            key={"next_step_action_status_" + this.props.step.objectId}/>
+            key={"next_step_action_status_" + this.props.step.objectId}
+            updateStep={this.props.updateStep}/>
     },
     getEditButton(){
         return <NextStepEditButton handleEdit={this.props.handleEdit}

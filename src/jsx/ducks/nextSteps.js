@@ -4,11 +4,13 @@ import * as Deal from "models/Deal"
 import {Pointer} from "models/Models"
 import * as NextStep from "models/NextStep"
 import {Map, List} from "immutable"
+import {createComment} from "ducks/comments"
 
-export const ADD_NEXT_STEP = "oneroost/ADD_NEXT_STEP"
-export const STEP_LOAD_REQUEST = "oneroost/STEP_LOAD_REQUEST"
-export const STEP_LOAD_SUCCESS = "oneroost/STEP_LOAD_SUCCESS"
-export const STEP_LOAD_ERROR = "oneroost/STEP_LOAD_ERROR"
+export const ADD_NEXT_STEP = "oneroost/nextSteps/ADD_NEXT_STEP"
+export const STEP_LOAD_REQUEST = "oneroost/nextSteps/STEP_LOAD_REQUEST"
+export const STEP_LOAD_SUCCESS = "oneroost/nextSteps/STEP_LOAD_SUCCESS"
+export const STEP_LOAD_ERROR = "oneroost/nextSteps/STEP_LOAD_ERROR"
+export const STEP_CHANGED = "oneroost/nextSteps/STEP_CHANGED"
 
 export const initialState = Map({
     isLoading: false,
@@ -32,6 +34,8 @@ export default function reducer(state=initialState, action){
         case STEP_LOAD_ERROR:
             state = state.set("isLoading", false);
             break;
+        case STEP_LOAD_SUCCESS:
+            break;
         default:
             break;
     }
@@ -40,6 +44,28 @@ export default function reducer(state=initialState, action){
 
 
 // Actions
+export const updateStep = (currentStep, changes, message) => (dispatch, getState) => {
+    let step = new NextStep.default(currentStep);
+    step.set(changes)
+    step.save().then(saved => {
+    }).catch(console.error)
+
+    let entities = normalize(step.toJSON(), NextStep.Schema).entities
+    dispatch({
+        type: STEP_CHANGED,
+        entities: entities,
+        dealId: currentStep.deal.id
+    })
+
+    dispatch(createComment({
+        deal: step.get("deal"),
+        message: message,
+        author: null,
+        username: "OneRoost Bot",
+        navLink: {type: "step", id: step.id}
+    }))
+}
+
 export const loadNextSteps = (dealId, force=false) => (dispatch, getState) => {
     let {roosts} = getState();
     if ( roosts.has(dealId) && roosts.get(dealId).get("nextSteps").get("hasLoaded") && !roosts.get(dealId).get("nextSteps").get("isLoading") && !force ){
