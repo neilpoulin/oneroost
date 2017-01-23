@@ -1,16 +1,16 @@
 import { normalize } from "normalizr"
 import {getActions} from "DuckUtil"
-import * as comments from "./comments"
-import * as nextSteps from "./nextSteps"
-import * as documents from "./documents"
-import * as stakeholders from "./stakeholders"
+import * as comments from "ducks/comments"
+import * as nextSteps from "ducks/nextSteps"
+import * as documents from "ducks/documents"
+import * as stakeholders from "ducks/stakeholders"
 import Parse from "parse"
 import * as Deal from "models/Deal"
 import { Map } from "immutable";
 
-export const DEAL_LOAD_REQUEST = "DEAL_LOAD_REQUSET"
-export const DEAL_LOAD_SUCCESS = "DEAL_LOAD_SUCCESS"
-export const DEAL_LOAD_ERROR = "DEAL_LOAD_ERROR"
+export const DEAL_LOAD_REQUEST = "oneroost/DEAL_LOAD_REQUSET"
+export const DEAL_LOAD_SUCCESS = "oneroost/DEAL_LOAD_SUCCESS"
+export const DEAL_LOAD_ERROR = "oneroost/DEAL_LOAD_ERROR"
 
 export const roostActions = [
     ...getActions(comments),

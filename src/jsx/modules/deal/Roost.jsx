@@ -70,77 +70,10 @@ const Roost = withRouter( React.createClass({
         else {
             this.props.router.replace("/roosts/unauthorized")
         }
-    },
-    subscriptions: {},
-    setupSubscriptions(queries){
-        // const self = this;
-        // let dealSubscription = queries.deal.subscribe();
-        // dealSubscription.on("update", deal => {
-        //     self.setState({deal: deal});
-        // });
-
-        // let stepSubscription = queries.steps.subscribe();
-        // stepSubscription.on("create", step => {
-        //     let steps = self.state.nextSteps;
-        //     steps.push(step);
-        //     self.setState({nextSteps: steps});
-        // });
-        //
-        // stepSubscription.on("update", step => {
-        //     let steps = self.state.nextSteps;
-        //     updateById(steps, step);
-        //     self.setState({nextSteps: steps});
-        // })
-
-        // let stakeholderSubscription = queries.stakeholders.subscribe();
-        // stakeholderSubscription.on("create", stakeholder => {
-        //     let stakeholders = self.state.stakeholders;
-        //     stakeholders.push(stakeholder);
-        //     self.setState({stakeholders: stakeholders});
-        // });
-        // stakeholderSubscription.on("update", stakeholder => {
-        //     let stakeholders = self.state.stakeholders;
-        //     updateById(stakeholders, stakeholder);
-        //     self.setState({stakeholders: stakeholders});
-        // })
-
-        // let documentSubscription = queries.documents.subscribe();
-        // documentSubscription.on("create", document => {
-        //     let documents = self.state.documents;
-        //     documents.push(document);
-        //     self.setState({documents: documents});
-        // })
-
-        // let opportunitiesSubscription = queries.opportunities.subscribe();
-        // opportunitiesSubscription.on("create", stakeholder => {
-        //     let opportunity = stakeholder.deal;
-        //     let opportunities = self.state.opportunities;
-        //     opportunities.push(opportunity);
-        //     self.setState({opportunities: opportunities});
-        // })
-
-        this.subscriptions = {
-            // deal: dealSubscription,
-            // steps: stepSubscription,
-            // stakeholders: stakeholderSubscription,
-            // documents: documentSubscription,
-        }
-    },
-    removeSubscriptions(){
-        console.log("removing subscriptions");
-        const subscriptions = this.subscriptions;
-        for (const name in this.subscriptions ){
-            if ( subscriptions.hasOwnProperty(name)){
-                subscriptions[name].unsubscribe()
-            }
-        }
-    },
+    },    
     componentWillMount(){
         let {dealId} = this.props.params;
         this.getData(dealId);
-    },
-    componentWillUnmount(){
-        this.removeSubscriptions()
     },
     componentWillUpdate(nextProps, nextState)
     {
@@ -175,7 +108,6 @@ const Roost = withRouter( React.createClass({
     },
     getData(dealId){
         console.log("setting up roost queries and subscriptions");
-        this.removeSubscriptions();
         // let self = this;
         if (this.props.loadData ) {
             this.props.loadData(dealId);

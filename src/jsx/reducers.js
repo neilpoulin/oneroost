@@ -4,13 +4,17 @@ import entities from "ducks/entities"
 import roosts from "ducks/roosts"
 import opportunitiesByUser from "ducks/opportunitiesByUser"
 import user from "ducks/user"
+import subscriptions from "ducks/subscriptions"
+import notifications from "ducks/notification"
 
 const reducers = combineReducers({
     entities,
     roosts,
     opportunitiesByUser,
     user,
-    routing
+    subscriptions,
+    routing,
+    notifications,
 });
 
 export default reducers;

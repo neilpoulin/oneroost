@@ -1,36 +1,42 @@
-var canSend = false;
-setupPermissions();
-
+let selectedPermission
 var defaultIconUrl = "/static/images/logo/OneRoostLogo.png";
+import { browserHistory } from "react-router"
 
-function checkPermission()
+function getPermission()
 {
+    if ( selectedPermission ){
+        return selectedPermission
+    }
     if ( window.Notification )
     {
-        return Notification.permission
+        selectedPermission = Notification.permission
     }
     else {
-        return "none"
+        selectedPermission = "none"
     }
+    return selectedPermission
 }
 
-function setupPermissions()
+function checkPermissions()
 {
+    let canSend = false;
     if ( window.Notification )
     {
-        switch (checkPermission()) {
+        switch (getPermission()) {
             case "granted":
                 canSend = true;
                 break;
             case "default":
-                Notification.requestPermission().then(setupPermissions);
+                Notification.requestPermission().then(checkPermissions);
                 break;
             case "none":
             case "denied":
             default:
+                canSend = false;
                 break;
         }
     }
+    return canSend;
 }
 
 
@@ -38,7 +44,7 @@ exports.requestPermission = function()
 {
     if ( window.Notification )
     {
-        Notification.requestPermission().then(setupPermissions);
+        Notification.requestPermission().then(checkPermissions);
     }
 }
 
@@ -48,7 +54,8 @@ exports.sendNotification = function( opts )
     {
         return;
     }
-    if ( canSend )
+
+    if ( checkPermissions() )
     {
         var notification = new Notification( opts.title, {
             tag: opts.tag,
@@ -60,6 +67,7 @@ exports.sendNotification = function( opts )
         notification.onclick = function(){
             notification.close()
             window.focus()
+            browserHistory.push(opts.path)
         };
     }
 }

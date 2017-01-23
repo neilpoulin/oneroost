@@ -4,10 +4,10 @@ import {normalize} from "normalizr"
 import Parse from "parse"
 import {Map, List} from "immutable"
 
-export const ADD_DOCUMENT = "ADD_DOCUMENT"
-export const DOCUMENT_LOAD_REQUEST = "DOCUMENT_LOAD_REQUEST"
-export const DOCUMENT_LOAD_SUCCESS = "DOCUMENT_LOAD_SUCCESS"
-export const DOCUMENT_LOAD_ERROR = "DOCUMENT_LOAD_ERROR"
+export const ADD_DOCUMENT = "oneroost/ADD_DOCUMENT"
+export const DOCUMENT_LOAD_REQUEST = "oneroost/DOCUMENT_LOAD_REQUEST"
+export const DOCUMENT_LOAD_SUCCESS = "oneroost/DOCUMENT_LOAD_SUCCESS"
+export const DOCUMENT_LOAD_ERROR = "oneroost/DOCUMENT_LOAD_ERROR"
 
 
 export const initialState = Map({

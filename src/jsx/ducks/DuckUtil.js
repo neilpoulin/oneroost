@@ -1,3 +1,4 @@
 export const getActions = ( duck ) => {
-    return Object.keys(duck).filter( key => key !== "default" && typeof duck[key] === "string")
+    let keys = Object.keys(duck).filter( key => key !== "default" && typeof duck[key] === "string")
+    return keys.map(key => duck[key]);
 }

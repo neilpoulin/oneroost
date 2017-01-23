@@ -5,10 +5,10 @@ import {Pointer} from "models/Models"
 import * as NextStep from "models/NextStep"
 import {Map, List} from "immutable"
 
-export const ADD_NEXT_STEP = "ADD_NEXT_STEP"
-export const STEP_LOAD_REQUEST = "STEP_LOAD_REQUEST"
-export const STEP_LOAD_SUCCESS = "STEP_LOAD_SUCCESS"
-export const STEP_LOAD_ERROR = "STEP_LOAD_ERROR"
+export const ADD_NEXT_STEP = "oneroost/ADD_NEXT_STEP"
+export const STEP_LOAD_REQUEST = "oneroost/STEP_LOAD_REQUEST"
+export const STEP_LOAD_SUCCESS = "oneroost/STEP_LOAD_SUCCESS"
+export const STEP_LOAD_ERROR = "oneroost/STEP_LOAD_ERROR"
 
 export const initialState = Map({
     isLoading: false,

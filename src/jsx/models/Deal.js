@@ -1,6 +1,5 @@
 import Parse from "parse";
 import { schema } from "normalizr"
-import {Pointer as ModelPointer} from "models/Models"
 import * as User from "models/User"
 
 export const className = "Deal"
@@ -19,8 +18,12 @@ export const Schema = new schema.Entity("deals", {
     }
 });
 
-export const Pointer = (dealId) => {
-    return ModelPointer(className, dealId);
+export const Pointer = (arg) => {
+    let dealId = arg
+    if ( typeof arg == "object" ){
+        dealId = arg.objectId || arg.id
+    }
+    return Deal.createWithoutData(dealId);
 }
 
 export default Deal;

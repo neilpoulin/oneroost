@@ -4,10 +4,10 @@ import {normalize} from "normalizr"
 import Parse from "parse"
 import {Map, List} from "immutable"
 
-export const ADD_STAKEHOLDER = "ADD_STAKEHOLDER"
-export const STAKEHOLDER_LOAD_REQUEST = "STAKEHOLDER_LOAD_REQUEST"
-export const STAKEHOLDER_LOAD_SUCCESS = "STAKEHOLDER_LOAD_SUCCESS"
-export const STAKEHOLDER_LOAD_ERROR = "STAKEHOLDER_LOAD_ERROR"
+export const ADD_STAKEHOLDER = "oneroost/ADD_STAKEHOLDER"
+export const STAKEHOLDER_LOAD_REQUEST = "oneroost/STAKEHOLDER_LOAD_REQUEST"
+export const STAKEHOLDER_LOAD_SUCCESS = "oneroost/STAKEHOLDER_LOAD_SUCCESS"
+export const STAKEHOLDER_LOAD_ERROR = "oneroost/STAKEHOLDER_LOAD_ERROR"
 
 export const initialState = Map({
     isLoading: false,

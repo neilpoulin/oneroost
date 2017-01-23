@@ -4,14 +4,14 @@ import { connect } from "react-redux"
 import AddComment from "AddComment";
 import CommentItem from "CommentItem";
 import CommentDateSeparator from "CommentDateSeparator";
-import Notification from "Notification";
+
 import {Pointer} from "models/Deal"
-import io from "socket.io-client"
+// import io from "socket.io-client"
 import RoostUtil from "RoostUtil"
 import {Map} from "immutable"
 import {denormalize} from "normalizr"
 import * as Comment from "models/DealComment"
-import {loadComments} from "ducks/comments"
+import {loadComments, subscribeComments} from "ducks/comments"
 
 const Comments = React.createClass({
     propTypes: {
@@ -33,7 +33,6 @@ const Comments = React.createClass({
             loading: true,
         }
     },
-
     getNextPage(){
         var self = this;
         var currentPage = this.state.page;
@@ -58,72 +57,12 @@ const Comments = React.createClass({
             self.setState( {additionalComments: additionalComments, page: nextPage, lastFetchCount: results.length} )
         }).catch(error => console.error(error));
     },
-    subscriptions: [],
-    queries: {},
-    setupSubscriptions(){
-        let commentSubscription = this.queries.comments.subscribe();
-        const self = this;
-        console.log("setting up comment subscription");
-        commentSubscription.on("create", comment => {
-            comment = comment.toJSON()
-            let comments = self.state.comments;
-            comments.unshift(comment);
-            self.setState({
-                comments: comments
-            });
-
-            let authorName = RoostUtil.getFullName(comment.author);
-            let title = authorName ? authorName + " | " + self.props.deal.dealName : self.props.deal.dealName
-            Notification.sendNotification({
-                title: title,
-                body: comment.message,
-                tag: comment.objectId
-            });
-        })
-
-        this.subscriptions.push(commentSubscription)
-    },
-    removeSubscriptions(){
-        this.subscriptions.forEach(subscription => {
-            console.log("removing subscription");
-            subscription.unsubscribe();
-        })
-    },
     componentWillMount(){
-        // console.warn("SHOULD USE REDUX FOR LOADING COMMENTS")
-        // const self = this;
         const {deal} = this.props;
         let dealId = deal.objectId
-        // const {commentLimit} = this.state;
-        // const commentQuery = new Parse.Query("DealComment")
-        // commentQuery.include("author").equalTo( "deal", Pointer(dealId) ).descending("createdAt").limit( commentLimit );
-        // this.queries["comments"] = commentQuery;
-        // commentQuery.find().then(comments => {
-        //     self.setState({
-        //         comments: comments.map(comment => comment.toJSON()),
-        //         loading: false,
-        //     });
-        // }).catch(error => console.error(error));
-
         this.props.loadData(dealId);
-
-        // this.setupSubscriptions();
-    },
-    componentWillUnmount(){
-        this.removeSubscriptions();
     },
     componentDidMount() {
-        var self = this;
-        var socket = io("/DealComment");
-        let dealId = self.props.deal.objectId;
-        socket.on("connect", function() {
-            // Connected, let's sign-up for to receive messages for this room
-            socket.emit("deal", dealId);
-        });
-        socket.on("comment", function(comment){
-            //no op, moved to the subscription
-        });
-
         //doing this so that iOS records the scrollTop position correctly.
         var messageContainer = this.refs.messagesContainer;
         if (!messageContainer) return
@@ -302,8 +241,9 @@ const mapStateToProps = (immutableState, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        loadData: (dealId) =>{
+        loadData: (dealId) => {
             dispatch(loadComments(dealId))
+            dispatch(subscribeComments(dealId))
         }
     }
 }

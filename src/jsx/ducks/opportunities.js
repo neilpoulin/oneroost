@@ -4,9 +4,9 @@ import * as Deal from "models/Deal"
 import {normalize} from "normalizr"
 import {Map, List} from "immutable"
 
-export const OPPORTUNITY_LOAD_REQUEST = "OPPORTUNITY_LOAD_REQUEST"
-export const OPPORTUNITY_LOAD_SUCCESS = "OPPORTUNITY_LOAD_SUCCESS"
-export const OPPORTUNITY_LOAD_ERROR = "OPPORTUNITY_LOAD_ERROR"
+export const OPPORTUNITY_LOAD_REQUEST = "oneroost/OPPORTUNITY_LOAD_REQUEST"
+export const OPPORTUNITY_LOAD_SUCCESS = "oneroost/OPPORTUNITY_LOAD_SUCCESS"
+export const OPPORTUNITY_LOAD_ERROR = "oneroost/OPPORTUNITY_LOAD_ERROR"
 
 const initialState = Map({
     isLoading: false,

@@ -1,5 +1,7 @@
 import React, {PropTypes} from "react"
 import Parse from "parse"
+import {Pointer as DealPointer} from "models/Deal"
+import {Pointer as UserPointer} from "models/User"
 import AutosizeTextarea from "react-textarea-autosize"
 import {createComment} from "ducks/comments"
 import { connect } from "react-redux"
@@ -16,9 +18,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             let user = Parse.User.current().toJSON();
             dispatch(createComment({
                 message: message,
-                author: user,
+                author: UserPointer(user),
                 username: user.username,
-                deal: ownProps.deal
+                deal: DealPointer(ownProps.deal)
             }))
         }
     }
@@ -45,19 +47,8 @@ const AddComment = React.createClass({
     saveComment()
     {
         var msg = this.formatMessage( this.state.message )
-        // let comment = new DealComment();
         this.props.addComment(msg);
-
-        // comment.set({
-        //     message: msg,
-        //     author: Parse.User.current(),
-        //     username: this.state.user.username,
-        //     deal: this.props.deal
-        // });
-        // comment.save().then(saved => {
-        //     //no op
-        // }).catch(error => console.error);
-        // this.setState({message: ""});
+        this.setState({"message": ""});
     },
     formatMessage(msg)
     {

@@ -2,7 +2,7 @@
 // import merge from "lodash/merge"
 import Parse from "parse"
 import Deal from "models/Deal";
-import roost, {roostActions} from "./roost"
+import roost, {roostActions} from "ducks/roost"
 import { Map } from "immutable";
 
 const initialState = Map({});
