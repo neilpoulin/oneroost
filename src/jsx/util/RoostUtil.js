@@ -1,7 +1,18 @@
 import Parse from "parse"
 import moment from "moment"
 import numeral from "numeral"
-import {Map} from "immutable"
+import {Map, fromJS, Iterable} from "immutable"
+
+exports.copyJSON = function(json){
+    if ( Iterable.isIterable(json) ){
+        json = json.toJS()
+    }
+    let copy = fromJS(json).toJS()
+    if ( copy["__type"] ){
+        delete copy["__type"]
+    }
+    return copy
+}
 
 exports.getCurrentUser = function(){
     return Parse.User.current();

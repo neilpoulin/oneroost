@@ -202,7 +202,7 @@ const Roost = withRouter( React.createClass({
                 dealLoading: true,
             }
         }
-        deal = deal
+        deal = denormalize(dealId, Deal.Schema, entities)
         roost = roost
         let stakeholders = denormalize(
             roost.stakeholders.ids,

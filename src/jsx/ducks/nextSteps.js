@@ -1,7 +1,7 @@
 import Parse from "parse"
 import {normalize} from "normalizr"
 import * as Deal from "models/Deal"
-import {Pointer} from "models/Models"
+import {Pointer} from "models/modelUtil"
 import * as NextStep from "models/NextStep"
 import {Map, List} from "immutable"
 import {createComment} from "ducks/comments"
@@ -45,7 +45,7 @@ export default function reducer(state=initialState, action){
 
 // Actions
 export const updateStep = (currentStep, changes, message) => (dispatch, getState) => {
-    let step = new NextStep.default(currentStep);
+    let step = NextStep.fromJS(currentStep);
     step.set(changes)
     step.save().then(saved => {
     }).catch(console.error)

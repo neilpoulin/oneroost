@@ -2,14 +2,14 @@ import Parse from "parse";
 import { schema } from "normalizr"
 import * as User from "models/User"
 import * as Deal from "models/Deal"
+import {processStrategy, idAttribute} from "models/modelUtil"
 
 export const Schema = new schema.Entity("comments", {
     createdBy: User.Schema,
     deal: Deal.Schema
 }, {
-    idAttribute: (entity) => {
-        return entity.objectId || entity.id || entity.get("objectId");
-    }
+    idAttribute: idAttribute,
+    processStrategy: processStrategy,
 });
 
 

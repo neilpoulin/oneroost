@@ -1,15 +1,15 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
-import DealComment from "models/DealComment"
 import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormInputGroup from "FormInputGroup"
 import InvestmentValidation from "InvestmentValidation"
 import FormUtil from "FormUtil"
 import RoostUtil from "RoostUtil"
 
-const TimelineSidebar = React.createClass({
+const InvestmentForm = React.createClass({
     propTypes: {
-        deal: PropTypes.instanceOf(Parse.Object).isRequired
+        deal: PropTypes.object.isRequired,
+        updateDeal: PropTypes.func.isRequired
     },
     getInitialState(){
         return {
@@ -23,19 +23,17 @@ const TimelineSidebar = React.createClass({
         }
     },
     doSubmit(){
-        var self = this;
         let errors = FormUtil.getErrors(this.state, InvestmentValidation);
         if ( !FormUtil.hasErrors(errors) ){
             this.setState({errors: {}});
-            var {deal} = this.props;
             var budget = {high: this.state.high, low: this.state.low};
-
-            deal.set("budget", budget);
-            deal.set("description", this.state.description);
-            deal.set("dealName", this.state.dealName);
-
-            deal.save().then(this.sendComment).catch(error => console.error(error));
-            self.showSuccess();
+            var user = Parse.User.current();
+            let message = RoostUtil.getFullName(user) + " updated the Investment Details";
+            this.props.updateDeal({
+                budget: budget,
+                description: this.state.description,
+                dealName: this.state.dealName
+            },message)
 
             return true;
         }
@@ -48,21 +46,6 @@ const TimelineSidebar = React.createClass({
         setTimeout(function(){
             self.setState({saveSuccess: false});
         }, 2000);
-    },
-    sendComment( deal )
-    {
-        var user = Parse.User.current();
-        var message = RoostUtil.getFullName(user) + " updated the Investment Details";
-        let comment = new DealComment();
-        comment.set({
-            deal: deal,
-            message: message,
-            author: null,
-            username: "OneRoost Bot",
-            navLink: {type: "investment"}
-        });
-        comment.save().catch(error => console.error);
-
     },
     render(){
         var saveMessage = null;
@@ -126,4 +109,4 @@ const TimelineSidebar = React.createClass({
     }
 });
 
-export default TimelineSidebar
+export default InvestmentForm

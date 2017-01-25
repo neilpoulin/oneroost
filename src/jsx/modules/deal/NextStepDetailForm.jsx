@@ -7,9 +7,6 @@ import NextStepDetailEdit from "NextStepDetailEdit"
 import { browserHistory } from "react-router"
 import { connect } from "react-redux"
 import {updateStep} from "ducks/nextSteps"
-import {Pointer as DealPointer} from "models/Deal"
-import {Pointer as UserPointer} from "models/User"
-import {fromJS} from "immutable"
 
 const NextStepDetailForm = React.createClass({
     getInitialState(){
@@ -74,13 +71,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     let {step} = ownProps
-    let stepCopy = fromJS(step).toJS()
-    stepCopy.deal = DealPointer(stepCopy.deal)
-    stepCopy.createdBy = UserPointer(stepCopy.createdBy)
-    stepCopy.modifiedBy = UserPointer(stepCopy.modifiedBy)
-    stepCopy.assignedUser = stepCopy.assignedUser ? UserPointer(stepCopy.assignedUser) : null
     return {
-        updateStep: (changes, message) => dispatch(updateStep(stepCopy, changes, message))
+        updateStep: (changes, message) => dispatch(updateStep(step, changes, message))
     }
 }
 

@@ -1,5 +1,6 @@
 import * as Stakeholder from "models/Stakeholder"
 import * as Deal from "models/Deal"
+import * as Account from "models/Account"
 import {normalize} from "normalizr"
 import Parse from "parse"
 import {Map, List} from "immutable"
@@ -49,6 +50,9 @@ export const loadStakeholders = (dealId, force=false) => (dispatch, getState) =>
     stakeholderQuery.include("user");
     stakeholderQuery.find().then(stakeholders => {
         let json = stakeholders.map(stakeholder => stakeholder.toJSON())
+        // let AccountSchema = Account.Schema;
+        // let deal = Deal.fromJS(json[0].deal)
+        console.log(Account)
         let entities = normalize(json, [Stakeholder.Schema]).entities || {}
         dispatch({
             type: STAKEHOLDER_LOAD_SUCCESS,

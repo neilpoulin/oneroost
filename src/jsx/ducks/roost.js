@@ -6,11 +6,12 @@ import * as documents from "ducks/documents"
 import * as stakeholders from "ducks/stakeholders"
 import Parse from "parse"
 import * as Deal from "models/Deal"
-import { Map } from "immutable";
+import { Map } from "immutable"
 
-export const DEAL_LOAD_REQUEST = "oneroost/DEAL_LOAD_REQUSET"
-export const DEAL_LOAD_SUCCESS = "oneroost/DEAL_LOAD_SUCCESS"
-export const DEAL_LOAD_ERROR = "oneroost/DEAL_LOAD_ERROR"
+export const DEAL_LOAD_REQUEST = "oneroost/roost/DEAL_LOAD_REQUSET"
+export const DEAL_LOAD_SUCCESS = "oneroost/roost/DEAL_LOAD_SUCCESS"
+export const DEAL_LOAD_ERROR = "oneroost/roost/DEAL_LOAD_ERROR"
+export const DEAL_UPDATED = "oneroost/roost/DEAL_UPDATED"
 
 export const roostActions = [
     ...getActions(comments),
@@ -20,6 +21,7 @@ export const roostActions = [
     DEAL_LOAD_REQUEST,
     DEAL_LOAD_SUCCESS,
     DEAL_LOAD_ERROR,
+
 ];
 
 
@@ -32,6 +34,26 @@ const initialState = Map({
     documents: documents.initialState,
     stakeholders: stakeholders.initialState,
 })
+
+export const updateDeal = (dealJSON, changes, message) => (dispatch, getState) => {
+    let deal = Deal.fromJS(dealJSON);
+    deal.set(changes);
+    deal.save().then(saved => {}).catch(console.error)
+    let entities = normalize(deal.toJSON(), Deal.Schema).entities
+    dispatch({
+        type: DEAL_UPDATED,
+        entities: entities,
+        dealId: dealJSON.objectId
+    });
+
+    dispatch(comments.createComment({
+        deal: deal,
+        message: message,
+        author: null,
+        username: "OneRoost Bot",
+        navLink: {type: "investment"}
+    }))
+}
 
 export const loadDeal = (dealId, force=false) => {
     return (dispatch, getState) => {
@@ -88,6 +110,7 @@ const roostReducer = (state=initialState, action) => {
                 error: error
             })
             break;
+        case DEAL_UPDATED:
         default:
             return state;
     }

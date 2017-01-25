@@ -3,7 +3,7 @@ import Parse from "parse"
 import NextStepActions from "NextStepActions"
 import moment from "moment"
 import Dropdown from "stakeholder/Dropdown"
-import {Pointer} from "models/Models"
+import {Pointer} from "models/modelUtil"
 import {Pointer as UserPointer} from "models/User"
 import DateTakeoverButton from "DateTakeoverButton"
 import RoostUtil from "RoostUtil"
@@ -46,7 +46,7 @@ const NextStepDetailEdit = React.createClass({
                 "title": this.state.title,
                 "description": this.state.description,
                 "dueDate": this.state.dueDate.toDate(),
-                "assignedUser": this.state.assignedUser ? UserPointer(this.state.assignedUser) : null,                
+                "assignedUser": this.state.assignedUser ? UserPointer(this.state.assignedUser) : null,
                 "completedDate": this.state.completedDate,
                 "modifiedBy": this.state.user
             }, message)

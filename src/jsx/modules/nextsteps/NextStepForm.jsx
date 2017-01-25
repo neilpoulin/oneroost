@@ -9,7 +9,7 @@ import FormInputGroup from "FormInputGroup"
 import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormGroup from "FormGroup"
 import {validations} from "nextsteps/NextStepValidations"
-import {Pointer} from "models/Models"
+import {Pointer} from "models/modelUtil"
 import NextStep from "models/NextStep"
 import DealComment from "models/DealComment"
 
