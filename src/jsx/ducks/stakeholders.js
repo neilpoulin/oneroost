@@ -32,6 +32,11 @@ export default function reducer(state=initialState, action){
         case STAKEHOLDER_LOAD_ERROR:
             state = state.set("isLoading", false);
             break;
+        case ADD_STAKEHOLDER:
+            state = state.set("ids", state.get("ids").push(action.payload.get("objectId")))
+            break;
+        case UPDATE_STAKEHOLDER:
+            break;
         default:
             break;
     }
@@ -65,6 +70,22 @@ export const removeStakeholder = (json) => (dispatch, getState) => {
         username: "OneRoost Bot",
         navLink: {type:"participant"}
     }))
+}
+
+export const createStakeholder = (json) => (dispatch, getState) => {
+    if ( !json.hasOwnProperty("active") ){
+        json["active"] = true;
+    }
+    let stakeholder = Stakeholder.fromJSON(json);
+    stakeholder.save().then(saved => {
+        let entities = normalize(saved.toJSON(), Stakeholder.Schema).entities
+        dispatch({
+            type: ADD_STAKEHOLDER,
+            dealId: saved.get("deal").id,
+            payload: saved,
+            entities: entities,
+        })
+    }).catch(console.error)
 }
 
 export const loadStakeholders = (dealId, force=false) => (dispatch, getState) => {

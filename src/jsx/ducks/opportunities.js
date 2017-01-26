@@ -3,10 +3,13 @@ import * as User from "models/User"
 import * as Deal from "models/Deal"
 import {normalize} from "normalizr"
 import {Map, List} from "immutable"
+import RoostUtil from "RoostUtil"
+import {addSubscription, handler} from "ducks/subscriptions"
 
-export const OPPORTUNITY_LOAD_REQUEST = "oneroost/OPPORTUNITY_LOAD_REQUEST"
-export const OPPORTUNITY_LOAD_SUCCESS = "oneroost/OPPORTUNITY_LOAD_SUCCESS"
-export const OPPORTUNITY_LOAD_ERROR = "oneroost/OPPORTUNITY_LOAD_ERROR"
+export const OPPORTUNITY_LOAD_REQUEST = "oneroost/opportunity/OPPORTUNITY_LOAD_REQUEST"
+export const OPPORTUNITY_LOAD_SUCCESS = "oneroost/opportunity/OPPORTUNITY_LOAD_SUCCESS"
+export const OPPORTUNITY_LOAD_ERROR = "oneroost/opportunity/OPPORTUNITY_LOAD_ERROR"
+export const ADD_OPPORTUNITY = "oneroost/opportunity/ADD_OPPORTUNITY"
 
 const initialState = Map({
     isLoading: false,
@@ -28,12 +31,51 @@ export default function reducer(state=initialState, action){
         case OPPORTUNITY_LOAD_ERROR:
             state = state.set("isLoading", true);
             break;
+        case ADD_OPPORTUNITY:
+            let stakeholder = action.payload;
+            if ( stakeholder.get("active") !== false ){
+                state = state.set("deals", state.get("deals").push(stakeholder.get("deal").get("objectId")))
+            }
+            else {
+                state = state.set("archivedDeals", state.get("archivedDeals").push(stakeholder.get("deal").get("objectId")))
+            }
+            break;
         default:
             break;
     }
     return state;
 }
 
+// Queries
+const opportunitiesQuery = (userId) => {
+    let query = new Parse.Query("Stakeholder");
+    query.include("deal");
+    query.include(["deal.account"]);
+    query.include("deal.createdBy");
+    query.include("deal.readyRoostUser");
+    query.equalTo("user", User.Pointer(userId) );
+    query.equalTo("inviteAccepted", true);
+    return query
+}
+
+//Actions
+export const addOpportunity = (userId, stakeholder) => (dispatch, getState) => {
+    let entities = normalize(RoostUtil.toJSON(stakeholder.get("deal")), Deal.Schema).entities
+    dispatch({
+        type: ADD_OPPORTUNITY,
+        userId: userId,
+        payload: stakeholder,
+        entities: entities,
+    })
+}
+
+export const subscribeOpportunities = (userId) => (dispatch, getState)=> {
+    console.log("subscribing to comments")
+    let query = opportunitiesQuery(userId)
+    dispatch(addSubscription("OPPORTUNITIES", userId, query, handler({
+        create: (result) => dispatch(addOpportunity(userId, result))
+    })))
+}
 
 export const loadOpportunities = (userId, force=false) => (dispatch, getState) => {
     let {opportunitiesByUser} = getState();
@@ -47,14 +89,9 @@ export const loadOpportunities = (userId, force=false) => (dispatch, getState) =
         userId: userId,
     })
 
-    var opportunitiesQuery = new Parse.Query("Stakeholder");
-    opportunitiesQuery.include("deal");
-    opportunitiesQuery.include(["deal.account"]);
-    opportunitiesQuery.include("deal.createdBy");
-    opportunitiesQuery.include("deal.readyRoostUser");
-    opportunitiesQuery.equalTo("user", User.Pointer(userId) );
-    opportunitiesQuery.equalTo("inviteAccepted", true);
-    opportunitiesQuery.find().then(stakeholders => {
+    let query = opportunitiesQuery(userId)
+
+    query.find().then(stakeholders => {
         let active = stakeholders.filter( obj => obj.get("active") !== false );
         let archived = stakeholders.filter( obj => obj.get("active") === false );
 

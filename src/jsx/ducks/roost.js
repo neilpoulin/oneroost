@@ -6,7 +6,9 @@ import * as documents from "ducks/documents"
 import * as stakeholders from "ducks/stakeholders"
 import Parse from "parse"
 import * as Deal from "models/Deal"
+import * as Account from "models/Account"
 import { Map } from "immutable"
+
 
 export const DEAL_LOAD_REQUEST = "oneroost/roost/DEAL_LOAD_REQUSET"
 export const DEAL_LOAD_SUCCESS = "oneroost/roost/DEAL_LOAD_SUCCESS"
@@ -24,7 +26,6 @@ export const roostActions = [
 
 ];
 
-
 const initialState = Map({
     dealLoading: false,
     hasLoaded: false,
@@ -34,6 +35,42 @@ const initialState = Map({
     documents: documents.initialState,
     stakeholders: stakeholders.initialState,
 })
+
+export const createRoost = (opts) => (dispatch, getState) => {
+    let currentUser = Parse.User.current()
+    let account = Account.fromJS({
+        createdBy: currentUser,
+        accountName: opts.accountName,
+        primaryContact: opts.primaryContact,
+        streetAddress: opts.streetAddress,
+        city: opts.city,
+        state: opts.state,
+        zipCode: opts.zipCode,
+    })
+    account.save().then(account => {
+        console.log("account created", account)
+        let deal = Deal.fromJS({
+            createdBy: currentUser,
+            dealName: opts.dealName,
+            account: account,
+            profile: {"timeline": "2016-05-13"},
+            budget: {"low": 0, "high": 0}
+        })
+        //TODO: dispatch account created
+        deal.save().then(deal => {
+            console.log("deal created")
+            //TODO: dispatch deal created
+            dispatch(stakeholders.createStakeholder({
+                deal: deal,
+                user: currentUser,
+                inviteAccepted: true,
+                role: "CREATOR",
+                invitedBy: currentUser,
+                active: true,
+            }))
+        })
+    }).catch(console.error)
+}
 
 export const updateDeal = (dealJSON, changes, message, type) => (dispatch, getState) => {
     let deal = Deal.fromJS(dealJSON);

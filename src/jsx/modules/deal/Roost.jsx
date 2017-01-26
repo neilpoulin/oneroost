@@ -16,7 +16,7 @@ import {loadDeal} from "ducks/roost"
 import {loadNextSteps} from "ducks/nextSteps"
 import {loadDocuments} from "ducks/documents"
 import {loadStakeholders} from "ducks/stakeholders"
-import {loadOpportunities} from "ducks/opportunities"
+import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
 import {denormalize} from "normalizr"
 import {Map} from "immutable"
 import * as Deal from "models/Deal"
@@ -245,13 +245,15 @@ const Roost = withRouter( React.createClass({
     const mapDispatchToProps = (dispatch, ownProps) => {
         // let dealId = ownProps.params.dealId;
         const currentUser = Parse.User.current()
+        const userId = currentUser.id
         return {
             loadData: (dealId) => {
                 dispatch(loadDeal(dealId))
                 dispatch(loadNextSteps(dealId))
                 dispatch(loadDocuments(dealId))
                 dispatch(loadStakeholders(dealId))
-                dispatch(loadOpportunities(currentUser.id))
+                dispatch(loadOpportunities(userId))
+                dispatch(subscribeOpportunities(userId))
             }
         }
     }

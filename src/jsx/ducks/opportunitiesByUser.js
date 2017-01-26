@@ -1,4 +1,4 @@
-import * as opportunities from "ducks/opportunities"
+import Opportunities, * as opportunities from "ducks/opportunities"
 import {getActions} from "DuckUtil"
 import {Map} from "immutable"
 
@@ -15,5 +15,5 @@ export default function reducer(state=initialState, action){
     if ( !userId ){
         return state;
     }
-    return state.set(userId, opportunities.default(state.get("userId"), action))
+    return state.set(userId, Opportunities(state.get(userId), action))
 }

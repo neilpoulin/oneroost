@@ -1,6 +1,8 @@
 import React, { PropTypes } from "react"
 import ModalButton from "ModalButton";
 import CreateAccountForm from "account/CreateAccountForm";
+import {connect} from "react-redux"
+import {createRoost} from "ducks/roost"
 
 const AddAccountButton = React.createClass({
     openModal: function(){
@@ -27,10 +29,24 @@ const AddAccountButton = React.createClass({
                 >
                 <CreateAccountForm
                     onSuccess={this.props.onSuccess}
+                    createRoost={this.props.createRoost}
                 />
             </ModalButton>
         )
     }
 })
 
-export default AddAccountButton
+const mapStateToProps = (state, ownprops) => {
+    return {
+
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        createRoost: (opts) => dispatch(createRoost(opts))
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddAccountButton)
