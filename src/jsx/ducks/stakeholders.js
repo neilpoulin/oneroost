@@ -24,7 +24,7 @@ export default function reducer(state=initialState, action){
         case STAKEHOLDER_LOAD_SUCCESS:
             state = state.set("isLoading", false)
             state = state.set("hasLoaded", true)
-            state = state.set("ids", List(action.payload.map(stakeholder => stakeholder.objectId)))
+            state = state.set("ids", List(action.payload.map(stakeholder => stakeholder.get("objectId"))))
             break;
         case STAKEHOLDER_LOAD_ERROR:
             state = state.set("isLoading", false);

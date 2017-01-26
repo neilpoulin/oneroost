@@ -1,15 +1,14 @@
 import React, { PropTypes } from "react"
+import {connect} from "react-redux"
 import FormUtil from "FormUtil"
 import Parse from "parse";
-import Document from "models/Document"
-import DealComment from "models/DealComment"
 import Dropzone from "react-dropzone"
 import request from "superagent"
 import numeral from "numeral"
 import {linkValidation, fileValidation} from "DocumentValidation"
 import FormInputGroup from "FormInputGroup"
 import FormGroup from "FormGroup"
-import RoostUtil from "RoostUtil"
+import {createDocument} from "ducks/documents"
 
 const re = /(?:\.([^.]+))?$/;
 
@@ -45,35 +44,15 @@ const DocumentUploadForm = React.createClass({
         return false;
     },
     saveDocument(){
-        var self = this;
-        var user = Parse.User.current();
-        var {deal} = self.props;
-
-        let document = new Document();
-        document.set({
-            createdBy: user,
-            deal: deal,
+        let data = {
             fileName: this.state.fileName,
             s3key: this.state.s3key,
             externalLink: this.state.externalLink,
             type: this.state.type,
             size: this.state.size,
             fileExtension: this.state.fileExtension
-        });
-        document.save().then(saved => {
-            saved = saved.toJSON();
-            var message = RoostUtil.getFullName(user) + " has uploaded " + saved.fileName
-
-            let comment = new DealComment();
-            comment.set({
-                deal: deal,
-                message: message,
-                author: null,
-                username: "OneRoost Bot",
-                navLink: {type: "document", id: null}
-            });
-            return comment.save();
-        }).catch(error => console.error)
+        };
+        this.props.createDocument(data);
     },
     onDrop: function(files){
         console.log(files);
@@ -222,4 +201,22 @@ const DocumentUploadForm = React.createClass({
     }
 })
 
-export default DocumentUploadForm
+const mapStateToProps = (state, ownProps) => {
+    return {
+
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    let {deal} = ownProps
+    let dealId = deal.objectId
+    return {
+        createDocument: (doc) => dispatch(createDocument(dealId, doc))
+    }
+}
+
+const connectOpts = {
+    withRef: true
+}
+
+export default connect(mapStateToProps, mapDispatchToProps, undefined, connectOpts)(DocumentUploadForm)

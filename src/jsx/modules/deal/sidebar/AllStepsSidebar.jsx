@@ -1,12 +1,12 @@
-import Parse from "parse";
-import React, {PropTypes} from "react";
-import NavLink from "NavLink";
-import AddNextStepButton from "nextsteps/AddNextStepButton";
+import React, {PropTypes} from "react"
+import NavLink from "NavLink"
+import moment from "moment"
+import AddNextStepButton from "nextsteps/AddNextStepButton"
 
 const AllStepsSidebar = React.createClass({
     propTypes: {
-        nextSteps: PropTypes.arrayOf(PropTypes.instanceOf(Parse.Object)).isRequired,
-        deal: PropTypes.instanceOf(Parse.Object).isRequired
+        nextSteps: PropTypes.arrayOf(PropTypes.object).isRequired,
+        deal: PropTypes.object
     },
     getDefaultProps(){
         return {
@@ -15,13 +15,7 @@ const AllStepsSidebar = React.createClass({
     },
     formatDate: function( date )
     {
-        if ( !(date instanceof Date) )
-        {
-            date = new Date( date );
-        }
-
-        var month = date.getMonth() + 1;
-        return month + "/" + date.getDate() + "/" + date.getFullYear()
+        return moment(date).format("M/D/YY")
     },
     render () {
         const {nextSteps, deal} = this.props;

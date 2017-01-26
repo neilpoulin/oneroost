@@ -3,11 +3,13 @@ import * as Deal from "models/Deal"
 import {normalize} from "normalizr"
 import Parse from "parse"
 import {Map, List} from "immutable"
+import RoostUtil from "RoostUtil"
+import {createComment} from "ducks/comments"
 
-export const ADD_DOCUMENT = "oneroost/ADD_DOCUMENT"
-export const DOCUMENT_LOAD_REQUEST = "oneroost/DOCUMENT_LOAD_REQUEST"
-export const DOCUMENT_LOAD_SUCCESS = "oneroost/DOCUMENT_LOAD_SUCCESS"
-export const DOCUMENT_LOAD_ERROR = "oneroost/DOCUMENT_LOAD_ERROR"
+export const ADD_DOCUMENT = "oneroost/documents/ADD_DOCUMENT"
+export const DOCUMENT_LOAD_REQUEST = "oneroost/documents/DOCUMENT_LOAD_REQUEST"
+export const DOCUMENT_LOAD_SUCCESS = "oneroost/documents/DOCUMENT_LOAD_SUCCESS"
+export const DOCUMENT_LOAD_ERROR = "oneroost/documents/DOCUMENT_LOAD_ERROR"
 
 
 export const initialState = Map({
@@ -28,10 +30,42 @@ export default function reducer(state=initialState, action){
         case DOCUMENT_LOAD_ERROR:
             state = state.set("isLoading", false)
             break
+        case ADD_DOCUMENT:
+            state = state.set("ids", state.get("ids").push(action.payload.get("objectId")))
+            break;
         default:
             break;
     }
     return state;
+}
+
+
+export const addDocument = (doc) => {
+    let entities = normalize(doc.toJSON(), Document.Schema).entities
+    return {
+        type: ADD_DOCUMENT,
+        dealId: doc.get("deal").id || doc.get("deal").get("objectId"),
+        payload: doc,
+        entities,
+    }
+}
+
+export const createDocument = (dealId, newDoc) => (dispatch, getState) => {
+    let doc = Document.fromJS(newDoc);
+    var user = Parse.User.current();
+    doc.set("createdBy", user);
+    doc.set("deal", Deal.Pointer(dealId))
+    doc.save().then( saved => {
+        dispatch(addDocument(saved))
+        let message = RoostUtil.getFullName(user) + " has uploaded " + saved.get("fileName")
+        dispatch(createComment({
+            deal: Deal.Pointer(dealId),
+            message: message,
+            author: null,
+            username: "OneRoost Bot",
+            navLink: {type: "document", id: saved.id}
+        }))
+    })
 }
 
 export const loadDocuments = (dealId, force=false) => (dispatch, getState) => {

@@ -5,6 +5,7 @@ import {Pointer} from "models/modelUtil"
 import * as NextStep from "models/NextStep"
 import {Map, List} from "immutable"
 import {createComment} from "ducks/comments"
+import RoostUtil from "RoostUtil"
 
 export const ADD_NEXT_STEP = "oneroost/nextSteps/ADD_NEXT_STEP"
 export const STEP_LOAD_REQUEST = "oneroost/nextSteps/STEP_LOAD_REQUEST"
@@ -21,7 +22,7 @@ export default function reducer(state=initialState, action){
     switch (action.type) {
         case ADD_NEXT_STEP:
             let {payload} = action;
-            state = state.set("ids", state.get("ids").push(payload.id))
+            state = state.set("ids", state.get("ids").push(payload.get("objectId")))
             break;
         case STEP_LOAD_REQUEST:
             state = state.set("isLoading", true);
@@ -105,19 +106,29 @@ export const loadNextSteps = (dealId, force=false) => (dispatch, getState) => {
 
 
 export const addNextStep = (step) => {
+    let entities = normalize(step.toJSON(), NextStep.Schema).entities
     return {
         type: ADD_NEXT_STEP,
         dealId: step.get("deal").id,
+        entities,
         payload: step
     }
 }
 
 export const createNextStep = (nextStep) => {
     return (dispatch) => {
-        let step = new NextStep();
-        step.set(nextStep);
+        let step = NextStep.fromJS(nextStep)
         step.save().then( saved => {
+            var message = RoostUtil.getFullName(saved.get("createdBy")) + " created Next Step: " + saved.get("title")
             dispatch(addNextStep(saved))
+            dispatch(createComment({
+                deal: saved.get("deal"),
+                message: message,
+                author: null,
+                username: "OneRoost Bot",
+                navLink: {type: "step", id: saved.id }
+            }))
+
         })
     }
 }

@@ -1,5 +1,6 @@
 import React, {PropTypes} from "react"
 import Parse from "parse"
+import {connect} from "react-redux"
 import moment from "moment"
 import Dropdown from "stakeholder/Dropdown"
 import FormUtil from "FormUtil"
@@ -10,12 +11,11 @@ import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormGroup from "FormGroup"
 import {validations} from "nextsteps/NextStepValidations"
 import {Pointer} from "models/modelUtil"
-import NextStep from "models/NextStep"
-import DealComment from "models/DealComment"
+import {createNextStep} from "ducks/nextSteps"
 
-export default React.createClass({
+const NextStepForm = React.createClass({
     propTypes: {
-        stakeholders: PropTypes.array.isRequired,
+        stakeholders: PropTypes.array,
         deal: PropTypes.object.isRequired
     },
     getInitialState: function () {
@@ -42,9 +42,7 @@ export default React.createClass({
         return false;
     },
     saveNextStep: function () {
-        var self = this;
-        let step = new NextStep();
-        step.set({
+        let data = {
             createdBy: this.state.createdBy,
             title: this.state.title,
             description: this.state.description,
@@ -52,25 +50,8 @@ export default React.createClass({
             assignedUser: this.state.assignedUser,
             deal: this.props.deal,
             completedDate: this.state.completedDate ? new Date(this.state.completedDate) : null
-        });
-        step.save().then(step => self.addStepCreatedComment(step.toJSON())).catch(console.error)
-        self.clear();
-    },
-    addStepCreatedComment: function (step) {
-        var self = this;
-        //todo: make this use actions
-        console.error("NEED TO USE ACTIONS, THIS WILL BE BROKEN");
-        var message = RoostUtil.getFullName(Parse.User.current()) + " created Next Step: " + step.title
-        let comment = new DealComment();
-        comment.set({
-            deal: self.state.deal,
-            message: message,
-            author: null,
-            username: "OneRoost Bot",
-            navLink: {type: "step", id: step.objectId }
-        });
-
-        comment.save().catch(console.error);
+        }
+        this.props.createNextStep(data);
     },
     clear: function () {
         this.setState(this.getInitialState());
@@ -136,3 +117,22 @@ export default React.createClass({
         return form;
     }
 });
+
+
+const mapStateToProps = (state, ownProps) => {
+    return {
+
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        createNextStep: (step) => dispatch(createNextStep(step))
+    }
+}
+
+const connectOpts = {
+    withRef: true
+}
+
+export default connect(mapStateToProps, mapDispatchToProps, undefined, connectOpts)(NextStepForm)

@@ -17,24 +17,13 @@ export const Schema = new schema.Entity(
     {
         createdBy: User.Schema,
         readyRoostUser: User.Schema,
-        // account: Account.Schema,
         account: new schema.Entity("accounts", {}, {
-            idAttribute: idAttribute, //: (entity) => entity.objectId || entity.id || entity.get("objectId"),
+            idAttribute: idAttribute,
             processStrategy: processStrategy
-            // processStrategy: (entity) => {
-            //     let copy = copyJSON(entity);
-            //     delete copy["__type"]
-            //     return copy
-            // }
+
         }),
     },
     {
-        // idAttribute: (entity) => entity.objectId || entity.id || entity.get("objectId"),
-        // processStrategy: (entity) => {
-        //     let copy = copyJSON(entity);
-        //     delete copy["__type"]
-        //     return copy
-        // }
         idAttribute: idAttribute,
         processStrategy: processStrategy,
     }
@@ -52,7 +41,6 @@ export const Pointer = (arg) => {
     }
     return Deal.createWithoutData(dealId);
 }
-
 
 export const fromJS = (json) => {
     let deal = copyJSON(json);

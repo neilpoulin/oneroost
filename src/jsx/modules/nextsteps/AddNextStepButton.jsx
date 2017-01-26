@@ -4,7 +4,7 @@ import NextStepForm from "nextsteps/NextStepForm";
 
 const AddNextStepButton = React.createClass({
     propTypes: {
-        stakeholders: PropTypes.array.isRequired,
+        stakeholders: PropTypes.array,
         deal: PropTypes.object.isRequired
     },
     getInitialState: function(){
