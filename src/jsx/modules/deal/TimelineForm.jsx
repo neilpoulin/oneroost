@@ -1,7 +1,6 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
 import moment from "moment"
-import DealComment from "models/DealComment"
 import Select from "react-select"
 import Stages from "Stages"
 import FormGroup from "FormGroup"
@@ -9,7 +8,8 @@ import RoostUtil from "RoostUtil"
 
 const TimelineForm = React.createClass({
     propTypes: {
-        deal: PropTypes.object.isRequired
+        deal: PropTypes.object.isRequired,
+        updateDeal: PropTypes.func.isRequired,
     },
     getInitialState(){
         return {
@@ -32,31 +32,18 @@ const TimelineForm = React.createClass({
         });
     },
     doSubmit(){
-        let {deal} = this.props;
+        let {deal} = this.props
+        var user = Parse.User.current()
         let profile = deal.profile
-        profile.timeline = this.state.timeline.format();
-
-        deal.set({
+        profile.timeline = this.state.timeline.format()
+        var message = RoostUtil.getFullName(user) + " updated the Timeline";
+        let data = {
             profile: profile,
             currentStage: this.state.stage.value,
             stageUpdatedAt: new Date()
-        });
-        deal.save().then(this.sendComment).catch(console.error);
+        }
+        this.props.updateDeal(data, message)
         this.showSuccess();
-    },
-    sendComment( deal )
-    {
-        var user = Parse.User.current();
-        var message = RoostUtil.getFullName(user) + " updated the Timeline";
-        let comment = new DealComment();
-        comment.set({
-            deal: deal,
-            message: message,
-            author: null,
-            username: "OneRoost Bot",
-            navLink: {type: "timeline"}
-        });
-        comment.save().catch(console.error);
     },
     formatDurationAsDays( past ){
         var numDays = Math.floor( moment.duration( moment().diff(past)).asDays() );

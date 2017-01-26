@@ -45,18 +45,24 @@ export default function reducer(state=initialState, action){
 
 
 // Actions
+export const stepChangedAction = (step) => {
+    // this takes a parse object
+    let stepJSON = RoostUtil.toJSON(step)
+    let entities = normalize(stepJSON, NextStep.Schema).entities
+    return {
+        type: STEP_CHANGED,
+        entities: entities,
+        dealId: stepJSON.deal.objectId
+    }
+}
+
 export const updateStep = (currentStep, changes, message) => (dispatch, getState) => {
     let step = NextStep.fromJS(currentStep);
     step.set(changes)
     step.save().then(saved => {
     }).catch(console.error)
 
-    let entities = normalize(step.toJSON(), NextStep.Schema).entities
-    dispatch({
-        type: STEP_CHANGED,
-        entities: entities,
-        dealId: currentStep.deal.id
-    })
+    dispatch(stepChangedAction(step))
 
     dispatch(createComment({
         deal: step.get("deal"),

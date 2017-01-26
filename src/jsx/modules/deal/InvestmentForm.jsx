@@ -33,11 +33,12 @@ const InvestmentForm = React.createClass({
                 budget: budget,
                 description: this.state.description,
                 dealName: this.state.dealName
-            },message)
+            }, message)
 
             return true;
         }
         this.setState({errors: errors});
+        this.showSuccess()
         return false;
     },
     showSuccess(){

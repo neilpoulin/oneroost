@@ -35,7 +35,7 @@ const initialState = Map({
     stakeholders: stakeholders.initialState,
 })
 
-export const updateDeal = (dealJSON, changes, message) => (dispatch, getState) => {
+export const updateDeal = (dealJSON, changes, message, type) => (dispatch, getState) => {
     let deal = Deal.fromJS(dealJSON);
     deal.set(changes);
     deal.save().then(saved => {}).catch(console.error)
@@ -51,7 +51,7 @@ export const updateDeal = (dealJSON, changes, message) => (dispatch, getState) =
         message: message,
         author: null,
         username: "OneRoost Bot",
-        navLink: {type: "investment"}
+        navLink: {type: type}
     }))
 }
 

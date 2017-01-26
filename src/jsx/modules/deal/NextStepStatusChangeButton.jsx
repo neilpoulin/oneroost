@@ -18,20 +18,21 @@ const NextStepStatusChangeButton = React.createClass({
     },
     markAsDone: function(){
         var step = this.props.step;
-        let message = RoostUtil.getFullName(step.modifiedBy) + " marked " + step.title + " as \"Completed\""
+        let user = Parse.User.current()
+        let message = RoostUtil.getFullName(user) + " marked " + step.title + " as \"Completed\""
         this.props.updateStep({
-            "completedDate": new Date(),
-            "modifiedBy": Parse.User.current()
+            completedDate: new Date(),
+            modifiedBy: user,
         }, message);
     },
     markAsNotDone: function(){
         var step = this.props.step;
-        let message = RoostUtil.getFullName(step.modifiedBy) + " marked " + step.title + " as \"Not Complete\""
+        let user = Parse.User.current()
+        let message = RoostUtil.getFullName(user) + " marked " + step.title + " as \"Not Complete\""
         this.props.updateStep({
             completedDate: null,
-            modifiedBy: Parse.User.current()
+            modifiedBy: user,
         }, message)
-
     },
     render () {
         const {completedDate} = this.props.step;

@@ -2,6 +2,7 @@ import React, { PropTypes } from "react"
 import InvestmentForm from "InvestmentForm"
 import {connect} from "react-redux"
 import {updateDeal} from "ducks/roost"
+import {INVESTMENT} from "SidebarTypes"
 
 
 const InvestmentSidebar = React.createClass({
@@ -27,7 +28,7 @@ const mapStateToProps = (state, ownprops) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        updateDeal: (changes, message) => dispatch(updateDeal(ownProps.deal, changes, message))
+        updateDeal: (changes, message) => dispatch(updateDeal(ownProps.deal, changes, message, INVESTMENT))
     }
 }
 

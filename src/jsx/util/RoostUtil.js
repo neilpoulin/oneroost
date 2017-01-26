@@ -3,6 +3,16 @@ import moment from "moment"
 import numeral from "numeral"
 import {Map, fromJS, Iterable} from "immutable"
 
+exports.toJSON = function(obj){
+    let json = obj
+    if ( Iterable.isIterable(obj) ){
+        json = json.toJS()
+    } else if ( obj instanceof Parse.Object ){
+        json = obj.toJSON()
+    }
+    return json
+}
+
 exports.copyJSON = function(json){
     if ( Iterable.isIterable(json) ){
         json = json.toJS()
