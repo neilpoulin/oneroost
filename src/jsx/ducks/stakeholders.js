@@ -3,12 +3,15 @@ import * as Deal from "models/Deal"
 import * as Account from "models/Account"
 import {normalize} from "normalizr"
 import Parse from "parse"
+import RoostUtil from "RoostUtil"
 import {Map, List} from "immutable"
+import {createComment} from "ducks/comments"
 
-export const ADD_STAKEHOLDER = "oneroost/ADD_STAKEHOLDER"
-export const STAKEHOLDER_LOAD_REQUEST = "oneroost/STAKEHOLDER_LOAD_REQUEST"
-export const STAKEHOLDER_LOAD_SUCCESS = "oneroost/STAKEHOLDER_LOAD_SUCCESS"
-export const STAKEHOLDER_LOAD_ERROR = "oneroost/STAKEHOLDER_LOAD_ERROR"
+export const ADD_STAKEHOLDER = "oneroost/stakeholder/ADD_STAKEHOLDER"
+export const STAKEHOLDER_LOAD_REQUEST = "oneroost/stakeholder/STAKEHOLDER_LOAD_REQUEST"
+export const STAKEHOLDER_LOAD_SUCCESS = "oneroost/stakeholder/STAKEHOLDER_LOAD_SUCCESS"
+export const STAKEHOLDER_LOAD_ERROR = "oneroost/stakeholder/STAKEHOLDER_LOAD_ERROR"
+export const UPDATE_STAKEHOLDER = "oneroost/stakeholder/UPDATE_STAKEHOLDER"
 
 export const initialState = Map({
     isLoading: false,
@@ -33,6 +36,35 @@ export default function reducer(state=initialState, action){
             break;
     }
     return state;
+}
+
+
+// Actions
+export const removeStakeholder = (json) => (dispatch, getState) => {
+    let currentUser = Parse.User.current()
+    let stakeholder = Stakeholder.fromJSON(json)
+    stakeholder.set({
+        active: false,
+        modifiedBy: currentUser,
+    })
+    stakeholder.save().then().catch(console.error)
+
+    let entities = normalize(stakeholder.toJSON(), Stakeholder.Schema).entities
+    dispatch({
+        type: UPDATE_STAKEHOLDER,
+        entities: entities,
+        dealId: stakeholder.get("deal").id
+    })
+
+    var fullName = RoostUtil.getFullName(currentUser)
+    var message = fullName + " removed " + RoostUtil.getFullName(stakeholder.get("user")) + " as from the opportunity.";
+    dispatch(createComment({
+        deal: stakeholder.get("deal"),
+        message: message,
+        author: null,
+        username: "OneRoost Bot",
+        navLink: {type:"participant"}
+    }))
 }
 
 export const loadStakeholders = (dealId, force=false) => (dispatch, getState) => {

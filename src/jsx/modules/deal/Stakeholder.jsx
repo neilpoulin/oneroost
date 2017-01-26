@@ -1,14 +1,14 @@
 import React, {PropTypes} from "react";
 import Parse from "parse";
 import RoostUtil from "RoostUtil"
-import DealComment from "models/DealComment"
 import ReactGA from "react-ga"
 
-export default React.createClass({
+const Stakeholder = React.createClass({
     propTypes: {
         isEdit: PropTypes.bool,
         stakeholder: PropTypes.object.isRequired,
         deal: PropTypes.object.isRequired,
+        removeStakeholder: PropTypes.func,
     },
     getDefaultProps(){
         return {
@@ -16,30 +16,11 @@ export default React.createClass({
         }
     },
     deleteStakeholder: function () {
-        var self = this;
         var {stakeholder} = this.props;
         var confirm = window.confirm("Are you sure you want to remove this user?" );
         if ( confirm ){
-            stakeholder.set({active: false});
-            stakeholder.save().then(self.sendComment).catch(console.error)
+            this.props.removeStakeholder(stakeholder)
         }
-    },
-    sendComment(stakeholder)
-    {
-        var {deal} = this.props;
-        var user = Parse.User.current();
-        let stakeholderUser = stakeholder.user
-        var fullName = RoostUtil.getFullName(user)
-        var message = fullName + " removed " + RoostUtil.getFullName(stakeholderUser) + " as from the opportunity.";
-        let comment = new DealComment();
-        comment.set({
-            deal: deal,
-            message: message,
-            author: null,
-            username: "OneRoost Bot",
-            navLink: {type:"participant"}
-        });
-        comment.save();
     },
     submitRoost(){
         var self = this;
@@ -119,3 +100,5 @@ export default React.createClass({
         return result;
     }
 });
+
+export default Stakeholder;

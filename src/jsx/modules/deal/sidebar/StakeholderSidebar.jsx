@@ -1,12 +1,15 @@
 import React, { PropTypes } from "react"
+import {connect} from "react-redux"
 import AddStakeholderButton from "AddStakeholderButton";
 import Stakeholder from "Stakeholder"
+import {removeStakeholder} from "ducks/stakeholders"
 
 const StakeholderSidebar = React.createClass({
     propTypes: {
         deal: PropTypes.object.isRequired,
         stakeholders: PropTypes.arrayOf(PropTypes.object).isRequired,
-        isLoading: PropTypes.bool.isRequired
+        isLoading: PropTypes.bool.isRequired,
+        removeStakeholder: PropTypes.func,
     },
     getDefaultProps(){
         return {
@@ -74,7 +77,8 @@ const StakeholderSidebar = React.createClass({
                         return <Stakeholder key={"stakeholder_" + stakeholder.objectId}
                             stakeholder={stakeholder}
                             deal={deal}
-                            isEdit={isEdit}/>
+                            isEdit={isEdit}
+                            removeStakeholder={this.props.removeStakeholder}/>
                     })}
                 </div>
                 {inactiveBlock}
@@ -83,4 +87,18 @@ const StakeholderSidebar = React.createClass({
     }
 });
 
-export default StakeholderSidebar
+
+const mapStateToProps = (state, ownprops) => {
+    return {
+
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        removeStakeholder: (stakeholder) => dispatch(removeStakeholder(stakeholder))
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(StakeholderSidebar)
