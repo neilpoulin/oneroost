@@ -10,6 +10,8 @@ export const OPPORTUNITY_LOAD_REQUEST = "oneroost/opportunity/OPPORTUNITY_LOAD_R
 export const OPPORTUNITY_LOAD_SUCCESS = "oneroost/opportunity/OPPORTUNITY_LOAD_SUCCESS"
 export const OPPORTUNITY_LOAD_ERROR = "oneroost/opportunity/OPPORTUNITY_LOAD_ERROR"
 export const ADD_OPPORTUNITY = "oneroost/opportunity/ADD_OPPORTUNITY"
+export const ARCHIVE_OPPORTUNITIY = "oneroost/opportunity/ARCHIVE_OPPORTUNITIY"
+export const UNARCHIVE_OPPORTUNITIY = "oneroost/opportunity/UNARCHIVE_OPPORTUNITIY"
 
 const initialState = Map({
     isLoading: false,
@@ -32,13 +34,25 @@ export default function reducer(state=initialState, action){
             state = state.set("isLoading", true);
             break;
         case ADD_OPPORTUNITY:
-            let stakeholder = action.payload;
+            var stakeholder = action.payload;
             if ( stakeholder.get("active") !== false ){
                 state = state.set("deals", state.get("deals").push(stakeholder.get("deal").get("objectId")))
             }
             else {
                 state = state.set("archivedDeals", state.get("archivedDeals").push(stakeholder.get("deal").get("objectId")))
             }
+            break;
+        case ARCHIVE_OPPORTUNITIY:
+            var stakeholder = action.payload;
+            var dealId = stakeholder.get("deal").get("objectId");
+            state = state.set("deals", state.get("deals").filterNot(id => id === dealId))
+            state = state.set("archivedDeals", state.get("archivedDeals").push(dealId))
+            break;
+        case UNARCHIVE_OPPORTUNITIY:
+            var stakeholder = action.payload;
+            var dealId = stakeholder.get("deal").get("objectId");
+            state = state.set("deals", state.get("deals").push(dealId))
+            state = state.set("archivedDeals", state.get("archivedDeals").filterNot(id => id === dealId))
             break;
         default:
             break;
@@ -67,6 +81,25 @@ export const addOpportunity = (userId, stakeholder) => (dispatch, getState) => {
         payload: stakeholder,
         entities: entities,
     })
+}
+
+export const archiveOpportunity = (stakeholder) => (dispatch, getState) => {
+    let userId = stakeholder.user.objectId
+    dispatch({
+        type: ARCHIVE_OPPORTUNITIY,
+        userId: userId,
+        payload: stakeholder
+    });
+}
+
+
+export const unarchiveOpportunity = (stakeholder) => (dispatch, getState) => {
+    let userId = stakeholder.user.objectId
+    dispatch({
+        type: UNARCHIVE_OPPORTUNITIY,
+        userId: userId,
+        payload: stakeholder
+    });
 }
 
 export const subscribeOpportunities = (userId) => (dispatch, getState)=> {

@@ -3,6 +3,7 @@ import {connect} from "react-redux"
 import AddStakeholderButton from "AddStakeholderButton";
 import Stakeholder from "Stakeholder"
 import {removeStakeholder} from "ducks/stakeholders"
+import {archiveOpportunity} from "ducks/opportunities"
 
 const StakeholderSidebar = React.createClass({
     propTypes: {
@@ -22,16 +23,10 @@ const StakeholderSidebar = React.createClass({
             isEdit: false
         }
     },
-    refreshStakeholders()
-    {
-        // this.refreshQueries(["stakeholders"]);
-        console.warn("NO REFRESH STAKEHOLDERS IMPLEMENTED");
-    },
     toggleEditStakeholders(){
         this.setState({isEdit: !this.state.isEdit});
     },
     render () {
-
         var {deal, stakeholders} = this.props;
         var isEdit = this.state.isEdit;
         var actionButton = <button className="btn btn-outline-secondary" onClick={this.toggleEditStakeholders}><i className="fa fa-minus"></i>&nbsp;Remove</button>
@@ -68,7 +63,6 @@ const StakeholderSidebar = React.createClass({
                     {actionButton}
                     <AddStakeholderButton deal={deal}
                         btnClassName={"btn-primary btn-block " + (isEdit ? "disabled" : null)}
-                        onSuccess={this.refreshStakeholders}
                         disabled={isEdit}
                         />
                 </div>
@@ -96,7 +90,10 @@ const mapStateToProps = (state, ownprops) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        removeStakeholder: (stakeholder) => dispatch(removeStakeholder(stakeholder))
+        removeStakeholder: (stakeholder) => {
+            dispatch(removeStakeholder(stakeholder))
+            dispatch(archiveOpportunity(stakeholder))
+        }
     }
 }
 

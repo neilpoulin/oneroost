@@ -38,8 +38,8 @@ const DealProfile = React.createClass({
         var budget = this.getBudgetString()
 
         let activeStakeholders = stakeholders.filter(s => s.active !== false);
-        var stakeholderCount = activeStakeholders.length > 0 ? activeStakeholders.length : ""
-        var documentCount = documents.length > 0 ? documents.length : ""
+        var stakeholderCount = activeStakeholders.length
+        var documentCount = documents.length
 
         var formattedRoostAge = RoostUtil.formatDurationAsDays( createdAt )
 

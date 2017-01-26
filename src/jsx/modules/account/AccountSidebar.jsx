@@ -18,12 +18,12 @@ export default React.createClass({
 
     },
     render () {
-        var {deals} = this.props;
+        var {deals, archivedDeals} = this.props;
 
         return (
             <div id={"accountSidebar" + (this.props.isMobile ? "Mobile" : "")} className="container-fluid hidden-sm hidden-xs">
                 <h3>Opportunities</h3>
-                <OpportunityList deals={deals} />
+                <OpportunityList deals={deals} archivedDeals={archivedDeals}/>
                 <AddAccountButton
                     btnClassName="btn-outline-secondary btn-block"
                     onSuccess={this.onSuccess}

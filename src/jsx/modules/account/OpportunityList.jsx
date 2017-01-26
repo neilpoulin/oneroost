@@ -21,7 +21,7 @@ const OpportunityList = React.createClass({
         var archivedDeals = this.props.archivedDeals.sort((a, b) => RoostUtil.getRoostDisplayName(a).toUpperCase().localeCompare( RoostUtil.getRoostDisplayName(b).toUpperCase() ) );
         let archived = []
 
-        if ( archivedDeals.legnth > 0 ){
+        if ( archivedDeals.length > 0 ){
             archived.push(<li className="divider">Archived</li>)
             archivedDeals.map((deal, i) => {
                 let dealId = deal.objectId

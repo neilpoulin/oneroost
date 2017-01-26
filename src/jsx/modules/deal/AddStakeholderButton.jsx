@@ -14,22 +14,6 @@ export default React.createClass({
     },
     render: function(){
 
-        // var btn =
-        // <div className="AddStakeholderButton">
-        //     <div className="text-center">
-        //         <button className={"btn " + btnClass}
-        //             onClick={this.openModal}>
-        //             Add Stakeholder
-        //         </button>
-        //     </div>
-        //     <StakeholderModal
-        //         deal={this.props.deal}
-        //         onSuccess={this.props.onSuccess}
-        //         ref="addStakeholderModal">
-        //     </StakeholderModal>
-        // </div>
-
-
         var btn = <ModalButton
             buttonText="Invite "
             buttonIcon="plus"
