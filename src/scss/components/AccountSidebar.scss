@@ -44,23 +44,18 @@ $hoverTextColor: $activeColor;
     flex-grow: 0;
     overflow-y: auto;
     .divider{
-        font-size: 1.5em;
+        font-size: 1.2em;
         border-top: $borderThin;
         border-bottom: $borderThin;
         text-align: center;
         padding: 5px;
         margin-top: 50px;
         color: lighten($secondaryColor, $disabledFade);
+        text-transform: uppercase;
         & ~ .AccountSidebarItem{
             a {
                 color: lighten($secondaryColor, $disabledFade);
-            }
-            // &:hover a{
-            //     color: lighten($hoverTextColor, $disabledFade);
-            // }
-            // &.active a{
-            //     color: lighten($hoverTextColor, $disabledFade);
-            // }
+            }            
         }
     }
 
