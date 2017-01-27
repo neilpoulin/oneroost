@@ -42,7 +42,6 @@ Parse.initialize(OneRoost.Config.applicationId);
 Parse.serverURL = window.location.origin + "/parse";
 
 ReactGA.initialize(OneRoost.Config.gaTrackingId, getGaOptions());
-
 const store = configureStore()
 
 const history = syncHistoryWithStore(browserHistory, store)

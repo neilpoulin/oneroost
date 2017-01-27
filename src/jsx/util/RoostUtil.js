@@ -4,6 +4,9 @@ import numeral from "numeral"
 import {Map, fromJS, Iterable} from "immutable"
 
 exports.toJSON = function(obj){
+    if ( !obj ){
+        return obj
+    }
     let json = obj
     if ( Iterable.isIterable(obj) ){
         json = json.toJS()
@@ -14,6 +17,12 @@ exports.toJSON = function(obj){
 }
 
 exports.copyJSON = function(json){
+    if ( !json ){
+        return json;
+    }
+    if ( json instanceof Parse.Object ){
+       json = json.toJSON()
+    }
     if ( Iterable.isIterable(json) ){
         json = json.toJS()
     }

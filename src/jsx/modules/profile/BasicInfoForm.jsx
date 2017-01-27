@@ -7,7 +7,8 @@ const BasicInfoForm = React.createClass({
     propTypes: {
         user: PropTypes.object.isRequired,
         doCancel: PropTypes.func.isRequired,
-        doSave: PropTypes.func.isRequired,
+        afterSave: PropTypes.func.isRequired,
+        saveUser: PropTypes.func.isRequired,
     },
     getDefaultProps(){
         return {
@@ -30,15 +31,17 @@ const BasicInfoForm = React.createClass({
         let errors = FormUtil.getErrors(this.state, profileValidation);
         if (!FormUtil.hasErrors(errors)){
             console.log("saving user info");
-            console.error("NEED TO USE ACTIONS FOR THIS TO WORK")
-            let {user} = this.props;
-            user.set("email", this.state.email)
-            user.set("firstName", this.state.firstName)
-            user.set("lastName", this.state.lastName)
-            user.set("company", this.state.company)
-            user.set("jobTitle", this.state.jobTitle)
-            user.save()
-            this.props.doSave()
+            let {email, firstName, lastName, company, jobTitle} = this.state
+
+            let changes = {
+                email,
+                firstName,
+                lastName,
+                company,
+                jobTitle
+            }
+            this.props.saveUser(changes);
+            this.props.afterSave()
             this.setState({errors: {}});
             return true;
         }

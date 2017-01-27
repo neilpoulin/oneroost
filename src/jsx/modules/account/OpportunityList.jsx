@@ -33,7 +33,6 @@ const OpportunityList = React.createClass({
             })
         }
 
-
         var list =
         <ul className={"AccountSidebarList " + this.props.className}>
             {deals.map(function(deal, i){

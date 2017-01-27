@@ -1,19 +1,71 @@
 // import User from "models/User"
+import Parse from "parse"
 import {Map} from "immutable"
+import RoostUtil from "RoostUtil"
+import {normalize} from "normalizr"
+import * as User from "models/User"
+
+export const UPDATE_USER = "oneroost/user/UPADATE_USER"
+export const LOGIN_SUCCESS = "oneroost/user/LOGIN_SUCCESS"
+export const LOGOUT = "oneroost/user/LOGOUT"
+
+
+
+export const loadCurrentUser = () => {
+    let currentUser = RoostUtil.toJSON(Parse.User.current());
+    let entities = normalize(currentUser, User.Schema).entities
+    return {
+        type: LOGIN_SUCCESS,
+        payload: currentUser,
+        entities,
+    }
+}
+
+export const updateUserAction = (user) => {
+    user = RoostUtil.toJSON(user);
+    let entities = normalize(user, User.Schema).entities
+    return {
+        type: UPDATE_USER,
+        payload: user,
+        entities,
+    }
+}
+
+export const saveUser = (updates) => (dispatch, getState) => {
+    let currentUser = Parse.User.current();
+    currentUser.set(updates)
+    currentUser.save().then(saved => {
+        dispatch(updateUserAction(saved))
+    }).catch(console.log)
+}
 
 const initialState = Map({
     isLoading: false,
     hasLoaded: false,
-    userId: null,
+    userId:  null,
     admin: false,
-    user: null, // parse user representation
-
+    isLoggedIn: false,
 });
 
 export default function reducer(state=initialState, action){
     switch (action.type) {
-        case "expression":
-
+        case UPDATE_USER:
+            var user = action.payload
+            state = state.set("userId", user.get("objectId"))
+            state = state.set("admin", user.get("admin"))
+            break;
+        case LOGIN_SUCCESS:
+            var user = action.payload
+            state = state.set("hasLoaded", true)
+            state = state.set("isLoggedIn", true)
+            state = state.set("userId", user.get("objectId"))
+            state = state.set("admin", user.get("admin"))
+            break;
+        case LOGOUT:
+            state = state.set("hasLoaded", true)
+            state = state.set("currentUser", null)
+            state = state.set("userId", null)
+            state = state.set("isLoggedIn", false)
             break;
         default:
             break;

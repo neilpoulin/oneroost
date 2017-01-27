@@ -1,13 +1,19 @@
-import React from "react"
-import Parse from "parse"
-// import RoostUtil from "./../util/RoostUtil.js"
+import React, {PropTypes} from "react"
+import {connect} from "react-redux"
+import RoostUtil from "RoostUtil"
 import BasicInfo from "profile/BasicInfo"
 import RoostNav from "RoostNav"
+import * as User from "models/User"
+import {denormalize} from "normalizr"
+import {saveUser} from "ducks/user"
 import PublicProfileLink from "profile/PublicProfileLink"
 
 const ProfilePage = React.createClass({
+    propTypes: {
+        user: PropTypes.object
+    },
     getCurrentUser(){
-        return Parse.User.current().toJSON();
+        return this.props.user;
     },
     componentDidMount(){
         document.title= "My Account | OneRost";
@@ -20,7 +26,7 @@ const ProfilePage = React.createClass({
             <div className="container col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
                 <h1 className="pageTitle">Account Settings</h1>
                 <div className="section">
-                    <BasicInfo user={this.getCurrentUser()}/>
+                    <BasicInfo user={this.getCurrentUser()} saveUser={this.props.saveUser}/>
                 </div>
                 <div className="section">
                     <h2>My Ready Roost Link</h2>
@@ -40,4 +46,19 @@ const ProfilePage = React.createClass({
        }
 });
 
-export default ProfilePage
+const mapStateToProps = (state, ownProps) => {
+    const entities = state.entities.toJS()
+    let userId = state.user.get("userId")
+    const currentUser = userId ? denormalize(userId, User.Schema, entities) : null
+    return {
+        user: RoostUtil.toJSON(currentUser),
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        saveUser: (changes) => dispatch(saveUser(changes))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage)
