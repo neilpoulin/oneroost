@@ -1,7 +1,4 @@
 import React, { PropTypes } from "react"
-import Parse from "parse"
-import DealComment from "models/DealComment"
-import RoostUtil from "RoostUtil"
 import NextStepDetailView from "NextStepDetailView"
 import NextStepDetailEdit from "NextStepDetailEdit"
 import { browserHistory } from "react-router"
@@ -28,22 +25,7 @@ const NextStepDetailForm = React.createClass({
         this.setState({isEdit: false});
     },
     afterDelete: function(){
-        this.addStepDeletedComment();
         browserHistory.push("/roosts/" + this.props.deal.objectId );
-    },
-    addStepDeletedComment: function( ){
-        var self = this;
-        var user = Parse.User.current();
-        var step = this.props.step;
-        var message = RoostUtil.getFullName(user) + " deleted Next Step: " + step.title
-        let comment = new DealComment();
-        comment.set({
-            deal: self.props.deal,
-            message: message,
-            author: null,
-            username: "OneRoost Bot",
-        });
-        comment.save().catch(error => console.error);
     },
     render () {
         var form = null;

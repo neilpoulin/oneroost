@@ -12,6 +12,7 @@ export const STEP_LOAD_REQUEST = "oneroost/nextSteps/STEP_LOAD_REQUEST"
 export const STEP_LOAD_SUCCESS = "oneroost/nextSteps/STEP_LOAD_SUCCESS"
 export const STEP_LOAD_ERROR = "oneroost/nextSteps/STEP_LOAD_ERROR"
 export const STEP_CHANGED = "oneroost/nextSteps/STEP_CHANGED"
+export const STEP_DELETED = "oneroost/nextSteps/STEP_DELETED"
 
 export const initialState = Map({
     isLoading: false,
@@ -21,8 +22,12 @@ export const initialState = Map({
 export default function reducer(state=initialState, action){
     switch (action.type) {
         case ADD_NEXT_STEP:
-            let {payload} = action;
+            var {payload} = action;
             state = state.set("ids", state.get("ids").push(payload.get("objectId")))
+            break;
+        case STEP_DELETED:
+            var {payload} = action;
+            state = state.set("ids", state.get("ids").filterNot(id => id === payload.get("objectId")))
             break;
         case STEP_LOAD_REQUEST:
             state = state.set("isLoading", true);
@@ -52,7 +57,17 @@ export const stepChangedAction = (step) => {
     return {
         type: STEP_CHANGED,
         entities: entities,
-        dealId: stepJSON.deal.objectId
+        dealId: stepJSON.deal.objectId,
+    }
+}
+export const stepDeletedAction = (step) => {
+    let stepJSON = RoostUtil.toJSON(step)
+    let entities = normalize(stepJSON, NextStep.Schema).entities
+    return {
+        type: STEP_DELETED,
+        entities: entities,
+        dealId: stepJSON.deal.objectId,
+        payload: stepJSON,
     }
 }
 
@@ -71,6 +86,25 @@ export const updateStep = (currentStep, changes, message) => (dispatch, getState
         username: "OneRoost Bot",
         navLink: {type: "step", id: step.id}
     }))
+}
+
+
+
+export const deleteStep = (step, message) => (dispatch, getState) => {
+    step = NextStep.fromJS(step);
+    step.set("active", false);
+    step.save().then(saved => {}).catch(console.error)
+
+    dispatch(stepDeletedAction(step));
+
+    dispatch(createComment({
+        deal: step.get("deal"),
+        message: message,
+        author: null,
+        username: "OneRoost Bot",
+        navLink: {type: "step", id: step.id}
+    }))
+
 }
 
 export const loadNextSteps = (dealId, force=false) => (dispatch, getState) => {

@@ -9,6 +9,7 @@ import BetaUserWelcome from "BetaUserWelcome"
 import {loadOpportunities} from "ducks/opportunities"
 import {denormalize} from "normalizr"
 import * as Deal from "models/Deal"
+import RoostUtil from "RoostUtil"
 
 const UserHomePage = React.createClass({
     getInitialState(){
@@ -42,7 +43,7 @@ const UserHomePage = React.createClass({
         }
     },
     render(){
-        const {deals, archivedDeals, isLoading, userId} = this.props
+        const {deals, archivedDeals, isLoading, userId, currentUser} = this.props
 
         let contents = null;
         if ( isLoading ){
@@ -55,7 +56,7 @@ const UserHomePage = React.createClass({
         else
         {
             if ( deals.length > 0){
-                contents = <OpportunityList deals={deals} archivedDeals={archivedDeals} className="bg-inherit"></OpportunityList>
+                contents = <OpportunityList deals={deals} archivedDeals={archivedDeals} user={currentUser} className="bg-inherit"></OpportunityList>
             }
             else{
                 contents = <BetaUserWelcome userId={userId}/>
@@ -98,6 +99,7 @@ const mapStateToProps = (state, ownProps) => {
         archivedDeals: archivedDeals,
         isLoading: isLoading,
         userId,
+        currentUser: RoostUtil.getCurrentUser(state)
     }
 }
 

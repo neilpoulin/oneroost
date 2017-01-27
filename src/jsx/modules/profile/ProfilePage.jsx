@@ -3,8 +3,6 @@ import {connect} from "react-redux"
 import RoostUtil from "RoostUtil"
 import BasicInfo from "profile/BasicInfo"
 import RoostNav from "RoostNav"
-import * as User from "models/User"
-import {denormalize} from "normalizr"
 import {saveUser} from "ducks/user"
 import PublicProfileLink from "profile/PublicProfileLink"
 
@@ -47,11 +45,8 @@ const ProfilePage = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-    const entities = state.entities.toJS()
-    let userId = state.user.get("userId")
-    const currentUser = userId ? denormalize(userId, User.Schema, entities) : null
     return {
-        user: RoostUtil.toJSON(currentUser),
+        user: RoostUtil.getCurrentUser(state)
     }
 }
 

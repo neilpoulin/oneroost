@@ -7,6 +7,7 @@ import AddAccountButton from "account/AddAccountButton"
 import * as Deal from "models/Deal"
 import {showArchived, hideArchived} from "ducks/opportunities"
 import ShowArchivedButton from "account/ShowArchivedButton"
+import RoostUtil from "RoostUtil"
 
 const AccountSidebar = React.createClass({
     propTypes: {
@@ -31,7 +32,7 @@ const AccountSidebar = React.createClass({
 
     },
     render () {
-        var {deals, archivedDeals, archivedVisible} = this.props;
+        var {deals, archivedDeals, archivedVisible, currentUser} = this.props;
 
         return (
             <div id={"accountSidebar" + (this.props.isMobile ? "Mobile" : "")} className="container-fluid hidden-sm hidden-xs">
@@ -39,8 +40,8 @@ const AccountSidebar = React.createClass({
                     <h3>Opportunities</h3>
                     <ShowArchivedButton userId={this.props.userId} />
                 </div>
-                
-                <OpportunityList deals={deals} archivedDeals={archivedDeals} archivedVisible={archivedVisible}/>
+
+                <OpportunityList deals={deals} archivedDeals={archivedDeals} archivedVisible={archivedVisible} user={currentUser}/>
                 <AddAccountButton
                     btnClassName="btn-outline-secondary btn-block"
                     onSuccess={this.onSuccess}
@@ -57,6 +58,7 @@ const AccountSidebar = React.createClass({
 const mapStateToProps = (state, ownProps) => {
     let stateJS = Map(state).toJS()
     let userId = stateJS.user.userId
+    let currentUser = RoostUtil.getCurrentUser(state)
     let entities = stateJS.entities
     let opportunities = stateJS.opportunitiesByUser[userId] || {}
 
@@ -66,6 +68,7 @@ const mapStateToProps = (state, ownProps) => {
     }
     return {
         userId,
+        currentUser,
         ...opportunities,
     }
 }

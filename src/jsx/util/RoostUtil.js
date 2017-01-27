@@ -2,6 +2,8 @@ import Parse from "parse"
 import moment from "moment"
 import numeral from "numeral"
 import {Map, fromJS, Iterable} from "immutable"
+import {denormalize} from "normalizr"
+import * as User from "models/User"
 
 exports.toJSON = function(obj){
     if ( !obj ){
@@ -33,8 +35,15 @@ exports.copyJSON = function(json){
     return copy
 }
 
-exports.getCurrentUser = function(){
-    return Parse.User.current();
+exports.getCurrentUser = function(state){
+    if ( !state ){
+        console.warn("No 'state' passed in to RoostUtil.getCurrentUser()... using Parse.User.current() ")
+        return Parse.User.current();
+    }
+    let userId = state.user.get("userId")
+    let entities = state.entities.toJS()
+    const currentUser = userId ? denormalize(userId, User.Schema, entities) : null
+    return this.toJSON(currentUser)
 }
 
 exports.getFullName = function( parseUser ){

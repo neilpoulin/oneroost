@@ -180,7 +180,7 @@ const Roost = withRouter( React.createClass({
 
     const mapStateToProps = (state, ownProps) => {
         let stateJS = Map(state).toJS()
-        console.log("Roost logging state", stateJS);        
+        console.log("Roost logging state", stateJS);
         const entities = stateJS.entities
         const roosts = stateJS.roosts
         let dealId = ownProps.params.dealId
@@ -218,24 +218,10 @@ const Roost = withRouter( React.createClass({
             roost.nextSteps.ids,
             [NextStep.Schema],
             entities
-        )
-
-        // let opportunities = {
-        //     isLoading: false,
-        //     deals: [],
-        //     archivedDeals: [],
-        //     showArchived: false,
-        // }
-        // let myOpportunities = stateJS.opportunitiesByUser[userId]
-        // if ( myOpportunities ){
-        //     opportunities.deals = denormalize(myOpportunities.deals, [Deal.Schema], entities)
-        //     opportunities.archivedDeals = denormalize(myOpportunities.archivedDeals, [Deal.Schema], entities)
-        //     opportunities.showArchived = myOpportunities.showArchived
-        // }
+        ).filter(step => step.active !== false)
 
         return Map({
             deal: deal,
-            // opportunities: opportunities,
             stakeholders: stakeholders,
             documents: documents,
             nextSteps: nextSteps,

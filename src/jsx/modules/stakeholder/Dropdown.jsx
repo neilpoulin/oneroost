@@ -1,6 +1,9 @@
 import React, { PropTypes } from "react"
 import Select from "react-select"
 import RoostUtil from "RoostUtil"
+import {connect} from "react-redux"
+import {denormalize} from "normalizr"
+import * as Stakeholder from "models/Stakeholder"
 
 const Dropdown = React.createClass({
     propTypes: {
@@ -45,4 +48,22 @@ const Dropdown = React.createClass({
     }
 });
 
-export default Dropdown
+const mapStateToProps = (state, ownProps) => {
+    let dealId = ownProps.deal.objectId
+    let roost = state.roosts.get(dealId).toJS()
+    let stakeholderIds = roost.stakeholders.ids;
+
+    let stakeholders = denormalize (stakeholderIds, [Stakeholder.Schema], state.entities.toJS())
+
+    return {
+        stakeholders,
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dropdown)
