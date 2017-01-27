@@ -12,10 +12,13 @@ export const OPPORTUNITY_LOAD_ERROR = "oneroost/opportunity/OPPORTUNITY_LOAD_ERR
 export const ADD_OPPORTUNITY = "oneroost/opportunity/ADD_OPPORTUNITY"
 export const ARCHIVE_OPPORTUNITIY = "oneroost/opportunity/ARCHIVE_OPPORTUNITIY"
 export const UNARCHIVE_OPPORTUNITIY = "oneroost/opportunity/UNARCHIVE_OPPORTUNITIY"
+export const SHOW_ARCHIVED = "oneroost/opportunity/SHOW_ARCHIVED"
+export const HIDE_ARCHIVED = "oneroost/opportunity/HIDE_ARCHIVED"
 
 const initialState = Map({
     isLoading: false,
     hasLoaded: false,
+    archivedVisible: false,
     deals: List([]),
     archivedDeals: List([])
 })
@@ -54,6 +57,12 @@ export default function reducer(state=initialState, action){
             state = state.set("deals", state.get("deals").push(dealId))
             state = state.set("archivedDeals", state.get("archivedDeals").filterNot(id => id === dealId))
             break;
+        case SHOW_ARCHIVED:
+            state = state.set("archivedVisible", true)
+            break;
+        case HIDE_ARCHIVED:
+            state = state.set("archivedVisible", false)
+            break;
         default:
             break;
     }
@@ -73,6 +82,20 @@ const opportunitiesQuery = (userId) => {
 }
 
 //Actions
+export const showArchived = (userId) => {
+    return {
+        type: SHOW_ARCHIVED,
+        userId,
+    }
+}
+
+export const hideArchived = (userId) => {
+    return {
+        type: HIDE_ARCHIVED,
+        userId,
+    }
+}
+
 export const addOpportunity = (userId, stakeholder) => (dispatch, getState) => {
     let entities = normalize(RoostUtil.toJSON(stakeholder.get("deal")), Deal.Schema).entities
     dispatch({

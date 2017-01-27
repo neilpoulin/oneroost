@@ -180,11 +180,9 @@ const Roost = withRouter( React.createClass({
 
     const mapStateToProps = (state, ownProps) => {
         let stateJS = Map(state).toJS()
-        console.log("Roost logging state", stateJS);
-        const currentUser = Parse.User.current()
+        console.log("Roost logging state", stateJS);        
         const entities = stateJS.entities
         const roosts = stateJS.roosts
-        let userId = currentUser.id;
         let dealId = ownProps.params.dealId
         if ( !entities || !entities.deals ){
             console.log("entitites not loaded yet");
@@ -222,20 +220,22 @@ const Roost = withRouter( React.createClass({
             entities
         )
 
-        let opportunities = {
-            isLoading: false,
-            deals: [],
-            archivedDeals: []
-        }
-        let myOpportunities = stateJS.opportunitiesByUser[userId]
-        if ( myOpportunities ){
-            opportunities.deals = denormalize(myOpportunities.deals, [Deal.Schema], entities)
-            opportunities.archivedDeals = denormalize(myOpportunities.archivedDeals, [Deal.Schema], entities)
-        }
+        // let opportunities = {
+        //     isLoading: false,
+        //     deals: [],
+        //     archivedDeals: [],
+        //     showArchived: false,
+        // }
+        // let myOpportunities = stateJS.opportunitiesByUser[userId]
+        // if ( myOpportunities ){
+        //     opportunities.deals = denormalize(myOpportunities.deals, [Deal.Schema], entities)
+        //     opportunities.archivedDeals = denormalize(myOpportunities.archivedDeals, [Deal.Schema], entities)
+        //     opportunities.showArchived = myOpportunities.showArchived
+        // }
 
         return Map({
             deal: deal,
-            opportunities: opportunities,
+            // opportunities: opportunities,
             stakeholders: stakeholders,
             documents: documents,
             nextSteps: nextSteps,

@@ -7,6 +7,7 @@ const OpportunityList = React.createClass({
     propTypes: {
         deals: PropTypes.arrayOf(Map).isRequired,
         archivedDeals: PropTypes.arrayOf(Map).isRequired,
+        archivedVisible: PropTypes.bool.isRequired,
         className: PropTypes.string
     },
     getDefaultProps(){
@@ -14,6 +15,7 @@ const OpportunityList = React.createClass({
             className: "",
             deals: [],
             archivedDeals: [],
+            archivedVisible: false,
         }
     },
     render () {
@@ -21,8 +23,8 @@ const OpportunityList = React.createClass({
         var archivedDeals = this.props.archivedDeals.sort((a, b) => RoostUtil.getRoostDisplayName(a).toUpperCase().localeCompare( RoostUtil.getRoostDisplayName(b).toUpperCase() ) );
         let archived = []
 
-        if ( archivedDeals.length > 0 ){
-            archived.push(<li className="divider">Archived</li>)
+        if ( this.props.archivedVisible && archivedDeals.length > 0 ){
+            archived.push(<li className="divider" key="archived_divider">Archived</li>)
             archivedDeals.map((deal, i) => {
                 let dealId = deal.objectId
                 let accountId = deal.account.objectId

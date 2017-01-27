@@ -1,29 +1,46 @@
 import React, {PropTypes} from "react"
+import {connect} from "react-redux"
+import {Map} from "immutable"
+import {denormalize} from "normalizr"
 import OpportunityList from "account/OpportunityList"
 import AddAccountButton from "account/AddAccountButton"
+import * as Deal from "models/Deal"
+import {showArchived, hideArchived} from "ducks/opportunities"
+import ShowArchivedButton from "account/ShowArchivedButton"
 
-export default React.createClass({
+const AccountSidebar = React.createClass({
     propTypes: {
         deals: PropTypes.arrayOf(PropTypes.object).isRequired,
-        archivedDeals: PropTypes.arrayOf(PropTypes.object)
+        archivedDeals: PropTypes.arrayOf(PropTypes.object),
+        archivedVisible: PropTypes.bool.isRequired,
     },
     getDefaultProps: function(){
         return {
             isMobile: false,
             deals: [],
             archivedDeals: [],
+            archivedVisible: false,
+        }
+    },
+    getInitialState(){
+        return {
+            errors: {}
         }
     },
     onSuccess: function(){
 
     },
     render () {
-        var {deals, archivedDeals} = this.props;
+        var {deals, archivedDeals, archivedVisible} = this.props;
 
         return (
             <div id={"accountSidebar" + (this.props.isMobile ? "Mobile" : "")} className="container-fluid hidden-sm hidden-xs">
-                <h3>Opportunities</h3>
-                <OpportunityList deals={deals} archivedDeals={archivedDeals}/>
+                <div>
+                    <h3>Opportunities</h3>
+                    <ShowArchivedButton userId={this.props.userId} />
+                </div>
+                
+                <OpportunityList deals={deals} archivedDeals={archivedDeals} archivedVisible={archivedVisible}/>
                 <AddAccountButton
                     btnClassName="btn-outline-secondary btn-block"
                     onSuccess={this.onSuccess}
@@ -35,3 +52,33 @@ export default React.createClass({
         )
     }
 })
+
+
+const mapStateToProps = (state, ownProps) => {
+    let stateJS = Map(state).toJS()
+    let userId = stateJS.user.userId
+    let entities = stateJS.entities
+    let opportunities = stateJS.opportunitiesByUser[userId] || {}
+
+    if ( stateJS.opportunitiesByUser[userId] ){
+        opportunities.deals = denormalize(opportunities.deals, [Deal.Schema], entities)
+        opportunities.archivedDeals = denormalize(opportunities.archivedDeals, [Deal.Schema], entities)
+    }
+    return {
+        userId,
+        ...opportunities,
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        showArchived: (userId) => {
+            dispatch(showArchived(userId))
+        },
+        hideArchived: (userId) => {
+            dispatch(hideArchived(userId))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AccountSidebar)
