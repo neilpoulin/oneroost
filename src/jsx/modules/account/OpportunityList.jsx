@@ -9,7 +9,7 @@ const OpportunityList = React.createClass({
         archivedDeals: PropTypes.arrayOf(Map).isRequired,
         archivedVisible: PropTypes.bool.isRequired,
         className: PropTypes.string,
-        currentUser: PropTypes.object.isRequired,
+        currentUser: PropTypes.object,
     },
     getDefaultProps(){
         return {

@@ -179,10 +179,8 @@ const Roost = withRouter( React.createClass({
     }) )
 
     const mapStateToProps = (state, ownProps) => {
-        let stateJS = Map(state).toJS()
-        console.log("Roost logging state", stateJS);
-        const entities = stateJS.entities
-        const roosts = stateJS.roosts
+        const entities = state.entities.toJS()
+        const roosts = state.roosts.toJS()
         let dealId = ownProps.params.dealId
         if ( !entities || !entities.deals ){
             console.log("entitites not loaded yet");

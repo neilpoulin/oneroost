@@ -49,7 +49,8 @@ const NextStepForm = React.createClass({
             dueDate: this.state.dueDate.toDate(),
             assignedUser: this.state.assignedUser,
             deal: this.props.deal,
-            completedDate: this.state.completedDate ? new Date(this.state.completedDate) : null
+            completedDate: this.state.completedDate ? new Date(this.state.completedDate) : null,
+            author: this.state.createdBy,
         }
         this.props.createNextStep(data);
     },
