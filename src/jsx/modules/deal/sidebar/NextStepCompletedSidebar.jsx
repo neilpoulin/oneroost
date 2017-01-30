@@ -1,5 +1,6 @@
 import React, {PropTypes} from "react"
 import NavLink from "NavLink"
+import moment from "moment"
 // import RoostUtil from "RoostUtil"
 
 const NextStepCompletedSidebar = React.createClass({
@@ -14,12 +15,7 @@ const NextStepCompletedSidebar = React.createClass({
     },
     formatDate: function( date )
     {
-        if ( !(date instanceof Date) )
-        {
-            date = new Date( date );
-        }
-        var month = date.getMonth() + 1;
-        return month + "/" + date.getDate() + "/" + date.getFullYear()
+        return moment(date).format("M/D/YY")
     },
     render () {
         let self = this;
