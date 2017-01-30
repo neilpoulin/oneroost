@@ -13,7 +13,7 @@ import RoostNav from "RoostNav"
 // import RoostUtil from "RoostUtil"
 
 import {loadDeal} from "ducks/roost"
-import {loadNextSteps} from "ducks/nextSteps"
+import {loadNextSteps, subscribeNextSteps} from "ducks/nextSteps"
 import {loadDocuments} from "ducks/documents"
 import {loadStakeholders} from "ducks/stakeholders"
 import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
@@ -23,7 +23,6 @@ import * as Deal from "models/Deal"
 import * as Stakeholder from "models/Stakeholder"
 import * as Document from "models/Document"
 import * as NextStep from "models/NextStep"
-// import * as DealComment from "models/DealComment"
 
 
 const Roost = withRouter( React.createClass({
@@ -238,6 +237,7 @@ const Roost = withRouter( React.createClass({
                 dispatch(loadStakeholders(dealId))
                 dispatch(loadOpportunities(userId))
                 dispatch(subscribeOpportunities(userId))
+                dispatch(subscribeNextSteps(dealId))
             }
         }
     }

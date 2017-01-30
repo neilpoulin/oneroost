@@ -5,6 +5,7 @@ import {Pointer} from "models/modelUtil"
 import * as NextStep from "models/NextStep"
 import {Map, List} from "immutable"
 import {createComment} from "ducks/comments"
+import {addSubscription, handler} from "ducks/subscriptions"
 import RoostUtil from "RoostUtil"
 
 export const ADD_NEXT_STEP = "oneroost/nextSteps/ADD_NEXT_STEP"
@@ -48,6 +49,13 @@ export default function reducer(state=initialState, action){
     return state;
 }
 
+//queries
+const stepQuery = (dealId) => {
+    let query = new Parse.Query(NextStep.className)
+    query.equalTo( "deal", Pointer(Deal.className, dealId));
+    query.ascending("dueDate");
+    return query;
+}
 
 // Actions
 export const stepChangedAction = (step) => {
@@ -88,8 +96,6 @@ export const updateStep = (currentStep, changes, message) => (dispatch, getState
     }))
 }
 
-
-
 export const deleteStep = (step, message) => (dispatch, getState) => {
     step = NextStep.fromJS(step);
     step.set("active", false);
@@ -104,7 +110,6 @@ export const deleteStep = (step, message) => (dispatch, getState) => {
         username: "OneRoost Bot",
         navLink: {type: "step", id: step.id}
     }))
-
 }
 
 export const loadNextSteps = (dealId, force=false) => (dispatch, getState) => {
@@ -118,10 +123,8 @@ export const loadNextSteps = (dealId, force=false) => (dispatch, getState) => {
         type: STEP_LOAD_REQUEST,
         dealId: dealId
     })
-    let stepQuery = new Parse.Query(NextStep.className)
-    stepQuery.equalTo( "deal", Pointer(Deal.className, dealId));
-    stepQuery.ascending("dueDate");
-    stepQuery.find().then(steps => {
+    let query = stepQuery(dealId)
+    query.find().then(steps => {
         let json = steps.map(step => step.toJSON())
         let entities = normalize(json, [NextStep.Schema]).entities || {}
         dispatch({
@@ -145,7 +148,7 @@ export const loadNextSteps = (dealId, force=false) => (dispatch, getState) => {
 }
 
 
-export const addNextStep = (step) => {
+export const addNextStepAction = (step) => {
     let entities = normalize(step.toJSON(), NextStep.Schema).entities
     return {
         type: ADD_NEXT_STEP,
@@ -160,7 +163,7 @@ export const createNextStep = (nextStep) => {
         let step = NextStep.fromJS(nextStep)
         step.save().then( saved => {
             var message = RoostUtil.getFullName(Parse.User.current()) + " created Next Step: " + saved.get("title")
-            dispatch(addNextStep(saved))
+            dispatch(addNextStepAction(saved))
             dispatch(createComment({
                 deal: saved.get("deal"),
                 message: message,
@@ -170,5 +173,19 @@ export const createNextStep = (nextStep) => {
             }))
 
         })
+    }
+}
+
+
+export const subscribeNextSteps = (dealId) => {
+    console.log("subscribe next steps called");
+    return (dispatch, getState) => {
+        console.log("executing subscribe next steps");
+        const query = stepQuery(dealId)
+        dispatch(addSubscription("NEXT_STEPS", dealId, query, handler({
+            create: (result) => dispatch(addNextStepAction(result)),
+            delete: (step) => dispatch(stepDeletedAction(step)),
+            update: (step) => dispatch(stepChangedAction(step)),
+        }) ))
     }
 }
