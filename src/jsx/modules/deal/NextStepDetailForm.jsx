@@ -6,14 +6,14 @@ import { connect } from "react-redux"
 import {updateStep} from "ducks/nextSteps"
 
 const NextStepDetailForm = React.createClass({
+    propTypes: {
+        step: PropTypes.object.isRequired,
+        deal: PropTypes.object.isRequired
+    },
     getInitialState(){
         return {
             isEdit: false
         }
-    },
-    propTypes: {
-        step: PropTypes.object.isRequired,
-        deal: PropTypes.object.isRequired
     },
     handleEdit: function(){
         this.setState({isEdit: true});

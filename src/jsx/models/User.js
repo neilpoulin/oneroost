@@ -21,7 +21,8 @@ export const Pointer = (arg) => {
     } else if ( typeof arg == "string" ){
         userId = arg
     }
-    return Parse.User.createWithoutData(userId);
+    if ( !userId ) return null
+    return { "__type": "Pointer", "className": "_User", "objectId": userId } ;
 }
 
 export default Parse.User;

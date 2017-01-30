@@ -24,8 +24,8 @@ const NextStepDetailEdit = React.createClass({
     },
     getInitialState: function () {
         return {
-            title: this.props.step.title,
-            description: this.props.step.description,
+            title: this.props.step.title || "",
+            description: this.props.step.description || "",
             dueDate: moment(this.props.step.dueDate),
             assignedUser: this.props.step.assignedUser,
             deal: this.props.deal,
@@ -46,7 +46,7 @@ const NextStepDetailEdit = React.createClass({
                 "title": this.state.title,
                 "description": this.state.description,
                 "dueDate": this.state.dueDate.toDate(),
-                "assignedUser": this.state.assignedUser ? UserPointer(this.state.assignedUser) : null,
+                "assignedUser": UserPointer(this.state.assignedUser),
                 "completedDate": this.state.completedDate,
                 "modifiedBy": this.state.user
             }, message)

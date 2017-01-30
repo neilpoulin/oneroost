@@ -7,7 +7,10 @@ import {processStrategy, idAttribute} from "models/modelUtil"
 
 export const Schema = new schema.Entity("stakeholders", {
     creatdBy: User.Schema,
-    deal: Deal.Schema
+    deal: Deal.Schema,
+    user: User.Schema,
+    modifiedBy: User.Schema,
+    invitedBy: User.Schema,
 }, {
     idAttribute: idAttribute,
     processStrategy: processStrategy
