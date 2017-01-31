@@ -1,21 +1,20 @@
 import React, { PropTypes } from "react"
+import {connect} from "react-redux"
 import FormUtil from "FormUtil"
 import Parse from "parse";
-import ParseReact from "parse-react"
 import Dropzone from "react-dropzone"
 import request from "superagent"
 import numeral from "numeral"
 import {linkValidation, fileValidation} from "DocumentValidation"
 import FormInputGroup from "FormInputGroup"
 import FormGroup from "FormGroup"
+import {createDocument} from "ducks/documents"
 
 const re = /(?:\.([^.]+))?$/;
 
 const DocumentUploadForm = React.createClass({
     propTypes: {
-        deal: PropTypes.shape({
-            objectId: PropTypes.string.isRequired
-        })
+        deal: PropTypes.object,
     },
     getInitialState(){
         return {
@@ -24,7 +23,6 @@ const DocumentUploadForm = React.createClass({
             uploadSuccess: false,
             dragover: false,
             fileName: "",
-            deal: this.props.deal,
             externalLink: "",
             s3key: "",
             type: "",
@@ -46,41 +44,25 @@ const DocumentUploadForm = React.createClass({
         return false;
     },
     saveDocument(){
-        var self = this;
-        var user = Parse.User.current().toPlainObject();
-        var deal = self.state.deal;
-        var upload = {
-            createdBy: user,
-            deal: deal,
+        let data = {
             fileName: this.state.fileName,
             s3key: this.state.s3key,
             externalLink: this.state.externalLink,
             type: this.state.type,
             size: this.state.size,
             fileExtension: this.state.fileExtension
-        }
-        ParseReact.Mutation.Create("Document", upload)
-        .dispatch()
-        .then(function(){
-            var message = user.firstName + " " + user.lastName + " has uploaded " + upload.fileName;
-            var comment = {
-                deal: deal,
-                message: message,
-                author: null,
-                username: "OneRoost Bot",
-                navLink: {type: "document", id: null}
-            };
-            ParseReact.Mutation.Create("DealComment", comment).dispatch();
-        });
+        };
+        this.props.createDocument(data);
     },
     onDrop: function(files){
         console.log(files);
         var self = this;
+        let {deal} = this.props;
         files.forEach(function(file){
             var fileName = file.name;
             Parse.Cloud.run("getPresignedUploadUrl", {
                 fileName: fileName,
-                dealId: self.props.deal.objectId,
+                dealId: deal.objectId,
                 type: file.type
             }).then(function( result ) {
                 console.log("recieved presignedurl", result);
@@ -143,8 +125,6 @@ const DocumentUploadForm = React.createClass({
         var errors = this.state.errors;
         var progress = null;
         var formAction =
-
-
         <FormInputGroup
             fieldName="externalLink"
             value={this.state.externalLink}
@@ -221,4 +201,22 @@ const DocumentUploadForm = React.createClass({
     }
 })
 
-export default DocumentUploadForm
+const mapStateToProps = (state, ownProps) => {
+    return {
+
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    let {deal} = ownProps
+    let dealId = deal.objectId
+    return {
+        createDocument: (doc) => dispatch(createDocument(dealId, doc))
+    }
+}
+
+const connectOpts = {
+    withRef: true
+}
+
+export default connect(mapStateToProps, mapDispatchToProps, undefined, connectOpts)(DocumentUploadForm)

@@ -1,13 +1,11 @@
 import React, { PropTypes } from "react"
 import Linkify from "react-linkify"
-import moment from "moment";
+import moment from "moment"
+import RoostUtil from "RoostUtil"
 
 const UserComment = React.createClass({
     propTypes: {
-        comment: PropTypes.shape({
-            author: PropTypes.object
-            // createdAt: PropTypes.instanceOf(Date).isRequired
-        }).isRequired,
+        comment: PropTypes.object.isRequired,
         showAuthor: PropTypes.bool.isRequired
     },
     formatCommentDate: function( comment )
@@ -16,14 +14,15 @@ const UserComment = React.createClass({
         return moment(date).format("h:mm A");
     },
     render () {
-        var comment = this.props.comment;
-
+        const {comment, showAuthor} = this.props;
+        const author = comment.author
+        const authorName = RoostUtil.getFullName(author);
         var result =
-        <li className={"comment " + (!this.props.showAuthor ? "repeatAuthor " : "")}
+        <li className={"comment " + (!showAuthor ? "repeatAuthor " : "")}
             key={"dealComment_" + comment.objectId }>
             <div className="container-fluid">
                 <div className="row authorRow">
-                    <span className="username" title={comment.author.email}>{comment.author.firstName + " " + comment.author.lastName}</span>
+                    <span className="username">{authorName}</span>
                     &nbsp;
                     <span className="postTime">{this.formatCommentDate(comment)}</span>
                 </div>

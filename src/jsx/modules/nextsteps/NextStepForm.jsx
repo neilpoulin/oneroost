@@ -1,6 +1,6 @@
-import React from "react"
+import React, {PropTypes} from "react"
 import Parse from "parse"
-import ParseReact from "parse-react"
+import {connect} from "react-redux"
 import moment from "moment"
 import Dropdown from "stakeholder/Dropdown"
 import FormUtil from "FormUtil"
@@ -10,8 +10,14 @@ import FormInputGroup from "FormInputGroup"
 import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormGroup from "FormGroup"
 import {validations} from "nextsteps/NextStepValidations"
+import {Pointer} from "models/modelUtil"
+import {createNextStep} from "ducks/nextSteps"
 
-export default React.createClass({
+const NextStepForm = React.createClass({
+    propTypes: {
+        stakeholders: PropTypes.array,
+        deal: PropTypes.object.isRequired
+    },
     getInitialState: function () {
         return {
             title: "",
@@ -36,34 +42,17 @@ export default React.createClass({
         return false;
     },
     saveNextStep: function () {
-        var self = this;
-        var step = {
-            "createdBy": this.state.createdBy,
-            "title": this.state.title,
-            "description": this.state.description,
-            "dueDate": this.state.dueDate.toDate(),
-            "assignedUser": this.state.assignedUser,
-            "deal": this.state.deal,
-            "completedDate": this.state.completedDate ? new Date(this.state.completedDate) : null
-        };
-        ParseReact.Mutation.Create("NextStep", step)
-        .dispatch()
-        .then(function (step) {
-            self.addStepCreatedComment(step);
-        });
-        self.clear();
-    },
-    addStepCreatedComment: function (step) {
-        var self = this;
-        var message = self.state.user.get("firstName") + " " + self.state.user.get("lastName") + " created Next Step: " + step.title;
-        var comment = {
-            deal: self.state.deal,
-            message: message,
-            author: null,
-            username: "OneRoost Bot",
-            navLink: {type: "step", id: step.objectId }
-        };
-        ParseReact.Mutation.Create("DealComment", comment).dispatch();
+        let data = {
+            createdBy: this.state.createdBy,
+            title: this.state.title,
+            description: this.state.description,
+            dueDate: this.state.dueDate.toDate(),
+            assignedUser: this.state.assignedUser,
+            deal: this.props.deal,
+            completedDate: this.state.completedDate ? new Date(this.state.completedDate) : null,
+            author: this.state.createdBy,
+        }
+        this.props.createNextStep(data);
     },
     clear: function () {
         this.setState(this.getInitialState());
@@ -76,8 +65,7 @@ export default React.createClass({
     handleUserChange(val){
         var user = null;
         if (val != null) {
-            user = {className: "_User", objectId: val.value}
-
+            user = Pointer("_User", val.value)
         }
         this.setState({
             assignedUser: user
@@ -121,9 +109,31 @@ export default React.createClass({
                 label="Assigned User"
                 errors={this.state.errors}
                 fieldName="assignedUser" >
-                <Dropdown deal={this.props.deal} handleChange={this.handleUserChange} value={this.props.assignedUser != null ? this.props.step.assignedUser.objectId : null}/>
+                <Dropdown stakeholders={this.props.stakeholders}
+                    deal={this.props.deal}
+                    handleChange={this.handleUserChange}
+                    value={this.props.assignedUser != null ? this.props.step.assignedUser.objectId : null}/>
             </FormGroup>
         </div>
         return form;
     }
 });
+
+
+const mapStateToProps = (state, ownProps) => {
+    return {
+
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        createNextStep: (step) => dispatch(createNextStep(step))
+    }
+}
+
+const connectOpts = {
+    withRef: true
+}
+
+export default connect(mapStateToProps, mapDispatchToProps, undefined, connectOpts)(NextStepForm)

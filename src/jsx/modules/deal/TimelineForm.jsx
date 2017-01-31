@@ -1,22 +1,19 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
-import ParseReact from "parse-react"
 import moment from "moment"
 import Select from "react-select"
 import Stages from "Stages"
 import FormGroup from "FormGroup"
+import RoostUtil from "RoostUtil"
 
 const TimelineForm = React.createClass({
-    mixins: [ParseReact.Mixin],
-    observe(){
-        return {};
-    },
     propTypes: {
-        timeline: PropTypes.string
+        deal: PropTypes.object.isRequired,
+        updateDeal: PropTypes.func.isRequired,
     },
     getInitialState(){
         return {
-            timeline: moment(this.props.timeline),
+            timeline: moment(this.props.deal.timeline),
             stage: this.props.deal.currentStage || "EXPLORE",
             saveSuccess: false,
             saveError: false,
@@ -35,29 +32,18 @@ const TimelineForm = React.createClass({
         });
     },
     doSubmit(){
-        var deal = this.props.deal;
-        deal.profile.timeline = this.state.timeline.format();
-
-        var setter = ParseReact.Mutation.Set(deal, {
-            profile: deal.profile,
+        let {deal} = this.props
+        var user = Parse.User.current()
+        let profile = deal.profile
+        profile.timeline = this.state.timeline.format()
+        var message = RoostUtil.getFullName(user) + " updated the Timeline";
+        let data = {
+            profile: profile,
             currentStage: this.state.stage.value,
             stageUpdatedAt: new Date()
-        });
-        setter.dispatch().then(this.sendComment);
+        }
+        this.props.updateDeal(data, message)
         this.showSuccess();
-    },
-    sendComment( deal )
-    {
-        var user = Parse.User.current();
-        var message = user.get("firstName") + " " + user.get("lastName") + " updated the Timeline";
-        var comment = {
-            deal: deal,
-            message: message,
-            author: null,
-            username: "OneRoost Bot",
-            navLink: {type: "timeline"}
-        };
-        ParseReact.Mutation.Create("DealComment", comment).dispatch();
     },
     formatDurationAsDays( past ){
         var numDays = Math.floor( moment.duration( moment().diff(past)).asDays() );
@@ -77,7 +63,7 @@ const TimelineForm = React.createClass({
         }, 2000);
     },
     getFormattedAge(){
-        var deal = this.props.deal;
+        var {deal} = this.props;
         var created = deal.createdAt;
         return this.formatDurationAsDays( created );
     },
@@ -86,7 +72,7 @@ const TimelineForm = React.createClass({
         return formatted;
     },
     getFormattedCreatedDate(){
-        var deal = this.props.deal;
+        var {deal} = this.props;
         var created = deal.createdAt;
         return this.formatDate(created);
     },
@@ -105,14 +91,13 @@ const TimelineForm = React.createClass({
     },
     render(){
         let {errors} = this.state;
-        var deal = this.props.deal;
+        var {deal} = this.props;
         var age = this.getFormattedAge();
         var stages = this.getStageValues();
         var created = this.getFormattedCreatedDate();
         var stageUpdated = deal.stageUpdatedAt || deal.createdAt;
         var stageUpdatedFormatted = this.formatDate( stageUpdated );
         var stageUpdatedAge = this.formatDurationAsDays( stageUpdated );
-
         var saveMessage = null;
         var saveClass = null
         if ( this.state.saveSuccess ){

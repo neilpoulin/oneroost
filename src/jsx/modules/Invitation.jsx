@@ -1,7 +1,6 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
 import {withRouter} from "react-router"
-import ParseReact from "parse-react"
 import RoostUtil from "RoostUtil"
 import FormInputGroup from "FormInputGroup"
 import FormUtil from "FormUtil"
@@ -10,36 +9,63 @@ import Logo from "Logo"
 import RoostNav from "RoostNav"
 
 const Invitation = withRouter( React.createClass({
-    mixins: [ParseReact.Mixin],
     propTypes: {
-        router: PropTypes.object.isRequired
-    },
-    observe: function(props, state){
-        var stakeholderQuery = new Parse.Query("Stakeholder");
-        stakeholderQuery.include("user");
-        stakeholderQuery.include("deal");
-        stakeholderQuery.include("invitedBy");
-        stakeholderQuery.equalTo("objectId", props.params.stakeholderId);
-        stakeholderQuery
-        return {
-            stakeholder: stakeholderQuery
-        }
+        router: PropTypes.object.isRequired,
+        params: PropTypes.shape({
+            stakeholderId: PropTypes.string.isRequired
+        })
     },
     getInitialState: function(){
         return {
             password: "",
             confirmPassword: "",
+            stakeholder: null,
+            loading: true,
             errors: {}
         }
     },
-    componentWillUpdate(props, state){
-        if ( this.pendingQueries().length == 0 && this.data.stakeholder.length > 0 ){ //stakeholder loaded
-            var stakeholder = this.data.stakeholder[0];
-            var stakeholderUser = stakeholder.user;
-            var currentUser = Parse.User.current();
+    fetchData(stakeholderId){
+        var stakeholderQuery = new Parse.Query("Stakeholder");
+        let self = this;
+        stakeholderQuery.include("user");
+        stakeholderQuery.include("deal");
+        stakeholderQuery.include("invitedBy");
+        stakeholderQuery.get(stakeholderId).then(stakeholder => {
+            self.setState({
+                stakeholder: stakeholder,
+                loading: false,
+            })
+        }).catch(error => {
+            console.log(error);
+            self.setState({
+                stakeholder: null,
+                loading: false,
+            })
+        });
+    },
+    componentWillMount(){
+        let stakeholderId = this.props.params.stakeholderId;
+        console.log("component will mount, stakeholderId = ", stakeholderId)
+        this.fetchData(stakeholderId)
+    },
+    componentWillUpdate(nextProps, nextState){
+        if ( this.props.params.stakeholderId !== nextProps.params.stakeholderId ){
+            let stakeholderId = nextProps.params.stakeholderId;
+            this.setState({
+                loading: true,
+                stakeholder: null
+            });
+            console.log("component will update, new stakeholder id different than previous", stakeholderId)
+            this.fetchData(stakeholderId)
+        }
+
+        if ( !this.state.loading && this.state.stakeholder ){ //stakeholder loaded
+            var stakeholder = this.state.stakeholder;
+            var stakeholderUser = stakeholder.user
+            var currentUser = Parse.User.current().toJSON();
             var dealId = stakeholder.deal.objectId;
 
-            if ( currentUser && stakeholderUser.objectId !== currentUser.id ){
+            if ( currentUser && stakeholderUser.objectId !== currentUser.objectId ){
                 this.sendToUnauthorized();
                 return;
             }
@@ -58,19 +84,18 @@ const Invitation = withRouter( React.createClass({
     },
     acceptInvite: function(){
         var self = this;
-
-        var toSave = this.data.stakeholder[0].id;
-
-        ParseReact.Mutation
-        .Set(toSave, {inviteAccepted: true})
-        .dispatch({waitForServer: true});
-        self.sendToRoost( self.data.stakeholder[0].deal.objectId );
+        let stakeholder = this.state.stakeholder;
+        stakeholder.set("inviteAccepted", true);
+        stakeholder.save().then(response => {
+            self.sendToRoost(stakeholder.deal.objectId)}
+        )
     },
     submitPassword: function(){
         let self = this;
-        let stakeholder = this.data.stakeholder[0];
-        let dealId = stakeholder.deal.objectId;
-        let user = stakeholder.user;
+        let stakeholder = this.state.stakeholder;
+        let deal = stakeholder.deal
+        let dealId = deal.objectId;
+        let user = stakeholder.user
         let userId = user.objectId;
         let validation = loginValidatoin;
         if ( user.passwordChangeRequired ){
@@ -86,19 +111,22 @@ const Invitation = withRouter( React.createClass({
                     userId: userId
                 })
                 .then( function(result) {
-                    ParseReact.Mutation.Set(stakeholder, {inviteAccepted: true}).dispatch();
-                    Parse.Cloud.run("getUserWithEmail", {userId: userId})
-                    .then(function(emailUser){
-                        let email = emailUser.user.get("email");
-                        Parse.User.logIn(email, self.state.password, {
-                            success: function(){
-                                self.sendToRoost(dealId)
-                            },
-                            error: function(){
-                                console.log("failed to log in after changing password");
-                            }
+                    stakeholder.set("inviteAccepted", true);
+                    stakeholder.save().then(result => {
+                        Parse.Cloud.run("getUserWithEmail", {userId: userId})
+                        .then(function(emailUser){
+                            emailUser = emailUser.toJSON()
+                            let email = emailUser.user.email
+                            Parse.User.logIn(email, self.state.password, {
+                                success: function(){
+                                    self.sendToRoost(dealId)
+                                },
+                                error: function(){
+                                    console.log("failed to log in after changing password");
+                                }
+                            });
                         });
-                    })
+                    }).catch(error => console.error("error saving stakeholder", error));
                 },
                 function(error) {
                     console.log("Something went wrong", error);
@@ -114,7 +142,7 @@ const Invitation = withRouter( React.createClass({
         return false;
     },
     render () {
-        if ( this.pendingQueries().length > 0 )
+        if ( this.state.loading )
         {
             return (
                 <div>
@@ -129,7 +157,7 @@ const Invitation = withRouter( React.createClass({
                     </div>
                 </div>)
         }
-        else if ( this.data.stakeholder.length == 0)
+        else if (!this.state.stakeholder)
         {
             return (
                 <div>
@@ -144,9 +172,9 @@ const Invitation = withRouter( React.createClass({
                     </div>
                 </div>)
         }
-        var stakeholder = this.data.stakeholder[0];
+        let {errors, password, confirmPassword, stakeholder} = this.state;
         var currentUser = Parse.User.current();
-        let {errors, password, confirmPassword} = this.state;
+        let deal = stakeholder.deal
         var form = null
         if ( stakeholder.user.passwordChangeRequired )
         {
@@ -200,9 +228,9 @@ const Invitation = withRouter( React.createClass({
                     <div className="container-fluid">
                         <Logo className="header"/>
                         <p className="lead">
-                            <span className="">{stakeholder.user.firstName} {stakeholder.user.lastName},</span>
+                            <span className="">{RoostUtil.getFullName(stakeholder.user)},</span>
                             <br/>
-                            {RoostUtil.getFullName(stakeholder.invitedBy)} from {stakeholder.invitedBy.company} has invited to you join {stakeholder.deal.dealName} on OneRoost
+                            {RoostUtil.getFullName(stakeholder.invitedBy)} from {stakeholder.invitedBycompany} has invited to you join {deal.dealName} on OneRoost
                         </p>
                     </div>
                 </div>

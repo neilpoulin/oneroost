@@ -1,13 +1,10 @@
 import React, { PropTypes } from "react"
-import moment from "moment";
-import NavLink from "NavLink";
+import moment from "moment"
+import NavLink from "NavLink"
 
 const SystemComment = React.createClass({
     propTypes: {
-        comment: PropTypes.shape({
-            author: PropTypes.object
-            // createdAt: PropTypes.instanceOf(Date).isRequired
-        }).isRequired
+        comment: PropTypes.object.isRequired,
     },
     formatCommentDate: function( comment )
     {
@@ -15,7 +12,7 @@ const SystemComment = React.createClass({
         return moment(date).format("h:mm A");
     },
     buildLink: function(comment){
-        if ( comment.navLink )
+        if (comment.navLink)
         {
             var path = "/";
 
@@ -49,8 +46,9 @@ const SystemComment = React.createClass({
         return null;
     },
     render () {
-        var comment = this.props.comment;
-        var onboarding = this.props.comment.onboarding;
+        var {comment} = this.props
+        var onboarding = comment.onboarding
+        let message = comment.message
         var postTime = <span className="postTime">{this.formatCommentDate(comment)}</span>
         var author = null;
         if ( onboarding){
@@ -64,12 +62,12 @@ const SystemComment = React.createClass({
         }
 
         var link = this.buildLink(comment);
-        var message = <span className="message">{comment.message}</span>
+        var messageWrapper = <span className="message">{message}</span>
         if ( link )
         {
-            message =
+            messageWrapper =
             <NavLink tag="span" to={link} className="messageLink message">
-                {comment.message}
+                {message}
             </NavLink>
         }
 
@@ -79,7 +77,7 @@ const SystemComment = React.createClass({
             <div className="container-fluid">
                 {author}
                 <div className="row">
-                    {message}
+                    {messageWrapper}
                     {postTime}
                 </div>
             </div>

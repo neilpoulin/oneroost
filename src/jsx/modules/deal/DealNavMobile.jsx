@@ -1,5 +1,6 @@
 import React, { PropTypes } from "react"
-import NavLink from "NavLink";
+
+import NavLink from "NavLink"
 
 const DealNavMobile = React.createClass({
     propTypes: {

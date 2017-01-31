@@ -1,19 +1,19 @@
 import React, { PropTypes } from "react"
-import Parse from "parse"
-import ParseReact from "parse-react"
 import NextStepDetailView from "NextStepDetailView"
 import NextStepDetailEdit from "NextStepDetailEdit"
 import { browserHistory } from "react-router"
+import { connect } from "react-redux"
+import {updateStep} from "ducks/nextSteps"
 
 const NextStepDetailForm = React.createClass({
+    propTypes: {
+        step: PropTypes.object.isRequired,
+        deal: PropTypes.object.isRequired
+    },
     getInitialState(){
         return {
             isEdit: false
         }
-    },
-    propTypes: {
-        step: PropTypes.object.isRequired,
-        deal: PropTypes.object.isRequired
     },
     handleEdit: function(){
         this.setState({isEdit: true});
@@ -25,21 +25,7 @@ const NextStepDetailForm = React.createClass({
         this.setState({isEdit: false});
     },
     afterDelete: function(){
-        this.addStepDeletedComment();
         browserHistory.push("/roosts/" + this.props.deal.objectId );
-    },
-    addStepDeletedComment: function( ){
-        var self = this;
-        var user = Parse.User.current();
-        var step = this.props.step;
-        var message = user.get("firstName") + " " + user.get("lastName") + " deleted Next Step: " + step.title;
-        var comment = {
-            deal: self.props.deal,
-            message: message,
-            author: null,
-            username: "OneRoost Bot",
-        };
-        ParseReact.Mutation.Create("DealComment", comment).dispatch();
     },
     render () {
         var form = null;
@@ -49,13 +35,27 @@ const NextStepDetailForm = React.createClass({
                 afterSave={this.afterSave}
                 afterDelete={this.afterDelete}
                 handleCancel={this.handleCancel}
+                updateStep={this.props.updateStep}
                 />
         }
         else {
-            form = <NextStepDetailView step={this.props.step} handleEdit={this.handleEdit}/>
+            form = <NextStepDetailView step={this.props.step} handleEdit={this.handleEdit} updateStep={this.props.updateStep}/>
         }
         return form;
     }
 })
 
-export default NextStepDetailForm
+const mapStateToProps = (state, ownProps) => {
+    return {
+
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    let {step} = ownProps
+    return {
+        updateStep: (changes, message) => dispatch(updateStep(step, changes, message))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NextStepDetailForm)

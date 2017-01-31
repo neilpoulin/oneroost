@@ -1,8 +1,12 @@
 import Parse from "parse";
-import React from "react";
+import React, {PropTypes} from "react";
 import NavLink from "NavLink";
+import moment from "moment"
 
-export default React.createClass({
+const NextStepItem = React.createClass({
+    propTypes: {
+        deal: PropTypes.object.isRequired
+    },
     getInitialState: function(){
         return {
             deal: this.props.deal,
@@ -12,32 +16,29 @@ export default React.createClass({
     },
     formatDate: function( date )
     {
-        if ( !(date instanceof Date) )
-        {
-            date = new Date( date );
-        }
-
-        var month = date.getMonth() + 1;
-        return month + "/" + date.getDate() + "/" + date.getFullYear()
+        return moment(date).format("M/D/YY")
     },
     render: function(){
         var dateLabel = "Due"
-        var date = this.props.step.dueDate;
-        if ( this.props.step.completedDate != null )
+        let {step, deal} = this.props
+        let {dueDate, completedDate, title} = step
+        if ( completedDate )
         {
             dateLabel = "Completed Date: ";
-            date = this.props.step.completedDate;
+            dueDate = completedDate
         }
 
         var stepItem =
 
-        <NavLink tag="div" to={"/roosts/" + this.props.deal.objectId + "/steps/" + this.props.step.objectId }
-            className={"arrow-right NextStepItemContainer " + ( this.props.step.completedDate != null ? "complete " : "" ) + (this.state.active ? "active " : "")} >
-            <div className="nextStepTitle">{this.props.step.title}</div>
+        <NavLink tag="div" to={"/roosts/" + deal.objectId + "/steps/" + step.objectId }
+            className={"arrow-right NextStepItemContainer " + ( completedDate ? "complete " : "" ) + (this.state.active ? "active " : "")} >
+            <div className="nextStepTitle">{title}</div>
             <div className="nextStepDueDate">
-                {dateLabel} {this.formatDate(date)}
+                {dateLabel} {this.formatDate(dueDate)}
             </div>
         </NavLink>
         return stepItem;
     }
 });
+
+export default NextStepItem;

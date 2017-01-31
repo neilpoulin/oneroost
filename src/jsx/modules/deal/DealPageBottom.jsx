@@ -1,10 +1,14 @@
 import React, { PropTypes } from "react"
-import Comments from "Comments";
-import FixedSidebar from "FixedSidebar";
+import Comments from "Comments"
+import FixedSidebar from "FixedSidebar"
 
 const DealPageBottom = React.createClass({
     propTypes: {
-        deal: PropTypes.object.isRequired
+        deal: PropTypes.object.isRequired,
+        stakeholders: PropTypes.arrayOf(PropTypes.object),
+        nextSteps: PropTypes.arrayOf(PropTypes.object),
+        documents: PropTypes.arrayOf(PropTypes.object),
+        sidebar: PropTypes.any,
     },
     beforeOpen(){
 
@@ -20,15 +24,22 @@ const DealPageBottom = React.createClass({
     },
     sidebarOpen: false,
     render: function() {
-        var deal = this.props.deal;
+        const {deal, nextSteps, stakeholders, documents} = this.props;
         var sidebar = null;
-
         var isOpen = false
-        if ( this.props.children )
+        if ( this.props.sidebar )
         {
+            var sidebarWithProps = null;
+            sidebarWithProps = React.cloneElement(this.props.sidebar, {
+                deal: deal,
+                nextSteps: nextSteps,
+                stakeholders: stakeholders,
+                documents: documents
+            });
+
             sidebar =
             <FixedSidebar ref="sidebar">
-                {this.props.children}
+                {sidebarWithProps}
             </FixedSidebar>;
             isOpen = true;
         }

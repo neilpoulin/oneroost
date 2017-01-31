@@ -7,6 +7,6 @@ export const validations = {
         new Validation(FormUtil.notBefore, "error", "The due date can not be in the past")
     ],
     "assignedUser": [
-        new Validation(FormUtil.notNullOrEmpty, "error", "A step must be assigned")
+        new Validation(FormUtil.isPointer, "error", "A step must be assigned")
     ]
 }

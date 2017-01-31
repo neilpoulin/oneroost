@@ -12,7 +12,8 @@ const NextStepActions = React.createClass({
         handleSave: PropTypes.func,
         handleEdit: PropTypes.func,
         afterDelete: PropTypes.func,
-        handleCancel: PropTypes.func
+        handleCancel: PropTypes.func,
+        updateStep: PropTypes.func.isRequired
     },
     getDefaultProps(){
         return {
@@ -33,16 +34,23 @@ const NextStepActions = React.createClass({
         }
     },
     getStateChangeButton(){
-        return <NextStepStatusChangeButton step={this.props.step} key={"next_step_action_status_" + this.props.step.objectId}/>
+        return <NextStepStatusChangeButton
+            step={this.props.step}
+            deal={this.props.deal}
+            key={"next_step_action_status_" + this.props.step.objectId}
+            updateStep={this.props.updateStep}/>
     },
     getEditButton(){
-        return <NextStepEditButton handleEdit={this.props.handleEdit} key={"next_step_action_edit_" + this.props.step.objectId}/>
+        return <NextStepEditButton handleEdit={this.props.handleEdit}
+            key={"next_step_action_edit_" + this.props.step.objectId}/>
     },
     getSaveButton(){
-        return <NextStepSaveButton step={this.props.step} handleSave={this.props.handleSave} key={"next_step_action_save_" + this.props.step.objectId}/>
+        return <NextStepSaveButton step={this.props.step}
+            handleSave={this.props.handleSave} key={"next_step_action_save_" + this.props.step.objectId}/>
     },
     getDeleteButton(){
-        return <NextStepDeleteButton step={this.props.step} afterDelete={this.props.afterDelete} key={"next_step_action_delete_" + this.props.step.objectId}/>
+        return <NextStepDeleteButton step={this.props.step}
+            afterDelete={this.props.afterDelete} key={"next_step_action_delete_" + this.props.step.objectId}/>
     },
     getCancelButton(){
         return <NextStepCancelButton handleCancel={this.props.handleCancel} key={"next_step_action_cancel_" + this.props.step.objectId} />

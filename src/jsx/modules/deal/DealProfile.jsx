@@ -1,26 +1,22 @@
 import React, { PropTypes } from "react"
-import Parse from "parse";
-import ParseReact from "parse-react";
 import NavLink from "NavLink";
 import RoostUtil from "RoostUtil"
 
 const DealProfile = React.createClass({
-    mixins: [ParseReact.Mixin],
     propTypes: {
-        deal: PropTypes.object.isRequired
+        deal: PropTypes.object.isRequired,
+        stakeholders: PropTypes.arrayOf(PropTypes.object),
+        documents: PropTypes.arrayOf(PropTypes.object),
     },
-    observe(props, state){
-        var stakeholderQuery = new Parse.Query("Stakeholder");
-        stakeholderQuery.equalTo("deal", props.deal);
-
+    getDefaultProps(){
         return {
-            stakeholders: stakeholderQuery,
-            documents: (new Parse.Query("Document")).equalTo( "deal", props.deal )
+            stakeholders: [],
+            documents: []
         }
     },
     getBudgetString(){
-        var deal = this.props.deal;
-        var budget = deal.budget;
+        var {deal} = this.props;
+        var budget = deal.budget
         if (!budget) {
             return "Not Quoted";
         }
@@ -33,25 +29,24 @@ const DealProfile = React.createClass({
         return RoostUtil.formatMoney(budget.low, true) + " - " + RoostUtil.formatMoney(budget.high, false);
     },
     render () {
-        var deal = this.props.deal
+        const {deal, stakeholders, documents} = this.props;
         var widgetClassName = "widget"
         var titleClassName = "col-xs-2 widget"
         var iconSizeClassname = "fa-lg"
+        const dealId = deal.objectId
+        const {profile={}, createdAt, dealName} = deal
         var budget = this.getBudgetString()
 
-        var stakeholderCount = ""
-        var documentCount = 0
-        if (this.pendingQueries().length == 0) {
-            stakeholderCount = this.data.stakeholders.length > 0 ? this.data.stakeholders.length : ""
-            documentCount = this.data.documents.length
-        }
+        let activeStakeholders = stakeholders.filter(s => s.active !== false);
+        var stakeholderCount = activeStakeholders.length
+        var documentCount = documents.length
 
-        var formattedRoostAge = RoostUtil.formatDurationAsDays( deal.createdAt )
-        // var stage = Stages.get(deal.currentStage) || Stages.get("EXPLORE");
+        var formattedRoostAge = RoostUtil.formatDurationAsDays( createdAt )
+
         var dealTitleBlock =
         <div className={titleClassName}>
             <h1>
-                {deal.dealName}
+                {dealName}
             </h1>
         </div>;
 
@@ -63,7 +58,7 @@ const DealProfile = React.createClass({
             <div className="widgetContainer">
                 <div className={widgetClassName}>
                     <div className="text-center">
-                        <NavLink tag="div" to={"/roosts/" + deal.objectId + "/budget" } className="widgetLink">
+                        <NavLink tag="div" to={"/roosts/" + dealId + "/budget" } className="widgetLink">
                             <div>
                                 <i className={"fa fa-money " + iconSizeClassname}></i>
                                 &nbsp; Investment
@@ -75,8 +70,8 @@ const DealProfile = React.createClass({
                     </div>
                 </div>
                 <div className={widgetClassName}>
-                    <div className={"text-center " + (deal.profile.timeline ? "" : "invisible")}>
-                        <NavLink tag="div" to={"/roosts/" + deal.objectId + "/timeline" } className="widgetLink">
+                    <div className={"text-center " + (profile.timeline ? "" : "invisible")}>
+                        <NavLink tag="div" to={"/roosts/" + dealId + "/timeline" } className="widgetLink">
                             <div>
                                 <i className={"fa fa-calendar " + iconSizeClassname}></i>
                                 &nbsp; Opportunity Created
@@ -90,7 +85,7 @@ const DealProfile = React.createClass({
                 </div>
                 <div className={widgetClassName}>
                     <div className="text-center">
-                        <NavLink tag="div" to={"/roosts/" + deal.objectId + "/participants" } className="widgetLink">
+                        <NavLink tag="div" to={"/roosts/" + dealId + "/participants" } className="widgetLink">
                             <div>
                                 <i className={"fa fa-users " + iconSizeClassname}></i>
                                     &nbsp; Participants
@@ -103,7 +98,7 @@ const DealProfile = React.createClass({
                 </div>
                 <div className={widgetClassName}>
                     <div className="text-center">
-                        <NavLink tag="div" to={"/roosts/" + deal.objectId + "/documents" } className="widgetLink">
+                        <NavLink tag="div" to={"/roosts/" + dealId + "/documents" } className="widgetLink">
                             <div>
                                 <i className={"fa fa-files-o " + iconSizeClassname}></i>
                                     &nbsp; Documents

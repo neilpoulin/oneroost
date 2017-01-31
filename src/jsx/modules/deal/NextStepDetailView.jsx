@@ -1,11 +1,12 @@
 import React, { PropTypes } from "react"
 import moment from "moment";
-import NextStepActions from "NextStepActions";
+import NextStepActions from "NextStepActions"
 
 const NextStepDetailView = React.createClass({
     propTypes: {
         step: PropTypes.object.isRequired,
-        handleEdit: PropTypes.func.isRequired
+        handleEdit: PropTypes.func.isRequired,
+        updateStep: PropTypes.func.isRequired,
     },
     formatDate(date){
         return moment(date).format("dddd, MMM Do, YYYY");
@@ -46,7 +47,7 @@ const NextStepDetailView = React.createClass({
                     {this.props.step.description || "none"}
                 </div>
             </div>
-            <NextStepActions step={this.props.step} isEdit={false} handleEdit={this.props.handleEdit}/>
+            <NextStepActions step={this.props.step} isEdit={false} handleEdit={this.props.handleEdit} updateStep={this.props.updateStep}/>
         </div>
 
         return form;

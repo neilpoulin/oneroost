@@ -1,25 +1,21 @@
 import Parse from "parse"
 import React from "react"
-import ParseReact from "parse-react"
+import { connect } from "react-redux"
 import { withRouter } from "react-router"
 import RoostNav from "navigation/RoostNav"
 import AddAccountButton from "account/AddAccountButton"
-import AccountSidebarList from "account/AccountSidebarList"
+import OpportunityList from "account/OpportunityList"
 import BetaUserWelcome from "BetaUserWelcome"
+import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
+import {denormalize} from "normalizr"
+import * as Deal from "models/Deal"
+import RoostUtil from "RoostUtil"
 
-export default withRouter( React.createClass({
-    mixins: [ParseReact.Mixin],
-    observe: function(props, state){
-        var user = Parse.User.current();
-        var stakeholders = new Parse.Query("Stakeholder");
-        stakeholders.include("deal");
-        stakeholders.include(["deal.account"]);
-        stakeholders.include("deal.createdBy");
-        stakeholders.include("deal.readyRoostUser");
-        stakeholders.equalTo("user", user );
-        stakeholders.equalTo("inviteAccepted", true);
+const UserHomePage = React.createClass({
+    getInitialState(){
         return {
-            stakeholders: stakeholders
+            stakeholders: [],
+            loading: true
         }
     },
     getCurrentUser: function()
@@ -32,40 +28,90 @@ export default withRouter( React.createClass({
     componentDidMount(){
         document.title = "My Opportunities | OneRoost"
     },
+    componentWillUnmount(){
+
+    },
+    componentWillMount(){
+        if ( this.props.loadData ){
+            this.props.loadData()
+        }
+    },
+    componentWillUpdate(nextProps, nextState){
+        console.log("UserHomePage component will update");
+        if ( this.props.userId != nextProps.useId && this.props.loadData ){
+            // this.props.loadData()
+        }
+    },
     render(){
+        const {deals, archivedDeals, isLoading, userId, currentUser} = this.props
+
         let contents = null;
-        if ( this.pendingQueries().length > 0 ){
+        if ( isLoading ){
             contents =
             <div>
-                <i className="fa fa-spin fa-spinner"></i>{" Loading..."}
-                </div>
-            }
-            else
-            {
-                var deals = this.data.stakeholders.map(function(stakeholder){
-                    return stakeholder.deal
-                })
-                if ( deals.length > 0){
-                    contents = <AccountSidebarList deals={deals} className="bg-inherit"></AccountSidebarList>
-                }
-                else{
-                    contents = <BetaUserWelcome userId={this.getCurrentUser().id}/>
-                }
-            }
-
-            var homePage =
-            <div>
-                <RoostNav showHome={false}/>
-                <div className="container UserHomePage col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4 lead">
-                    <h1>Opportunities</h1>
-                    <AddAccountButton
-                        onSuccess={this.afterAddAccount}
-                        btnClassName="btn-block btn-outline-primary"
-                        />
-                    {contents}
-                </div>
+                <i className="fa fa-spin fa-spinner"></i>
+                {" Loading..."}
             </div>
-
-            return homePage;
         }
-    }));
+        else
+        {
+            if ( deals.length > 0){
+                contents = <OpportunityList deals={deals} archivedDeals={archivedDeals} user={currentUser} className="bg-inherit"></OpportunityList>
+            }
+            else{
+                contents = <BetaUserWelcome userId={userId}/>
+            }
+        }
+
+        var homePage =
+        <div>
+            <RoostNav showHome={false}/>
+            <div className="container UserHomePage col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4 lead">
+                <h1>Opportunities</h1>
+                <AddAccountButton
+                    onSuccess={this.afterAddAccount}
+                    btnClassName="btn-block btn-outline-primary"
+                    />
+                {contents}
+            </div>
+        </div>
+
+        return homePage;
+    }
+});
+
+const mapStateToProps = (state, ownProps) => {
+    const currentUser = Parse.User.current()
+    let userId = currentUser.id;
+    let entities = state.entities.toJS()
+    let myOpportunities = state.opportunitiesByUser.get(userId)
+    let deals = []
+    let archivedDeals = []
+    let isLoading = true
+    if ( myOpportunities ){
+        myOpportunities = myOpportunities.toJS()
+        isLoading = myOpportunities.isLoading;
+        deals = denormalize( myOpportunities.deals, [Deal.Schema], entities)
+        archivedDeals = denormalize( myOpportunities.deals, [Deal.Schema], entities)
+    }
+    return {
+        deals: deals,
+        archivedDeals: archivedDeals,
+        isLoading: isLoading,
+        userId,
+        currentUser: RoostUtil.getCurrentUser(state)
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const currentUser = Parse.User.current()
+    const userId = currentUser.id
+    return {
+        loadData: () => {
+            dispatch(loadOpportunities(userId))
+            dispatch(subscribeOpportunities(userId))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)( withRouter( UserHomePage ));

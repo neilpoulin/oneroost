@@ -7,7 +7,8 @@ const BasicInfoForm = React.createClass({
     propTypes: {
         user: PropTypes.object.isRequired,
         doCancel: PropTypes.func.isRequired,
-        doSave: PropTypes.func.isRequired,
+        afterSave: PropTypes.func.isRequired,
+        saveUser: PropTypes.func.isRequired,
     },
     getDefaultProps(){
         return {
@@ -22,11 +23,7 @@ const BasicInfoForm = React.createClass({
     getInitialState(){
         var user = this.props.user;
         return {
-            email: user.get("email") || "",
-            firstName: user.get("firstName") || "",
-            lastName: user.get("lastName") || "",
-            jobTitle: user.get("jobTitle") || "",
-            company: user.get("company") || "",
+            ...user,
             errors: {},
         }
     },
@@ -34,13 +31,17 @@ const BasicInfoForm = React.createClass({
         let errors = FormUtil.getErrors(this.state, profileValidation);
         if (!FormUtil.hasErrors(errors)){
             console.log("saving user info");
-            this.props.user.set("email", this.state.email)
-            this.props.user.set("firstName", this.state.firstName)
-            this.props.user.set("lastName", this.state.lastName)
-            this.props.user.set("company", this.state.company)
-            this.props.user.set("jobTitle", this.state.jobTitle)
-            this.props.user.save()
-            this.props.doSave()
+            let {email, firstName, lastName, company, jobTitle} = this.state
+
+            let changes = {
+                email,
+                firstName,
+                lastName,
+                company,
+                jobTitle
+            }
+            this.props.saveUser(changes);
+            this.props.afterSave()
             this.setState({errors: {}});
             return true;
         }

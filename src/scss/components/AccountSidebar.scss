@@ -1,6 +1,11 @@
 $backgroundColor: $sidebarBg;
 $activeTextColor: $activeColor;
 $sidebarWidthPx: 275px;
+$activeBackgroundColor: $largeClickableBg;
+$darkenPct: 10%;
+$disabledFade: 40%;
+$hoverTextColor: $activeColor;
+
 #accountSidebarContainer{
 
 }
@@ -38,6 +43,22 @@ $sidebarWidthPx: 275px;
     padding-left: 0px;
     flex-grow: 0;
     overflow-y: auto;
+    .divider{
+        font-size: 1.2em;
+        border-top: $borderThin;
+        border-bottom: $borderThin;
+        text-align: center;
+        padding: 5px;
+        margin-top: 50px;
+        color: lighten($secondaryColor, $disabledFade);
+        text-transform: uppercase;
+        & ~ .AccountSidebarItem{
+            a {
+                color: lighten($secondaryColor, $disabledFade);
+            }            
+        }
+    }
+
     .AccountSidebarItem{
         $activeBackgroundColor: $largeClickableBg;
         background-color: $backgroundColor;
@@ -52,9 +73,7 @@ $sidebarWidthPx: 275px;
         border-top: $borderThin;
     }
     .AccountSidebarItem, .UserHomeListItem{
-        $activeBackgroundColor: $largeClickableBg;
-        $darkenPct: 10%;
-        $hoverTextColor: $activeColor;
+
 
 
         font-weight: 400;

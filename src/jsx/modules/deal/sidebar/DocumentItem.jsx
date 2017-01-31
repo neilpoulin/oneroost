@@ -7,9 +7,9 @@ const DocumentItem = React.createClass({
         doc: PropTypes.object.isRequired
     },
     render () {
-        var doc = this.props.doc;
-
-        if ( doc.externalLink ){
+        var {doc} = this.props;
+        let {externalLink} = doc
+        if ( externalLink ){
             return <DocumentLinkItem doc={doc}/>
         }
         return <DocumentDownloadItem doc={doc}/>

@@ -1,15 +1,19 @@
 import React, { PropTypes } from "react"
-import ParseReact from "parse-react"
+import {connect} from "react-redux"
+import {deleteStep} from "ducks/nextSteps"
+import RoostUtil from "RoostUtil"
 
 const NextStepDeleteButton = React.createClass({
     propTypes: {
         step: PropTypes.object.isRequired,
-        afterDelete: PropTypes.func.isRequired
+        afterDelete: PropTypes.func.isRequired,
+        user: PropTypes.object.isRequired,
     },
     handleDelete(){
-        this.props.afterDelete() ;
-        ParseReact.Mutation.Destroy( this.props.step )
-        .dispatch();
+        var message = RoostUtil.getFullName(this.props.user) + " deleted Next Step: " + this.props.step.title
+        this.props.deleteStep(message)
+        this.props.afterDelete();
+        // this.props.step.destroy().catch(error => console.error);
     },
     render () {
         var button =
@@ -22,4 +26,19 @@ const NextStepDeleteButton = React.createClass({
     }
 })
 
-export default NextStepDeleteButton
+const mapStateToProps = (state, ownProps) => {
+    return {
+        user: RoostUtil.getCurrentUser(state)
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const step = ownProps.step;
+    return {
+        deleteStep: (message) => {
+            dispatch(deleteStep(step, message))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NextStepDeleteButton)

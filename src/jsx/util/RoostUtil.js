@@ -1,18 +1,62 @@
 import Parse from "parse"
 import moment from "moment"
 import numeral from "numeral"
+import {Map, fromJS, Iterable} from "immutable"
+import {denormalize} from "normalizr"
+import * as User from "models/User"
 
-exports.getCurrentUser = function(){
-    return Parse.User.current();
+exports.toJSON = function(obj){
+    if ( !obj ){
+        return obj
+    }
+    let json = obj
+    if ( Iterable.isIterable(obj) ){
+        json = json.toJS()
+    } else if ( obj instanceof Parse.Object ){
+        json = obj.toJSON()
+    }
+    return json
+}
+
+exports.copyJSON = function(json){
+    if ( !json ){
+        return json;
+    }
+    if ( json instanceof Parse.Object ){
+       json = json.toJSON()
+    }
+    if ( Iterable.isIterable(json) ){
+        json = json.toJS()
+    }
+    let copy = fromJS(json).toJS()
+    if ( copy["__type"] ){
+        delete copy["__type"]
+    }
+    return copy
+}
+
+exports.getCurrentUser = function(state){
+    if ( !state ){
+        console.warn("No 'state' passed in to RoostUtil.getCurrentUser()... using Parse.User.current() ")
+        return Parse.User.current();
+    }
+    let userId = state.user.get("userId")
+    let entities = state.entities.toJS()
+    const currentUser = userId ? denormalize(userId, User.Schema, entities) : null
+    return this.toJSON(currentUser)
 }
 
 exports.getFullName = function( parseUser ){
-    var fullName
-    if ( parseUser instanceof Parse.User ){
-        fullName = parseUser.get("firstName") + " " + parseUser.get("lastName")
-    }
-    else {
-        fullName = parseUser.firstName + " " + parseUser.lastName
+    var fullName = ""
+    try{
+        if ( parseUser instanceof Parse.User ){
+            fullName = parseUser.get("firstName") + " " + parseUser.get("lastName")
+        }
+        else {
+            fullName = parseUser.firstName + " " + parseUser.lastName
+        }
+    } catch (e){
+        console.warn("unable to parse user name, returning empty");
     }
 
     return fullName.trim()
@@ -87,10 +131,37 @@ exports.isCurrentUser = function(user){
     return false;
 }
 
+function getRoostNameForParseUser( deal, displayFor ){
+    let readyRoostUser = deal.get("readyRoostUser");
+    let account = deal.get("account");
+    displayFor = displayFor || this.getCurrentUser();
+    let createdBy = deal.get("createdBy");
 
+    let isCreator = this.isCurrentUser(createdBy);
+    let isReadyRoostUser = this.isCurrentUser(readyRoostUser);
+
+    if ( !createdBy ){
+        console.warn("There is no created by on the deal object", deal);
+    }
+
+    let roostName = "";
+    if ( createdBy && !isCreator && createdBy.get("company") ){
+        roostName = createdBy.get("company")
+    } else if ( readyRoostUser && !isReadyRoostUser && readyRoostUser.get("company") ){
+        roostName = readyRoostUser.get("company");
+    } else{
+        roostName = account.get("accountName");
+    }
+    return roostName;
+}
 
 /** Get the display name for the roost, contextual to the user passed in**/
 exports.getRoostDisplayName = function(deal, displayFor){
+    if (deal instanceof Parse.Object || Map.isMap(deal)){
+        // throw "Attempting to get roost name from a non parse object", deal;
+        return getRoostNameForParseUser(deal, displayFor)
+    }
+
     let readyRoostUser = deal.readyRoostUser;
     let account = deal.account;
     displayFor = displayFor || this.getCurrentUser();

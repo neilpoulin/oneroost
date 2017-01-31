@@ -1,11 +1,12 @@
-import React from "react";
-import ParseReact from "parse-react"
-import Parse from "parse"
+import React, {PropTypes} from "react";
 import FormUtil from "FormUtil"
 import {validations} from "account/AccountValidation"
 import FormInputGroup from "FormInputGroup"
 
-export default React.createClass({
+const CreateAccountForm = React.createClass({
+    propTypes: {
+        createRoost: PropTypes.func.isRequired,
+    },
     getDefaultProps: function(){
         return{
             onSuccess: function(){}
@@ -29,63 +30,30 @@ export default React.createClass({
         var errors = FormUtil.getErrors(this.state, validations);
         console.log(errors);
         if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
-            this.saveDeal();
+            // this.saveDeal();
+            let {accountName,
+                primaryContact,
+                streetAddress,
+                city,
+                state,
+                zipCode,
+                dealName} = this.state;
+            this.props.createRoost({
+                accountName,
+                primaryContact,
+                streetAddress,
+                city,
+                state,
+                zipCode,
+                dealName
+            })
+
             this.setState({errors: {}});
             return true;
         }
         self.setState({errors: errors});
         return false;
-    },
-    saveDeal(){
-        let self = this;
-        var account = {
-            createdBy: Parse.User.current(),
-            accountName: this.state.accountName,
-            primaryContact: this.state.primaryContact,
-            streetAddress: this.state.streetAddress,
-            city: this.state.city,
-            state: this.state.state,
-            zipCode: this.state.zipCode
-        }
-        var dealName = self.state.dealName;
-        ParseReact.Mutation.Create("Account", account)
-        .dispatch()
-        .then( function( acct ){
-            self.createDeal( acct, dealName );
-        });
-    },
-    createDeal: function( account, dealName ){
-        var self = this;
-        var deal = {
-            createdBy: Parse.User.current(),
-            account: account,
-            dealName: dealName,
-            profile: {"timeline": "2016-05-13"},
-            budget: {"low": 0, "high": 0}
-        }
-
-        ParseReact.Mutation.Create( "Deal", deal )
-        .dispatch()
-        .then(function( newDeal ){
-            self.createStakeholder(newDeal);
-        });
-    },
-    createStakeholder(deal)
-    {
-        var self = this;
-        var user = Parse.User.current();
-        var stakeholder = {
-            "user": user,
-            "deal": deal,
-            "role": "CREATOR",
-            "inviteAccepted": true,
-            "invitedBy": user
-        };
-
-        ParseReact.Mutation.Create("Stakeholder", stakeholder)
-        .dispatch({waitForServer: true})
-        .then( self.props.onSuccess );
-    },
+    },    
     render: function(){
         return (
             <div className="CreateAccount">
@@ -110,3 +78,5 @@ export default React.createClass({
         );
     }
 });
+
+export default CreateAccountForm;

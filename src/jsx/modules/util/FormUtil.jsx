@@ -11,6 +11,20 @@ Validation.prototype.isValid = function(value, data){
     return this.check(value, data);
 }
 
+exports.isPointer = function(obj){
+    if ( !obj ){
+        return false
+    }
+    let objectId = obj;
+    if ( typeof obj == "object" ){
+        objectId = obj.objectId || obj.id
+    } else if ( typeof obj == "string" ){
+        objectId = obj
+    }
+    if ( !objectId ) return false
+    return true;
+}
+
 exports.minimumLength = function(min){
     return function(value){
         if ( value === null ){
@@ -42,6 +56,10 @@ function isNullOrEmpty(value){
         return true
     }
     if ( typeof value === "string" && value.trim().length === 0 )
+    {
+        return true;
+    }    
+    else if (typeof value === "object" && Object.keys(value).length === 0)
     {
         return true;
     }

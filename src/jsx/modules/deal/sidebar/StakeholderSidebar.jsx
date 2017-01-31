@@ -1,55 +1,60 @@
 import React, { PropTypes } from "react"
+import {connect} from "react-redux"
 import AddStakeholderButton from "AddStakeholderButton";
-import ParseReact from "parse-react";
-import Parse from "parse";
-import Stakeholder from "Stakeholder";
+import Stakeholder from "Stakeholder"
+import {removeStakeholder} from "ducks/stakeholders"
+import {archiveOpportunity} from "ducks/opportunities"
 
 const StakeholderSidebar = React.createClass({
-    mixins: [ParseReact.Mixin],
     propTypes: {
-        params: PropTypes.object
+        deal: PropTypes.object.isRequired,
+        stakeholders: PropTypes.arrayOf(PropTypes.object).isRequired,
+        isLoading: PropTypes.bool.isRequired,
+        removeStakeholder: PropTypes.func,
+    },
+    getDefaultProps(){
+        return {
+            isLoading: true,
+            stakeholders: [],
+        }
     },
     getInitialState(){
         return {
             isEdit: false
         }
     },
-    observe: function () {
-        var Deal = Parse.Object.extend("Deal");
-        var deal = new Deal();
-        deal.id = this.props.params.dealId;
-        var dealQuery = (new Parse.Query("Deal")).equalTo("objectId", this.props.params.dealId);
-        var stakeholderQuery = new Parse.Query("Stakeholder");
-        stakeholderQuery.include("user");
-        stakeholderQuery.include("invitedBy");
-        stakeholderQuery.ascending("role");
-        stakeholderQuery.equalTo("deal", deal);
-        return {
-            deal: dealQuery,
-            stakeholders: stakeholderQuery
-        }
-    },
-    refreshStakeholders()
-    {
-        this.refreshQueries(["stakeholders"]);
-    },
     toggleEditStakeholders(){
         this.setState({isEdit: !this.state.isEdit});
     },
-
     render () {
-        if (this.pendingQueries() > 0) {
-            return (
-                <i className="fa fa-spin fa-spinner"></i>
-            )
-        }
-        var deal = this.data.deal[0];
+        var {deal, stakeholders} = this.props;
         var isEdit = this.state.isEdit;
         var actionButton = <button className="btn btn-outline-secondary" onClick={this.toggleEditStakeholders}><i className="fa fa-minus"></i>&nbsp;Remove</button>
         if ( isEdit ){
             actionButton = <button className="btn btn-secondary" onClick={this.toggleEditStakeholders}><i className="fa fa-check"></i>&nbsp;Done</button>
         }
 
+        let activeParticipants = stakeholders.filter(stakeholder => {
+            return stakeholder.active !== false;
+        });
+
+        let inactiveParticipants = stakeholders.filter(stakeholder => {
+            return stakeholder.active === false;
+        });
+
+        let inactiveBlock = null;
+        if ( inactiveParticipants.length > 0 ){
+            inactiveBlock =
+            <div className="inactive-participants">
+                <h4>Inactive Participants</h4>
+                {inactiveParticipants.map(stakeholder => {
+                    return <Stakeholder key={"stakeholder_" + stakeholder.objectId}
+                        stakeholder={stakeholder}
+                        deal={deal}
+                        isEdit={false}/>
+                })}
+            </div>
+        }
 
         return (
             <div className="StakeholderSidebar">
@@ -58,20 +63,39 @@ const StakeholderSidebar = React.createClass({
                     {actionButton}
                     <AddStakeholderButton deal={deal}
                         btnClassName={"btn-primary btn-block " + (isEdit ? "disabled" : null)}
-                        onSuccess={this.refreshStakeholders}
                         disabled={isEdit}
                         />
                 </div>
-                <div>
-                    {this.data.stakeholders.map(function (stakeholder) {
-                        return (
-                            <Stakeholder key={"stakeholder_" + stakeholder.objectId} stakeholder={stakeholder} isEdit={isEdit}/>
-                        )
+                <div className="active-participants">
+                    {activeParticipants.map(stakeholder => {
+                        return <Stakeholder key={"stakeholder_" + stakeholder.objectId}
+                            stakeholder={stakeholder}
+                            deal={deal}
+                            isEdit={isEdit}
+                            removeStakeholder={this.props.removeStakeholder}/>
                     })}
                 </div>
+                {inactiveBlock}
             </div>
         )
     }
 });
 
-export default StakeholderSidebar
+
+const mapStateToProps = (state, ownprops) => {
+    return {
+
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        removeStakeholder: (stakeholder) => {
+            dispatch(removeStakeholder(stakeholder))
+            dispatch(archiveOpportunity(stakeholder))
+        }
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(StakeholderSidebar)

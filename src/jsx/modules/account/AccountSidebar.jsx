@@ -1,52 +1,51 @@
-import React from "react"
-import Parse from "parse"
-import ParseReact from "parse-react"
-import AccountSidebarList from "account/AccountSidebarList"
+import React, {PropTypes} from "react"
+import {connect} from "react-redux"
+import {Map} from "immutable"
+import {denormalize} from "normalizr"
+import OpportunityList from "account/OpportunityList"
 import AddAccountButton from "account/AddAccountButton"
+import * as Deal from "models/Deal"
+import {showArchived, hideArchived} from "ducks/opportunities"
+import ShowArchivedButton from "account/ShowArchivedButton"
+import RoostUtil from "RoostUtil"
 
-export default React.createClass({
-    mixins: [ParseReact.Mixin],
-    observe: function(props, state){
-        var user = Parse.User.current();
-        var stakeholders = new Parse.Query("Stakeholder");
-        stakeholders.include("deal");
-        stakeholders.include(["deal.account"]);
-        stakeholders.include("deal.createdBy");
-        stakeholders.include("deal.readyRoostUser");
-        stakeholders.equalTo("user", user );
-        stakeholders.equalTo("inviteAccepted", true);
-        return {
-            stakeholders: stakeholders
-        }
+const AccountSidebar = React.createClass({
+    propTypes: {
+        deals: PropTypes.arrayOf(PropTypes.object).isRequired,
+        archivedDeals: PropTypes.arrayOf(PropTypes.object),
+        archivedVisible: PropTypes.bool.isRequired,
     },
     getDefaultProps: function(){
         return {
-            isMobile: false
+            isMobile: false,
+            deals: [],
+            archivedDeals: [],
+            archivedVisible: false,
+        }
+    },
+    getInitialState(){
+        return {
+            errors: {}
         }
     },
     onSuccess: function(){
-        this.refreshQueries(["stakeholders"]);
+
     },
     render () {
-        var contents;
-        if ( this.pendingQueries().length > 0 ){
-            contents = <div>Loading....</div>;
-        }
-        else {
-            var deals = this.data.stakeholders.map(function(stakeholder){
-                    return stakeholder.deal
-                })
-            contents = <AccountSidebarList deals={deals} />
-        }
+        var {deals, archivedDeals, archivedVisible, currentUser} = this.props;
 
         return (
             <div id={"accountSidebar" + (this.props.isMobile ? "Mobile" : "")} className="container-fluid hidden-sm hidden-xs">
-                <h3>Opportunities</h3>
-                {contents}
+                <div>
+                    <h3>Opportunities</h3>
+                    <ShowArchivedButton userId={this.props.userId} />
+                </div>
+
+                <OpportunityList deals={deals} archivedDeals={archivedDeals} archivedVisible={archivedVisible} user={currentUser}/>
                 <AddAccountButton
                     btnClassName="btn-outline-secondary btn-block"
                     onSuccess={this.onSuccess}
-                >
+                    >
                     <i className="fa fa-plus">Create Account</i>
                 </AddAccountButton>
 
@@ -54,3 +53,35 @@ export default React.createClass({
         )
     }
 })
+
+
+const mapStateToProps = (state, ownProps) => {
+    let stateJS = Map(state).toJS()
+    let userId = stateJS.user.userId
+    let currentUser = RoostUtil.getCurrentUser(state)
+    let entities = stateJS.entities
+    let opportunities = stateJS.opportunitiesByUser[userId] || {}
+
+    if ( stateJS.opportunitiesByUser[userId] ){
+        opportunities.deals = denormalize(opportunities.deals, [Deal.Schema], entities)
+        opportunities.archivedDeals = denormalize(opportunities.archivedDeals, [Deal.Schema], entities)
+    }
+    return {
+        userId,
+        currentUser,
+        ...opportunities,
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        showArchived: (userId) => {
+            dispatch(showArchived(userId))
+        },
+        hideArchived: (userId) => {
+            dispatch(hideArchived(userId))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AccountSidebar)
