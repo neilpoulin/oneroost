@@ -11,14 +11,41 @@ export const LOGOUT = "oneroost/user/LOGOUT"
 
 
 
-export const loadCurrentUser = () => {
-    let currentUser = RoostUtil.toJSON(Parse.User.current());
-    let entities = normalize(currentUser, User.Schema).entities
+export const loginSuccessAction = (user) => {
+    let entities = normalize(RoostUtil.toJSON(user), User.Schema).entities
     return {
+        type: LOGIN_SUCCESS,
+        payload: user,
+        entities,
+    }
+}
+
+export const loadCurrentUser = () => (dispatch, getState) => {
+    let currentUser = RoostUtil.toJSON(Parse.User.current());
+    if ( !currentUser ){
+        return null;
+    }
+    let entities = normalize(currentUser, User.Schema).entities
+    dispatch({
         type: LOGIN_SUCCESS,
         payload: currentUser,
         entities,
+    })
+}
+
+export const userLoggedIn = ( user ) => (dispatch, getState) => {
+    if ( !user ){
+        return null
     }
+    dispatch(loginSuccessAction(user))
+}
+
+export const userLogOut = () => (dispatch, getState) => {
+    Parse.User.logOut().then((result) => {
+        dispatch({
+            type: LOGOUT,
+        })
+    }).catch(console.error);    
 }
 
 export const updateUserAction = (user) => {

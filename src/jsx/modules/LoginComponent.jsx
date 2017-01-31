@@ -7,6 +7,8 @@ import FormUtil from "FormUtil"
 import ReactGA from "react-ga"
 import TermsOfServiceDisclaimer from "TermsOfServiceDisclaimer"
 import {loginValidation, registerValidation} from "RegistrationValidations"
+import {connect} from "react-redux"
+import {userLoggedIn} from "ducks/user"
 
 const LoginComponent = React.createClass({
     propTypes: {
@@ -72,7 +74,7 @@ const LoginComponent = React.createClass({
         if ( this.state.isLogin )
         {
             Parse.User.logIn(this.state.email.toLowerCase(), this.state.password, {
-                success: component.handleLoginSuccess,
+                success: (saved) => {component.handleLoginSuccess(saved)},
                 error: component.handleLoginError
             });
         }
@@ -87,7 +89,7 @@ const LoginComponent = React.createClass({
             user.set("company", this.state.company);
             user.set("passwordChangeRequired", false);
             user.signUp( null, {
-                success: component.handleRegisterSuccess,
+                success: (saved) => {component.handleRegisterSuccess(saved)},
                 error: component.handleLoginError
             });
         }
@@ -126,6 +128,7 @@ const LoginComponent = React.createClass({
         return this.handleLoginSuccess(user);
     },
     handleLoginSuccess: function(user){
+        this.props.userLoggedIn(user);
         this.props.success();
     },
     setIsRegister: function(e){
@@ -159,9 +162,9 @@ const LoginComponent = React.createClass({
             if ( this.state.isLogin )
             {
                 Parse.User.logIn(this.state.email.toLowerCase(), this.state.password, {
-                    success: () =>{
+                    success: (user) =>{
                         this.setState({errors: {}});
-                        component.handleLoginSuccess();
+                        component.handleLoginSuccess(user);
                     },
                     error: component.handleLoginError
                 });
@@ -176,9 +179,9 @@ const LoginComponent = React.createClass({
                 user.set("lastName", this.state.lastName);
                 user.set("passwordChangeRequired", false);
                 user.signUp( null, {
-                    success: () => {
+                    success: (savedUser) => {
                         this.setState({errors: {}});
-                        component.handleLoginSuccess()
+                        component.handleLoginSuccess(savedUser)
                     },
                     error: component.handleLoginError
                 });
@@ -351,4 +354,23 @@ const LoginComponent = React.createClass({
     }
 })
 
-export default withRouter( LoginComponent, {withRef: true} );
+const mapStateToProps = (state, ownProps) => {
+    return {
+
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        userLoggedIn: (user) => {
+            dispatch(userLoggedIn(user))
+        }
+    }
+}
+
+const connectOpts = {
+    withRef: true
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps, undefined, connectOpts)(withRouter( LoginComponent, {withRef: true}));

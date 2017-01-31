@@ -4,6 +4,9 @@ import {fromJS, Iterable} from "immutable"
 function immutableParse({ getState }) {
     return (next) => (action) => {
         let returnValue = action
+        if ( !action ){
+            return next(action)
+        }
         try{
             if ( action.type.indexOf("oneroost") == -1 ){
                 return next(action)

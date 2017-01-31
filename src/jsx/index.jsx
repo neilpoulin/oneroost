@@ -5,7 +5,7 @@ import Parse from "parse"
 import React from "react"
 
 import { Provider } from "react-redux"
-
+import {userLogOut} from "ducks/user"
 import { Router, Route, browserHistory, IndexRoute, Redirect } from "react-router"
 import LoginPage from "LoginPage"
 import RegisterPage from "RegisterPage"
@@ -40,10 +40,8 @@ import { syncHistoryWithStore } from "react-router-redux"
 Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;
 Parse.serverURL = window.location.origin + "/parse";
-
-ReactGA.initialize(OneRoost.Config.gaTrackingId, getGaOptions());
 const store = configureStore()
-
+ReactGA.initialize(OneRoost.Config.gaTrackingId, getGaOptions());
 const history = syncHistoryWithStore(browserHistory, store)
 // let unsubscribe =
 store.subscribe(() =>
@@ -52,12 +50,8 @@ store.subscribe(() =>
 
 function getGaOptions(){
     var gaOptions = {};
-    var currentUser = Parse.User.current();
-    if ( currentUser ){
-        var userId = currentUser.objectId || currentUser.id
-        console.log("currentUserId:", userId);
-        gaOptions.userId = userId;
-    }
+    let userId = store.getState().user.get("userId")
+    gaOptions.userId = userId;
     return gaOptions;
 }
 
@@ -67,16 +61,16 @@ function logPageView() {
 }
 
 function requireAuthOrParam( nextState, replace ){
-    var user = Parse.User.current();
+    var userId = store.getState().user.get("userId")
     let {accept} = nextState.location.query;
-    if (!user && !!accept )
+    if (!userId && !!accept )
     {
         replace({
             pathname: "/invitations/" + accept,
             state: { nextPathname: nextState.location.pathname }
         })
     }
-    else if (!user) {
+    else if (!userId) {
         replace({
             pathname: "/login",
             state: { nextPathname: nextState.location.pathname }
@@ -91,11 +85,7 @@ function requireAuthOrParam( nextState, replace ){
 }
 
 function requireAdmin(nextState, replace){
-    var isAdmin = false;
-    var user = Parse.User.current();
-    if ( user ){
-        isAdmin = user.get("admin");
-    }
+    let isAdmin = store.getState().user.get("admin")
     if ( !isAdmin ){
         replace({
             pathname: "/unauthorized",
@@ -105,8 +95,8 @@ function requireAdmin(nextState, replace){
 }
 
 function requireAnonymous(nextState, replace){
-    var user = Parse.User.current();
-    if ( user )
+    let isLoggedIn = store.getState().user.get("isLoggedIn")
+    if ( isLoggedIn )
     {
         replace({
             pathname: "/roosts",
@@ -116,11 +106,8 @@ function requireAnonymous(nextState, replace){
 }
 
 function doLogout(nextState, replace){
-    Parse.User.logOut()
-    .done(replace({
-        pathname: "/login",
-        state: { nextPathname: "/login" }
-    }));
+    store.dispatch(userLogOut())
+    replace("/")
 }
 
 render(

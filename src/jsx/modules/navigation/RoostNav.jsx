@@ -1,8 +1,10 @@
 import React, {PropTypes} from "react"
 import {Link} from "react-router"
+import {connect} from "react-redux"
 import NavLink from "NavLink";
-import Parse from "parse";
 import Bootstrap from "bootstrap";
+import {denormalize} from "normalizr"
+import * as User from "models/User"
 
 const RoostNav = React.createClass({
     propTypes: {
@@ -10,6 +12,7 @@ const RoostNav = React.createClass({
         showHome: PropTypes.bool,
         showRegister: PropTypes.bool,
         showLogin: PropTypes.bool,
+        user: PropTypes.object,
     },
     getDefaultProps: function(){
         return {
@@ -20,7 +23,7 @@ const RoostNav = React.createClass({
         }
     },
     render () {
-        var user = Parse.User.current().toJSON();
+        var user = this.props.user;
         var isAdmin = user ? user.admin : false;
         var mobileTitle = this.props.mobileTitle ? <div className="roost-title hidden-lg hidden-md navbar-brand">{this.props.mobileTitle}</div> : null;
         var homeBtn = this.props.showHome ? <NavLink tag="div" to="/roosts" className="hidden-lg hidden-md navbar-brand account-link"><i className="fa fa-home fa-lg"></i></NavLink> : null;
@@ -94,4 +97,21 @@ const RoostNav = React.createClass({
     }
 })
 
-export default RoostNav
+const mapStateToProps = (state, ownProps) => {
+    let user = state.user.get("userId");
+    let entities = state.entities.toJS()
+    if ( user ){
+        user = denormalize(user, User.Schema, entities)
+    }
+    return {
+        user: user
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RoostNav)
