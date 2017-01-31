@@ -6,7 +6,7 @@ import RoostNav from "navigation/RoostNav"
 import AddAccountButton from "account/AddAccountButton"
 import OpportunityList from "account/OpportunityList"
 import BetaUserWelcome from "BetaUserWelcome"
-import {loadOpportunities} from "ducks/opportunities"
+import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
 import {denormalize} from "normalizr"
 import * as Deal from "models/Deal"
 import RoostUtil from "RoostUtil"
@@ -105,9 +105,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const currentUser = Parse.User.current()
+    const userId = currentUser.id
     return {
         loadData: () => {
-            dispatch(loadOpportunities(currentUser.id))
+            dispatch(loadOpportunities(userId))
+            dispatch(subscribeOpportunities(userId))
         }
     }
 }
