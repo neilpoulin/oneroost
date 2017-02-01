@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import AccountSidebarItem from "account/AccountSidebarItem"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 import {Map} from "immutable"
 
 const OpportunityList = React.createClass({

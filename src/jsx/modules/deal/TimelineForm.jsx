@@ -4,7 +4,7 @@ import moment from "moment"
 import Select from "react-select"
 import Stages from "Stages"
 import FormGroup from "FormGroup"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 
 const TimelineForm = React.createClass({
     propTypes: {

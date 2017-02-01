@@ -1,7 +1,7 @@
 // import User from "models/User"
 import Parse from "parse"
 import {Map} from "immutable"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 import {normalize} from "normalizr"
 import * as User from "models/User"
 
@@ -45,7 +45,7 @@ export const userLogOut = () => (dispatch, getState) => {
         dispatch({
             type: LOGOUT,
         })
-    }).catch(console.error);    
+    }).catch(console.error);
 }
 
 export const updateUserAction = (user) => {

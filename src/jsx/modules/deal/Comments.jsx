@@ -7,7 +7,7 @@ import CommentDateSeparator from "CommentDateSeparator";
 
 import {Pointer} from "models/Deal"
 // import io from "socket.io-client"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 import {Map} from "immutable"
 import {denormalize} from "normalizr"
 import * as Comment from "models/DealComment"

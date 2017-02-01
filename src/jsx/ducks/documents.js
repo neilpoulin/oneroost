@@ -3,7 +3,7 @@ import * as Deal from "models/Deal"
 import {normalize} from "normalizr"
 import Parse from "parse"
 import {Map, List} from "immutable"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 import {createComment} from "ducks/comments"
 
 export const ADD_DOCUMENT = "oneroost/documents/ADD_DOCUMENT"

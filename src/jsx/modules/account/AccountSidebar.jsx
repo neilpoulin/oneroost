@@ -7,7 +7,7 @@ import AddAccountButton from "account/AddAccountButton"
 import * as Deal from "models/Deal"
 import {showArchived, hideArchived} from "ducks/opportunities"
 import ShowArchivedButton from "account/ShowArchivedButton"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 
 const AccountSidebar = React.createClass({
     propTypes: {

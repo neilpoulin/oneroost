@@ -3,7 +3,7 @@ import * as User from "models/User"
 import * as Deal from "models/Deal"
 import {normalize} from "normalizr"
 import {Map, List} from "immutable"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 import {addSubscription, handler} from "ducks/subscriptions"
 
 export const OPPORTUNITY_LOAD_REQUEST = "oneroost/opportunity/OPPORTUNITY_LOAD_REQUEST"

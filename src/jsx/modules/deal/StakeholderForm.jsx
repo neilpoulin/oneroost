@@ -5,7 +5,7 @@ import DealComment from "models/DealComment"
 import StakeholderValidation from "StakeholderValidation"
 import FormUtil from "FormUtil"
 import FormInputGroup from "FormInputGroup"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 
 export default React.createClass({
     propTypes: {

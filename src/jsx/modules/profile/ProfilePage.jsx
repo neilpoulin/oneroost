@@ -1,6 +1,6 @@
 import React, {PropTypes} from "react"
 import {connect} from "react-redux"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 import BasicInfo from "profile/BasicInfo"
 import RoostNav from "RoostNav"
 import {saveUser} from "ducks/user"

@@ -6,7 +6,7 @@ import * as NextStep from "models/NextStep"
 import {Map, List} from "immutable"
 import {createComment} from "ducks/comments"
 import {addSubscription, handler} from "ducks/subscriptions"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 
 export const ADD_NEXT_STEP = "oneroost/nextSteps/ADD_NEXT_STEP"
 export const STEP_LOAD_REQUEST = "oneroost/nextSteps/STEP_LOAD_REQUEST"

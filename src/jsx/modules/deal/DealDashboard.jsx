@@ -9,7 +9,7 @@ const DealDashboard = React.createClass({
     },
     render () {
         var dashboard =
-        <div>
+        <div className="DealDashboard">
             {this.props.children}
         </div>
 

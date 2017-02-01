@@ -1,7 +1,7 @@
 import React, { PropTypes } from "react"
 import {connect} from "react-redux"
 import {deleteStep} from "ducks/nextSteps"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 
 const NextStepDeleteButton = React.createClass({
     propTypes: {

@@ -29,6 +29,6 @@ module.exports = {
     ],
     resolve: {
         extensions: [".js", ".jsx", ".json"],
-        modules: ["jsx", "modules", "ducks", "util", "admin", "deal", "form", "navigation", "node_modules", "models", "actions", "reducers", "store", "middleware"],
+        modules: ["jsx", "modules", "ducks", "util", "admin", "deal", "form", "modules/dashboard", "navigation", "node_modules", "models", "actions", "reducers", "store", "middleware"],
     }
 };

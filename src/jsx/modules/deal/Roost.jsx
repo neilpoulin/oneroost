@@ -10,7 +10,7 @@ import DealNavMobile from "DealNavMobile"
 import DealPageBottom from "DealPageBottom"
 import AccountSidebar from "account/AccountSidebar"
 import RoostNav from "RoostNav"
-// import RoostUtil from "RoostUtil"
+// import * as RoostUtil from "RoostUtil"
 
 import {loadDeal} from "ducks/roost"
 import {loadNextSteps, subscribeNextSteps} from "ducks/nextSteps"

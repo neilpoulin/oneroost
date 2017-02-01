@@ -1,6 +1,6 @@
 import React, {PropTypes} from "react";
 import Parse from "parse";
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 import ReactGA from "react-ga"
 
 const Stakeholder = React.createClass({

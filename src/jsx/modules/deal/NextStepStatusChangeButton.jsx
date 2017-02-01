@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 
 const NextStepStatusChangeButton = React.createClass({
     propTypes: {

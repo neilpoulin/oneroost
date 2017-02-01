@@ -1,7 +1,7 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
 import {withRouter} from "react-router"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 import FormInputGroup from "FormInputGroup"
 import FormUtil from "FormUtil"
 import {loginValidatoin, confirmValidation} from "InvitationValidation"
