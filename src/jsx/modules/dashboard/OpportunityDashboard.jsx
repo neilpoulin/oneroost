@@ -6,19 +6,24 @@ import AddAccountButton from "account/AddAccountButton"
 import BetaUserWelcome from "BetaUserWelcome"
 import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
 import OpportunitiesTable from "OpportunitiesTable"
+import LoadingIndicator from "LoadingIndicator"
 
 const OpportunityDashboard = React.createClass({
     propTypes: {
         showTable: PropTypes.bool.isRequired,
-        userId: PropTypes.string.isRequired
+        userId: PropTypes.string.isRequired,
+        isLoading: PropTypes.bool.isRequired
     },
     componentDidMount(){
         this.props.loadData()
     },
     render () {
-        const {showTable, userId} = this.props
+        const {showTable, userId, isLoading} = this.props
         let contents = null
-        if ( !showTable ){
+        if ( isLoading ){
+            contents = <LoadingIndicator message="Loading Dashboard" size="large"/>
+        }
+        else if ( !showTable ){
             contents = <BetaUserWelcome userId={userId}/>
         }
         else{
@@ -46,17 +51,20 @@ const OpportunityDashboard = React.createClass({
 
 const mapStateToProps = (state, ownProps) => {
     const currentUser = Parse.User.current()
-    let userId = currentUser.id;
+    let userId = currentUser.id
     let myOpportunities = state.opportunitiesByUser.get(userId)
+    let isLoading = true
     let showTable = false
     if ( myOpportunities ){
         myOpportunities = myOpportunities.toJS()
+        isLoading = myOpportunities.isLoading
         showTable = myOpportunities.deals.length > 0 || myOpportunities.acrivedDeals.length > 0
     }
 
     return {
         showTable,
         userId,
+        isLoading
     }
 }
 

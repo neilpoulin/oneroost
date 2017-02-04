@@ -1,4 +1,7 @@
 import {Map, fromJS} from "immutable"
+
+export const LOADED_ENTITIES = "oneroost/entities/LOADED_ENTITIES"
+
 // reducers
 export const initialState = Map({
     comments: Map({}),

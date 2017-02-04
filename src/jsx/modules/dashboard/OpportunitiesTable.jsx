@@ -5,7 +5,8 @@ import TableRow from "TableRow"
 import {denormalize} from "normalizr"
 import {connect} from "react-redux"
 import * as Deal from "models/Deal"
-import {loadNextSteps} from "ducks/nextSteps"
+import * as NextStep from "models/NextStep"
+import {loadNextStepsForDeals} from "ducks/nextSteps"
 
 const headers = [
     {
@@ -27,6 +28,11 @@ const headers = [
         label: "Budget",
         clickable: false,
         sortable: false,
+    },
+    {
+        label: "Next Step",
+        clickable: false,
+        sortable: false,
     }
 ]
 
@@ -45,6 +51,11 @@ const OpportunitiesTable = React.createClass({
         return {
             opportunities: []
         }
+    },
+    componentDidMount(){
+        const {opportunities} = this.props
+        const dealIds = opportunities.map(({deal}) => deal.objectId)
+        this.props.loadNextSteps(dealIds)
     },
     componentWillUpdate(nextProps, nextState){
         const oldOpps = this.props.opportunities;
@@ -77,6 +88,7 @@ const mapStateToProps = (state, ownProps) => {
     let myOpportunities = state.opportunitiesByUser.get(userId)
     let deals = []
     let archivedDeals = []
+
     // let isLoading = true
     if ( myOpportunities ){
         myOpportunities = myOpportunities.toJS()
@@ -85,18 +97,31 @@ const mapStateToProps = (state, ownProps) => {
         archivedDeals = denormalize( myOpportunities.archivedDeals, [Deal.Schema], entities)
     }
 
+    let allDealIds = deals.concat(archivedDeals).map(deal => deal.objectId);
+    let stepIds = Object.values(entities.nextSteps).filter(step => allDealIds.indexOf(step.deal) != -1)
+    let nextSteps = denormalize(stepIds, [NextStep.Schema], entities)
+    let nextStepsByDealId = nextSteps.reduce((group, step) => {
+        let dealId = step.deal.objectId
+        let steps = group[dealId] || []
+        steps.push(step)
+        group[dealId] = steps
+        return group
+    }, {})
     let opportunities = deals.map(deal => {
         return {
             deal: deal,
-            archived: false
+            archived: false,
+            nextSteps: nextStepsByDealId[deal.objectId] || []
         }
     })
     let archivedOpportunities = archivedDeals.map(deal => {
         return {
             deal: deal,
-            archived: true
+            archived: true,
+            nextSteps: nextStepsByDealId[deal.objectId] || []
         }
     })
+
 
     return {
         opportunities: opportunities.concat(archivedOpportunities),
@@ -107,9 +132,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         loadNextSteps: (dealIds=[]) => {
-            dealIds.forEach(id => {
-                dispatch(loadNextSteps(id))
-            })
+            console.log("Loading next steps for deals", dealIds)
+            dispatch(loadNextStepsForDeals(dealIds))
         }
     }
 }

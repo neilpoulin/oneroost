@@ -17,9 +17,29 @@ const TableRow = React.createClass({
             // stakeholders,
             //  comments,
             //  documents,
-            //  nextSteps
+            nextSteps,
             archived
          } = this.props.opportunity
+
+         let sortedSteps = nextSteps.filter(step => {
+             return step.completedDate != null && step.active !== false
+         }).sort((a, b) => {
+            return a.dueDate > b.dueDate
+         })
+         let nextStep = null;
+         if ( sortedSteps.length > 0 ){
+             let step = sortedSteps[0]
+             nextStep =
+             <div>
+                    <div>
+                        {step.title}
+                    </div>
+                    <div>
+                        due {RoostUtil.formatDate(step.dueDate)}
+                    </div>
+             </div>
+         }
+
         return (
             <tr className={archived? "archived" : ""}>
                 <td>
@@ -37,6 +57,9 @@ const TableRow = React.createClass({
                 </td>
                 <td>
                     {RoostUtil.getBudgetString(deal, "--")}
+                </td>
+                <td>
+                    {nextStep}
                 </td>
             </tr>
         )

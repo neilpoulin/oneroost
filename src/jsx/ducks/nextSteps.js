@@ -7,6 +7,7 @@ import {Map, List} from "immutable"
 import {createComment} from "ducks/comments"
 import {addSubscription, handler} from "ducks/subscriptions"
 import * as RoostUtil from "RoostUtil"
+import {LOADED_ENTITIES} from "ducks/entities"
 
 export const ADD_NEXT_STEP = "oneroost/nextSteps/ADD_NEXT_STEP"
 export const STEP_LOAD_REQUEST = "oneroost/nextSteps/STEP_LOAD_REQUEST"
@@ -53,6 +54,14 @@ export default function reducer(state=initialState, action){
 const stepQuery = (dealId) => {
     let query = new Parse.Query(NextStep.className)
     query.equalTo( "deal", Pointer(Deal.className, dealId));
+    query.ascending("dueDate");
+    return query;
+}
+
+const stepsForDealsQuery = (dealIds) => {
+    let pointers = dealIds.map(dealId => Pointer(Deal.className, dealId))
+    let query = new Parse.Query(NextStep.className)
+    query.containedIn("deal", pointers)
     query.ascending("dueDate");
     return query;
 }
@@ -110,6 +119,53 @@ export const deleteStep = (step, message) => (dispatch, getState) => {
         username: "OneRoost Bot",
         navLink: {type: "step", id: step.id}
     }))
+}
+
+export const loadNextStepsForDeals = (dealIds=[]) => (dispatch, getState) => {
+    let {roosts} = getState();
+    let dealIdsToLoad = dealIds.filter(dealId => {
+        // no roost exists, OR it does exist and steps have NOT been loaded AND steps are NOT loading
+        return !roosts.has(dealId) || !roosts.get(dealId).get("nextSteps").get("hasLoaded") && !roosts.get(dealId).get("nextSteps").get("isLoading")
+    });
+
+    let query = stepsForDealsQuery(dealIds);
+    let findResults = query.find()
+    //notify that we're loading steps for the deals
+    dealIdsToLoad.forEach(id => {
+        dispatch({
+            type: STEP_LOAD_REQUEST,
+            dealId: id
+        })
+    })
+    findResults.then(results => {
+        let json = results.map(step => step.toJSON())
+        let entities = normalize(json, [NextStep.Schema]).entities || {}
+
+        // dispatch the loaded entities
+        dispatch({
+            type: LOADED_ENTITIES,
+            entities
+        })
+
+        // let nextStepsByDealId = json.reduce((group, step) => {
+        //     let dealId = step.deal.objectId
+        //     let steps = group[dealId] || []
+        //     steps.push(step)
+        //     group[dealId] = steps
+        //     return group
+        // }, {})
+
+        // not dispatching these from for dashboard performance reasons... not sure if we need to
+        // dispatch all fo the loaded steps to the roosts
+        // Object.keys(nextStepsByDealId).forEach(dealId => {
+        //     let steps = nextStepsByDealId[dealId]
+        //     dispatch({
+        //         type: STEP_LOAD_SUCCESS,
+        //         payload: List(steps.map(Map)),
+        //         dealId: dealId
+        //     })
+        // })
+    }).catch(console.error)
 }
 
 export const loadNextSteps = (dealId, force=false) => (dispatch, getState) => {
