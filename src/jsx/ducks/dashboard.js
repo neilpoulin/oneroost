@@ -9,7 +9,7 @@ const initialState = Map({
     isLoading: false,
     sortBy: null,
     sortDirection: null,
-    showArchived: true,
+    showArchived: false,
 });
 export default function reducer(state=initialState,action) {
     switch (action.type) {
@@ -26,4 +26,17 @@ export default function reducer(state=initialState,action) {
             break;
     }
     return state;
+}
+
+export const setShowArchived = (showArchived) => (dispatch, getState) => {
+    if ( showArchived ){
+        dispatch({
+            type: SHOW_ARCHIVED
+        })
+    }
+    else {
+        dispatch({
+            type: HIDE_ARCHIVED
+        })
+    }
 }

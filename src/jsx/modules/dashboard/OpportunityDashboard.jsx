@@ -5,7 +5,9 @@ import RoostNav from "navigation/RoostNav"
 import AddAccountButton from "account/AddAccountButton"
 import BetaUserWelcome from "BetaUserWelcome"
 import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
+import {setShowArchived} from "ducks/dashboard"
 import OpportunitiesTable from "OpportunitiesTable"
+import ToggleButton from "ToggleButton"
 import LoadingIndicator from "LoadingIndicator"
 
 const OpportunityDashboard = React.createClass({
@@ -18,7 +20,12 @@ const OpportunityDashboard = React.createClass({
         this.props.loadData()
     },
     render () {
-        const {showTable, userId, isLoading} = this.props
+        const {showTable,
+            userId,
+            isLoading,
+            setShowArchived,
+            showArchived,
+            hasArchivedDeals} = this.props
         let contents = null
         if ( isLoading ){
             contents = <LoadingIndicator message="Loading Dashboard" size="large"/>
@@ -30,20 +37,34 @@ const OpportunityDashboard = React.createClass({
             contents = <OpportunitiesTable userId={userId}/>
         }
 
+        let toggleArchivedButton = null
+        if ( hasArchivedDeals){
+            toggleArchivedButton =
+            <ToggleButton
+                label={"Show Archived: " + (showArchived ? "on" : "off")}
+                onClick={setShowArchived}
+                inactiveType={"outline-primary"}
+                block={false}
+                active={showArchived} />
+        }
+
         return (
             <div className="OpportunityDashboard">
                 <RoostNav showHome={false}/>
                 <div className="secondaryNav container">
                     <h2>Dashboard</h2>
-                    <AddAccountButton
-                        onSuccess={this.afterAddAccount}
-                        btnClassName="btn-outline-primary"
-                        />
+                    <div className="actions">
+                        {toggleArchivedButton}
+                        <AddAccountButton
+                            onSuccess={this.afterAddAccount}
+                            btnClassName="btn-outline-primary"
+                            />
+                    </div>
+
                 </div>
                 <div className="dashboard-body container">
                     {contents}
                </div>
-
             </div>
         )
     }
@@ -51,20 +72,25 @@ const OpportunityDashboard = React.createClass({
 
 const mapStateToProps = (state, ownProps) => {
     const currentUser = Parse.User.current()
+    let dashboard = state.dashboard.toJS()
     let userId = currentUser.id
     let myOpportunities = state.opportunitiesByUser.get(userId)
     let isLoading = true
     let showTable = false
+    let hasArchivedDeals = false
     if ( myOpportunities ){
         myOpportunities = myOpportunities.toJS()
         isLoading = myOpportunities.isLoading
-        showTable = myOpportunities.deals.length > 0 || myOpportunities.acrivedDeals.length > 0
+        showTable = myOpportunities.deals.length > 0 || myOpportunities.archivedDeals.length > 0
+        hasArchivedDeals = myOpportunities.archivedDeals.length > 0
     }
 
     return {
         showTable,
         userId,
-        isLoading
+        isLoading,
+        showArchived: dashboard.showArchived,
+        hasArchivedDeals
     }
 }
 
@@ -75,6 +101,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loadData: () => {
             dispatch(loadOpportunities(userId))
             dispatch(subscribeOpportunities(userId))
+        },
+        setShowArchived: (show) => {
+            dispatch(setShowArchived(show))
         }
     }
 }

@@ -15,6 +15,15 @@ export const toJSON = function(obj){
     } else if ( obj instanceof Parse.Object ){
         json = obj.toJSON()
     }
+    // Transform stupid Parse dates into iso strings
+    Object.keys(json).forEach(key => {
+        let value = json[key]
+        if ( value !== null && typeof value === "object" ){
+            if ( value["__type"] === "Date" && value["iso"] ){
+                json[key] = value["iso"]
+            }
+        }
+    })
     return json
 }
 
@@ -32,6 +41,15 @@ export const copyJSON = function(json){
     if ( copy["__type"] ){
         delete copy["__type"]
     }
+    // Transform stupid Parse dates into iso strings
+    Object.keys(copy).forEach(key => {
+        let value = copy[key]
+        if ( value !== null && typeof value === "object" ){
+            if ( value["__type"] === "Date" && value["iso"] ){
+                copy[key] = value["iso"]
+            }
+        }
+    })
     return copy
 }
 

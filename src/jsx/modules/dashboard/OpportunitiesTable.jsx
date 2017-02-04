@@ -86,6 +86,7 @@ const mapStateToProps = (state, ownProps) => {
     let userId = currentUser.id;
     let entities = state.entities.toJS()
     let myOpportunities = state.opportunitiesByUser.get(userId)
+    let dashboard = state.dashboard.toJS()
     let deals = []
     let archivedDeals = []
 
@@ -94,7 +95,7 @@ const mapStateToProps = (state, ownProps) => {
         myOpportunities = myOpportunities.toJS()
         // isLoading = myOpportunities.isLoading;
         deals = denormalize( myOpportunities.deals, [Deal.Schema], entities)
-        archivedDeals = denormalize( myOpportunities.archivedDeals, [Deal.Schema], entities)
+        archivedDeals = dashboard.showArchived ? denormalize( myOpportunities.archivedDeals, [Deal.Schema], entities) : []
     }
 
     let allDealIds = deals.concat(archivedDeals).map(deal => deal.objectId);

@@ -154,9 +154,9 @@ export const loadNextStepsForDeals = (dealIds=[]) => (dispatch, getState) => {
         //     group[dealId] = steps
         //     return group
         // }, {})
-
-        // not dispatching these from for dashboard performance reasons... not sure if we need to
-        // dispatch all fo the loaded steps to the roosts
+        //
+        // // not dispatching these from for dashboard performance reasons... not sure if we need to
+        // // dispatch all fo the loaded steps to the roosts
         // Object.keys(nextStepsByDealId).forEach(dealId => {
         //     let steps = nextStepsByDealId[dealId]
         //     dispatch({

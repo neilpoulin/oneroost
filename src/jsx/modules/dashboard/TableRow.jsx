@@ -22,7 +22,7 @@ const TableRow = React.createClass({
          } = this.props.opportunity
 
          let sortedSteps = nextSteps.filter(step => {
-             return step.completedDate != null && step.active !== false
+             return step.completedDate == null && step.active !== false
          }).sort((a, b) => {
             return a.dueDate > b.dueDate
          })
