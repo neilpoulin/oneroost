@@ -8,6 +8,7 @@ import * as Deal from "models/Deal"
 import * as NextStep from "models/NextStep"
 import {loadNextStepsForDeals} from "ducks/nextSteps"
 import _ from "lodash"
+import moment from "moment"
 
 const headers = [
     {
@@ -128,6 +129,7 @@ const mapStateToProps = (state, ownProps) => {
     })
 
     let allOpportunities = opportunities.concat(archivedOpportunities)
+
     if (query != null && query.trim()){
         query = query.trim().replace(/ +(?= )/g,"");
         let patterns = query.split(" ").map(word => new RegExp(_.escapeRegExp(word), "i"))
@@ -146,11 +148,15 @@ const mapStateToProps = (state, ownProps) => {
             opp.searchScore = searchScore;
             return searchScore > 0;
         })
+        allOpportunities = allOpportunities.sort((a, b) => {
+            return b.searchScore - a.searchScore
+        })
+    } else {
+        // Sort by activity date:
+        allOpportunities = allOpportunities.sort((a, b) => {
+            return moment(b.deal.updatedAt).diff(moment(a.deal.updatedAt))
+        })
     }
-
-    allOpportunities = allOpportunities.sort((a, b) => {
-        return b.searchScore - a.searchScore
-    })
 
     return {
         opportunities: allOpportunities,
