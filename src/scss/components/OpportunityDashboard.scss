@@ -15,8 +15,24 @@
         }
         .actions{
             display: flex;
-            > button:not(:last-child){
+            > :not(:last-child){
                 margin-right: 10px;
+            }
+
+            .SearchInput{
+                flex-grow: 2;
+                display: flex;
+
+                input{
+                    flex-grow: 0;
+                    width: 100px;
+                    transition: width .5s;
+                    &:focus, &:hover{
+                        flex-grow: 2;
+                        width: 200px;
+                    }
+                }
+
             }
         }
     }

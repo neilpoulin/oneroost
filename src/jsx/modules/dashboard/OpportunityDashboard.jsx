@@ -5,10 +5,11 @@ import RoostNav from "navigation/RoostNav"
 import AddAccountButton from "account/AddAccountButton"
 import BetaUserWelcome from "BetaUserWelcome"
 import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
-import {setShowArchived} from "ducks/dashboard"
+import {setShowArchived, searchOpportunities} from "ducks/dashboard"
 import OpportunitiesTable from "OpportunitiesTable"
 import ToggleButton from "ToggleButton"
 import LoadingIndicator from "LoadingIndicator"
+import SearchInput from "SearchInput"
 
 const OpportunityDashboard = React.createClass({
     propTypes: {
@@ -25,7 +26,8 @@ const OpportunityDashboard = React.createClass({
             isLoading,
             setShowArchived,
             showArchived,
-            hasArchivedDeals} = this.props
+            hasArchivedDeals,
+            doSearch} = this.props
         let contents = null
         if ( isLoading ){
             contents = <LoadingIndicator message="Loading Dashboard" size="large"/>
@@ -43,7 +45,8 @@ const OpportunityDashboard = React.createClass({
             <ToggleButton
                 label={"Show Archived: " + (showArchived ? "on" : "off")}
                 onClick={setShowArchived}
-                inactiveType={"outline-primary"}
+                activeType="link"
+                inactiveType={"link"}
                 block={false}
                 active={showArchived} />
         }
@@ -52,8 +55,12 @@ const OpportunityDashboard = React.createClass({
             <div className="OpportunityDashboard">
                 <RoostNav showHome={false}/>
                 <div className="secondaryNav container">
-                    <h2>Dashboard</h2>
+                    <h2 className="hidden-sm hidden-xs">Dashboard</h2>
                     <div className="actions">
+                        <SearchInput
+                            onKeyUp={doSearch}
+                            onSearch={doSearch}
+                            />
                         {toggleArchivedButton}
                         <AddAccountButton
                             onSuccess={this.afterAddAccount}
@@ -104,6 +111,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         },
         setShowArchived: (show) => {
             dispatch(setShowArchived(show))
+        },
+        doSearch: (query) => {
+            dispatch(searchOpportunities(query))
         }
     }
 }

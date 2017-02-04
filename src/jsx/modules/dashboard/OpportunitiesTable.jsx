@@ -7,6 +7,7 @@ import {connect} from "react-redux"
 import * as Deal from "models/Deal"
 import * as NextStep from "models/NextStep"
 import {loadNextStepsForDeals} from "ducks/nextSteps"
+import _ from "lodash"
 
 const headers = [
     {
@@ -90,6 +91,7 @@ const mapStateToProps = (state, ownProps) => {
     let deals = []
     let archivedDeals = []
 
+    let query = dashboard.searchTerm
     // let isLoading = true
     if ( myOpportunities ){
         myOpportunities = myOpportunities.toJS()
@@ -112,20 +114,46 @@ const mapStateToProps = (state, ownProps) => {
         return {
             deal: deal,
             archived: false,
-            nextSteps: nextStepsByDealId[deal.objectId] || []
+            nextSteps: nextStepsByDealId[deal.objectId] || [],
+            searchScore: 0,
         }
     })
     let archivedOpportunities = archivedDeals.map(deal => {
         return {
             deal: deal,
             archived: true,
-            nextSteps: nextStepsByDealId[deal.objectId] || []
+            nextSteps: nextStepsByDealId[deal.objectId] || [],
+            searchScore: 0,
         }
     })
 
+    let allOpportunities = opportunities.concat(archivedOpportunities)
+    if (query != null && query.trim()){
+        query = query.trim().replace(/ +(?= )/g,"");
+        let patterns = query.split(" ").map(word => new RegExp(_.escapeRegExp(word), "i"))
+
+        allOpportunities = allOpportunities.filter(opp => {
+            let {deal} = opp
+            let fields = []
+            fields.push(deal.dealName)
+            fields.push(deal.description)
+
+            let searchScore = fields.reduce((fieldScore, field) => {
+                return fieldScore + patterns.reduce((patScore, pat) => {
+                    return patScore + ( pat.test(field) ? 1 : 0 )
+                }, 0)
+            }, 0)
+            opp.searchScore = searchScore;
+            return searchScore > 0;
+        })
+    }
+
+    allOpportunities = allOpportunities.sort((a, b) => {
+        return b.searchScore - a.searchScore
+    })
 
     return {
-        opportunities: opportunities.concat(archivedOpportunities),
+        opportunities: allOpportunities,
         userId,
     }
 }
