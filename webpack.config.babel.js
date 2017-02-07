@@ -1,8 +1,9 @@
 import {paths} from "./build-paths"
 import webpack from "webpack"
+import "babel-polyfill"
 
 module.exports = {
-    entry: "index.jsx",
+    entry: ["babel-polyfill","index.jsx"],
     context: __dirname + "/src/jsx",
     output: {
         path: __dirname + "/public/bundle",

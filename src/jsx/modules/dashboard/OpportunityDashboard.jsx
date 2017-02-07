@@ -46,6 +46,7 @@ const OpportunityDashboard = React.createClass({
                 label={"Show Archived: " + (showArchived ? "on" : "off")}
                 onClick={setShowArchived}
                 activeType="link"
+                className="btn-sm"
                 inactiveType={"link"}
                 block={false}
                 active={showArchived} />
@@ -64,7 +65,7 @@ const OpportunityDashboard = React.createClass({
                         {toggleArchivedButton}
                         <AddAccountButton
                             onSuccess={this.afterAddAccount}
-                            btnClassName="btn-outline-primary"
+                            btnClassName="btn-outline-primary btn-sm"
                             />
                     </div>
 

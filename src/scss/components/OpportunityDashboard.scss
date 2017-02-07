@@ -53,8 +53,11 @@
         .secondaryNav{
             .actions{
                 flex-wrap: wrap;
+                justify-content: space-between;
                 .SearchInput{
                     width: 100%;
+                    margin-bottom: 10px;
+                    margin-right: 0px;
                     input{
                         width: 100%;
                         &:focus, &:hover{

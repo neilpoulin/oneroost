@@ -12,6 +12,8 @@
                 fill: $navbar-default-link-hover-color;
             }
         }
+        display: flex;
+        justify-content: center;
 
         .logo-chicken{
             fill: $navbar-default-link-color;
