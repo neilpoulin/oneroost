@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import Select from "react-select"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 import {connect} from "react-redux"
 import {denormalize} from "normalizr"
 import * as Stakeholder from "models/Stakeholder"

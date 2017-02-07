@@ -11,7 +11,6 @@ import LoginPage from "LoginPage"
 import RegisterPage from "RegisterPage"
 import Landing from "LandingPage"
 import App from "App"
-import UserHomePage from "UserHomePage"
 import Roost from "deal/Roost"
 import NavPage from "navigation/NavPage"
 import DealDashboard from "deal/DealDashboard"
@@ -22,6 +21,7 @@ import NextStepSidebar from "deal/sidebar/NextStepSidebar"
 import AllStepsSidebar from "deal/sidebar/AllStepsSidebar"
 import NextStepCompletedSidebar from "deal/sidebar/NextStepCompletedSidebar"
 import DocumentsSidebar from "deal/sidebar/DocumentsSidebar"
+import OpportunityDashboard from "OpportunityDashboard"
 import Unauthorized from "Unauthorized"
 import Invitation from "Invitation"
 import ReviewInvitation from "ReviewInvitation"
@@ -129,7 +129,7 @@ render(
                 <Route path="/terms" component={TermsOfServicePage}/>
                 <Route path="/privacy" component={PrivacyPage}/>
                 <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
-                    <IndexRoute component={UserHomePage}/>
+                    <IndexRoute component={OpportunityDashboard}/>
                     <Route path="unauthorized" component={Unauthorized}/>
                     <Redirect from=":dealId" to="/roosts/:dealId/messages" />
                     <Route path=":dealId" component={Roost}>

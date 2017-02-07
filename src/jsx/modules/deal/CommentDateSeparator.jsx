@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react";
 import moment from "moment";
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 const CommentDateSeparator = React.createClass({
     propTypes: {
         nextDate: PropTypes.any.isRequired,

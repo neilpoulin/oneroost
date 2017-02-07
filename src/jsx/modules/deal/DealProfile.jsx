@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import NavLink from "NavLink";
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 
 const DealProfile = React.createClass({
     propTypes: {
@@ -16,17 +16,7 @@ const DealProfile = React.createClass({
     },
     getBudgetString(){
         var {deal} = this.props;
-        var budget = deal.budget
-        if (!budget) {
-            return "Not Quoted";
-        }
-        if (budget.low == budget.high) {
-            if (budget.low > 0) {
-                return RoostUtil.formatMoney(budget.low, true);
-            }
-            return "Not Quoted";
-        }
-        return RoostUtil.formatMoney(budget.low, true) + " - " + RoostUtil.formatMoney(budget.high, false);
+        return RoostUtil.getBudgetString(deal)
     },
     render () {
         const {deal, stakeholders, documents} = this.props;

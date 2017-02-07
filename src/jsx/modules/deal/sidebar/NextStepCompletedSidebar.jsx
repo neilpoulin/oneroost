@@ -1,7 +1,7 @@
 import React, {PropTypes} from "react"
 import NavLink from "NavLink"
 import moment from "moment"
-// import RoostUtil from "RoostUtil"
+// import * as RoostUtil from "RoostUtil"
 
 const NextStepCompletedSidebar = React.createClass({
     propTypes: {

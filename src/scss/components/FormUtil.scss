@@ -1,5 +1,5 @@
 $default-margin: 5px;
-
+$search-border-radius: 20px;
 .control-label{
     &.required:after{
         content: "* "
@@ -10,6 +10,29 @@ $default-margin: 5px;
     &.label-right{
         text-align: right;
     }
+}
+
+.input-icon{
+    position: relative;
+    vertical-align: middle;
+    white-space: nowrap;
+    input{
+        padding-left: 25px;
+    }
+    .icon{
+        position: absolute;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        left: 10px;
+    }
+}
+
+.SearchInput{
+    input{
+        border-radius: $search-border-radius;
+    }
+
 }
 
 @mixin flex-group{

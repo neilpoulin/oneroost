@@ -7,7 +7,7 @@ import AddAccountButton from "account/AddAccountButton"
 import * as Deal from "models/Deal"
 import {showArchived, hideArchived} from "ducks/opportunities"
 import ShowArchivedButton from "account/ShowArchivedButton"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 
 const AccountSidebar = React.createClass({
     propTypes: {
@@ -33,12 +33,16 @@ const AccountSidebar = React.createClass({
     },
     render () {
         var {deals, archivedDeals, archivedVisible, currentUser} = this.props;
+        let archivedButton = null
+        if (archivedDeals.length > 0){
+            archivedButton = <ShowArchivedButton userId={this.props.userId} />
+        }
 
         return (
             <div id={"accountSidebar" + (this.props.isMobile ? "Mobile" : "")} className="container-fluid hidden-sm hidden-xs">
                 <div>
                     <h3>Opportunities</h3>
-                    <ShowArchivedButton userId={this.props.userId} />
+                    {archivedButton}
                 </div>
 
                 <OpportunityList deals={deals} archivedDeals={archivedDeals} archivedVisible={archivedVisible} user={currentUser}/>

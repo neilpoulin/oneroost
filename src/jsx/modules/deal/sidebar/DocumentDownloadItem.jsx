@@ -1,7 +1,7 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
 import moment from "moment"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 
 const DocumentDownloadItem = React.createClass({
     propTypes: {

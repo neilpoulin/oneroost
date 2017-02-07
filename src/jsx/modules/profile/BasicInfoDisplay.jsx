@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import FormGroupStatic from "FormGroupStatic"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 
 const BasicInfoDisplay = React.createClass({
     propTypes: {

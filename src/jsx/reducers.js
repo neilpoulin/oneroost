@@ -6,6 +6,7 @@ import opportunitiesByUser from "ducks/opportunitiesByUser"
 import user from "ducks/user"
 import subscriptions from "ducks/subscriptions"
 import notifications from "ducks/notification"
+import dashboard from "ducks/dashboard"
 
 const reducers = combineReducers({
     entities,
@@ -15,6 +16,7 @@ const reducers = combineReducers({
     subscriptions,
     routing,
     notifications,
+    dashboard,
 });
 
 export default reducers;

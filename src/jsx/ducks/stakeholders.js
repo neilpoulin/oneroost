@@ -3,7 +3,7 @@ import * as Deal from "models/Deal"
 import * as Account from "models/Account"
 import {normalize} from "normalizr"
 import Parse from "parse"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 import {Map, List} from "immutable"
 import {createComment} from "ducks/comments"
 

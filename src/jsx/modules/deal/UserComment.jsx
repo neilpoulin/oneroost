@@ -1,7 +1,7 @@
 import React, { PropTypes } from "react"
 import Linkify from "react-linkify"
 import moment from "moment"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 
 const UserComment = React.createClass({
     propTypes: {

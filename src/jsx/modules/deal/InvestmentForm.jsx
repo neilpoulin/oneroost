@@ -4,7 +4,7 @@ import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormInputGroup from "FormInputGroup"
 import InvestmentValidation from "InvestmentValidation"
 import FormUtil from "FormUtil"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 
 const InvestmentForm = React.createClass({
     propTypes: {

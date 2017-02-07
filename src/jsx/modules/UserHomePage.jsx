@@ -9,7 +9,7 @@ import BetaUserWelcome from "BetaUserWelcome"
 import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
 import {denormalize} from "normalizr"
 import * as Deal from "models/Deal"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 
 const UserHomePage = React.createClass({
     getInitialState(){

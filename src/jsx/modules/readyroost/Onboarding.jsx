@@ -6,7 +6,7 @@ import Confirmation from "readyroost/Confirmation"
 import Parse from "parse"
 import ReactGA from "react-ga"
 import { withRouter, Link } from "react-router"
-import RoostUtil from "RoostUtil"
+import * as RoostUtil from "RoostUtil"
 import Progress from "readyroost/Progress"
 
 var fieldValues = {

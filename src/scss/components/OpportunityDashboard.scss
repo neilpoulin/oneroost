@@ -1,0 +1,68 @@
+.OpportunityDashboard{
+    .secondaryNav{
+        display: flex;
+        align-content: space-between;
+        padding: 15px;
+        > {
+            align-self: center;
+            h1, h2, h3, h4 {
+                flex: 1 1;
+                margin: 0px;
+            }
+            button{
+                flex-grow: 0;
+            }
+        }
+        .actions{
+            display: flex;
+            > :not(:last-child){
+                margin-right: 10px;
+            }
+
+            .SearchInput{
+                flex-grow: 2;
+                display: flex;
+
+                input{
+                    flex-grow: 0;
+                    width: 150px;
+                    transition: width .5s;
+                    &:focus, &:hover{
+                        flex-grow: 2;
+                        width: 200px;
+                    }
+                }
+
+            }
+        }
+    }
+
+    .OpportunitiesTable {
+        tr{
+            &.archived{
+                background: yellow;
+            }
+        }
+    }
+}
+
+
+
+@media (max-width: $screen-sm-min) {
+    .OpportunityDashboard{
+        .secondaryNav{
+            .actions{
+                flex-wrap: wrap;
+                .SearchInput{
+                    width: 100%;
+                    input{
+                        width: 100%;
+                        &:focus, &:hover{
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

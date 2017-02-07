@@ -5,7 +5,7 @@ import {Map, fromJS, Iterable} from "immutable"
 import {denormalize} from "normalizr"
 import * as User from "models/User"
 
-exports.toJSON = function(obj){
+export const toJSON = function(obj){
     if ( !obj ){
         return obj
     }
@@ -15,10 +15,19 @@ exports.toJSON = function(obj){
     } else if ( obj instanceof Parse.Object ){
         json = obj.toJSON()
     }
+    // Transform stupid Parse dates into iso strings
+    Object.keys(json).forEach(key => {
+        let value = json[key]
+        if ( value !== null && typeof value === "object" ){
+            if ( value["__type"] === "Date" && value["iso"] ){
+                json[key] = value["iso"]
+            }
+        }
+    })
     return json
 }
 
-exports.copyJSON = function(json){
+export const copyJSON = function(json){
     if ( !json ){
         return json;
     }
@@ -32,10 +41,19 @@ exports.copyJSON = function(json){
     if ( copy["__type"] ){
         delete copy["__type"]
     }
+    // Transform stupid Parse dates into iso strings
+    Object.keys(copy).forEach(key => {
+        let value = copy[key]
+        if ( value !== null && typeof value === "object" ){
+            if ( value["__type"] === "Date" && value["iso"] ){
+                copy[key] = value["iso"]
+            }
+        }
+    })
     return copy
 }
 
-exports.getCurrentUser = function(state){
+export const getCurrentUser = function(state){
     if ( !state ){
         console.warn("No 'state' passed in to RoostUtil.getCurrentUser()... using Parse.User.current() ")
         return Parse.User.current();
@@ -46,7 +64,7 @@ exports.getCurrentUser = function(state){
     return this.toJSON(currentUser)
 }
 
-exports.getFullName = function( parseUser ){
+export const getFullName = function( parseUser ){
     var fullName = ""
     try{
         if ( parseUser instanceof Parse.User ){
@@ -62,14 +80,14 @@ exports.getFullName = function( parseUser ){
     return fullName.trim()
 }
 
-exports.formatDate = function(dateString){
+export const formatDate = function(dateString){
     if (dateString != null && dateString != undefined) {
         return moment(dateString).format("MMM D, YYYY");
     }
     return null;
 }
 
-exports.formatMoney = function(amount, includeSymbol){
+export const formatMoney = function(amount, includeSymbol){
     var format = "($0[.]0a)";
     if (!includeSymbol) {
         format = "(0[.]0a)"
@@ -77,7 +95,7 @@ exports.formatMoney = function(amount, includeSymbol){
     return numeral(amount).format(format);
 }
 
-exports.formatDurationAsDays = function( past ){
+export const formatDurationAsDays = function( past ){
     var numDays = Math.floor( moment.duration( moment().diff(past)).asDays() );
     var formatted = numDays + " days ago";
 
@@ -91,7 +109,7 @@ exports.formatDurationAsDays = function( past ){
     return formatted;
 }
 
-exports.isSameDate = function(nextDate, previousDate)
+export const isSameDate = function(nextDate, previousDate)
 {
     if (nextDate != null && !(nextDate instanceof Date ) )
     {
@@ -110,16 +128,16 @@ exports.isSameDate = function(nextDate, previousDate)
     return isSameDay;
 }
 
-exports.isValidEmail = function(email){
+export const isValidEmail = function(email){
     var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
 }
 
-exports.isNotCurrentUser = function(user){
+export const isNotCurrentUser = function(user){
     return !this.isCurrentUser(user);
 }
 
-exports.isCurrentUser = function(user){
+export const isCurrentUser = function(user){
     if (user){
         let userId = user.objectId || user.id;
         if ( typeof userId === "object" ){
@@ -156,7 +174,7 @@ function getRoostNameForParseUser( deal, displayFor ){
 }
 
 /** Get the display name for the roost, contextual to the user passed in**/
-exports.getRoostDisplayName = function(deal, displayFor){
+export const getRoostDisplayName = function(deal, displayFor){
     if (deal instanceof Parse.Object || Map.isMap(deal)){
         // throw "Attempting to get roost name from a non parse object", deal;
         return getRoostNameForParseUser(deal, displayFor)
@@ -183,4 +201,22 @@ exports.getRoostDisplayName = function(deal, displayFor){
         roostName = account.accountName;
     }
     return roostName;
+}
+
+
+export const getBudgetString = (deal, notQuotedString="Not Quoted") => {
+    if ( !deal ){
+        return ""
+    }
+    var budget = deal.budget
+    if (!budget) {
+        return notQuotedString;
+    }
+    if (budget.low == budget.high) {
+        if (budget.low > 0) {
+            return this.formatMoney(budget.low, true);
+        }
+        return notQuotedString;
+    }
+    return formatMoney(budget.low, true) + " - " + formatMoney(budget.high, false);
 }
