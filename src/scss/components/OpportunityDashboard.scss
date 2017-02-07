@@ -45,3 +45,24 @@
         }
     }
 }
+
+
+
+@media (max-width: $screen-sm-min) {
+    .OpportunityDashboard{
+        .secondaryNav{
+            .actions{
+                flex-wrap: wrap;
+                .SearchInput{
+                    width: 100%;
+                    input{
+                        width: 100%;
+                        &:focus, &:hover{
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

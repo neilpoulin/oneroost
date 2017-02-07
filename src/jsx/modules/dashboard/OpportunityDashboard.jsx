@@ -69,7 +69,7 @@ const OpportunityDashboard = React.createClass({
                     </div>
 
                 </div>
-                <div className="dashboard-body container">
+                <div className="dashboard-body container table-responsive">
                     {contents}
                </div>
             </div>

@@ -12,12 +12,12 @@ import moment from "moment"
 
 const headers = [
     {
-        label: "Company",
+        label: "Opportunity",
         clickable: false,
         sortable: false,
     },
     {
-        label: "Problem",
+        label: "Description",
         clickable: false,
         sortable: false,
     },
@@ -70,7 +70,7 @@ const OpportunitiesTable = React.createClass({
     },
     render () {
         const {opportunities} = this.props
-        return (
+        return (            
             <table className="table OpportunitiesTable">
                 <TableHeader columns={headers} />
                 <tbody>
