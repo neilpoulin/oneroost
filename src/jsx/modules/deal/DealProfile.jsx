@@ -19,19 +19,21 @@ const DealProfile = React.createClass({
         return RoostUtil.getBudgetString(deal)
     },
     render () {
-        const {deal, stakeholders, documents} = this.props;
+        const {deal, stakeholders, documents, requirements=[]} = this.props;
         var widgetClassName = "widget"
         var titleClassName = "col-xs-2 widget"
         var iconSizeClassname = "fa-lg"
         const dealId = deal.objectId
-        const {profile={}, createdAt, dealName} = deal
+        const {profile={}, dealName} = deal
         var budget = this.getBudgetString()
 
         let activeStakeholders = stakeholders.filter(s => s.active !== false);
         var stakeholderCount = activeStakeholders.length
         var documentCount = documents.length
 
-        var formattedRoostAge = RoostUtil.formatDurationAsDays( createdAt )
+        let completedRequirements = requirements.filter(requirement => {
+            return requirement.completedDate != null
+        })
 
         var dealTitleBlock =
         <div className={titleClassName}>
@@ -61,15 +63,14 @@ const DealProfile = React.createClass({
                 </div>
                 <div className={widgetClassName}>
                     <div className={"text-center " + (profile.timeline ? "" : "invisible")}>
-                        <NavLink tag="div" to={"/roosts/" + dealId + "/timeline" } className="widgetLink">
+                        <NavLink tag="div" to={"/roosts/" + dealId + "/requirements" } className="widgetLink">
                             <div>
-                                <i className={"fa fa-calendar " + iconSizeClassname}></i>
-                                &nbsp; Opportunity Created
+                                <i className={"fa fa-list-alt " + iconSizeClassname}></i>
+                                &nbsp; Requirements Met
                             </div>
                             <div>
-                                <span className="title">{formattedRoostAge}</span>
+                                <span className="title">{completedRequirements.length} / {requirements.length}</span>
                             </div>
-
                         </NavLink>
                     </div>
                 </div>
