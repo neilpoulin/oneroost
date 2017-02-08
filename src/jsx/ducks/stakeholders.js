@@ -62,7 +62,7 @@ export const removeStakeholder = (json) => (dispatch, getState) => {
     })
 
     var fullName = RoostUtil.getFullName(currentUser)
-    var message = fullName + " removed " + RoostUtil.getFullName(stakeholder.get("user")) + " as from the opportunity.";
+    var message = fullName + " removed " + RoostUtil.getFullName(json.user) + " as from the opportunity.";
     dispatch(createComment({
         deal: stakeholder.get("deal"),
         message: message,

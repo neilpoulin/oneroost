@@ -67,14 +67,28 @@ async function processReadyRoostRequest(currentUser, params, response){
 async function setupRoost(roost, currentUser, profileUser, response){
     console.log("attempting to set up roost....");
     let config = await Parse.Config.get();
+    let requirementTemplate = null
+    try{
+        let requirementTemplateQuery = new Parse.Query("RequirementTemplate")
+        requirementTemplateQuery.equalTo("user", profileUser)
+        let templateResult = await requirementTemplateQuery.find({useMasterKey: true});
+        if ( templateResult ){
+            requirementTemplate = templateResult[0]
+            console.log("FOUND REQUIREMENTS: ", requirementTemplate.toJSON())
+        }
 
+    }catch(e){
+        console.log("no requirement template found for user " + profileUser.id)
+    }
+
+    let requirements = createRequirements(profileUser, roost, requirementTemplate, config);
     let comments = createComments(currentUser, roost, config);
     let docs = createDocs(profileUser, roost, config);
     let steps = createNextSteps(currentUser, roost, config);
     let stakeholders = createStakeholders(currentUser, profileUser, roost);
 
     console.log("finished setting up ready roost items");
-    let toSave = [].concat(comments, steps, docs, stakeholders);
+    let toSave = [].concat(comments, steps, docs, stakeholders, requirements);
 
     console.log("set up all objects...atempting to save", toSave);
     Parse.Object.saveAll(toSave, {
@@ -87,6 +101,26 @@ async function setupRoost(roost, currentUser, profileUser, response){
             response.error("Faild to save objects", error);
         }
     });
+}
+
+function createRequirements(profileUser, roost, requirementTemplate, config){
+    if ( !requirementTemplate ){
+        return []
+    }
+    console.log("requirementTemplate = ", requirementTemplate.toJSON())
+    let requirements = requirementTemplate.get("requirements").map(req => {
+        return new Parse.Object("Requirement", {
+            deal: roost,
+            onboarding: true,
+            createdBy: profileUser,
+            modifiedBy: profileUser,
+            title: req.title,
+            description: req.description,
+            active: true,
+        })
+    })
+    console.log("requirements to create", requirements);
+    return requirements;
 }
 
 function createComments(currentUser, roost, config){

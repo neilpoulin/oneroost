@@ -17,12 +17,14 @@ import {loadNextSteps, subscribeNextSteps} from "ducks/nextSteps"
 import {loadDocuments} from "ducks/documents"
 import {loadStakeholders} from "ducks/stakeholders"
 import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
+import {loadRequirements, subscribeRequirements} from "ducks/requirements"
 import {denormalize} from "normalizr"
 import {Map} from "immutable"
 import * as Deal from "models/Deal"
 import * as Stakeholder from "models/Stakeholder"
 import * as Document from "models/Document"
 import * as NextStep from "models/NextStep"
+import * as Requirement from "models/Requirement"
 
 
 const Roost = withRouter( React.createClass({
@@ -127,6 +129,7 @@ const Roost = withRouter( React.createClass({
             nextSteps,
             documents,
             dealLoading,
+            requirements,
             opportunities} = this.props;
 
             if ( dealLoading )
@@ -154,7 +157,7 @@ const Roost = withRouter( React.createClass({
                         <div className="deal-top">
                             <div className={mobileClassesDealTop}>
                                 <NextStepsBanner deal={deal} stakeholders={stakeholders} nextSteps={nextSteps} />
-                                <DealProfile deal={deal} stakeholders={stakeholders} documents={documents}/>
+                                <DealProfile deal={deal} stakeholders={stakeholders} documents={documents} requirements={requirements}/>
                             </div>
                             <DealNavMobile deal={deal}></DealNavMobile>
                         </div>
@@ -164,6 +167,7 @@ const Roost = withRouter( React.createClass({
                                 stakeholders={stakeholders}
                                 deal={deal}
                                 documents={documents}
+                                requirements={requirements}
                                 sidebar={this.props.children}
                                 >
                             </DealPageBottom>
@@ -171,7 +175,6 @@ const Roost = withRouter( React.createClass({
                     </div>
                 </div>
             </div>
-
 
             return dealPage;
         }
@@ -217,11 +220,18 @@ const Roost = withRouter( React.createClass({
             entities
         ).filter(step => step.active !== false)
 
+        let requirements = denormalize(
+            roost.requirements.ids,
+            [Requirement.Schema],
+            entities
+        ).filter(requirement => requirement.active !== false)
+
         return Map({
             deal: deal,
             stakeholders: stakeholders,
             documents: documents,
             nextSteps: nextSteps,
+            requirements: requirements
         }).toJS()
     }
 
@@ -238,6 +248,8 @@ const Roost = withRouter( React.createClass({
                 dispatch(loadOpportunities(userId))
                 dispatch(subscribeOpportunities(userId))
                 dispatch(subscribeNextSteps(dealId))
+                dispatch(loadRequirements(dealId))
+                dispatch(subscribeRequirements(dealId))
             }
         }
     }

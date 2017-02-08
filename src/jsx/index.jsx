@@ -21,6 +21,7 @@ import NextStepSidebar from "deal/sidebar/NextStepSidebar"
 import AllStepsSidebar from "deal/sidebar/AllStepsSidebar"
 import NextStepCompletedSidebar from "deal/sidebar/NextStepCompletedSidebar"
 import DocumentsSidebar from "deal/sidebar/DocumentsSidebar"
+import RequirementsSidebar from "deal/sidebar/RequirementsSidebar"
 import OpportunityDashboard from "OpportunityDashboard"
 import Unauthorized from "Unauthorized"
 import Invitation from "Invitation"
@@ -137,6 +138,7 @@ render(
                         <Route path="messages"/>
                         <Route path="participants" component={StakeholderSidebar}/>
                         <Route path="timeline" component={TimelineSidebar}/>
+                        <Route path="requirements" component={RequirementsSidebar}/>
                         <Route path="budget" component={InvestmentSidebar}/>
                         <Route path="documents" component={DocumentsSidebar}/>
                         <Route path="steps" >

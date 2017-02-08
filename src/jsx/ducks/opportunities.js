@@ -2,7 +2,7 @@ import Parse from "parse"
 import * as User from "models/User"
 import * as Deal from "models/Deal"
 import {normalize} from "normalizr"
-import {Map, List} from "immutable"
+import {Map, Set} from "immutable"
 import * as RoostUtil from "RoostUtil"
 import {addSubscription, handler} from "ducks/subscriptions"
 
@@ -19,8 +19,8 @@ const initialState = Map({
     isLoading: false,
     hasLoaded: false,
     archivedVisible: false,
-    deals: List([]),
-    archivedDeals: List([])
+    deals: Set([]),
+    archivedDeals: Set([])
 })
 export default function reducer(state=initialState, action){
     switch (action.type) {
@@ -30,19 +30,22 @@ export default function reducer(state=initialState, action){
         case OPPORTUNITY_LOAD_SUCCESS:
             state = state.set("isLoading", false)
             state = state.set("hasLoaded", true)
-            state = state.set("deals", List(action.payload.get("deals").map(deal => deal.get("objectId")|| deal.id)))
-            state = state.set("archivedDeals", List(action.payload.get("archivedDeals").map(deal => deal.get("objectId") || deal.id)))
+            state = state.set("deals", Set(action.payload.get("deals").map(deal => deal.get("objectId")|| deal.id)))
+            state = state.set("archivedDeals", Set(action.payload.get("archivedDeals").map(deal => deal.get("objectId") || deal.id)))
             break;
         case OPPORTUNITY_LOAD_ERROR:
             state = state.set("isLoading", true);
             break;
         case ADD_OPPORTUNITY:
             var stakeholder = action.payload;
+            var dealId = stakeholder.get("deal").get("objectId")
             if ( stakeholder.get("active") !== false ){
-                state = state.set("deals", state.get("deals").push(stakeholder.get("deal").get("objectId")))
+                state = state.set("deals", state.get("deals").add(dealId))
+                state = state.set("archivedDeals", state.get("archivedDeals").delete(dealId))
             }
             else {
-                state = state.set("archivedDeals", state.get("archivedDeals").push(stakeholder.get("deal").get("objectId")))
+                state = state.set("archivedDeals", state.get("archivedDeals").add(dealId))
+                state = state.set("deals", state.get("deals").delete(dealId))
             }
             break;
         case ARCHIVE_OPPORTUNITIY:
@@ -151,8 +154,8 @@ export const loadOpportunities = (userId, force=false) => (dispatch, getState) =
         let active = stakeholders.filter( obj => obj.get("active") !== false );
         let archived = stakeholders.filter( obj => obj.get("active") === false );
 
-        let deals = List(active.map(stakeholder => Map(stakeholder.get("deal").toJSON())));
-        let archivedDeals = List(archived.map(stakeholder => Map(stakeholder.get("deal").toJSON())));
+        let deals = Set(active.map(stakeholder => Map(stakeholder.get("deal").toJSON())));
+        let archivedDeals = Set(archived.map(stakeholder => Map(stakeholder.get("deal").toJSON())));
 
         let allDeals = deals.concat(archivedDeals);
         let entities = normalize(allDeals.toJS(), [Deal.Schema]).entities || {};

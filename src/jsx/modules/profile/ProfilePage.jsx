@@ -33,8 +33,12 @@ const ProfilePage = React.createClass({
                     </p>
                 </div>
                 <div className="section">
+                    <h2>RFP Requirements</h2>
+                    <div>Coming Soon</div>
+                </div>
+                <div className="section">
                     <h2>Email Preferences</h2>
-                    <div>Coming soon</div>
+                    <div>Coming Soon</div>
                 </div>
 
             </div>

@@ -10,12 +10,14 @@ import OpportunitiesTable from "OpportunitiesTable"
 import ToggleButton from "ToggleButton"
 import LoadingIndicator from "LoadingIndicator"
 import SearchInput from "SearchInput"
+import * as RoostUtil from "RoostUtil"
 
 const OpportunityDashboard = React.createClass({
     propTypes: {
         showTable: PropTypes.bool.isRequired,
         userId: PropTypes.string.isRequired,
-        isLoading: PropTypes.bool.isRequired
+        isLoading: PropTypes.bool.isRequired,
+        currentUser: PropTypes.object,
     },
     componentDidMount(){
         this.props.loadData()
@@ -27,6 +29,7 @@ const OpportunityDashboard = React.createClass({
             setShowArchived,
             showArchived,
             hasArchivedDeals,
+            currentUser,
             doSearch} = this.props
         let contents = null
         if ( isLoading ){
@@ -36,7 +39,7 @@ const OpportunityDashboard = React.createClass({
             contents = <BetaUserWelcome userId={userId}/>
         }
         else{
-            contents = <OpportunitiesTable userId={userId}/>
+            contents = <OpportunitiesTable userId={userId} currentUser={currentUser}/>
         }
 
         let toggleArchivedButton = null
@@ -79,9 +82,9 @@ const OpportunityDashboard = React.createClass({
 })
 
 const mapStateToProps = (state, ownProps) => {
-    const currentUser = Parse.User.current()
     let dashboard = state.dashboard.toJS()
-    let userId = currentUser.id
+    let currentUser = RoostUtil.getCurrentUser(state)
+    let userId = currentUser.objectId
     let myOpportunities = state.opportunitiesByUser.get(userId)
     let isLoading = true
     let showTable = false
@@ -95,6 +98,7 @@ const mapStateToProps = (state, ownProps) => {
 
     return {
         showTable,
+        currentUser,
         userId,
         isLoading,
         showArchived: dashboard.showArchived,

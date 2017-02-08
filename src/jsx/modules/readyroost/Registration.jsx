@@ -39,7 +39,7 @@ const Registration = React.createClass({
         this.props.nextStep();
     },
     doLogin(e){
-        this.refs.loginComponent.getWrappedInstance().doSubmit()
+        this.refs.loginComponent.getWrappedInstance().getWrappedInstance().doSubmit()
     },
     render () {
         let loginComponent =

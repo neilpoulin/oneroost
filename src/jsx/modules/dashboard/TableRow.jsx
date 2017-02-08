@@ -10,16 +10,19 @@ const TableRow = React.createClass({
             comments: PropTypes.arrayOf(PropTypes.object),
             documents: PropTypes.arrayOf(PropTypes.object),
             nextSteps: PropTypes.arrayOf(PropTypes.object)
-        }).isRequired
+        }).isRequired,
+        currentUser: PropTypes.object.isRequired
     },
     render () {
+
+        const {currentUser, opportunity} = this.props;
         const {deal,
             // stakeholders,
             //  comments,
             //  documents,
             nextSteps,
-            archived
-         } = this.props.opportunity
+            archived,
+         } = opportunity
 
          let sortedSteps = nextSteps.filter(step => {
              return step.completedDate == null && step.active !== false
@@ -46,11 +49,11 @@ const TableRow = React.createClass({
                     <NavLink className="" to={"/roosts/" + deal.objectId}
                         tag="span"
                         activeClassName="active">
-                        {deal.dealName}
+                        {RoostUtil.getRoostDisplayName(deal, currentUser)}
                     </NavLink>
                 </td>
                 <td>
-                    {deal.description}
+                    {deal.dealName}
                 </td>
                 <td>
                     {RoostUtil.formatDate(deal.updatedAt)}

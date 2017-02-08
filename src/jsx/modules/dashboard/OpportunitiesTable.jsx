@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react"
-import Parse from "parse"
+import * as RoostUtil from "RoostUtil"
 import TableHeader from "TableHeader"
 import TableRow from "TableRow"
 import {denormalize} from "normalizr"
@@ -17,7 +17,7 @@ const headers = [
         sortable: false,
     },
     {
-        label: "Description",
+        label: "Problem Statement",
         clickable: false,
         sortable: false,
     },
@@ -47,6 +47,7 @@ const OpportunitiesTable = React.createClass({
             documents: PropTypes.arrayOf(PropTypes.object),
             nextSteps: PropTypes.arrayOf(PropTypes.object)
         })),
+        currentUser: PropTypes.object.isRequired,
         userId: PropTypes.string.isRequired
     },
     getDefaultProps() {
@@ -69,13 +70,13 @@ const OpportunitiesTable = React.createClass({
         this.props.loadNextSteps(dealIds)
     },
     render () {
-        const {opportunities} = this.props
-        return (            
+        const {opportunities, currentUser} = this.props
+        return (
             <table className="table OpportunitiesTable">
                 <TableHeader columns={headers} />
                 <tbody>
                     {opportunities.map((opp, i) => {
-                        return <TableRow opportunity={opp} key={"opportunities_table_row_" + i}/>
+                        return <TableRow opportunity={opp} key={"opportunities_table_row_" + i} currentUser={currentUser}/>
                     })}
                 </tbody>
             </table>
@@ -84,8 +85,8 @@ const OpportunitiesTable = React.createClass({
 })
 
 const mapStateToProps = (state, ownProps) => {
-    const currentUser = Parse.User.current()
-    let userId = currentUser.id;
+    let currentUser = RoostUtil.getCurrentUser(state)
+    let userId = currentUser.objectId;
     let entities = state.entities.toJS()
     let myOpportunities = state.opportunitiesByUser.get(userId)
     let dashboard = state.dashboard.toJS()
@@ -161,6 +162,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
         opportunities: allOpportunities,
         userId,
+        currentUser,
     }
 }
 

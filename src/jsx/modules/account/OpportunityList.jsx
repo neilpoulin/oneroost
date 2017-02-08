@@ -9,7 +9,7 @@ const OpportunityList = React.createClass({
         archivedDeals: PropTypes.arrayOf(Map).isRequired,
         archivedVisible: PropTypes.bool.isRequired,
         className: PropTypes.string,
-        currentUser: PropTypes.object,
+        user: PropTypes.object,
     },
     getDefaultProps(){
         return {
@@ -46,6 +46,7 @@ const OpportunityList = React.createClass({
                 <AccountSidebarItem
                     key={"account_" + accountId + "_deal_" + dealId + "_" + i}
                     deal={deal}
+                    currentUser={user}
                     />
                 return item;
             })}
