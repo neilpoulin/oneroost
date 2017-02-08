@@ -4,6 +4,7 @@ import * as comments from "ducks/comments"
 import * as nextSteps from "ducks/nextSteps"
 import * as documents from "ducks/documents"
 import * as stakeholders from "ducks/stakeholders"
+import * as requirements from "ducks/requirements"
 import Parse from "parse"
 import * as Deal from "models/Deal"
 import * as Account from "models/Account"
@@ -20,6 +21,7 @@ export const roostActions = [
     ...getActions(nextSteps),
     ...getActions(stakeholders),
     ...getActions(documents),
+    ...getActions(requirements),
     DEAL_LOAD_REQUEST,
     DEAL_LOAD_SUCCESS,
     DEAL_LOAD_ERROR,
@@ -34,6 +36,7 @@ const initialState = Map({
     nextSteps: nextSteps.initialState,
     documents: documents.initialState,
     stakeholders: stakeholders.initialState,
+    requirements: requirements.initialState,
 })
 
 export const createRoost = (opts) => (dispatch, getState) => {
@@ -160,6 +163,7 @@ const roost = (state=initialState, action) => {
     state = state.set("nextSteps", nextSteps.default(state.get("nextSteps"), action))
     state = state.set("documents",documents.default(state.get("documents"), action))
     state = state.set("stakeholders", stakeholders.default(state.get("stakeholders"), action))
+    state = state.set("requirements", requirements.default(state.get("requirements"), action))
     return state;
 }
 export default roost;

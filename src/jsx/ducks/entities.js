@@ -11,6 +11,7 @@ export const initialState = Map({
     accounts: Map({}),
     documents: Map({}),
     stakeholders: Map({}),
+    requirements: Map({}),
 });
 
 // Updates an entity cache in response to any action with response.entities.

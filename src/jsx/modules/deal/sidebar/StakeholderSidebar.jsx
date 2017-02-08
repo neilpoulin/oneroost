@@ -82,7 +82,7 @@ const StakeholderSidebar = React.createClass({
 });
 
 
-const mapStateToProps = (state, ownprops) => {
+const mapStateToProps = (state, ownProps) => {
     return {
 
     }
