@@ -14,6 +14,7 @@ const AccountSidebar = React.createClass({
         deals: PropTypes.arrayOf(PropTypes.object).isRequired,
         archivedDeals: PropTypes.arrayOf(PropTypes.object),
         archivedVisible: PropTypes.bool.isRequired,
+        currentUser: PropTypes.object.isRequired,
     },
     getDefaultProps: function(){
         return {
@@ -61,8 +62,8 @@ const AccountSidebar = React.createClass({
 
 const mapStateToProps = (state, ownProps) => {
     let stateJS = Map(state).toJS()
-    let userId = stateJS.user.userId
     let currentUser = RoostUtil.getCurrentUser(state)
+    let userId = stateJS.user.userId
     let entities = stateJS.entities
     let opportunities = stateJS.opportunitiesByUser[userId] || {}
 
