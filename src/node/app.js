@@ -27,6 +27,10 @@ import ReadyRoost from "./roost/ReadyRoost"
 import BeforeSave from "./triggers/BeforeSave"
 import AWSXRay from "aws-xray-sdk";
 import compression from "compression";
+import Raven from "raven"
+Raven.config("https://50020b1e8db94c39be96db010cdbba4f:0f4123892fd44bfd92b85a003645fdc3@sentry.io/128546",{
+    environment: envUtil.getEnvName()
+}).install();
 AWSXRay.setDefaultName(envUtil.getEnvName());
 AWSXRay.config([AWSXRay.plugins.EC2]);
 AWSXRay.config([AWSXRay.plugins.ElasticBeanstalk]);

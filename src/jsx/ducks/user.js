@@ -4,7 +4,7 @@ import {Map} from "immutable"
 import * as RoostUtil from "RoostUtil"
 import {normalize} from "normalizr"
 import * as User from "models/User"
-
+import Raven from "raven-js"
 export const UPDATE_USER = "oneroost/user/UPADATE_USER"
 export const LOGIN_SUCCESS = "oneroost/user/LOGIN_SUCCESS"
 export const LOGOUT = "oneroost/user/LOGOUT"
@@ -12,6 +12,10 @@ export const LOGOUT = "oneroost/user/LOGOUT"
 
 
 export const loginSuccessAction = (user) => {
+    Raven.setUserContext({
+        email: user.email,
+        id: user.objectId
+    })
     let entities = normalize(RoostUtil.toJSON(user), User.Schema).entities
     return {
         type: LOGIN_SUCCESS,
@@ -25,12 +29,7 @@ export const loadCurrentUser = () => (dispatch, getState) => {
     if ( !currentUser ){
         return null;
     }
-    let entities = normalize(currentUser, User.Schema).entities
-    dispatch({
-        type: LOGIN_SUCCESS,
-        payload: currentUser,
-        entities,
-    })
+    dispatch(loginSuccessAction(currentUser))
 }
 
 export const userLoggedIn = ( user ) => (dispatch, getState) => {

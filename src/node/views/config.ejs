@@ -1,4 +1,9 @@
+<script src="https://cdn.ravenjs.com/3.10.0/raven.min.js" crossorigin="anonymous"></script>
 <script type="text/javascript">
     window.OneRoost = {};
     OneRoost.Config = <%-env%>;
+
+    Raven.config('https://50020b1e8db94c39be96db010cdbba4f@sentry.io/128546', {
+        environment: OneRoost.Config.environment
+    }).install()
 </script>

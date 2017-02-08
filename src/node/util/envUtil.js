@@ -129,7 +129,8 @@ exports.getEnv = function(){
         var props = {
             "applicationId": APP_ID,
             "gaTrackingId": GA_TRACKING_ID,
-            "emailTemplates": TemplateUtil.getTemplateNames()
+            "emailTemplates": TemplateUtil.getTemplateNames(),
+            "environment": ENV_NAME
         };
 
         var json = JSON.stringify( props );

@@ -8,6 +8,7 @@ import ReactGA from "react-ga"
 import { withRouter, Link } from "react-router"
 import * as RoostUtil from "RoostUtil"
 import Progress from "readyroost/Progress"
+import Raven from "raven-js"
 
 var fieldValues = {
     problem: "",
@@ -69,6 +70,7 @@ const Onboarding = withRouter( React.createClass({
             self.props.router.replace("/roosts/" + (result.roost.objectId || result.roost.id));
         },
         function(error){
+            Raven.captureException(error)
             console.error("can not create roost, already have one for this user", error);
             self.setState({
                 error: {
