@@ -68,7 +68,7 @@ const DealProfile = React.createClass({
                         <NavLink tag="div" to={"/roosts/" + dealId + "/requirements" } className="widgetLink">
                             <div>
                                 <i className={"fa fa-list-alt " + iconSizeClassname}></i>
-                                &nbsp; Requirements Met
+                                &nbsp; Requirements
                             </div>
                             <div>
                                 <span className="title">{completedRequirements.length} / {requirements.length}</span>

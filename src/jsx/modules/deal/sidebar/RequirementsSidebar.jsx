@@ -29,10 +29,13 @@ const RequirementsSidebar = React.createClass({
     render () {
         let {requirements} = this.props;
 
-        let sidebar =
-        <div className="RequirementsSidebar">
-            <h3 className="title">Requirements</h3>
-            <table>
+        let content =
+        <div>
+            This feature is currently under development.
+            If you would like to add requirements to your opportunity, please contact <a href="mailto:info@oneroost.com">info@oneroost.com</a>
+        </div>
+        if (requirements.length > 0){
+            content = <table>
                 <tbody>
                     {requirements.map((req, i) => {
                         return <tr key={"requirement_" + i} >
@@ -50,6 +53,12 @@ const RequirementsSidebar = React.createClass({
                     })}
                 </tbody>
             </table>
+        }
+
+        let sidebar =
+        <div className="RequirementsSidebar">
+            <h3 className="title">Requirements</h3>
+            {content}
 
         </div>
 
