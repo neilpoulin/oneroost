@@ -4,11 +4,11 @@ import * as RoostUtil from "RoostUtil"
 import BasicInfo from "profile/BasicInfo"
 import RoostNav from "RoostNav"
 import {saveUser} from "ducks/user"
-import {loadTemplates} from "ducks/templates"
+import {loadTemplates} from "ducks/userTemplates"
 import {denormalize} from "normalizr"
 import * as Template from "models/Template"
 import PublicProfileLink from "profile/PublicProfileLink"
-import NavLink from "NavLink"
+import OpportunityTemplate from "profile/OpportunityTemplate"
 
 const ProfilePage = React.createClass({
     propTypes: {
@@ -48,18 +48,11 @@ const ProfilePage = React.createClass({
                     <h2>RFP Tempaltes</h2>
                     <div>
                         {templates.map((template, i) => {
-                            return <div key={"tempalte_" + i}>
-                                <div><b>{template.title}</b></div>
-                                <div>{template.description}</div>
-                                <div><NavLink
-                                    to={"/proposals/" + template.objectId }
-                                    tag={"span"}
-                                    className={"PublicProfileLink"}
-                                    linkClassName={""}
-                                    >
-                                    link
-                                </NavLink></div>
-                            </div>
+                            return <OpportunityTemplate
+                                template={template}
+                                user={user}
+                                key={"template_" + i}
+                                />
                         })}
                     </div>
                 </div>

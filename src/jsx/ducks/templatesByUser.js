@@ -1,9 +1,9 @@
 import {Map} from "immutable"
 import {getActions} from "DuckUtil"
-import templateReducer, * as templateActions from "ducks/templates"
+import userTemplateReducer, * as userTemplateActions from "ducks/userTemplates"
 
 let actions = [
-    ...getActions(templateActions)
+    ...getActions(userTemplateActions)
 ]
 
 const initialState = Map({});
@@ -14,7 +14,7 @@ export default function reducer(state=initialState, action){
         return state;
     }
 
-    state = state.set(userId, templateReducer(state.get(userId), action))
+    state = state.set(userId, userTemplateReducer(state.get(userId), action))
 
     return state;
 }

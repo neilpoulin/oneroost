@@ -6,37 +6,17 @@ import FourOhFourPage from "FourOhFourPage"
 import ReactGA from "react-ga"
 import { withRouter } from "react-router"
 import Onboarding from "readyroost/Onboarding"
+import {connect} from "react-redux"
+import {loadTemplate} from "ducks/template"
+import * as RoostUtil from "RoostUtil"
+import {denormalize} from "normalizr"
+import * as Template from "models/Template"
 
-const ReadyRoostPage = withRouter( React.createClass({
+const ReadyRoostPage = React.createClass({
     propTypes: {
         params: PropTypes.shape({
-            userId: PropTypes.string.isRequired
+            templateId: PropTypes.string.isRequired
         }).isRequired
-    },
-    fetchData(userId){
-        let self = this;
-        let userQuery = new Parse.Query("User");
-        userQuery.get(userId).then(user => {
-            self.setState({
-                readyRoostUser: user,
-                loading: false
-            })
-        }).catch(error => {
-            console.log("errror getting user", error);
-            self.setState({
-                readyRoostUser: null,
-                loading: false
-            })
-        });
-    },
-    componentWillMount(){
-        this.fetchData(this.props.params.userId);
-    },
-    componentWillUpdate(nextProps, nextState){
-        if ( this.props.params.userId !== nextProps.params.userId ){
-            let userId = nextProps.params.userId;
-            this.fetchData(userId);
-        }
     },
     getInitialState(){
         return {
@@ -46,6 +26,18 @@ const ReadyRoostPage = withRouter( React.createClass({
             error: null,
             readyRoostUser: null,
             loading: true
+        }
+    },
+    componentWillMount(){
+        // this.fetchData(this.props.params.userId);
+    },
+    componentDidMount() {
+        this.props.loadData()
+    },
+    componentWillUpdate(nextProps, nextState){
+        if ( this.props.params.userId !== nextProps.params.userId ){
+            let userId = nextProps.params.userId;
+            this.fetchData(userId);
         }
     },
     loginSuccess(){
@@ -92,16 +84,17 @@ const ReadyRoostPage = withRouter( React.createClass({
         }
     },
     render () {
-        if ( this.state.loading ){
+        let {currentUser, template, isLoading} = this.props;
+
+        if ( isLoading ){
             return <LoadingTakeover messsage={"Loading Profile"}/>
         }
-        if( !this.state.readyRoostUser )
+        if( !template )
         {
             return <FourOhFourPage/>
         }
 
-        var currentUser = this.state.currentUser;
-        var readyRoostUser = this.state.readyRoostUser;
+        var readyRoostUser = template.createdBy;
 
         var page =
         <div className="ReadyRoostPage">
@@ -113,6 +106,36 @@ const ReadyRoostPage = withRouter( React.createClass({
 
         return page
     }
-}))
+})
 
-export default ReadyRoostPage
+const mapStateToProps = (state, ownProps) => {
+    const templates = state.templates.toJS()
+    const templateId = ownProps.params.templateId
+    const currentUser = RoostUtil.getCurrentUser(state)
+    const entities = state.entities.toJS()
+    let template = templates[templateId]
+    let isLoading = true
+    if ( template && template.hasLoaded ){
+        isLoading = template.isLoading;
+        template = denormalize(templateId, Template.Schema, entities)
+    }
+    return {
+        isLoading,
+        template,
+        currentUser
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const templateId = ownProps.params.templateId
+    return {
+        loadData: () => {
+            dispatch(loadTemplate(templateId))
+        }
+    }
+}
+const connectOpts = {
+    withRef: true
+}
+
+export default connect(mapStateToProps, mapDispatchToProps, undefined, connectOpts)(withRouter(ReadyRoostPage))
