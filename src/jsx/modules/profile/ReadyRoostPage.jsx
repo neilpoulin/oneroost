@@ -100,7 +100,7 @@ const ReadyRoostPage = React.createClass({
         <div className="ReadyRoostPage">
             <RoostNav showHome={false}></RoostNav>
             <div className="container col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
-                <Onboarding readyRoostUser={readyRoostUser} currentUser={currentUser} />
+                <Onboarding readyRoostUser={readyRoostUser} currentUser={currentUser} template={template}/>
             </div>
         </div>
 

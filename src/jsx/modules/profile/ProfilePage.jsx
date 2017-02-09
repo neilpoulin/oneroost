@@ -7,7 +7,6 @@ import {saveUser} from "ducks/user"
 import {loadTemplates} from "ducks/userTemplates"
 import {denormalize} from "normalizr"
 import * as Template from "models/Template"
-import PublicProfileLink from "profile/PublicProfileLink"
 import OpportunityTemplate from "profile/OpportunityTemplate"
 
 const ProfilePage = React.createClass({
@@ -28,8 +27,7 @@ const ProfilePage = React.createClass({
         this.props.loadData(userId)
     },
     render(){
-        const {user, templates} = this.props
-        const userId = user.objectId
+        const {user, templates} = this.props        
         var page =
         <div className="ProfilePage">
             <RoostNav showHome={true}/>
@@ -37,12 +35,6 @@ const ProfilePage = React.createClass({
                 <h1 className="pageTitle">Account Settings</h1>
                 <div className="section">
                     <BasicInfo user={this.getCurrentUser()} saveUser={this.props.saveUser}/>
-                </div>
-                <div className="section">
-                    <h2>My Ready Roost Link</h2>
-                    <p className="ReadyRoostLink link-container">
-                        <PublicProfileLink userId={userId}/>
-                    </p>
                 </div>
                 <div className="section">
                     <h2>RFP Tempaltes</h2>

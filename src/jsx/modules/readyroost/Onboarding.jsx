@@ -19,7 +19,8 @@ var fieldValues = {
 const Onboarding = withRouter( React.createClass({
     propTypes: {
         readyRoostUser: PropTypes.object.isRequired,
-        currentUser: PropTypes.object
+        currentUser: PropTypes.object,
+        template: PropTypes.object,
     },
     getInitialState(){
         return {
@@ -86,6 +87,7 @@ const Onboarding = withRouter( React.createClass({
             return <Introduction nextStep={this.nextStep}
                 previousStep={this.previousStep}
                 readyRoostUser={this.props.readyRoostUser}
+                template={this.props.template}
                 />
             case 2:
             return <OpportunityDetail nextStep={this.submit}
@@ -93,6 +95,7 @@ const Onboarding = withRouter( React.createClass({
                 readyRoostUser={this.props.readyRoostUser}
                 fieldValues={fieldValues}
                 saveValues={this.saveValues}
+                template={this.props.template}
                 nextText={"Submit"} />
         }
     },
@@ -102,12 +105,14 @@ const Onboarding = withRouter( React.createClass({
             return <Introduction nextStep={this.nextStep}
                 previousStep={this.previousStep}
                 readyRoostUser={this.props.readyRoostUser}
+                template={this.props.template}
                 />
             case 2:
             return <OpportunityDetail nextStep={this.nextStep}
                 previousStep={this.previousStep}
                 fieldValues={fieldValues}
                 readyRoostUser={this.props.readyRoostUser}
+                template={this.props.template}
                 saveValues={this.saveValues} />
             case 3:
             return <Registration nextStep={this.nextStep}
@@ -120,6 +125,7 @@ const Onboarding = withRouter( React.createClass({
             return <Confirmation submit={this.submit}
                 previousStep={this.previousStep}
                 readyRoostUser={this.props.readyRoostUser}
+                tempalte={this.props.template}
                 />
         }
     },
