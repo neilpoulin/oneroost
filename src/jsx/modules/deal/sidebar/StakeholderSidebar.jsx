@@ -2,7 +2,7 @@ import React, { PropTypes } from "react"
 import {connect} from "react-redux"
 import AddStakeholderButton from "AddStakeholderButton";
 import Stakeholder from "Stakeholder"
-import {removeStakeholder} from "ducks/stakeholders"
+import {removeStakeholder} from "ducks/roost/stakeholders"
 import {archiveOpportunity} from "ducks/opportunities"
 
 const StakeholderSidebar = React.createClass({

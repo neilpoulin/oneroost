@@ -7,6 +7,7 @@ import user from "ducks/user"
 import subscriptions from "ducks/subscriptions"
 import notifications from "ducks/notification"
 import dashboard from "ducks/dashboard"
+import templatesByUser from "ducks/templatesByUser"
 
 const reducers = combineReducers({
     entities,
@@ -17,6 +18,7 @@ const reducers = combineReducers({
     routing,
     notifications,
     dashboard,
+    templatesByUser
 });
 
 export default reducers;

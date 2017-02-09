@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import {connect} from "react-redux"
-import {updateRequirement} from "ducks/requirements"
+import {updateRequirement} from "ducks/roost/requirements"
 import {denormalize} from "normalizr"
 import * as User from "models/User"
 import * as RoostUtil from "RoostUtil"

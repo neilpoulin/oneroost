@@ -4,7 +4,7 @@ import {normalize} from "normalizr"
 import Parse from "parse"
 import {Map, List} from "immutable"
 import * as RoostUtil from "RoostUtil"
-import {createComment} from "ducks/comments"
+import {createComment} from "ducks/roost/comments"
 
 export const ADD_DOCUMENT = "oneroost/documents/ADD_DOCUMENT"
 export const DOCUMENT_LOAD_REQUEST = "oneroost/documents/DOCUMENT_LOAD_REQUEST"

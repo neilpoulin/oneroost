@@ -11,7 +11,7 @@ import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormGroup from "FormGroup"
 import {validations} from "nextsteps/NextStepValidations"
 import {Pointer} from "models/modelUtil"
-import {createNextStep} from "ducks/nextSteps"
+import {createNextStep} from "ducks/roost/nextSteps"
 
 const NextStepForm = React.createClass({
     propTypes: {

@@ -6,7 +6,7 @@ import {denormalize} from "normalizr"
 import {connect} from "react-redux"
 import * as Deal from "models/Deal"
 import * as NextStep from "models/NextStep"
-import {loadNextStepsForDeals} from "ducks/nextSteps"
+import {loadNextStepsForDeals} from "ducks/roost/nextSteps"
 import _ from "lodash"
 import moment from "moment"
 

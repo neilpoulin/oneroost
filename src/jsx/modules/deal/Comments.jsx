@@ -11,7 +11,7 @@ import * as RoostUtil from "RoostUtil"
 import {Map} from "immutable"
 import {denormalize} from "normalizr"
 import * as Comment from "models/DealComment"
-import {loadComments, subscribeComments} from "ducks/comments"
+import {loadComments, subscribeComments} from "ducks/roost/comments"
 
 const Comments = React.createClass({
     propTypes: {

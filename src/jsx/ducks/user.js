@@ -11,6 +11,42 @@ export const LOGOUT = "oneroost/user/LOGOUT"
 
 
 
+const initialState = Map({
+    isLoading: false,
+    hasLoaded: false,
+    userId:  null,
+    admin: false,
+    isLoggedIn: false,
+    roostTemplates: Map({}),
+});
+
+export default function reducer(state=initialState, action){
+    switch (action.type) {
+        case UPDATE_USER:
+            var user = action.payload
+            state = state.set("userId", user.get("objectId"))
+            state = state.set("admin", user.get("admin"))
+            break;
+        case LOGIN_SUCCESS:
+            var user = action.payload
+            state = state.set("hasLoaded", true)
+            state = state.set("isLoggedIn", true)
+            state = state.set("userId", user.get("objectId"))
+            state = state.set("admin", user.get("admin"))
+            break;
+        case LOGOUT:
+            state = state.set("hasLoaded", true)
+            state = state.set("currentUser", null)
+            state = state.set("userId", null)
+            state = state.set("isLoggedIn", false)
+            break;
+        default:
+            break;
+    }
+    return state;
+}
+
+
 export const loginSuccessAction = (user) => {
     Raven.setUserContext({
         email: user.email,
@@ -63,38 +99,4 @@ export const saveUser = (updates) => (dispatch, getState) => {
     currentUser.save().then(saved => {
         dispatch(updateUserAction(saved))
     }).catch(console.log)
-}
-
-const initialState = Map({
-    isLoading: false,
-    hasLoaded: false,
-    userId:  null,
-    admin: false,
-    isLoggedIn: false,
-});
-
-export default function reducer(state=initialState, action){
-    switch (action.type) {
-        case UPDATE_USER:
-            var user = action.payload
-            state = state.set("userId", user.get("objectId"))
-            state = state.set("admin", user.get("admin"))
-            break;
-        case LOGIN_SUCCESS:
-            var user = action.payload
-            state = state.set("hasLoaded", true)
-            state = state.set("isLoggedIn", true)
-            state = state.set("userId", user.get("objectId"))
-            state = state.set("admin", user.get("admin"))
-            break;
-        case LOGOUT:
-            state = state.set("hasLoaded", true)
-            state = state.set("currentUser", null)
-            state = state.set("userId", null)
-            state = state.set("isLoggedIn", false)
-            break;
-        default:
-            break;
-    }
-    return state;
 }

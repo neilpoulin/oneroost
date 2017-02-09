@@ -2,7 +2,7 @@ import React, { PropTypes } from "react"
 import ModalButton from "ModalButton";
 import CreateAccountForm from "account/CreateAccountForm";
 import {connect} from "react-redux"
-import {createRoost} from "ducks/roost"
+import {createRoost} from "ducks/roost/roost"
 
 const AddAccountButton = React.createClass({
     openModal: function(){

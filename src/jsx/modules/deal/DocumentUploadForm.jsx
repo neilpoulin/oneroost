@@ -8,7 +8,7 @@ import numeral from "numeral"
 import {linkValidation, fileValidation} from "DocumentValidation"
 import FormInputGroup from "FormInputGroup"
 import FormGroup from "FormGroup"
-import {createDocument} from "ducks/documents"
+import {createDocument} from "ducks/roost/documents"
 
 const re = /(?:\.([^.]+))?$/;
 

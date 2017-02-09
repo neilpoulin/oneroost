@@ -3,7 +3,7 @@ import Parse from "parse"
 import {Pointer as DealPointer} from "models/Deal"
 import {Pointer as UserPointer} from "models/User"
 import AutosizeTextarea from "react-textarea-autosize"
-import {createComment} from "ducks/comments"
+import {createComment} from "ducks/roost/comments"
 import { connect } from "react-redux"
 
 const mapStateToProps = (state, ownProps) => {

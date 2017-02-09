@@ -1,7 +1,7 @@
 import React, { PropTypes } from "react"
 import InvestmentForm from "InvestmentForm"
 import {connect} from "react-redux"
-import {updateDeal} from "ducks/roost"
+import {updateDeal} from "ducks/roost/roost"
 import {INVESTMENT} from "SidebarTypes"
 
 

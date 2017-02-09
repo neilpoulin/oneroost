@@ -4,7 +4,7 @@ import * as RoostUtil from "RoostUtil"
 import {Map, Set} from "immutable"
 import * as Requirement from "models/Requirement"
 import {normalize} from "normalizr"
-import {createComment} from "ducks/comments"
+import {createComment} from "ducks/roost/comments"
 import {addSubscription, handler} from "ducks/subscriptions"
 import {Pointer as DealPointer} from "models/Deal"
 

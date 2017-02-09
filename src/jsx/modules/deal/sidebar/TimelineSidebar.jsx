@@ -1,7 +1,7 @@
 import React, {PropTypes} from "react"
 import TimelineForm from "TimelineForm"
 import {connect} from "react-redux"
-import {updateDeal} from "ducks/roost"
+import {updateDeal} from "ducks/roost/roost"
 import {TIMELINE} from "SidebarTypes"
 
 const TimelineSidebar = React.createClass({

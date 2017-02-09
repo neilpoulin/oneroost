@@ -5,7 +5,7 @@ import {normalize} from "normalizr"
 import Parse from "parse"
 import * as RoostUtil from "RoostUtil"
 import {Map, List} from "immutable"
-import {createComment} from "ducks/comments"
+import {createComment} from "ducks/roost/comments"
 
 export const ADD_STAKEHOLDER = "oneroost/stakeholder/ADD_STAKEHOLDER"
 export const STAKEHOLDER_LOAD_REQUEST = "oneroost/stakeholder/STAKEHOLDER_LOAD_REQUEST"
