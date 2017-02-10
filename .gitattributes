@@ -22,8 +22,13 @@ src export-ignore
 lambda export-ignore
 parse-server export-ignore
 .nginx export-ignore
-.eslint export-ignore
+.eslintrc export-ignore
 .parse.project export-ignore
+_gh_pages export-ignore
+_site export-ignore
+.ruby-version export-ignore
+*.diff export-ignore
+.editorconfig export-ignore
 .parse.local export-ignore
 README.md export-ignore
 gulpfile.babel.js export-ignore
@@ -34,6 +39,8 @@ node_modules export-ignore
 oneroost.zip export-ignore
 .DS_Store export-ignore
 .idea export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
 .project export-ignore
 .settings export-ignore
 *.iml export-ignore
