@@ -1,18 +1,11 @@
 import Parse from "parse";
-import {copyJSON} from "RoostUtil"
+import {copyJSON, transformDatesInObject} from "RoostUtil"
 
 export const processStrategy = (entity) => {
     let copy = copyJSON(entity);
     delete copy["__type"]
-    // // Transform stupid Parse dates into iso strings
-    // Object.keys(copy).forEach(key => {
-    //     let value = copy[key]
-    //     if ( value !== null && typeof value === "object" ){
-    //         if ( value["__type"] === "Date" && value["iso"] ){
-    //             copy[key] = value["iso"]
-    //         }
-    //     }
-    // })
+    copy = transformDatesInObject(copy)
+    
     return copy
 }
 

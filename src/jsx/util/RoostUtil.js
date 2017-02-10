@@ -5,6 +5,18 @@ import {Map, fromJS, Iterable} from "immutable"
 import {denormalize} from "normalizr"
 import * as User from "models/User"
 
+export const transformDatesInObject = (json) => {
+    Object.keys(json).forEach(key => {
+        let value = json[key]
+        if ( value !== null && typeof value === "object" ){
+            if ( value["__type"] === "Date" && value["iso"] ){
+                json[key] = moment(value["iso"]).toDate()
+            }
+        }
+    })
+    return json
+}
+
 export const toJSON = function(obj){
     if ( !obj ){
         return obj
@@ -16,14 +28,7 @@ export const toJSON = function(obj){
         json = obj.toJSON()
     }
     // Transform stupid Parse dates into iso strings
-    Object.keys(json).forEach(key => {
-        let value = json[key]
-        if ( value !== null && typeof value === "object" ){
-            if ( value["__type"] === "Date" && value["iso"] ){
-                json[key] = value["iso"]
-            }
-        }
-    })
+    json = transformDatesInObject(json)
     return json
 }
 
@@ -42,14 +47,7 @@ export const copyJSON = function(json){
         delete copy["__type"]
     }
     // Transform stupid Parse dates into iso strings
-    Object.keys(copy).forEach(key => {
-        let value = copy[key]
-        if ( value !== null && typeof value === "object" ){
-            if ( value["__type"] === "Date" && value["iso"] ){
-                copy[key] = value["iso"]
-            }
-        }
-    })
+    json = transformDatesInObject(json)
     return copy
 }
 
