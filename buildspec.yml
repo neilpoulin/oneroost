@@ -8,15 +8,16 @@ phases:
       - npm install node-sass
       - echo Installing gulp...
       - npm install -g gulp
-
+      - echo checking location of gulp and its version
+      - which gulp && gulp -v
   pre_build:
     commands:
       - echo Installing source Yarn dependencies...
-      - yarn install --production
+      - yarn install
   build:
     commands:
       - echo Build started on `date`
-      - echo Compiling the Node.js code
+      - echo starting the gulp build process
       - gulp build
   post_build:
     commands:
