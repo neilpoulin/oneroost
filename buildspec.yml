@@ -25,10 +25,12 @@ phases:
       - echo Build started on `date`
       - echo starting the gulp build process
       - gulp build:all
-      - git archive --format=zip HEAD > oneroost.zip
+      - echo build:all conmpleted... zipping...
+      - gulp zip
+      - echo zip completed
   post_build:
     commands:
       - echo Build completed on `date`
-# artifacts:
-#   files:
-#     - HelloWorld.js
+artifacts:
+  files:
+    - build/archive/HelloWorld.js

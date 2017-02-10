@@ -102,6 +102,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
+    "gulp-zip": "^4.0.0",
     "history": "^4.5.0",
     "immutable": "^3.8.1",
     "jquery": "^3.1.1",

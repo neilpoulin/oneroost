@@ -24,6 +24,17 @@ export const infiniteCalendar = {
     stylesheets: "./node_modules/react-infinite-calendar/styles.css"
 }
 
+export const zipPaths = [
+    "./.ebextensions/**/*",
+    "./.elasticbeanstalk/**/*",
+    "./buildspec.yml",
+    "./main.js",
+    "./cloud/**/*",
+    "./package.json",
+    "./public/**/*",
+    "./yarn.lock"
+]
+
 export const paths = {
     src: {
         root: "./src",
@@ -47,7 +58,8 @@ export const paths = {
         jsbundle: "./build/dist/frontendjs",
         cssbundle: "./build/dist/css",
         sourceFile: "./build/frontendjs/index.js",
-        sourceMaps: ".build/**/*.js.map"
+        sourceMaps: ".build/**/*.js.map",
+        archive: "./build/archive"
     },
     dest: {
         root: "./public",
