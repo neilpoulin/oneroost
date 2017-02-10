@@ -23,6 +23,8 @@ phases:
   build:
     commands:
       - echo Build started on `date`
+      - echo list files
+      - ls
       - echo starting the gulp build process
       - gulp build:all
       - echo build:all conmpleted... zipping...
