@@ -13,3 +13,28 @@
 bootstrap-theme.css linguist-vendored=false
 bootstrap.css linguist-vendored=false
 bootstrap.js linguist-vendored=false
+
+# archive ignore files
+build export-ignore
+db export-ignore
+logs export-ignore
+src export-ignore
+lambda export-ignore
+parse-server export-ignore
+.nginx export-ignore
+.eslint export-ignore
+.parse.project export-ignore
+.parse.local export-ignore
+README.md export-ignore
+gulpfile.babel.js export-ignore
+webpack.config.babel.js export-ignore
+build-paths.js export-ignore
+bower_components export-ignore
+node_modules export-ignore
+oneroost.zip export-ignore
+.DS_Store export-ignore
+.idea export-ignore
+.project export-ignore
+.settings export-ignore
+*.iml export-ignore
+.tags* export-ignore
