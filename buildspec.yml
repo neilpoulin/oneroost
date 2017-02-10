@@ -18,7 +18,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo starting the gulp build process
-      - gulp build
+      - gulp build:all
   post_build:
     commands:
       - echo Build completed on `date`
