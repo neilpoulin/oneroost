@@ -24,6 +24,12 @@ export const fromJS = (json) => {
     step.createdBy = User.Pointer(step.createdBy)
     step.modifiedBy = User.Pointer(step.modifiedBy)
     step.assignedUser = User.Pointer(step.assignedUser)
+    //todo: take this out when we can...
+    if ( step.author){
+        console.warn("step has Author, which is not valid", step)
+        delete step["author"]
+    }
+
     return new NextStep(step)
 }
 

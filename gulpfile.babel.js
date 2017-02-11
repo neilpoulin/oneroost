@@ -16,7 +16,8 @@ var nodeInspector = require("gulp-node-inspector");
 var cleanCSS = require("gulp-clean-css");
 var webpack = require("webpack");
 var webpackConfig = require("./webpack.config.babel.js")
-import {paths, bootstrapPaths, fontAwesomePaths, GoogleMaterialColors, reactModalBootstrap, infiniteCalendar,} from "./build-paths";
+import zip from "gulp-zip"
+import {paths, bootstrapPaths, fontAwesomePaths, GoogleMaterialColors, reactModalBootstrap, infiniteCalendar, zipPaths} from "./build-paths";
 
 var devEnvProps = {
     AWS_PROFILE: "oneroost",
@@ -84,7 +85,11 @@ gulp.task("clean:js", function(){
     return del(["./public/bundle", paths.build.frontendjs]);
 });
 
-gulp.task("clean", ["clean:js", "clean:css", "clean:npm-log"]);
+gulp.task("clean:zip", function(){
+    return del(paths.build.archive)
+})
+
+gulp.task("clean", ["clean:js", "clean:css", "clean:npm-log", "clean:zip"]);
 
 gulp.task("lint", function () {
     return gulp.src(paths.src.all)
@@ -289,4 +294,11 @@ gulp.task("deploy", ["build:all", "eb-deploy:stage", "set-prod-node-env"]);
 gulp.task("update-config", ["mongo-start"], function(){
     var command = "mongo localhost:27017/oneroost-db db/scripts/update_configs.js";
     runCommand(command);
+})
+
+
+gulp.task("zip", ["clean:zip"], function(){
+    gulp.src(zipPaths, { base : "." })
+    .pipe(zip("oneroost.zip"))
+        .pipe(gulp.dest(paths.build.archive))
 })
