@@ -32,14 +32,13 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - mv build/archive/oneroost.zip ./
 artifacts:
   files:
-    - ".ebextensions/**/*",
-    - ".elasticbeanstalk/**/*",
-    - "buildspec.yml",
-    - "main.js",
-    - "cloud/**/*",
-    - "package.json",
-    - "public/**/*",
+    - ".ebextensions/**/*"
+    - ".elasticbeanstalk/**/*"
+    - "buildspec.yml"
+    - "main.js"
+    - "cloud/**/*"
+    - "package.json"
+    - "public/**/*"
     - "yarn.lock"
