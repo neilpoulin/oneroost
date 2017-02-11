@@ -28,12 +28,18 @@ phases:
       - echo starting the gulp build process
       - gulp build:all
       - echo build:all conmpleted... zipping...
-      - gulp zip
-      - echo zip completed
+      - echo source directory = $CODEBUILD_SRC_DIR
   post_build:
     commands:
       - echo Build completed on `date`
       - mv build/archive/oneroost.zip ./
 artifacts:
   files:
-    - oneroost.zip
+    - ".ebextensions/**/*",
+    - ".elasticbeanstalk/**/*",
+    - "buildspec.yml",
+    - "main.js",
+    - "cloud/**/*",
+    - "package.json",
+    - "public/**/*",
+    - "yarn.lock"
