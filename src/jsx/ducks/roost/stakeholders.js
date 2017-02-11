@@ -77,7 +77,12 @@ export const createStakeholder = (json, message) => (dispatch, getState) => {
     }
     let stakeholder = Stakeholder.fromJSON(json);
     stakeholder.save().then(saved => {
-        let entities = normalize(saved.toJSON(), Stakeholder.Schema).entities
+        let savedJSON = saved.toJSON()
+        savedJSON.user = {
+            ...savedJSON.user,
+            ...json.user
+        }
+        let entities = normalize(savedJSON, Stakeholder.Schema).entities
 
         if ( message ){
             dispatch(createComment({
@@ -92,7 +97,7 @@ export const createStakeholder = (json, message) => (dispatch, getState) => {
         dispatch({
             type: ADD_STAKEHOLDER,
             dealId: saved.get("deal").id,
-            payload: saved,
+            payload: savedJSON,
             entities: entities,
         })
     }).catch(console.error)
