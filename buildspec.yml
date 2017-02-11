@@ -33,7 +33,7 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - mv build/archive/onroost.zip ./
+      - mv build/archive/oneroost.zip ./
 artifacts:
   files:
     - oneroost.zip
