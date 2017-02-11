@@ -43,7 +43,6 @@ export default function reducer(state=initialState, action){
     return state;
 }
 
-
 // Actions
 export const removeStakeholder = (json) => (dispatch, getState) => {
     let currentUser = Parse.User.current()
@@ -124,5 +123,4 @@ export const loadStakeholders = (dealId, force=false) => (dispatch, getState) =>
             }
         })
     });
-
 }

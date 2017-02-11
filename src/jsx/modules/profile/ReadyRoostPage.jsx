@@ -16,7 +16,10 @@ const ReadyRoostPage = React.createClass({
     propTypes: {
         params: PropTypes.shape({
             templateId: PropTypes.string.isRequired
-        }).isRequired
+        }).isRequired,
+        template: PropTypes.object,
+        currentUser: PropTypes.object,
+        isLoading: PropTypes.bool,
     },
     getInitialState(){
         return {
@@ -54,10 +57,10 @@ const ReadyRoostPage = React.createClass({
         this.setState({currentUser: null})
     },
     createReadyRoost(){
-        var profileUserId = this.props.params.userId
-        var self = this;
+        const {template} = this.props
+        var self = this;        
         Parse.Cloud.run("createReadyRoost", {
-            profileUserId: profileUserId,
+            templateId: template.objectId,
             roostName: self.state.roostName
         }).then(function(result){
             let createdRoost = result.toJSON()

@@ -15,8 +15,7 @@ export default React.createClass({
             tag: "li",
             activeClassName: "active",
             className: null,
-            linkClassName: null,
-            target: "_self",
+            linkClassName: null,            
         }
     },
     render() {

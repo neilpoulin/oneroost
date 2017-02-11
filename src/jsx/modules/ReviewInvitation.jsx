@@ -1,34 +1,33 @@
 import React, { PropTypes } from "react"
-import Parse from "parse"
+import {connect} from "react-redux"
 import {withRouter} from "react-router"
 import * as RoostUtil from "RoostUtil"
+import {denormalize} from "normalizr"
+import * as Stakeholder from "models/Stakeholder"
+import * as Deal from "models/Deal"
+import * as User from "models/User"
+import {loadInvitationByStakeholderId, acceptInvite} from "ducks/invitation"
 
 const ReviewInvitation = withRouter( React.createClass({
     propTypes: {
         router: PropTypes.object.isRequired,
         params: PropTypes.shape({
             stakeholderId: PropTypes.string.isRequired
-        })
+        }),
+        isLoading: PropTypes.bool.isRequired,
+        roost: PropTypes.object,
+        invitedBy: PropTypes.object,
+        stakeholder: PropTypes.object,
+        isLoggedIn: PropTypes.bool,
+        inviteAccepted: PropTypes.bool,
     },
-    fetchData(stakeholderId){
-        let self = this;
-        var stakeholderQuery = new Parse.Query("Stakeholder");
-        stakeholderQuery.include("user");
-        stakeholderQuery.include("deal");
-        stakeholderQuery.include("invitedBy");
-        stakeholderQuery.get(stakeholderId).then(stakeholder => {
-            self.setState({
-                loading: false,
-                stakeholder: stakeholder
-            })
-        }).catch(error => {
-            console.log("failed to get stakeholder", error);
-            self.setState({
-                loading: false,
-                stakeholder: false
-            })
-        })
+    getDefaultProps(){
+        return {
+            isLoading: true,
+            isLoggedIn: false,
+        }
     },
+
     getInitialState: function(){
         return {
             password: null,
@@ -37,17 +36,16 @@ const ReviewInvitation = withRouter( React.createClass({
             loading: true,
         }
     },
-    componentWillMount(){
-        this.fetchData(this.props.params.stakeholderId)
+    componentDidMount(){
+        this.props.loadData()
     },
     componentWillUpdate(props, state){
-        if (!this.state.loading) {
-            var stakeholder = this.state.stakeholder;
+        if (!this.props.isLoading) {
+            const {stakeholder, isLoggedIn, roost} = this.props;
             var stakeholderUser = stakeholder.user
-            var currentUser = Parse.User.current().toJSON();
-            var dealId = stakeholder.deal.objectId;
+            var dealId = roost.objectId;
 
-            if ( stakeholder.inviteAccepted || !currentUser && !stakeholderUser.passwordChangeRequired )  // OR the user needs to log in
+            if ( stakeholder.inviteAccepted || !isLoggedIn && !stakeholderUser.passwordChangeRequired )  // OR the user needs to log in
             {
                 this.sendToRoost( dealId );
             }
@@ -58,24 +56,22 @@ const ReviewInvitation = withRouter( React.createClass({
         this.props.router.replace("/roosts/" + roostId )
     },
     acceptInvite: function(){
-        var self = this;
-
-        let stakeholder = this.state.stakeholder;
-        console.error("NEED TO USE ACTIONS, THIS WILL FAIL")
-        stakeholder.set("inviteAccepted", true);
-        stakeholder.save().then(result => {
-            self.sendToRoost( stakeholder.deal.objectId );
-        }).catch(error => console.error("failed to save the stakeholder", error))
+        let stakeholder = this.props.stakeholder;
+        this.props.acceptInvite(stakeholder)
     },
     render () {
-        let stakeholder = this.state.stakeholder;
-        if (this.state.loading)
+        const {isLoading, stakeholder, invitedBy, roost, inviteAccepted} = this.props;
+
+        if (isLoading)
         {
             return <div>Loading....</div>
         }
         else if (!stakeholder)
         {
             return <div>No invites found for that ID</div>
+        } else if (inviteAccepted){
+            this.sendToRoost(roost.objectId)
+            return <div>Redirecting to Opportunity</div>
         }
 
         var result =
@@ -86,7 +82,7 @@ const ReviewInvitation = withRouter( React.createClass({
                     <p className="lead">
                         <span className="">{stakeholder.user.firstName},</span>
                         <br/>
-                        {RoostUtil.getFullName(stakeholder.invitedBy)} from {stakeholder.invitedBy.company} has submitted a proposal called <i>{stakeholder.deal.dealName}</i> for you to review
+                        {RoostUtil.getFullName(invitedBy)} from {invitedBy.company} has submitted a proposal called <i>{roost.dealName}</i> for you to review
                     </p>
                 </div>
             </div>
@@ -101,4 +97,45 @@ const ReviewInvitation = withRouter( React.createClass({
     }
 }) )
 
-export default ReviewInvitation
+const mapStateToProps = (state, ownProps) => {
+    let entities = state.entities.toJS()
+    let invitationByStakeholder = state.invitationsByStakeholder.toJS()
+    let currentUser = state.user
+    let stakeholderId = ownProps.params.stakeholderId
+    let invitation = invitationByStakeholder[stakeholderId]
+    let stakeholder = null
+    let roost = null
+    let invitedBy = null
+    let isLoading = true
+    let inviteAccepted = false
+
+    if ( invitation && !invitation.isLoading && invitation.hasLoaded ){
+        isLoading = invitation.isLoading
+        stakeholder = denormalize(invitation.stakeholderId, Stakeholder.Schema, entities)
+        roost = denormalize(invitation.dealId, Deal.Schema, entities)
+        invitedBy = denormalize(invitation.invitedBy, User.Schema, entities)
+        inviteAccepted = invitation.inviteAccepted
+    }
+
+    return {
+        isLoading,
+        stakeholder,
+        invitedBy,
+        roost,
+        isLoggedIn: currentUser.isLoggedIn,
+        inviteAccepted
+    }
+}
+const mapDispatchToProps = (dispatch, ownProps) => {
+    let stakeholderId = ownProps.params.stakeholderId
+    return {
+        loadData: () => {
+            dispatch(loadInvitationByStakeholderId(stakeholderId))
+        },
+        acceptInvite: (stakeholder) => {
+            dispatch(acceptInvite(stakeholder))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReviewInvitation)

@@ -56,10 +56,10 @@ const Onboarding = withRouter( React.createClass({
         this.createReadyRoost();
     },
     createReadyRoost(){
-        var profileUserId = this.props.readyRoostUser.id
+        let {template} = this.props
         var self = this;
         Parse.Cloud.run("createReadyRoost", {
-            profileUserId: profileUserId,
+            templateId: template.objectId,
             roostName: fieldValues.problem
         }).then(function(result){
             console.log("created ready roost, so happy", result);
