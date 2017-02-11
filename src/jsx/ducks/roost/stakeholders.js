@@ -22,23 +22,23 @@ export const initialState = Map({
 export default function reducer(state=initialState, action){
     switch (action.type) {
         case STAKEHOLDER_LOAD_REQUEST:
-            state = state.set("isLoading", true)
-            break;
+        state = state.set("isLoading", true)
+        break;
         case STAKEHOLDER_LOAD_SUCCESS:
-            state = state.set("isLoading", false)
-            state = state.set("hasLoaded", true)
-            state = state.set("ids", List(action.payload.map(stakeholder => stakeholder.get("objectId"))))
-            break;
+        state = state.set("isLoading", false)
+        state = state.set("hasLoaded", true)
+        state = state.set("ids", List(action.payload.map(stakeholder => stakeholder.get("objectId"))))
+        break;
         case STAKEHOLDER_LOAD_ERROR:
-            state = state.set("isLoading", false);
-            break;
+        state = state.set("isLoading", false);
+        break;
         case ADD_STAKEHOLDER:
-            state = state.set("ids", state.get("ids").push(action.payload.get("objectId")))
-            break;
+        state = state.set("ids", state.get("ids").push(action.payload.get("objectId")))
+        break;
         case UPDATE_STAKEHOLDER:
-            break;
+        break;
         default:
-            break;
+        break;
     }
     return state;
 }
@@ -71,13 +71,24 @@ export const removeStakeholder = (json) => (dispatch, getState) => {
     }))
 }
 
-export const createStakeholder = (json) => (dispatch, getState) => {
+export const createStakeholder = (json, message) => (dispatch, getState) => {
     if ( !json.hasOwnProperty("active") ){
         json["active"] = true;
     }
     let stakeholder = Stakeholder.fromJSON(json);
     stakeholder.save().then(saved => {
         let entities = normalize(saved.toJSON(), Stakeholder.Schema).entities
+
+        if ( message ){
+            dispatch(createComment({
+                deal: stakeholder.deal,
+                message,
+                author: null,
+                username: "OneRoost Bot",
+                navLink: {type:"participant"}
+            }))
+        }
+
         dispatch({
             type: ADD_STAKEHOLDER,
             dealId: saved.get("deal").id,
@@ -85,6 +96,34 @@ export const createStakeholder = (json) => (dispatch, getState) => {
             entities: entities,
         })
     }).catch(console.error)
+}
+
+export const inviteUser = (userInfo, deal) => (dispatch, getState) => {
+    const state = getState()
+    let currentUser = RoostUtil.getCurrentUser(state)
+
+    Parse.Cloud.run("addStakeholder", {
+        dealId: deal.objectId,
+        stakeholder: userInfo,
+    }).then(function( result ) {
+        if ( result.exists ){
+            alert("this user is already a stakeholder on this opportunity.");
+            return;
+        }
+        var createdUser = result.user
+        const stakeholderToCreate = {
+            user: createdUser.toJSON(),
+            deal,
+            role: userInfo.role,
+            invitedBy: currentUser,
+            inviteAccepted: false,
+        }
+        const message = RoostUtil.getFullName(currentUser) + " added " + RoostUtil.getFullName(createdUser) + " to the opportunity.";
+        dispatch(createStakeholder(stakeholderToCreate, message ))
+    }).catch(error => {
+        alert("this user is already a stakeholder on this opportunity.");
+        console.error(error);
+    });
 }
 
 export const loadStakeholders = (dealId, force=false) => (dispatch, getState) => {
