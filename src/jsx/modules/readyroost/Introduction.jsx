@@ -15,16 +15,12 @@ const Introduction = React.createClass({
         let page =
         <div>
             <div>
-                <h2>Welcome to OneRoost</h2>
+                <h2>{template.title}</h2>
                 <p className="lead">
-                    You’re here because <b>{RoostUtil.getFullName(readyRoostUser)}</b> at <b>{readyRoostUser.company}</b> is using OneRoost to review business opportunities! With OneRoost, you will be able to present your offering in a simple and straightforward manner, accelerating the decision process.
-                </p>
-                <p className="lead">
-                    RFP Title:
-                    {template.title}
-                </p>
-                <p>
                     {template.description}
+                </p>
+                <p className="">
+                    You’re here because <b>{RoostUtil.getFullName(readyRoostUser)}</b> at <b>{readyRoostUser.company}</b> is using OneRoost to review business opportunities! With OneRoost, you will be able to present your offering in a simple and straightforward manner, accelerating the decision process.
                 </p>
             </div>
             <div className="actions">

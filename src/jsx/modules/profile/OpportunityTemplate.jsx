@@ -8,18 +8,20 @@ const OpportunityTemplate = React.createClass({
     },
     render () {
         const {template} = this.props;
+        let linkDisplay = `${window.location.origin}/proposals/${template.objectId}`
         let widget =
         <div className="OpportunityTemplate">
-            <div><b>{template.title}</b></div>
-            <div>{template.description}</div>
+            <div className="title">{template.title}</div>
+            <div className="description">{template.description}</div>
             <div>
                 <NavLink
                     to={"/proposals/" + template.objectId }
                     tag={"span"}
                     className={"PublicProfileLink"}
                     linkClassName={""}
+                    target={"_blank"}
                     >
-                    link
+                    {linkDisplay}
                 </NavLink>
             </div>
         </div>

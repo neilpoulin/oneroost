@@ -26,6 +26,7 @@ const PublicProfileLink = React.createClass({
             tag={this.props.tag}
             className={`PublicProfileLink ${this.props.className}`}
             linkClassName={this.props.linkClassName}
+            target={"_blank"}
             >
             {content}
         </NavLink>
