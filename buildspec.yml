@@ -1,5 +1,5 @@
 version: 0.1
-# 
+#
 # eb_codebuild_settings:
 #   CodeBuildServiceRole: arn:aws:iam::062773471215:role/service-role/codebuild-oneroost-service-role
 #   ComputeType: BUILD_GENERAL1_SMALL
@@ -33,6 +33,7 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
+      - mv build/archive/onroost.zip ./
 artifacts:
   files:
-    - build/archive/oneroost.zip
+    - oneroost.zip
