@@ -34,11 +34,11 @@ phases:
       - echo Build completed on `date`
 artifacts:
   files:
-    - ".ebextensions/**/*"
-    - ".elasticbeanstalk/**/*"
-    - "buildspec.yml"
-    - "main.js"
-    - "cloud/**/*"
-    - "package.json"
-    - "public/**/*"
-    - "yarn.lock"
+    - .ebextensions/**/*
+    - .elasticbeanstalk/**/*
+    - buildspec.yml
+    - main.js
+    - cloud/**/*
+    - package.json
+    - public/**/*
+    - yarn.lock
