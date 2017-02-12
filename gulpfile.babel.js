@@ -316,17 +316,20 @@ function string_src(filename, string) {
 }
 
 gulp.task("version", function () {
-  var pkg = require("./package.json")
-  let version = {}
-  git.revParse({args:"HEAD"}, function (err, hash) {
-    //if (err) ...
-    console.log("current git hash: " + hash);
-    version.hash = hash
-    version.version = pkg.version
+    var pkg = require("./package.json")
+    let version = {}
+    git.revParse({args:"HEAD"}, function (err, hash) {
 
-    return string_src("version.json", JSON.stringify(version))
-      .pipe(gulp.dest("src/jsx"))
-  });
+        console.log("current git hash: " + hash);
+        version.hash = hash
+        version.version = pkg.version
+        let versionJSON = JSON.stringify(version)
+        string_src("version.js", "var oneroostVersion=" + versionJSON)
+            .pipe(gulp.dest(paths.dest.frontendjs))
+
+        return string_src("version.json", versionJSON)
+            .pipe(gulp.dest("src/jsx"))
+    });
 
 })
 

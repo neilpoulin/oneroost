@@ -1,9 +1,15 @@
 <script src="https://cdn.ravenjs.com/3.10.0/raven.min.js" crossorigin="anonymous"></script>
+<script src="/static/bundle/version.js" type="application/javascript"></script>
 <script type="text/javascript">
     window.OneRoost = {};
     OneRoost.Config = <%-env%>;
-
+    console.log("Version from config.ejs", oneroostVersion)
     Raven.config('https://50020b1e8db94c39be96db010cdbba4f@sentry.io/128546', {
-        environment: OneRoost.Config.environment
+        environment: OneRoost.Config.environment,
+        release: oneroostVersion.hash,
+        tags: {
+            git_commit: oneroostVersion.hash,
+            git_tag: oneroostVersion.version
+        }
     }).install()
 </script>

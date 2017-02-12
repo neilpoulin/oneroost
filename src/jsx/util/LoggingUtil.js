@@ -8,10 +8,6 @@ export const WARN = 2
 export const INFO = 1
 export const DEBUG = 0
 
-// Raven.config({
-//     release: version.hash
-// });
-
 let level = getLogLevel()
 window.getVersion = function(){
     return version;
