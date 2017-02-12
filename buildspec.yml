@@ -18,10 +18,16 @@ phases:
       - npm install -g gulp
       - echo checking location of gulp and its version
       - which gulp && gulp -v
+      - echo install sentry-cli
+      - curl -sL https://sentry.io/get-cli/ | bash
+      - sentry installed correctly at ->
+      - which sentry-cli
   pre_build:
     commands:
       - echo Installing source Yarn dependencies...
       - yarn install
+      - log into sentry with auth token
+      - sentry-cli info
   build:
     commands:
       - echo Build started on `date`

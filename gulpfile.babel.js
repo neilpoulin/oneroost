@@ -16,12 +16,11 @@ import nodeInspector from "gulp-node-inspector"
 import cleanCSS from "gulp-clean-css"
 import webpack from "webpack"
 import webpackConfig from "./webpack.config.babel.js"
-import zip from "gulp-zip"
 import git from "gulp-git"
 import bump from "gulp-bump"
 import filter from "gulp-filter"
 import tagVersion from "gulp-tag-version"
-import {paths, bootstrapPaths, fontAwesomePaths, GoogleMaterialColors, reactModalBootstrap, infiniteCalendar, zipPaths} from "./build-paths";
+import {paths, bootstrapPaths, fontAwesomePaths, GoogleMaterialColors, reactModalBootstrap, infiniteCalendar} from "./build-paths";
 
 var devEnvProps = {
     AWS_PROFILE: "oneroost",
@@ -126,7 +125,7 @@ gulp.task("move:cloud", ["clean:node", "transpile:node"], function(){
     .pipe(gulp.dest(paths.dest.cloud));
 });
 
-gulp.task("bundle", function(done){
+gulp.task("bundle", ["version"], function(done){
     let plugins = [];
     if (process.env.NODE_ENV === "production"){
         gutil.log(gutil.colors.green("**************** Bundling for production ******************"));
@@ -136,13 +135,15 @@ gulp.task("bundle", function(done){
                     NODE_ENV: JSON.stringify("production")
                 }
             }),
-            new webpack.optimize.UglifyJsPlugin()
+            new webpack.optimize.UglifyJsPlugin({
+                sourceMap: true
+            })
         ]);
     }
     else{
         gutil.log(gutil.colors.green("**************** Bundling for dev ******************"));
-        webpackConfig.devtool = "source-map";
     }
+    webpackConfig.devtool = "source-map";
     webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
 
     webpack(webpackConfig).run((err, stats) => {
@@ -300,11 +301,33 @@ gulp.task("update-config", ["mongo-start"], function(){
     runCommand(command);
 })
 
+function string_src(filename, string) {
+  var src = require("stream").Readable({ objectMode: true })
+  src._read = function () {
+    this.push(new gutil.File({
+      cwd: "",
+      base: "",
+      path: filename,
+      contents: new Buffer(string)
+    }))
+    this.push(null)
+  }
+  return src
+}
 
-gulp.task("zip", ["clean:zip"], function(){
-    gulp.src(zipPaths, { base : "." })
-    .pipe(zip("oneroost.zip"))
-        .pipe(gulp.dest(paths.build.archive))
+gulp.task("version", function () {
+  var pkg = require("./package.json")
+  let version = {}
+  git.revParse({args:"HEAD"}, function (err, hash) {
+    //if (err) ...
+    console.log("current git hash: " + hash);
+    version.hash = hash
+    version.version = pkg.version
+
+    return string_src("version.json", JSON.stringify(version))
+      .pipe(gulp.dest("src/jsx"))
+  });
+
 })
 
 function inc(importance) {

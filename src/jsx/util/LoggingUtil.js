@@ -1,5 +1,6 @@
 /*eslint no-console: 0*/
 import Raven from "raven-js"
+import version from "version.json"
 
 export const NONE = 99
 export const ERROR = 3
@@ -7,7 +8,14 @@ export const WARN = 2
 export const INFO = 1
 export const DEBUG = 0
 
+Raven.config({
+    release: version.hash
+});
+
 let level = getLogLevel()
+window.getVersion = function(){
+    return version;
+}
 
 window.setLogLevel = function(newLevel){
     localStorage["oneroost/debug"] = newLevel
