@@ -1,22 +1,26 @@
-var gulp = require("gulp");
-var babel = require("gulp-babel");
-var sass = require("gulp-sass");
-var concat = require("gulp-concat");
-var del = require("del");
-var shell = require("gulp-shell");
-var exec = require("child_process").exec;
-var plumber = require("gulp-plumber");
-var gutil = require("gulp-util");
-var less = require("gulp-less");
-var merge = require("merge-stream");
-var file = require("gulp-file");
-var eslint = require("gulp-eslint");
-var nodemon = require("gulp-nodemon");
-var nodeInspector = require("gulp-node-inspector");
-var cleanCSS = require("gulp-clean-css");
-var webpack = require("webpack");
-var webpackConfig = require("./webpack.config.babel.js")
+import gulp from "gulp"
+import babel from "gulp-babel"
+import sass from "gulp-sass"
+import concat from "gulp-concat"
+import del from "del"
+import shell from "gulp-shell"
+import {exec} from "child_process"
+import plumber from "gulp-plumber"
+import gutil from "gulp-util"
+import less from "gulp-less"
+import merge from "merge-stream"
+import file from "gulp-file"
+import eslint from "gulp-eslint"
+import nodemon from "gulp-nodemon"
+import nodeInspector from "gulp-node-inspector"
+import cleanCSS from "gulp-clean-css"
+import webpack from "webpack"
+import webpackConfig from "./webpack.config.babel.js"
 import zip from "gulp-zip"
+import git from "gulp-git"
+import bump from "gulp-bump"
+import filter from "gulp-filter"
+import tagVersion from "gulp-tag-version"
 import {paths, bootstrapPaths, fontAwesomePaths, GoogleMaterialColors, reactModalBootstrap, infiniteCalendar, zipPaths} from "./build-paths";
 
 var devEnvProps = {
@@ -302,3 +306,23 @@ gulp.task("zip", ["clean:zip"], function(){
     .pipe(zip("oneroost.zip"))
         .pipe(gulp.dest(paths.build.archive))
 })
+
+function inc(importance) {
+    // get all the files to bump version in
+    return gulp.src(["./package.json"])
+        // bump the version number in those files
+        .pipe(bump({type: importance}))
+        // save it back to filesystem
+        .pipe(gulp.dest("./"))
+        // commit the changed version number
+        .pipe(git.commit("bump package version: " + importance))
+
+        // read only one file to get the version number
+        .pipe(filter("package.json"))
+        // **tag it in the repository**
+        .pipe(tagVersion());
+}
+
+gulp.task("patch", function() { return inc("patch"); })
+gulp.task("feature", function() { return inc("minor"); })
+gulp.task("release", function() { return inc("major"); })
