@@ -27,7 +27,7 @@ const ProfilePage = React.createClass({
         this.props.loadData(userId)
     },
     render(){
-        const {user, templates} = this.props        
+        const {user, templates} = this.props
         var page =
         <div className="ProfilePage">
             <RoostNav showHome={true}/>
@@ -37,8 +37,9 @@ const ProfilePage = React.createClass({
                     <BasicInfo user={this.getCurrentUser()} saveUser={this.props.saveUser}/>
                 </div>
                 <div className="section">
-                    <h2>RFP Tempaltes</h2>
+                    <h2>RFP Templates</h2>
                     <div>
+                        Need to make a change or add a template? Contact <a href="mailto:support@oneroost.com">support@oneroost.com</a>.
                         {templates.map((template, i) => {
                             return <OpportunityTemplate
                                 template={template}

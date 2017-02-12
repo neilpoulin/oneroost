@@ -1,5 +1,6 @@
 import React, { PropTypes } from "react"
 import * as RoostUtil from "RoostUtil"
+import RequirementsInfo from "profile/RequirementsInfo"
 
 const Introduction = React.createClass({
     propTypes: {
@@ -12,6 +13,16 @@ const Introduction = React.createClass({
 
     render () {
         const {readyRoostUser, template, nextStep} = this.props;
+        const requirements = template.requirements
+        let requirementsInfo = null
+        if ( template.requirements && template.requirements.length > 0 ){
+            let message = `There ${requirements.length > 1 ? "are" : "is"} ${requirements.length} requirement${requirements.length > 1 ? "s" : ""} for this opportunity`
+            requirementsInfo = <RequirementsInfo
+                requirements={requirements}
+                message={message} 
+                displayNumbered={true}
+                template={template}/>
+        }
         let page =
         <div>
             <div>
@@ -22,6 +33,7 @@ const Introduction = React.createClass({
                 <p className="">
                     You’re here because <b>{RoostUtil.getFullName(readyRoostUser)}</b> at <b>{readyRoostUser.company}</b> is using OneRoost to review business opportunities! With OneRoost, you will be able to present your offering in a simple and straightforward manner, accelerating the decision process.
                 </p>
+                {requirementsInfo}
             </div>
             <div className="actions">
                 <button className="btn btn-primary btn-block" onClick={nextStep}>Get Started</button>

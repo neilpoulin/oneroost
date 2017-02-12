@@ -1,5 +1,6 @@
 import React, { PropTypes } from "react"
 import NavLink from "NavLink"
+import RequirementsInfo from "profile/RequirementsInfo"
 
 const OpportunityTemplate = React.createClass({
     propTypes: {
@@ -24,6 +25,7 @@ const OpportunityTemplate = React.createClass({
                     {linkDisplay}
                 </NavLink>
             </div>
+            <RequirementsInfo template={template} displayNumbered={true} forceList={true} editable={true} />
         </div>
         return widget
     }

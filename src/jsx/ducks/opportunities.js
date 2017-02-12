@@ -75,13 +75,14 @@ export default function reducer(state=initialState, action){
 
 // Queries
 const opportunitiesQuery = (userId) => {
-    let query = new Parse.Query("Stakeholder");
-    query.include("deal");
-    query.include(["deal.account"]);
-    query.include("deal.createdBy");
-    query.include("deal.readyRoostUser");
-    query.equalTo("user", User.Pointer(userId) );
-    query.equalTo("inviteAccepted", true);
+    let query = new Parse.Query("Stakeholder")
+    query.include("deal")
+    query.include(["deal.account"])
+    query.include("deal.createdBy")
+    query.include("deal.readyRoostUser")
+    query.include("deal.template")
+    query.equalTo("user", User.Pointer(userId) )
+    query.equalTo("inviteAccepted", true)
     return query
 }
 

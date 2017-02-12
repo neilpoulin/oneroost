@@ -1,0 +1,28 @@
+.RequirementsInfo{
+    .message{
+        margin-bottom: 5px;
+    }
+
+    .requirement{
+        margin-bottom: 10px;
+    }
+    .title{
+        font-weight: bold;
+        margin-bottom: 0px;
+    }
+    .description{
+
+    }
+
+    ol{
+        &.numbered-true{
+            list-style-type: decimal;
+            padding-left: 1em;
+        }
+        &.numbered-false{
+                        
+        }
+    }
+
+    padding-bottom: 20px;
+}
