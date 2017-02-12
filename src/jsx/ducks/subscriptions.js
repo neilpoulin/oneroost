@@ -40,15 +40,15 @@ export default function reducer(state=initialState, action){
             const id = action.payload.get("id")
             const query = action.payload.get("query")
             const handlers = action.payload.get("handlers")
-            log.info(`adding subscription called for ${group}-${id}`, handlers)
+            log.debug(`adding subscription called for ${group}-${id}`, handlers)
             if ( subscriptions.hasIn([group, id]) ){
-                log.info(`subscription already registered for ${group}-${id}`)
+                log.debug(`subscription already registered for ${group}-${id}`)
                 return null;
             }
             let subscription = query.subscribe()
             handlers.forEach((handler, eventName) => {
                 if (handler){
-                    log.info(`Registering subscription ${group}-${id}: ${eventName}`)
+                    log.debug(`Registering subscription ${group}-${id}: ${eventName}`)
                     subscription.on(eventName, handlers.get(eventName))
                 }
             })

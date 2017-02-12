@@ -178,6 +178,7 @@ const LoginComponent = React.createClass({
                 user.set("password", this.state.password);
                 user.set("firstName", this.state.firstName);
                 user.set("lastName", this.state.lastName);
+                user.set("company", this.state.company)
                 user.set("passwordChangeRequired", false);
                 user.signUp( null, {
                     success: (savedUser) => {

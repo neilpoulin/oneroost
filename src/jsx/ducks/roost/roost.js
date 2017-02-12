@@ -138,6 +138,30 @@ export const loadDeal = (dealId, force=false) => {
         });
     }
 }
+// TODO: make this ready roost creation happen with global state to handle errors, etc
+// export const createReadyRoost = (templateId, roostName, callback) => (dispatch, getState) => {
+//     let currentUser = RoostUtil.getCurrentUser(getState())
+//     Parse.Cloud.run("createReadyRoost", {
+//         templateId: templateId,
+//         roostName: roostName
+//     }).then(function(result){
+//         log.info("created ready roost, so happy", result);
+//         ReactGA.set({userId: currentUser.objectId});
+//         ReactGA.event({
+//               category: "ReadyRoost",
+//               action: "Created ReadyRoost"
+//             });
+//         callback(result.roost.toJSON())
+//     }).catch(error => {
+//         log.error("can not create roost, already have one for this user", error);
+//         self.setState({
+//             error: {
+//                 message: "You have already submitted an opportunity for to " + RoostUtil.getFullName( self.props.readyRoostUser ) + ".",
+//                 link: error.message.link
+//             }
+//         })
+//     })
+// }
 
 export const submitReadyRoost = (stakeholder, deal) => (dispatch, getState) => {
     Parse.Cloud.run("submitReadyRoost", {

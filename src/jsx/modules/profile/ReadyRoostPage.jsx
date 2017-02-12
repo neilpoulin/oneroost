@@ -12,6 +12,7 @@ import * as RoostUtil from "RoostUtil"
 import {denormalize} from "normalizr"
 import * as Template from "models/Template"
 import * as log from "LoggingUtil"
+// import {createReadyRoost} from "ducks/roost/roost"
 
 const ReadyRoostPage = React.createClass({
     propTypes: {
@@ -88,7 +89,7 @@ const ReadyRoostPage = React.createClass({
         }
     },
     render () {
-        let {currentUser, template, isLoading} = this.props;
+        let {currentUser, template, isLoading, createReadyRoost} = this.props;
 
         if ( isLoading ){
             return <LoadingTakeover messsage={"Loading Profile"}/>
@@ -104,7 +105,12 @@ const ReadyRoostPage = React.createClass({
         <div className="ReadyRoostPage">
             <RoostNav showHome={false}></RoostNav>
             <div className="container col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
-                <Onboarding readyRoostUser={readyRoostUser} currentUser={currentUser} template={template}/>
+                <Onboarding
+                    readyRoostUser={readyRoostUser}
+                    currentUser={currentUser}
+                    template={template}
+                    createReadyRoost={createReadyRoost}
+                    />
             </div>
         </div>
 
@@ -135,6 +141,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         loadData: () => {
             dispatch(loadTemplate(templateId))
+        },
+        createReadyRoost: (roostName, callback) => {
+            //TODO: this isn't quite ready yet
+            log.warn("This isn't quite implemented yet")
+            // dispatch(createReadyRoost(templateId, roostName, callback))
         }
     }
 }

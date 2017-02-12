@@ -62,6 +62,8 @@ export const loginSuccessAction = (user) => {
     }
 }
 
+// TODO: create a register new user method
+
 export const loadCurrentUser = () => (dispatch, getState) => {
     let currentUser = RoostUtil.toJSON(Parse.User.current());
     if ( !currentUser ){

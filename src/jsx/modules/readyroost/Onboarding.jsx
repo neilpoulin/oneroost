@@ -20,13 +20,15 @@ const Onboarding = withRouter( React.createClass({
     propTypes: {
         readyRoostUser: PropTypes.object.isRequired,
         currentUser: PropTypes.object,
-        template: PropTypes.object,
+        template: PropTypes.object.isRequired,
+        createReadyRoost: PropTypes.func.isRequired,
     },
     getInitialState(){
         return {
             step: 1,
             totalSteps: this.props.currentUser ? 2 : 4,
-            error: null
+            error: null,
+            loggedInSteps: this.props.currentUser ? true : false,
         }
     },
     saveValues: function(data) {
@@ -45,8 +47,11 @@ const Onboarding = withRouter( React.createClass({
     componentDidMount(){
         this.saveValues({currentUser: this.props.currentUser});
     },
+    componentWillUpdate(nextProps){
+        this.saveValues({currentUser: nextProps.currentUser});
+    },
     showStep(){
-        if ( this.props.currentUser ){
+        if ( this.state.loggedInSteps ){
             return this.getLoggedInStep()
         }
         return this.getAnonymousStep()
@@ -56,8 +61,10 @@ const Onboarding = withRouter( React.createClass({
         this.createReadyRoost();
     },
     createReadyRoost(){
-        let {template} = this.props
-        var self = this;
+        let self = this;
+        const {template} = this.props;
+        this.props.createReadyRoost()
+        // TODO: create a ready roost onboarding global state
         Parse.Cloud.run("createReadyRoost", {
             templateId: template.objectId,
             roostName: fieldValues.problem
@@ -83,19 +90,22 @@ const Onboarding = withRouter( React.createClass({
     getLoggedInStep(){
         switch (this.state.step) {
             case 1:
-            return <Introduction nextStep={this.nextStep}
-                previousStep={this.previousStep}
-                readyRoostUser={this.props.readyRoostUser}
-                template={this.props.template}
-                />
+                return <Introduction nextStep={this.nextStep}
+                    previousStep={this.previousStep}
+                    readyRoostUser={this.props.readyRoostUser}
+                    template={this.props.template}
+                    />
             case 2:
-            return <OpportunityDetail nextStep={this.submit}
-                previousStep={this.previousStep}
-                readyRoostUser={this.props.readyRoostUser}
-                fieldValues={fieldValues}
-                saveValues={this.saveValues}
-                template={this.props.template}
-                nextText={"Submit"} />
+                return <OpportunityDetail nextStep={this.submit}
+                    previousStep={this.previousStep}
+                    readyRoostUser={this.props.readyRoostUser}
+                    fieldValues={fieldValues}
+                    saveValues={this.saveValues}
+                    template={this.props.template}
+                    nextText={"Submit"} />
+            default:
+                log.error("No step defined for LoggedInStep #" + this.state.step)
+                break;
         }
     },
     getAnonymousStep(){
@@ -118,7 +128,7 @@ const Onboarding = withRouter( React.createClass({
                 previousStep={this.previousStep}
                 readyRoostUser={this.props.readyRoostUser}
                 saveValues={this.saveValues}
-                currentUser={fieldValues.currentUser}
+                currentUser={this.props.currentUser}
                 company={fieldValues.company} />
             case 4:
             return <Confirmation submit={this.submit}
@@ -126,6 +136,9 @@ const Onboarding = withRouter( React.createClass({
                 readyRoostUser={this.props.readyRoostUser}
                 tempalte={this.props.template}
                 />
+            default:
+                log.error("No step defined for AnonymousStep #" + this.state.step)
+                break
         }
     },
     getLabels(){

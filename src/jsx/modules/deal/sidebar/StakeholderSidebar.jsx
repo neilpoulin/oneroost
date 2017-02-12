@@ -54,6 +54,7 @@ const StakeholderSidebar = React.createClass({
                         stakeholder={stakeholder}
                         deal={deal}
                         isEdit={false}
+                        removeStakeholder={this.props.removeStakeholder}
                         submitReadyRoost={this.props.submitReadyRoost}
                         />
                 })}
