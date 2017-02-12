@@ -26,7 +26,7 @@ phases:
     commands:
       - echo Installing source Yarn dependencies...
       - yarn install
-      - log into sentry with auth token
+      - echo log into sentry with auth token
       - sentry-cli info
   build:
     commands:
