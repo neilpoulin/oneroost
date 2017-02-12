@@ -223,9 +223,8 @@ const mapStateToProps = (immutableState, ownProps) => {
     if (!roosts[dealId]){
         return {isLoading: true};
     }
-    const roost = roosts[dealId]
-    const {isLoading} = roost;
-    const {ids, commentLimit, lastFetchCount} = roost.comments
+    const roost = roosts[dealId]    
+    const {ids, commentLimit, lastFetchCount, isLoading} = roost.comments
     const comments = denormalize(ids, [Comment.Schema], entities)
     const additionalComments = []
 

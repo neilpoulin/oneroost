@@ -32,7 +32,7 @@ export default function reducer(state=initialState, action){
             }
             break;
         case COMMENTS_LOAD_REQUEST:
-            state = state.set("isLoading", false)
+            state = state.set("isLoading", true)
             break;
         case COMMENTS_LOAD_SUCCESS:
             state = state.set("isLoading", false)
