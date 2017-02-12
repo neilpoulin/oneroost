@@ -1,4 +1,4 @@
-import DealComment, {createQuery, Schema} from "models/DealComment";
+import * as DealComment from "models/DealComment";
 import {Pointer as DealPointer} from "models/Deal"
 import {Map, List, fromJS} from "immutable"
 import {normalize} from "normalizr"
@@ -47,7 +47,7 @@ export default function reducer(state=initialState, action){
 
 // Actions
 const commentsQuery = (dealId) => {
-    const query = createQuery()
+    const query = DealComment.createQuery()
     query.include("author")
     query.equalTo( "deal", DealPointer(dealId) )
     query.descending("createdAt")
@@ -55,22 +55,21 @@ const commentsQuery = (dealId) => {
     return query;
 }
 
-export const addComment = function(comment){
-    return (dispatch, getState) => {
-        dispatch({
-            type: Notification.COMMENT_ADDED,
-            payload: comment,
-            dealId: comment.get("deal").get("objectId"),
-            dispatcher: dispatch,
-        })
-        dispatch( {
-            type: ADD_COMMENT,
-            dealId: comment.get("deal").id || comment.get("deal").get("objectId"),
-            payload: comment,
-            entities: normalize(comment.toJS(), Schema).entities
-        })
-    }
+export const addComment = (comment) => (dispatch, getState) => {
+    dispatch({
+        type: Notification.COMMENT_ADDED,
+        payload: comment,
+        dealId: comment.get("deal").get("objectId"),
+        dispatcher: dispatch,
+    })
+    dispatch( {
+        type: ADD_COMMENT,
+        dealId: comment.get("deal").id || comment.get("deal").get("objectId"),
+        payload: comment,
+        entities: normalize(comment.toJS(), DealComment.Schema).entities
+    })
 }
+
 
 export const subscribeComments = function(dealId){
     console.log("subscribe comments called");
@@ -104,7 +103,7 @@ export const loadComments = function(dealId, force=false){
                 type: COMMENTS_LOAD_SUCCESS,
                 dealId: dealId,
                 payload: comments,
-                entities: normalize(comments, [Schema]).entities
+                entities: normalize(comments, [DealComment.Schema]).entities
             })
         }).catch(error => {
             console.error(error)
@@ -119,10 +118,11 @@ export const loadComments = function(dealId, force=false){
 
 exports.createComment = function(message){
     return (dispatch) => {
-        let comment = new DealComment();
-        comment.set(message);
+        let comment = DealComment.fromJS(message)
         comment.save().then(saved => {
             dispatch(addComment(comment));
+        }).catch(error => {
+            console.error(error)
         })
     }
 }

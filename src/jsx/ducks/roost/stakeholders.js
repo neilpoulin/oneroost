@@ -86,7 +86,7 @@ export const createStakeholder = (json, message) => (dispatch, getState) => {
 
         if ( message ){
             dispatch(createComment({
-                deal: stakeholder.deal,
+                deal: json.deal,
                 message,
                 author: null,
                 username: "OneRoost Bot",
@@ -123,7 +123,7 @@ export const inviteUser = (userInfo, deal) => (dispatch, getState) => {
             invitedBy: currentUser,
             inviteAccepted: false,
         }
-        const message = RoostUtil.getFullName(currentUser) + " added " + RoostUtil.getFullName(createdUser) + " to the opportunity.";
+        const message = RoostUtil.getFullName(currentUser) + " invited " + RoostUtil.getFullName(createdUser) + " to the opportunity.";
         dispatch(createStakeholder(stakeholderToCreate, message ))
     }).catch(error => {
         alert("this user is already a stakeholder on this opportunity.");
