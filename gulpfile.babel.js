@@ -315,7 +315,10 @@ function string_src(filename, string) {
   return src
 }
 
-gulp.task("version", function () {
+
+gulp.task("version", ["version:src", "version:bundle"])
+
+gulp.task("version:src", function () {
     var pkg = require("./package.json")
     let version = {}
     git.revParse({args:"HEAD"}, function (err, hash) {
@@ -330,7 +333,20 @@ gulp.task("version", function () {
         return string_src("version.json", versionJSON)
             .pipe(gulp.dest("src/jsx"))
     });
+})
 
+gulp.task("version:bundle", function(){
+    var pkg = require("./package.json")
+    let version = {}
+    git.revParse({args:"HEAD"}, function (err, hash) {
+
+        console.log("current git hash: " + hash);
+        version.hash = hash
+        version.version = pkg.version
+        let versionJSON = JSON.stringify(version)
+        return string_src("version.js", "var oneroostVersion=" + versionJSON)
+            .pipe(gulp.dest(paths.dest.frontendjs))
+    });
 })
 
 function inc(importance) {
