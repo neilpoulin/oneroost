@@ -2,6 +2,7 @@ import {Map, List} from "immutable"
 import Parse from "parse"
 import {normalize} from "normalizr"
 import * as Stakeholder from "models/Stakeholder"
+import * as log from "LoggingUtil"
 
 export const LOAD_REQUEST = "oneroost/invitation/LOAD_REQUEST"
 export const LOAD_SUCCESS = "oneroost/invitation/LOAD_SUCCESS"
@@ -122,7 +123,7 @@ export const loadInvitationByStakeholderId = (stakeholderId, force=false) => (di
     .then(stakeholder => {
         dispatch(stakeholderLoadSuccessAction(stakeholder))
     }).catch(error => {
-        console.error(error);
+        log.error(error);
         dispatch(stakeholderLoadError(stakeholderId, error))
     })
 }

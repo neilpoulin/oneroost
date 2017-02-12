@@ -5,6 +5,7 @@ import {normalize} from "normalizr"
 import {Map, Set} from "immutable"
 import * as RoostUtil from "RoostUtil"
 import {addSubscription, handler} from "ducks/subscriptions"
+import * as log from "LoggingUtil"
 
 export const OPPORTUNITY_LOAD_REQUEST = "oneroost/opportunity/OPPORTUNITY_LOAD_REQUEST"
 export const OPPORTUNITY_LOAD_SUCCESS = "oneroost/opportunity/OPPORTUNITY_LOAD_SUCCESS"
@@ -118,7 +119,6 @@ export const archiveOpportunity = (stakeholder) => (dispatch, getState) => {
     });
 }
 
-
 export const unarchiveOpportunity = (stakeholder) => (dispatch, getState) => {
     let userId = stakeholder.user.objectId
     dispatch({
@@ -129,7 +129,7 @@ export const unarchiveOpportunity = (stakeholder) => (dispatch, getState) => {
 }
 
 export const subscribeOpportunities = (userId) => (dispatch, getState)=> {
-    console.log("subscribing to comments")
+    log.info("subscribing to comments")
     let query = opportunitiesQuery(userId)
     dispatch(addSubscription("OPPORTUNITIES", userId, query, handler({
         create: (result) => dispatch(addOpportunity(userId, result))
@@ -139,7 +139,7 @@ export const subscribeOpportunities = (userId) => (dispatch, getState)=> {
 export const loadOpportunities = (userId, force=false) => (dispatch, getState) => {
     let {opportunitiesByUser} = getState();
     if ( opportunitiesByUser.has(userId) && opportunitiesByUser.get(userId).get("hasLoaded") && !opportunitiesByUser.get(userId).get("isLoading") && !force ){
-        console.warn("not loading opportunities as they were already fetched")
+        log.warn("not loading opportunities as they were already fetched")
         return null
     }
 
@@ -169,7 +169,7 @@ export const loadOpportunities = (userId, force=false) => (dispatch, getState) =
             })
         })
     }).catch(error => {
-        console.error(error);
+        log.error(error);
         dispatch({
             type: OPPORTUNITY_LOAD_ERROR,
             userId: userId,

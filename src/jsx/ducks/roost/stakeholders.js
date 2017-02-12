@@ -6,6 +6,7 @@ import Parse from "parse"
 import * as RoostUtil from "RoostUtil"
 import {Map, List} from "immutable"
 import {createComment} from "ducks/roost/comments"
+import * as log from "LoggingUtil"
 
 export const ADD_STAKEHOLDER = "oneroost/stakeholder/ADD_STAKEHOLDER"
 export const STAKEHOLDER_LOAD_REQUEST = "oneroost/stakeholder/STAKEHOLDER_LOAD_REQUEST"
@@ -51,7 +52,7 @@ export const removeStakeholder = (json) => (dispatch, getState) => {
         active: false,
         modifiedBy: currentUser,
     })
-    stakeholder.save().then().catch(console.error)
+    stakeholder.save().then().catch(log.error)
 
     let entities = normalize(stakeholder.toJSON(), Stakeholder.Schema).entities
     dispatch({
@@ -100,7 +101,7 @@ export const createStakeholder = (json, message) => (dispatch, getState) => {
             payload: savedJSON,
             entities: entities,
         })
-    }).catch(console.error)
+    }).catch(log.error)
 }
 
 export const inviteUser = (userInfo, deal) => (dispatch, getState) => {
@@ -127,14 +128,14 @@ export const inviteUser = (userInfo, deal) => (dispatch, getState) => {
         dispatch(createStakeholder(stakeholderToCreate, message ))
     }).catch(error => {
         alert("this user is already a stakeholder on this opportunity.");
-        console.error(error);
+        log.error(error);
     });
 }
 
 export const loadStakeholders = (dealId, force=false) => (dispatch, getState) => {
     let {roosts} = getState();
     if ( roosts.has(dealId) && roosts.get(dealId).get("stakeholders").get("hasLoaded") && !roosts.get(dealId).get("stakeholders").get("isLoading") && !force ){
-        console.warn("not loading stakeholders as it has been loaded before")
+        log.warn("not loading stakeholders as it has been loaded before")
         return null
     }
     dispatch({
@@ -148,7 +149,7 @@ export const loadStakeholders = (dealId, force=false) => (dispatch, getState) =>
         let json = stakeholders.map(stakeholder => stakeholder.toJSON())
         // let AccountSchema = Account.Schema;
         // let deal = Deal.fromJS(json[0].deal)
-        console.log(Account)
+        log.info(Account)
         let entities = normalize(json, [Stakeholder.Schema]).entities || {}
         dispatch({
             type: STAKEHOLDER_LOAD_SUCCESS,
@@ -157,7 +158,7 @@ export const loadStakeholders = (dealId, force=false) => (dispatch, getState) =>
             entities: Map(entities)
         })
     }).catch(error => {
-        console.error(error)
+        log.error(error)
         dispatch({
             type: STAKEHOLDER_LOAD_ERROR,
             error: {

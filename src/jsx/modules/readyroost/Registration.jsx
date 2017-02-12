@@ -3,6 +3,7 @@ import LoginComponent from "LoginComponent"
 import ReactGA from "react-ga"
 import Parse from "parse"
 import TermsOfServiceDisclaimer from "TermsOfServiceDisclaimer"
+import * as log from "LoggingUtil"
 
 const Registration = React.createClass({
     propTypes: {
@@ -29,7 +30,7 @@ const Registration = React.createClass({
         }
     },
     loginSuccess(){
-        console.log("login success");
+        log.info("login success");
 
         ReactGA.event({
           category: "ReadyRoost",

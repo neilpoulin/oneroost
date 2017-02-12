@@ -5,6 +5,8 @@ import * as RoostUtil from "RoostUtil"
 import {normalize} from "normalizr"
 import * as User from "models/User"
 import Raven from "raven-js"
+import * as log from "LoggingUtil"
+
 export const UPDATE_USER = "oneroost/user/UPADATE_USER"
 export const LOGIN_SUCCESS = "oneroost/user/LOGIN_SUCCESS"
 export const LOGOUT = "oneroost/user/LOGOUT"
@@ -80,7 +82,7 @@ export const userLogOut = () => (dispatch, getState) => {
         dispatch({
             type: LOGOUT,
         })
-    }).catch(console.error);
+    }).catch(log.error);
 }
 
 export const updateUserAction = (user) => {
@@ -98,5 +100,5 @@ export const saveUser = (updates) => (dispatch, getState) => {
     currentUser.set(updates)
     currentUser.save().then(saved => {
         dispatch(updateUserAction(saved))
-    }).catch(console.log)
+    }).catch(log.error)
 }

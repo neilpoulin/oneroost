@@ -8,7 +8,7 @@ import ReactGA from "react-ga"
 import { withRouter, Link } from "react-router"
 import * as RoostUtil from "RoostUtil"
 import Progress from "readyroost/Progress"
-import Raven from "raven-js"
+import * as log from "LoggingUtil"
 
 var fieldValues = {
     problem: "",
@@ -52,7 +52,7 @@ const Onboarding = withRouter( React.createClass({
         return this.getAnonymousStep()
     },
     submit(){
-        console.log("submitting the stuff", fieldValues);
+        log.info("submitting the stuff", fieldValues);
         this.createReadyRoost();
     },
     createReadyRoost(){
@@ -62,7 +62,7 @@ const Onboarding = withRouter( React.createClass({
             templateId: template.objectId,
             roostName: fieldValues.problem
         }).then(function(result){
-            console.log("created ready roost, so happy", result);
+            log.info("created ready roost, so happy", result);
             ReactGA.set({ userId: fieldValues.currentUser.objectId || fieldValues.currentUser.id });
             ReactGA.event({
                   category: "ReadyRoost",
@@ -71,8 +71,7 @@ const Onboarding = withRouter( React.createClass({
             self.props.router.replace("/roosts/" + (result.roost.objectId || result.roost.id));
         },
         function(error){
-            Raven.captureException(error)
-            console.error("can not create roost, already have one for this user", error);
+            log.error("can not create roost, already have one for this user", error);
             self.setState({
                 error: {
                     message: "You have already submitted an opportunity for to " + RoostUtil.getFullName( self.props.readyRoostUser ) + ".",

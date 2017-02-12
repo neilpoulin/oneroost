@@ -12,6 +12,7 @@ import {Map} from "immutable"
 import {denormalize} from "normalizr"
 import * as Comment from "models/DealComment"
 import {loadComments, subscribeComments} from "ducks/roost/comments"
+import * as log from "LoggingUtil"
 
 const Comments = React.createClass({
     propTypes: {
@@ -55,7 +56,7 @@ const Comments = React.createClass({
                 nextPage = currentPage
             }
             self.setState( {additionalComments: additionalComments, page: nextPage, lastFetchCount: results.length} )
-        }).catch(error => console.error(error));
+        }).catch(error => log.error(error));
     },
     componentWillMount(){
         const {deal} = this.props;
@@ -67,11 +68,11 @@ const Comments = React.createClass({
         var messageContainer = this.refs.messagesContainer;
         if (!messageContainer) return
         messageContainer.ontouchstart = function () {
-            // console.log("touchstart scrollTop " + messageContainer.scrollTop )
+            // log.info("touchstart scrollTop " + messageContainer.scrollTop )
         };
 
         messageContainer.onscroll = function(){
-            // console.log("onscroll scrollTop " + messageContainer.scrollTop )
+            // log.info("onscroll scrollTop " + messageContainer.scrollTop )
         }
     },
     componentWillUpdate: function(nextProps, nextState) {
@@ -223,7 +224,7 @@ const mapStateToProps = (immutableState, ownProps) => {
     if (!roosts[dealId]){
         return {isLoading: true};
     }
-    const roost = roosts[dealId]    
+    const roost = roosts[dealId]
     const {ids, commentLimit, lastFetchCount, isLoading} = roost.comments
     const comments = denormalize(ids, [Comment.Schema], entities)
     const additionalComments = []

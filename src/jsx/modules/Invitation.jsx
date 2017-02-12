@@ -13,6 +13,7 @@ import * as Stakeholder from "models/Stakeholder"
 import * as Deal from "models/Deal"
 import * as User from "models/User"
 import {loadInvitationByStakeholderId, acceptInvite} from "ducks/invitation"
+import * as log from "LoggingUtil"
 
 const Invitation = withRouter( React.createClass({
     propTypes: {
@@ -42,7 +43,7 @@ const Invitation = withRouter( React.createClass({
                 loading: false,
             })
         }).catch(error => {
-            console.log(error);
+            log.error(error);
             self.setState({
                 stakeholder: null,
                 loading: false,
@@ -51,7 +52,7 @@ const Invitation = withRouter( React.createClass({
     },
     componentWillMount(){
         let stakeholderId = this.props.params.stakeholderId;
-        console.log("component will mount, stakeholderId = ", stakeholderId)
+        log.info("component will mount, stakeholderId = ", stakeholderId)
         this.fetchData(stakeholderId)
     },
     componentWillUpdate(nextProps, nextState){
@@ -61,7 +62,7 @@ const Invitation = withRouter( React.createClass({
                 loading: true,
                 stakeholder: null
             });
-            console.log("component will update, new stakeholder id different than previous", stakeholderId)
+            log.info("component will update, new stakeholder id different than previous", stakeholderId)
             this.fetchData(stakeholderId)
         }
 
@@ -108,7 +109,7 @@ const Invitation = withRouter( React.createClass({
             validation = confirmValidation;
         }
         let errors = FormUtil.getErrors(this.state, validation);
-        console.log(errors);
+        log.info(errors);
         if ( !FormUtil.hasErrors(errors) ){
             if ( user.passwordChangeRequired ){
                 Parse.Cloud.run("saveNewPassword", {
@@ -128,14 +129,14 @@ const Invitation = withRouter( React.createClass({
                                     self.sendToRoost(dealId)
                                 },
                                 error: function(){
-                                    console.log("failed to log in after changing password");
+                                    log.info("failed to log in after changing password");
                                 }
                             });
                         });
-                    }).catch(error => console.error("error saving stakeholder", error));
+                    }).catch(error => log.error("error saving stakeholder", error));
                 },
                 function(error) {
-                    console.log("Something went wrong", error);
+                    log.info("Something went wrong", error);
                 });
             }
             else {

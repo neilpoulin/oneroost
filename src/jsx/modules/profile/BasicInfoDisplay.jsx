@@ -1,6 +1,7 @@
 import React, { PropTypes } from "react"
 import FormGroupStatic from "FormGroupStatic"
 import * as RoostUtil from "RoostUtil"
+import * as log from "LoggingUtil"
 
 const BasicInfoDisplay = React.createClass({
     propTypes: {
@@ -10,7 +11,7 @@ const BasicInfoDisplay = React.createClass({
     getDefaultProps(){
         return {
             onEdit: function(){
-                console.error("Failed to implmenent onEdit for BasicInfoDisplay");
+                log.error("Failed to implmenent onEdit for BasicInfoDisplay");
             }
         }
     },

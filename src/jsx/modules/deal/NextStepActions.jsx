@@ -4,6 +4,7 @@ import NextStepSaveButton from "NextStepSaveButton"
 import NextStepEditButton from "NextStepEditButton"
 import NextStepStatusChangeButton from "NextStepStatusChangeButton"
 import NextStepCancelButton from "NextStepCancelButton"
+import * as log from "LoggingUtil"
 
 const NextStepActions = React.createClass({
     propTypes: {
@@ -19,17 +20,17 @@ const NextStepActions = React.createClass({
         return {
             isEdit: false,
             afterDelete: function(){
-                console.log("no after delete function specified");
+                log.info("no after delete function specified");
 
             },
             handleSave: function(){
-                console.log("no handleSave function specified");
+                log.info("no handleSave function specified");
             },
             handleEdit: function(){
-                console.log("no handleEdit function specified");
+                log.info("no handleEdit function specified");
             },
             handleCancel: function(){
-                console.log("no handleCancel was specified");
+                log.info("no handleCancel was specified");
             }
         }
     },

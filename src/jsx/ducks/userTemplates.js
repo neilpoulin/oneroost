@@ -3,6 +3,7 @@ import {Map, Set} from "immutable"
 import * as User from "models/User"
 import * as Template from "models/Template"
 import {normalize} from "normalizr"
+import * as log from "LoggingUtil"
 
 export const LOAD_TEMPLATES_REQUEST = "oneroost/userTemplates/LOAD_TEMPLATES_REQUEST"
 export const LOAD_TEMPLATES_SUCCESS = "oneroost/userTemplates/LOAD_TEMPLATES_SUCCESS"
@@ -55,7 +56,7 @@ const templatesByUserQuery = (userId) => {
 export const loadTemplates = (userId, force=false) => (dispatch, getState) =>{
     let {templatesByUser} = getState();
     if ( templatesByUser.has(userId) && templatesByUser.get(userId).get("hasLoaded") && !force ){
-        console.warn("not loading templates as they are already loaded.")
+        log.warn("not loading templates as they are already loaded.")
         return null
     }
     dispatch({
@@ -75,7 +76,7 @@ export const loadTemplates = (userId, force=false) => (dispatch, getState) =>{
             payload: templates,
         })
     }).catch(error => {
-        console.error(error);
+        log.error(error);
         dispatch({
             type: LOAD_TEMPLATES_ERROR,
             userId,

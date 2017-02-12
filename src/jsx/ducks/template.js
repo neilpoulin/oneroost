@@ -2,6 +2,7 @@ import Parse from "parse"
 import {Map} from "immutable"
 import * as Template from "models/Template"
 import {normalize} from "normalizr"
+import * as log from "LoggingUtil"
 
 export const LOAD_TEMPLATE_REQUEST = "oneroost/template/LOAD_TEMPLATE_REQUEST"
 export const LOAD_TEMPLATE_SUCCESS = "oneroost/template/LOAD_TEMPLATE_SUCCESS"
@@ -62,7 +63,7 @@ export const loadTemplate = (templateId, force=false) => (dispatch, getState) =>
             payload: template,
         })
     }).catch(error => {
-        console.error(error);
+        log.error(error);
         dispatch({
             type: LOAD_TEMPLATE_ERROR,
             templateId,

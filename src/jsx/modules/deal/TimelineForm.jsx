@@ -5,6 +5,7 @@ import Select from "react-select"
 import Stages from "Stages"
 import FormGroup from "FormGroup"
 import * as RoostUtil from "RoostUtil"
+import * as log from "LoggingUtil"
 
 const TimelineForm = React.createClass({
     propTypes: {
@@ -26,7 +27,7 @@ const TimelineForm = React.createClass({
         });
     },
     handleStageChange(value){
-        console.log("handle stage change");
+        log.info("handle stage change");
         this.setState({
             stage: value
         });

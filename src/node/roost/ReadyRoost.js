@@ -54,6 +54,7 @@ async function processReadyRoostRequest(currentUser, params, response){
             let roost = new Parse.Object("Deal", {
                 createdBy: currentUser,
                 readyRoostUser: profileUser,
+                template: template,
                 account: account,
                 dealName: roostName,
                 profile: {"timeline":"2016-05-13T00:00:00-06:00"},

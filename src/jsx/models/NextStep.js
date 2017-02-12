@@ -4,6 +4,7 @@ import {copyJSON} from "RoostUtil"
 import * as Deal from "models/Deal"
 import * as User from "models/User"
 import {processStrategy, idAttribute} from "models/modelUtil"
+import * as log from "LoggingUtil"
 
 export const className = "NextStep";
 const NextStep = Parse.Object.extend(className);
@@ -26,7 +27,7 @@ export const fromJS = (json) => {
     step.assignedUser = User.Pointer(step.assignedUser)
     //todo: take this out when we can...
     if ( step.author){
-        console.warn("step has Author, which is not valid", step)
+        log.warn("step has Author, which is not valid", step)
         delete step["author"]
     }
 

@@ -5,6 +5,7 @@ import {normalize} from "normalizr"
 import {addSubscription, handler} from "ducks/subscriptions"
 import * as Notification from "ducks/notification"
 import {toJSON} from "RoostUtil"
+import * as log from "LoggingUtil"
 
 export const ADD_COMMENT = "oneroost/comments/ADD_COMMENT"
 export const COMMENTS_LOAD_REQUEST = "oneroost/comments/COMMENTS_LOAD_REQUEST"
@@ -75,13 +76,11 @@ export const addComment = (comment) => (dispatch, getState) => {
 
 
 export const subscribeComments = function(dealId){
-    console.log("subscribe comments called");
     return (dispatch, getState) => {
-        console.log("executing subscribe comments");
         const query = commentsQuery(dealId)
         dispatch(addSubscription("COMMENTS", dealId, query, handler({
             create: (result) => dispatch(addComment(fromJS(result.toJSON()))),
-            delete: () => console.log("not implemented")
+            delete: () => log.info("not implemented")
         }) ))
     }
 }
@@ -90,7 +89,7 @@ export const loadComments = function(dealId, force=false){
     return (dispatch, getState) =>{
         let {roosts} = getState();
         if ( roosts.has(dealId) && roosts.get(dealId).get("comments").get("hasLoaded") && !roosts.get(dealId).get("comments").get("isLoading") && !force ){
-            console.warn("not loading comments as it has been loaded before")
+            log.warn("not loading comments as it has been loaded before")
             return null
         }
 
@@ -109,7 +108,7 @@ export const loadComments = function(dealId, force=false){
                 entities: normalize(comments, [DealComment.Schema]).entities
             })
         }).catch(error => {
-            console.error(error)
+            log.error(error)
             dispatch({
                 type: COMMENTS_LOAD_ERROR,
                 dealId: dealId,
@@ -125,7 +124,7 @@ exports.createComment = function(message){
         comment.save().then(saved => {
             dispatch(addComment(comment));
         }).catch(error => {
-            console.error(error)
+            log.error(error)
         })
     }
 }

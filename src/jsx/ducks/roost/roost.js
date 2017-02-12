@@ -9,6 +9,7 @@ import Parse from "parse"
 import * as Deal from "models/Deal"
 import * as Account from "models/Account"
 import { Map } from "immutable"
+import * as log from "LoggingUtil"
 
 
 export const DEAL_LOAD_REQUEST = "oneroost/roost/DEAL_LOAD_REQUSET"
@@ -51,7 +52,7 @@ export const createRoost = (opts) => (dispatch, getState) => {
         zipCode: opts.zipCode,
     })
     account.save().then(account => {
-        console.log("account created", account)
+        log.info("account created", account)
         let deal = Deal.fromJS({
             createdBy: currentUser,
             dealName: opts.dealName,
@@ -61,7 +62,7 @@ export const createRoost = (opts) => (dispatch, getState) => {
         })
         //TODO: dispatch account created
         deal.save().then(deal => {
-            console.log("deal created")
+            log.info("deal created")
             //TODO: dispatch deal created
             dispatch(stakeholders.createStakeholder({
                 deal: deal,
@@ -72,13 +73,13 @@ export const createRoost = (opts) => (dispatch, getState) => {
                 active: true,
             }))
         })
-    }).catch(console.error)
+    }).catch(log.error)
 }
 
 export const updateDeal = (dealJSON, changes, message, type) => (dispatch, getState) => {
     let deal = Deal.fromJS(dealJSON);
     deal.set(changes);
-    deal.save().then(saved => {}).catch(console.error)
+    deal.save().then(saved => {}).catch(log.error)
     let entities = normalize(deal.toJSON(), Deal.Schema).entities
     dispatch({
         type: DEAL_UPDATED,
@@ -99,7 +100,7 @@ export const loadDeal = (dealId, force=false) => {
     return (dispatch, getState) => {
         let {roosts} = getState();
         if ( roosts.has(dealId) && roosts.get(dealId).get("hasLoaded") && !roosts.get(dealId).get("isLoading") && !force ){
-            console.warn("not loading deal, already loaded")
+            log.warn("not loading deal, already loaded")
             return null
         }
         dispatch({
@@ -121,7 +122,7 @@ export const loadDeal = (dealId, force=false) => {
                 entities: normalized.entities || {}
             })
         }).catch(error => {
-            console.error(error);
+            log.error(error);
             dispatch({
                 type:DEAL_LOAD_ERROR,
                 error: error,

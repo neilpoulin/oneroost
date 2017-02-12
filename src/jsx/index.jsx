@@ -45,9 +45,9 @@ const store = configureStore()
 ReactGA.initialize(OneRoost.Config.gaTrackingId, getGaOptions());
 const history = syncHistoryWithStore(browserHistory, store)
 // let unsubscribe =
-store.subscribe(() =>
-  console.log(store.getState())
-)
+store.subscribe(() =>{
+
+ })
 
 function getGaOptions(){
     var gaOptions = {};

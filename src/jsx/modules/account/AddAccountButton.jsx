@@ -3,6 +3,7 @@ import ModalButton from "ModalButton";
 import CreateAccountForm from "account/CreateAccountForm";
 import {connect} from "react-redux"
 import {createRoost} from "ducks/roost/roost"
+import * as log from "LoggingUtil"
 
 const AddAccountButton = React.createClass({
     openModal: function(){
@@ -15,7 +16,7 @@ const AddAccountButton = React.createClass({
     getDefaultProps: function(){
         return {
             btnClassName: "btn-outline-primary",
-            onSuccess: function(){ console.log("this is the default function from AddAccountButton"); }
+            onSuccess: function(){ log.info("this is the default function from AddAccountButton"); }
         }
     },
     render () {

@@ -11,6 +11,7 @@ import {loadTemplate} from "ducks/template"
 import * as RoostUtil from "RoostUtil"
 import {denormalize} from "normalizr"
 import * as Template from "models/Template"
+import * as log from "LoggingUtil"
 
 const ReadyRoostPage = React.createClass({
     propTypes: {
@@ -44,7 +45,7 @@ const ReadyRoostPage = React.createClass({
         }
     },
     loginSuccess(){
-        console.log("login success");
+        log.info("login success");
 
         ReactGA.event({
           category: "ReadyRoost",
@@ -53,18 +54,18 @@ const ReadyRoostPage = React.createClass({
         this.setState({currentUser: Parse.User.current()});
     },
     logoutSuccess(){
-        console.log("logout success")
+        log.info("logout success")
         this.setState({currentUser: null})
     },
     createReadyRoost(){
         const {template} = this.props
-        var self = this;        
+        var self = this;
         Parse.Cloud.run("createReadyRoost", {
             templateId: template.objectId,
             roostName: self.state.roostName
         }).then(function(result){
             let createdRoost = result.toJSON()
-            console.log("created ready roost, so happy", result);
+            log.info("created ready roost, so happy", result);
             ReactGA.set({ userId: self.state.currentUser.objectId });
             ReactGA.event({
                   category: "ReadyRoost",
@@ -73,7 +74,7 @@ const ReadyRoostPage = React.createClass({
             self.props.router.replace("/roosts/" + createdRoost.objectId);
         },
         function(error){
-            console.error("can not create roost, already have one for this user", error);
+            log.error("can not create roost, already have one for this user", error);
             self.setState({error: {message: "You have already created a Roost for this user."}})
         })
     },

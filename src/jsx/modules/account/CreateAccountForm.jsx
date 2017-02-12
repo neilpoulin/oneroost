@@ -2,6 +2,7 @@ import React, {PropTypes} from "react";
 import FormUtil from "FormUtil"
 import {validations} from "account/AccountValidation"
 import FormInputGroup from "FormInputGroup"
+import * as log from "LoggingUtil"
 
 const CreateAccountForm = React.createClass({
     propTypes: {
@@ -28,7 +29,7 @@ const CreateAccountForm = React.createClass({
     {
         var self = this;
         var errors = FormUtil.getErrors(this.state, validations);
-        console.log(errors);
+        log.info(errors);
         if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
             // this.saveDeal();
             let {accountName,
@@ -53,7 +54,7 @@ const CreateAccountForm = React.createClass({
         }
         self.setState({errors: errors});
         return false;
-    },    
+    },
     render: function(){
         return (
             <div className="CreateAccount">

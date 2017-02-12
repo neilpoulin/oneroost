@@ -1,5 +1,6 @@
 import Parse from "parse"
 import {fromJS, Iterable} from "immutable"
+import * as log from "LoggingUtil"
 
 function immutableParse({ getState }) {
     return (next) => (action) => {
@@ -27,7 +28,7 @@ function immutableParse({ getState }) {
             returnValue = next(action)
         }
         catch (e){
-            console.error(e)
+            log.error(e)
         }
         finally{
             return returnValue

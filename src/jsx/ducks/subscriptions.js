@@ -1,4 +1,5 @@
 import {Map} from "immutable"
+import * as log from "LoggingUtil"
 
 export const ADD_SUBSCRIPTION = "oneroost/ADD_SUBSCRIPTION"
 
@@ -39,15 +40,15 @@ export default function reducer(state=initialState, action){
             const id = action.payload.get("id")
             const query = action.payload.get("query")
             const handlers = action.payload.get("handlers")
-            console.log(`adding subscription called for ${group}-${id}`, handlers)
+            log.info(`adding subscription called for ${group}-${id}`, handlers)
             if ( subscriptions.hasIn([group, id]) ){
-                console.log(`subscription already registerd for ${group}-${id}`)
+                log.info(`subscription already registered for ${group}-${id}`)
                 return null;
             }
             let subscription = query.subscribe()
             handlers.forEach((handler, eventName) => {
                 if (handler){
-                    console.log(`Registering subscription ${group}-${id}: ${eventName}`)
+                    log.info(`Registering subscription ${group}-${id}: ${eventName}`)
                     subscription.on(eventName, handlers.get(eventName))
                 }
             })

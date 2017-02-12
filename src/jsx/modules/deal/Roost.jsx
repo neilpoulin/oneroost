@@ -25,6 +25,7 @@ import * as Stakeholder from "models/Stakeholder"
 import * as Document from "models/Document"
 import * as NextStep from "models/NextStep"
 import * as Requirement from "models/Requirement"
+import * as log from "LoggingUtil"
 
 
 const Roost = withRouter( React.createClass({
@@ -66,7 +67,7 @@ const Roost = withRouter( React.createClass({
         }
         else if ( location.query && location.query.accept ){
             //what to do here...
-            console.log("unauthorized - has accept query params though.");
+            log.info("unauthorized - has accept query params though.");
         }
         else {
             this.props.router.replace("/roosts/unauthorized")
@@ -86,7 +87,6 @@ const Roost = withRouter( React.createClass({
         Parse.Cloud.run("validateStakeholder", {
             dealId: dealId
         }).then(({message, authorized, stakeholder}) => {
-            console.log("validateStakeholder response", message);
             if ( !authorized ){
                 self.handleUnauthorized();
                 return;
@@ -108,7 +108,7 @@ const Roost = withRouter( React.createClass({
 
     },
     getData(dealId){
-        console.log("setting up roost queries and subscriptions");
+        log.info("setting up roost queries and subscriptions");
         // let self = this;
         if (this.props.loadData ) {
             this.props.loadData(dealId);
@@ -185,12 +185,12 @@ const Roost = withRouter( React.createClass({
         const roosts = state.roosts.toJS()
         let dealId = ownProps.params.dealId
         if ( !entities || !entities.deals ){
-            console.log("entitites not loaded yet");
+            log.info("entitites not loaded yet");
             return {};
         }
         let deals = entities.deals;
         if( !deals ){
-            console.warn("failed to get deals key");
+            log.warn("failed to get deals key");
             return {dealLoading: true};
         }
         let deal = deals[dealId]
