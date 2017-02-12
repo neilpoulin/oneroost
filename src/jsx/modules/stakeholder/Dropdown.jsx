@@ -4,6 +4,7 @@ import * as RoostUtil from "RoostUtil"
 import {connect} from "react-redux"
 import {denormalize} from "normalizr"
 import * as Stakeholder from "models/Stakeholder"
+import * as log from "LoggingUtil"
 
 const Dropdown = React.createClass({
     propTypes: {
@@ -17,7 +18,7 @@ const Dropdown = React.createClass({
     getDefaultProps(){
         return {
             handleChange: function () {
-                console.error("You did not implement a change handler for the stakeholder dropdown")
+                log.error("You did not implement a change handler for the stakeholder dropdown")
             },
             value: null,
             stakeholders: [],

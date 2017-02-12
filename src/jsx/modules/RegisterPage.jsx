@@ -2,11 +2,11 @@ import React from "react"
 import LoginComponent from "LoginComponent"
 import RoostNav from "navigation/RoostNav"
 import Logo from "Logo"
+import * as log from "LoggingUtil"
 
 const LoginPage = React.createClass({
-    handleLogoutError: function( user, error ){
-        console.error( "failed to log out" );
-        console.error( error );
+    handleLogoutError: function( user, error ){        
+        log.error( error );
     },
     componentDidMount(){
         document.title = "Sign Up | OneRoost"

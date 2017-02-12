@@ -2,7 +2,7 @@ import React, { PropTypes } from "react"
 import Parse from "parse"
 import RoostNav from "RoostNav"
 import Logo from "Logo"
-
+import * as log from "LoggingUtil"
 const Unsubscribe = React.createClass({
     propTypes:{
         params: PropTypes.shape({
@@ -27,7 +27,7 @@ const Unsubscribe = React.createClass({
                 success: recipient.get("unsubscribe")
             });
         }).catch(error => {
-            console.log("failed to get a recipient", error);
+            log.info("failed to get a recipient", error);
             self.setState({
                 loading: false,
                 recipient: null
@@ -48,7 +48,7 @@ const Unsubscribe = React.createClass({
         }
     },
     confirm(){
-        console.log("will unsubscribe from all emails.");
+        log.info("will unsubscribe from all emails.");
         let self = this;
         var recipient = this.state.recipient;
         this.setState({loading: true});
@@ -61,7 +61,7 @@ const Unsubscribe = React.createClass({
                 success: true,
                 loading: false,
             });
-        }).catch(error => console.error("failed to save recipient", error));
+        }).catch(error => log.error("failed to save recipient", error));
     },
     render () {
         var content = null;

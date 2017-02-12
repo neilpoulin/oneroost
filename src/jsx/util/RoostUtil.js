@@ -4,6 +4,7 @@ import numeral from "numeral"
 import {Map, fromJS, Iterable} from "immutable"
 import {denormalize} from "normalizr"
 import * as User from "models/User"
+import * as log from "LoggingUtil"
 
 export const transformDatesInObject = (json) => {
     Object.keys(json).forEach(key => {
@@ -53,7 +54,7 @@ export const copyJSON = function(json){
 
 export const getCurrentUser = function(state){
     if ( !state ){
-        console.warn("No 'state' passed in to RoostUtil.getCurrentUser()... using Parse.User.current() ")
+        log.warn("No 'state' passed in to RoostUtil.getCurrentUser()... using Parse.User.current() ")
         return Parse.User.current();
     }
     let userId = state.user.get("userId")
@@ -72,7 +73,7 @@ export const getFullName = function( parseUser ){
             fullName = parseUser.firstName + " " + parseUser.lastName
         }
     } catch (e){
-        console.warn("unable to parse user name, returning empty");
+        log.warn("unable to parse user name, returning empty");
     }
 
     return fullName.trim()
@@ -157,7 +158,7 @@ function getRoostNameForParseUser( deal, displayFor ){
     let isReadyRoostUser = this.isCurrentUser(readyRoostUser);
 
     if ( !createdBy ){
-        console.warn("There is no created by on the deal object", deal);
+        log.warn("There is no created by on the deal object", deal);
     }
 
     let roostName = "";
@@ -187,7 +188,7 @@ export const getRoostDisplayName = function(deal, displayFor){
     let isReadyRoostUser = this.isCurrentUser(readyRoostUser);
 
     if ( !createdBy ){
-        console.warn("There is no created by on the deal object", deal);
+        log.warn("There is no created by on the deal object", deal);
     }
 
     let roostName = "";

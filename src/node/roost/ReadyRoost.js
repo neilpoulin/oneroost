@@ -10,13 +10,20 @@ const STEPS_CONFIG_KEY = "readyRoostSteps";
 async function processReadyRoostRequest(currentUser, params, response){
     try{
         console.log("Setting up ready roost");
-        var {profileUserId, roostName} = params
-        console.log("Setting up Ready Roost for currentUser=" + currentUser.id + " and profilelUser=" + profileUserId);
-        let profileUser = await (new Parse.Query("User")).get(profileUserId);
+        var {roostName, templateId} = params
+        console.log("Setting up ready roost for templateId = " + templateId + " and current User = " + currentUser.id)
 
+        let templateQuery = new Parse.Query("Template")
+        templateQuery.include("createdBy")
+        let template = await templateQuery.get(templateId)
+
+        let profileUser = template.get("createdBy")
+
+        // Find roosts for this template by the current user
         var roostQuery = new Parse.Query("Deal");
         roostQuery.equalTo("createdBy", currentUser);
-        roostQuery.equalTo("readyRoostUser", profileUser);
+        roostQuery.equalTo("template", template)
+
         let roosts = await roostQuery.find({useMasterKey: true});
 
         console.log("query returned for finding existing ready roosts", roosts);
@@ -47,6 +54,7 @@ async function processReadyRoostRequest(currentUser, params, response){
             let roost = new Parse.Object("Deal", {
                 createdBy: currentUser,
                 readyRoostUser: profileUser,
+                template: template,
                 account: account,
                 dealName: roostName,
                 profile: {"timeline":"2016-05-13T00:00:00-06:00"},
@@ -55,7 +63,7 @@ async function processReadyRoostRequest(currentUser, params, response){
             let savedRoost = await roost.save()
             console.log("successfully saved the ready roost");
             //TODO: don't pass in the response here
-            await setupRoost(savedRoost, currentUser, profileUser, response);
+            await setupRoost(savedRoost, currentUser, profileUser, template, response);
         }
     }
     catch(e){
@@ -64,28 +72,15 @@ async function processReadyRoostRequest(currentUser, params, response){
     }
 }
 
-async function setupRoost(roost, currentUser, profileUser, response){
+async function setupRoost(roost, currentUser, profileUser, template, response){
     console.log("attempting to set up roost....");
     let config = await Parse.Config.get();
-    let requirementTemplate = null
-    try{
-        let requirementTemplateQuery = new Parse.Query("RequirementTemplate")
-        requirementTemplateQuery.equalTo("user", profileUser)
-        let templateResult = await requirementTemplateQuery.find({useMasterKey: true});
-        if ( templateResult ){
-            requirementTemplate = templateResult[0]
-            console.log("FOUND REQUIREMENTS: ", requirementTemplate.toJSON())
-        }
 
-    }catch(e){
-        console.log("no requirement template found for user " + profileUser.id)
-    }
-
-    let requirements = createRequirements(profileUser, roost, requirementTemplate, config);
-    let comments = createComments(currentUser, roost, config);
-    let docs = createDocs(profileUser, roost, config);
-    let steps = createNextSteps(currentUser, roost, config);
-    let stakeholders = createStakeholders(currentUser, profileUser, roost);
+    let requirements = createRequirements(profileUser, roost, template);
+    let comments = createComments(currentUser, roost, template, config);
+    let docs = createDocs(profileUser, roost, template, config);
+    let steps = createNextSteps(currentUser, roost, template, config);
+    let stakeholders = createStakeholders(currentUser, profileUser, template, roost);
 
     console.log("finished setting up ready roost items");
     let toSave = [].concat(comments, steps, docs, stakeholders, requirements);
@@ -103,12 +98,13 @@ async function setupRoost(roost, currentUser, profileUser, response){
     });
 }
 
-function createRequirements(profileUser, roost, requirementTemplate, config){
-    if ( !requirementTemplate ){
+function createRequirements(profileUser, roost, template){
+    const requirementsTemplate = template.get("requirements")
+    if ( !template.get("requirements") ){
         return []
     }
-    console.log("requirementTemplate = ", requirementTemplate.toJSON())
-    let requirements = requirementTemplate.get("requirements").map(req => {
+    console.log("requirementTemplate = ", requirementsTemplate)
+    let requirements = requirementsTemplate.map(req => {
         return new Parse.Object("Requirement", {
             deal: roost,
             onboarding: true,
@@ -123,7 +119,10 @@ function createRequirements(profileUser, roost, requirementTemplate, config){
     return requirements;
 }
 
-function createComments(currentUser, roost, config){
+function createComments(currentUser, roost, template, config){
+    // let commentsTemplate = template.get("comments")
+    //TODO: decide what to do about comments
+
     return [
         //deal comment
         new Parse.Object("DealComment", {
@@ -135,8 +134,9 @@ function createComments(currentUser, roost, config){
     ];
 }
 
-function createStakeholders(currentUser, profileUser, roost){
-    return [
+function createStakeholders(currentUser, profileUser, template, roost){
+    let templateStakeholders = template.get("stakeholders")
+    let toCreate = [
         new Parse.Object("Stakeholder", {
             deal: roost,
             user: currentUser,
@@ -144,8 +144,23 @@ function createStakeholders(currentUser, profileUser, roost){
             invitedBy: null,
             role: "CREATOR",
             onboarding: true
-        }),
-        new Parse.Object("Stakeholder", {
+        })]
+
+    if ( templateStakeholders ){
+        templateStakeholders.map(stakeholder => {
+            new Parse.Object("Stakeholder", {
+                deal: roost,
+                user: stakeholder,
+                inviteAccepted: false,
+                invitedBy: currentUser,
+                readyRoostApprover: true,
+                role: "SELLER",
+                onboarding: true
+            })
+        })
+    }else {
+        // just add the profile user
+        toCreate.push(new Parse.Object("Stakeholder", {
             deal: roost,
             user: profileUser,
             inviteAccepted: false,
@@ -153,12 +168,17 @@ function createStakeholders(currentUser, profileUser, roost){
             readyRoostApprover: true,
             role: "SELLER",
             onboarding: true
-        })
-    ];
+        }))
+    }
+
+    return toCreate;
 }
 
-function createNextSteps(currentUser, roost, config){
-    let toCreate = config.get(STEPS_CONFIG_KEY);
+function createNextSteps(currentUser, roost, template, config){
+    let toCreate = template.get("nextSteps")
+    if ( !toCreate ){
+        toCreate = config.get(STEPS_CONFIG_KEY);
+    }
     let steps = toCreate.map((step) =>{
         return new Parse.Object("NextStep", {
             dueDate: moment().add(step.offsetDays, "day").toDate(),
@@ -173,8 +193,13 @@ function createNextSteps(currentUser, roost, config){
     return steps;
 }
 
-function createDocs(createdBy, roost, config){
-    let toCreate = config.get(DOCS_CONFIG_KEY);
+function createDocs(createdBy, roost, template, config){
+    let toCreate = template.get("documents")
+    if ( !toCreate ){
+        console.log("falling back to default readyRosot documents")
+        toCreate = config.get(DOCS_CONFIG_KEY);
+    }
+
     let docs = toCreate.map((doc) => {
         return new Parse.Object("Document", {
             createdBy: createdBy,

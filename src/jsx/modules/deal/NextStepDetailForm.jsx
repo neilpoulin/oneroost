@@ -3,7 +3,7 @@ import NextStepDetailView from "NextStepDetailView"
 import NextStepDetailEdit from "NextStepDetailEdit"
 import { browserHistory } from "react-router"
 import { connect } from "react-redux"
-import {updateStep} from "ducks/nextSteps"
+import {updateStep} from "ducks/roost/nextSteps"
 
 const NextStepDetailForm = React.createClass({
     propTypes: {

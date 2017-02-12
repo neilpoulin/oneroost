@@ -64,6 +64,9 @@ const TableRow = React.createClass({
                 <td>
                     {nextStep}
                 </td>
+                <td>
+                    {deal.template ? deal.template.title : ""}
+                </td>
             </tr>
         )
     }

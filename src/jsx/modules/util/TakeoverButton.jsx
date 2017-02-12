@@ -1,5 +1,6 @@
 import React, { PropTypes } from "react"
 import Takeover from "Takeover"
+import * as log from "LoggingUtil"
 
 const TakeoverButton = React.createClass({
     propTypes: {
@@ -43,7 +44,7 @@ const TakeoverButton = React.createClass({
             disabled: false,
             buttonIcon: "",
             containerClass: "",
-            onSave: function(val){ console.warn("No onSave function passed to TakeoverButton for value ", val)},
+            onSave: function(val){ log.warn("No onSave function passed to TakeoverButton for value ", val)},
             onCancel: function(){},
             cancelType: "close",
             cancelButtonText: "Cancel",

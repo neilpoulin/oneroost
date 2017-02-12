@@ -1,19 +1,39 @@
 import React, {PropTypes} from "react"
-import PublicProfileLink from "profile/PublicProfileLink"
+import OpportunityTemplate from "profile/OpportunityTemplate"
 
 const BetaUserWelcome = React.createClass({
     propTypes: {
-        userId: PropTypes.string.isRequired
+        userId: PropTypes.string.isRequired,
+        templates: PropTypes.arrayOf(PropTypes.object),
+        templatesLoading: PropTypes.bool,
+        archivedTemplates: PropTypes.arrayOf(PropTypes.object),
+    },
+    getDefaultProps(){
+        return {
+            templates: []
+        }
     },
     render () {
-        let {userId} = this.props;
+        let {templates} = this.props;
+        let links = null
+        let message = "Congratulations on joining OneRoost. Get started by creating an opportunity with the button above."
+
+        if ( templates.length > 0){
+            message = "Congratulations on joining OneRoost. Get started by sending one of the links below to your prospective partners."
+            links = <div className="link-container">
+                {templates.map((template, i) => {
+                    return <OpportunityTemplate
+                        template={template}
+                        key={"template_" + i}
+                        />
+                })}
+            </div>
+        }
+
         let welcome =
         <div className="BetaUserWelcome">
-            {"Congratulations on joining OneRoost. Get started by sending the link below to your prospective partners."}
-            <p className="link-container">
-                <PublicProfileLink userId={userId}/>
-            </p>
-
+            {message}
+            {links}
         </div>
         return welcome;
     }

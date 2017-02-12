@@ -1,6 +1,7 @@
 import React, { PropTypes } from "react"
 import FormGroup from "FormGroup"
 import AutosizeTextarea from "react-textarea-autosize";
+import * as log from "LoggingUtil"
 
 const AutosizeTextAreaFormGroup = React.createClass({
     propTypes: {
@@ -21,7 +22,7 @@ const AutosizeTextAreaFormGroup = React.createClass({
             value: "",
             minRows: 2,
             maxRows: 6,
-            onChange: (val) => {console.log("called default onChange", val)},
+            onChange: (val) => {log.info("called default onChange", val)},
             horizontal: false,
         }
     },

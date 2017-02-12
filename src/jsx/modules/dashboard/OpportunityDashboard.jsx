@@ -11,6 +11,9 @@ import ToggleButton from "ToggleButton"
 import LoadingIndicator from "LoadingIndicator"
 import SearchInput from "SearchInput"
 import * as RoostUtil from "RoostUtil"
+import {loadTemplates} from "ducks/userTemplates"
+import * as Template from "models/Template"
+import {denormalize} from "normalizr"
 
 const OpportunityDashboard = React.createClass({
     propTypes: {
@@ -18,6 +21,9 @@ const OpportunityDashboard = React.createClass({
         userId: PropTypes.string.isRequired,
         isLoading: PropTypes.bool.isRequired,
         currentUser: PropTypes.object,
+        templates:  PropTypes.arrayOf(PropTypes.object),
+        templatesLoading: PropTypes.bool,
+        archivedTemplates: PropTypes.arrayOf(PropTypes.object)
     },
     componentDidMount(){
         this.props.loadData()
@@ -30,13 +36,16 @@ const OpportunityDashboard = React.createClass({
             showArchived,
             hasArchivedDeals,
             currentUser,
+            templates,
+            templatesLoading,
+            archivedTemplates,
             doSearch} = this.props
         let contents = null
         if ( isLoading ){
             contents = <LoadingIndicator message="Loading Dashboard" size="large"/>
         }
         else if ( !showTable ){
-            contents = <BetaUserWelcome userId={userId}/>
+            contents = <BetaUserWelcome userId={userId} templates={templates} templatesLoading={templatesLoading} archivedTemplates={archivedTemplates}/>
         }
         else{
             contents = <OpportunitiesTable userId={userId} currentUser={currentUser}/>
@@ -84,8 +93,10 @@ const OpportunityDashboard = React.createClass({
 const mapStateToProps = (state, ownProps) => {
     let dashboard = state.dashboard.toJS()
     let currentUser = RoostUtil.getCurrentUser(state)
+    const templatesByUser = state.templatesByUser.toJS()
     let userId = currentUser.objectId
     let myOpportunities = state.opportunitiesByUser.get(userId)
+    const entities = state.entities.toJS()
     let isLoading = true
     let showTable = false
     let hasArchivedDeals = false
@@ -96,13 +107,27 @@ const mapStateToProps = (state, ownProps) => {
         hasArchivedDeals = myOpportunities.archivedDeals.length > 0
     }
 
+    const myTemplates = templatesByUser[userId]
+
+    let templatesLoading = false;
+    let templates = []
+    let archivedTemplates = []
+    if ( myTemplates ){
+        templatesLoading = myTemplates.isLoading;
+        templates = denormalize(myTemplates.templateIds, [Template.Schema], entities)
+        archivedTemplates = denormalize(myTemplates.archivedTemplateIds, [Template.Schema], entities)
+    }
+
     return {
         showTable,
         currentUser,
         userId,
         isLoading,
         showArchived: dashboard.showArchived,
-        hasArchivedDeals
+        hasArchivedDeals,
+        templates,
+        templatesLoading,
+        archivedTemplates
     }
 }
 
@@ -113,6 +138,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loadData: () => {
             dispatch(loadOpportunities(userId))
             dispatch(subscribeOpportunities(userId))
+            dispatch(loadTemplates(userId))
         },
         setShowArchived: (show) => {
             dispatch(setShowArchived(show))

@@ -8,13 +8,14 @@ export default React.createClass({
         activeClassName: PropTypes.string,
         className: PropTypes.string,
         linkClassName: PropTypes.string,
+        target: PropTypes.string
     },
     getDefaultProps: function(){
         return {
             tag: "li",
             activeClassName: "active",
             className: null,
-            linkClassName: null,
+            linkClassName: null,            
         }
     },
     render() {
@@ -24,6 +25,7 @@ export default React.createClass({
             activeClassName={this.props.activeClassName}
             className={this.props.className}
             linkClassName={this.props.linkClassName}
+            linkProps={{target: this.props.target}}
             >
             {this.props.children}
         </ActiveComponent>

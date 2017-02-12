@@ -4,7 +4,8 @@ import {normalize} from "normalizr"
 import Parse from "parse"
 import {Map, List} from "immutable"
 import * as RoostUtil from "RoostUtil"
-import {createComment} from "ducks/comments"
+import {createComment} from "ducks/roost/comments"
+import * as log from "LoggingUtil"
 
 export const ADD_DOCUMENT = "oneroost/documents/ADD_DOCUMENT"
 export const DOCUMENT_LOAD_REQUEST = "oneroost/documents/DOCUMENT_LOAD_REQUEST"
@@ -71,7 +72,7 @@ export const createDocument = (dealId, newDoc) => (dispatch, getState) => {
 export const loadDocuments = (dealId, force=false) => (dispatch, getState) => {
     let {roosts} = getState();
     if ( roosts.has(dealId) && roosts.get(dealId).get("documents").get("hasLoaded") && !roosts.get(dealId).get("documents").get("isLoading") && !force ){
-        console.warn("not loading documents, already loaded once")
+        log.warn("not loading documents, already loaded once")
         return null
     }
     dispatch({
@@ -90,7 +91,7 @@ export const loadDocuments = (dealId, force=false) => (dispatch, getState) => {
             entities: Map(entities)
         })
     }).catch(error => {
-        console.error(error);
+        log.error(error);
         dispatch({
             type: DOCUMENT_LOAD_ERROR,
             error: {

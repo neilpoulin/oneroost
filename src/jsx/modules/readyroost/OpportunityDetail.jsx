@@ -1,6 +1,7 @@
 import React, { PropTypes } from "react"
 import FormUtil, {Validation} from "./../util/FormUtil"
 import FormInputGroup from "FormInputGroup"
+import * as log from "LoggingUtil"
 
 const OpportunityDetail = React.createClass({
     propTypes: {
@@ -31,7 +32,7 @@ const OpportunityDetail = React.createClass({
     },
     nextStep(){
         var errors = FormUtil.getErrors(this.state, this.validations);
-        console.log(errors);
+        log.info(errors);
         if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
             this.setState({errors: {}});
             this.props.saveValues({

@@ -3,6 +3,7 @@ import React, { PropTypes } from "react"
 const Confirmation = React.createClass({
     propTypes: {
         readyRoostUser: PropTypes.object.isRequired,
+        template: PropTypes.object.isRequired,
         currentUser: PropTypes.object,
         submit: PropTypes.func.isRequired,
         previousStep: PropTypes.func.isRequired,

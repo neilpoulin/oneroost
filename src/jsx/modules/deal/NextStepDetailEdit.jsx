@@ -12,6 +12,7 @@ import FormInputGroup from "FormInputGroup"
 import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormGroup from "FormGroup"
 import {validations} from "nextsteps/NextStepValidations"
+import * as log from "LoggingUtil"
 
 const NextStepDetailEdit = React.createClass({
     propTypes: {
@@ -38,7 +39,7 @@ const NextStepDetailEdit = React.createClass({
         var self = this;
 
         var errors = FormUtil.getErrors(this.state, validations)
-        console.log(errors);
+        log.info(errors);
         if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
             // let step = this.props.step;
             let message = RoostUtil.getFullName(this.state.user) + " updated the details of Next Step: " + this.state.title

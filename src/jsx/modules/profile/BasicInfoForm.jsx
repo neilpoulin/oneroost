@@ -2,6 +2,7 @@ import React, { PropTypes } from "react"
 import {profileValidation} from "profile/ProfileValidations"
 import FormUtil from "FormUtil"
 import FormInputGroup from "FormInputGroup"
+import * as log from "LoggingUtil"
 
 const BasicInfoForm = React.createClass({
     propTypes: {
@@ -13,10 +14,10 @@ const BasicInfoForm = React.createClass({
     getDefaultProps(){
         return {
             onCancel: function(){
-                console.error("failed to impelement onCancel for BasicInfoForm");
+                log.error("failed to impelement onCancel for BasicInfoForm");
             },
             onSave: function(){
-                console.error("Failed to implement onSave for BasicInfoForm");
+                log.error("Failed to implement onSave for BasicInfoForm");
             }
         }
     },
@@ -30,7 +31,7 @@ const BasicInfoForm = React.createClass({
     doSave(){
         let errors = FormUtil.getErrors(this.state, profileValidation);
         if (!FormUtil.hasErrors(errors)){
-            console.log("saving user info");
+            log.info("saving user info");
             let {email, firstName, lastName, company, jobTitle} = this.state
 
             let changes = {
@@ -49,7 +50,7 @@ const BasicInfoForm = React.createClass({
         return false;
     },
     doCancel(){
-        console.log("canceling changes to user info");
+        log.info("canceling changes to user info");
         this.setState(this.getInitialState());
         this.props.doCancel();
     },

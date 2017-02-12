@@ -1,5 +1,6 @@
 import React, { PropTypes } from "react"
 import FormGroup from "FormGroup"
+import * as log from "LoggingUtil"
 
 const FormInputGroup = React.createClass({
     propTypes: {
@@ -31,7 +32,7 @@ const FormInputGroup = React.createClass({
             onKeyUp: (e) => {},
             onKeyDown: e => {},
             onBlur: e => {},
-            onChange: (val) => {console.log("called default onChange", val)},
+            onChange: (val) => {log.info("called default onChange", val)},
             horizontal: false,
         }
     },
@@ -83,7 +84,7 @@ const FormInputGroup = React.createClass({
             errors={this.props.errors}
             fieldName={this.props.fieldName}
             required={this.props.required}
-            horizontal={this.props.horizontal} 
+            horizontal={this.props.horizontal}
             >
             {input}
             {this.props.children}

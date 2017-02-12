@@ -1,4 +1,5 @@
 import React, { PropTypes } from "react"
+import * as log from "LoggingUtil"
 
 const ToggleButton = React.createClass({
     propTypes: {
@@ -20,7 +21,7 @@ const ToggleButton = React.createClass({
             type: "primary",
             className: "",
             block: false,
-            onClick: (active) => console.log("no function implemented. State = " + active)
+            onClick: (active) => log.info("no function implemented. State = " + active)
         }
     },
     handleClick(){

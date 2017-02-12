@@ -4,10 +4,11 @@ import * as Deal from "models/Deal"
 import {Pointer} from "models/modelUtil"
 import * as NextStep from "models/NextStep"
 import {Map, List} from "immutable"
-import {createComment} from "ducks/comments"
+import {createComment} from "ducks/roost/comments"
 import {addSubscription, handler} from "ducks/subscriptions"
 import * as RoostUtil from "RoostUtil"
 import {LOADED_ENTITIES} from "ducks/entities"
+import * as log from "LoggingUtil"
 
 export const ADD_NEXT_STEP = "oneroost/nextSteps/ADD_NEXT_STEP"
 export const STEP_LOAD_REQUEST = "oneroost/nextSteps/STEP_LOAD_REQUEST"
@@ -92,7 +93,7 @@ export const updateStep = (currentStep, changes, message) => (dispatch, getState
     let step = NextStep.fromJS(currentStep);
     step.set(changes)
     step.save().then(saved => {
-    }).catch(console.error)
+    }).catch(log.error)
 
     dispatch(stepChangedAction(step))
 
@@ -108,7 +109,7 @@ export const updateStep = (currentStep, changes, message) => (dispatch, getState
 export const deleteStep = (step, message) => (dispatch, getState) => {
     step = NextStep.fromJS(step);
     step.set("active", false);
-    step.save().then(saved => {}).catch(console.error)
+    step.save().then(saved => {}).catch(log.error)
 
     dispatch(stepDeletedAction(step));
 
@@ -146,32 +147,13 @@ export const loadNextStepsForDeals = (dealIds=[]) => (dispatch, getState) => {
             type: LOADED_ENTITIES,
             entities
         })
-
-        // let nextStepsByDealId = json.reduce((group, step) => {
-        //     let dealId = step.deal.objectId
-        //     let steps = group[dealId] || []
-        //     steps.push(step)
-        //     group[dealId] = steps
-        //     return group
-        // }, {})
-        //
-        // // not dispatching these from for dashboard performance reasons... not sure if we need to
-        // // dispatch all fo the loaded steps to the roosts
-        // Object.keys(nextStepsByDealId).forEach(dealId => {
-        //     let steps = nextStepsByDealId[dealId]
-        //     dispatch({
-        //         type: STEP_LOAD_SUCCESS,
-        //         payload: List(steps.map(Map)),
-        //         dealId: dealId
-        //     })
-        // })
-    }).catch(console.error)
+    }).catch(log.error)
 }
 
 export const loadNextSteps = (dealId, force=false) => (dispatch, getState) => {
     let {roosts} = getState();
     if ( roosts.has(dealId) && roosts.get(dealId).get("nextSteps").get("hasLoaded") && !roosts.get(dealId).get("nextSteps").get("isLoading") && !force ){
-        console.warn("not loading steps as they are already loaded")
+        log.warn("not loading steps as they are already loaded")
         return null
     }
 
@@ -191,7 +173,7 @@ export const loadNextSteps = (dealId, force=false) => (dispatch, getState) => {
         })
 
     }).catch(error => {
-        console.error(error);
+        log.error(error);
         dispatch({
             type: STEP_LOAD_ERROR,
             error: {
@@ -234,9 +216,7 @@ export const createNextStep = (nextStep) => {
 
 
 export const subscribeNextSteps = (dealId) => {
-    console.log("subscribe next steps called");
     return (dispatch, getState) => {
-        console.log("executing subscribe next steps");
         const query = stepQuery(dealId)
         dispatch(addSubscription("NEXT_STEPS", dealId, query, handler({
             create: (result) => dispatch(addNextStepAction(result)),

@@ -8,7 +8,7 @@ import ReactGA from "react-ga"
 import { withRouter, Link } from "react-router"
 import * as RoostUtil from "RoostUtil"
 import Progress from "readyroost/Progress"
-import Raven from "raven-js"
+import * as log from "LoggingUtil"
 
 var fieldValues = {
     problem: "",
@@ -19,13 +19,16 @@ var fieldValues = {
 const Onboarding = withRouter( React.createClass({
     propTypes: {
         readyRoostUser: PropTypes.object.isRequired,
-        currentUser: PropTypes.object
+        currentUser: PropTypes.object,
+        template: PropTypes.object.isRequired,
+        createReadyRoost: PropTypes.func.isRequired,
     },
     getInitialState(){
         return {
             step: 1,
             totalSteps: this.props.currentUser ? 2 : 4,
-            error: null
+            error: null,
+            loggedInSteps: this.props.currentUser ? true : false,
         }
     },
     saveValues: function(data) {
@@ -44,24 +47,29 @@ const Onboarding = withRouter( React.createClass({
     componentDidMount(){
         this.saveValues({currentUser: this.props.currentUser});
     },
+    componentWillUpdate(nextProps){
+        this.saveValues({currentUser: nextProps.currentUser});
+    },
     showStep(){
-        if ( this.props.currentUser ){
+        if ( this.state.loggedInSteps ){
             return this.getLoggedInStep()
         }
         return this.getAnonymousStep()
     },
     submit(){
-        console.log("submitting the stuff", fieldValues);
+        log.info("submitting the stuff", fieldValues);
         this.createReadyRoost();
     },
     createReadyRoost(){
-        var profileUserId = this.props.readyRoostUser.id
-        var self = this;
+        let self = this;
+        const {template} = this.props;
+        this.props.createReadyRoost()
+        // TODO: create a ready roost onboarding global state
         Parse.Cloud.run("createReadyRoost", {
-            profileUserId: profileUserId,
+            templateId: template.objectId,
             roostName: fieldValues.problem
         }).then(function(result){
-            console.log("created ready roost, so happy", result);
+            log.info("created ready roost, so happy", result);
             ReactGA.set({ userId: fieldValues.currentUser.objectId || fieldValues.currentUser.id });
             ReactGA.event({
                   category: "ReadyRoost",
@@ -70,8 +78,7 @@ const Onboarding = withRouter( React.createClass({
             self.props.router.replace("/roosts/" + (result.roost.objectId || result.roost.id));
         },
         function(error){
-            Raven.captureException(error)
-            console.error("can not create roost, already have one for this user", error);
+            log.error("can not create roost, already have one for this user", error);
             self.setState({
                 error: {
                     message: "You have already submitted an opportunity for to " + RoostUtil.getFullName( self.props.readyRoostUser ) + ".",
@@ -83,17 +90,22 @@ const Onboarding = withRouter( React.createClass({
     getLoggedInStep(){
         switch (this.state.step) {
             case 1:
-            return <Introduction nextStep={this.nextStep}
-                previousStep={this.previousStep}
-                readyRoostUser={this.props.readyRoostUser}
-                />
+                return <Introduction nextStep={this.nextStep}
+                    previousStep={this.previousStep}
+                    readyRoostUser={this.props.readyRoostUser}
+                    template={this.props.template}
+                    />
             case 2:
-            return <OpportunityDetail nextStep={this.submit}
-                previousStep={this.previousStep}
-                readyRoostUser={this.props.readyRoostUser}
-                fieldValues={fieldValues}
-                saveValues={this.saveValues}
-                nextText={"Submit"} />
+                return <OpportunityDetail nextStep={this.submit}
+                    previousStep={this.previousStep}
+                    readyRoostUser={this.props.readyRoostUser}
+                    fieldValues={fieldValues}
+                    saveValues={this.saveValues}
+                    template={this.props.template}
+                    nextText={"Submit"} />
+            default:
+                log.error("No step defined for LoggedInStep #" + this.state.step)
+                break;
         }
     },
     getAnonymousStep(){
@@ -102,25 +114,31 @@ const Onboarding = withRouter( React.createClass({
             return <Introduction nextStep={this.nextStep}
                 previousStep={this.previousStep}
                 readyRoostUser={this.props.readyRoostUser}
+                template={this.props.template}
                 />
             case 2:
             return <OpportunityDetail nextStep={this.nextStep}
                 previousStep={this.previousStep}
                 fieldValues={fieldValues}
                 readyRoostUser={this.props.readyRoostUser}
+                template={this.props.template}
                 saveValues={this.saveValues} />
             case 3:
             return <Registration nextStep={this.nextStep}
                 previousStep={this.previousStep}
                 readyRoostUser={this.props.readyRoostUser}
                 saveValues={this.saveValues}
-                currentUser={fieldValues.currentUser}
+                currentUser={this.props.currentUser}
                 company={fieldValues.company} />
             case 4:
             return <Confirmation submit={this.submit}
                 previousStep={this.previousStep}
                 readyRoostUser={this.props.readyRoostUser}
+                tempalte={this.props.template}
                 />
+            default:
+                log.error("No step defined for AnonymousStep #" + this.state.step)
+                break
         }
     },
     getLabels(){

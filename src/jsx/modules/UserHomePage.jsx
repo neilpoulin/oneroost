@@ -10,6 +10,7 @@ import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
 import {denormalize} from "normalizr"
 import * as Deal from "models/Deal"
 import * as RoostUtil from "RoostUtil"
+import * as log from "LoggingUtil"
 
 const UserHomePage = React.createClass({
     getInitialState(){
@@ -37,7 +38,7 @@ const UserHomePage = React.createClass({
         }
     },
     componentWillUpdate(nextProps, nextState){
-        console.log("UserHomePage component will update");
+        log.info("UserHomePage component will update");
         if ( this.props.userId != nextProps.useId && this.props.loadData ){
             // this.props.loadData()
         }

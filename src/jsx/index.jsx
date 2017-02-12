@@ -45,9 +45,9 @@ const store = configureStore()
 ReactGA.initialize(OneRoost.Config.gaTrackingId, getGaOptions());
 const history = syncHistoryWithStore(browserHistory, store)
 // let unsubscribe =
-store.subscribe(() =>
-  console.log(store.getState())
-)
+store.subscribe(() =>{
+
+ })
 
 function getGaOptions(){
     var gaOptions = {};
@@ -125,7 +125,7 @@ render(
                 <Route path="/account" component={ProfilePage} onEnter={requireAuthOrParam}>
 
                 </Route>
-                <Route path="/proposals/:userId" component={ReadyRoostPage}/>
+                <Route path="/proposals/:templateId" component={ReadyRoostPage}/>
                 <Route path="/help" component={HelpPage}/>
                 <Route path="/terms" component={TermsOfServicePage}/>
                 <Route path="/privacy" component={PrivacyPage}/>

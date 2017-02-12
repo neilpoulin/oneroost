@@ -11,7 +11,8 @@ import * as RoostUtil from "RoostUtil"
 import {Map} from "immutable"
 import {denormalize} from "normalizr"
 import * as Comment from "models/DealComment"
-import {loadComments, subscribeComments} from "ducks/comments"
+import {loadComments, subscribeComments} from "ducks/roost/comments"
+import * as log from "LoggingUtil"
 
 const Comments = React.createClass({
     propTypes: {
@@ -55,7 +56,7 @@ const Comments = React.createClass({
                 nextPage = currentPage
             }
             self.setState( {additionalComments: additionalComments, page: nextPage, lastFetchCount: results.length} )
-        }).catch(error => console.error(error));
+        }).catch(error => log.error(error));
     },
     componentWillMount(){
         const {deal} = this.props;
@@ -67,11 +68,11 @@ const Comments = React.createClass({
         var messageContainer = this.refs.messagesContainer;
         if (!messageContainer) return
         messageContainer.ontouchstart = function () {
-            // console.log("touchstart scrollTop " + messageContainer.scrollTop )
+            // log.info("touchstart scrollTop " + messageContainer.scrollTop )
         };
 
         messageContainer.onscroll = function(){
-            // console.log("onscroll scrollTop " + messageContainer.scrollTop )
+            // log.info("onscroll scrollTop " + messageContainer.scrollTop )
         }
     },
     componentWillUpdate: function(nextProps, nextState) {
@@ -154,7 +155,7 @@ const Comments = React.createClass({
             allComments = allComments.reverse();
             var items = [];
             var previousComment = null;
-            allComments.forEach(function(comment){
+            allComments.forEach(function(comment, i){
                 var currentDate = comment.createdAt
                 var previousDate = previousComment != null ? previousComment.createdAt : null;
                 var isSameDate = RoostUtil.isSameDate( currentDate, previousDate );
@@ -163,7 +164,7 @@ const Comments = React.createClass({
                 {
                     var separator =
                     <CommentDateSeparator
-                        key={"dateSeparator_comment_" + comment.objectId }
+                        key={"dateSeparator_comment_" + comment.objectId + "_" + i}
                         previousDate={previousDate}
                         nextDate={comment.createdAt}
                         />
@@ -172,7 +173,7 @@ const Comments = React.createClass({
 
                 var forceShowUsername = component.forceShowUsername(currentDate, previousDate);
                 var item =
-                <CommentItem key={"commentItem_" + comment.objectId}
+                <CommentItem key={"commentItem_" + comment.objectId + "_" + i}
                     comment={comment}
                     previousComment={previousComment}
                     forceShowUsername={forceShowUsername}
@@ -224,8 +225,7 @@ const mapStateToProps = (immutableState, ownProps) => {
         return {isLoading: true};
     }
     const roost = roosts[dealId]
-    const {isLoading} = roost;
-    const {ids, commentLimit, lastFetchCount} = roost.comments
+    const {ids, commentLimit, lastFetchCount, isLoading} = roost.comments
     const comments = denormalize(ids, [Comment.Schema], entities)
     const additionalComments = []
 

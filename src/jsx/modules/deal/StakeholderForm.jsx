@@ -1,15 +1,13 @@
 import React, {PropTypes} from "react"
-import Parse from "parse"
-import Stakeholder from "models/Stakeholder"
-import DealComment from "models/DealComment"
 import StakeholderValidation from "StakeholderValidation"
 import FormUtil from "FormUtil"
 import FormInputGroup from "FormInputGroup"
-import * as RoostUtil from "RoostUtil"
+
 
 export default React.createClass({
     propTypes: {
-        deal: PropTypes.object.isRequired
+        deal: PropTypes.object.isRequired,
+        inviteUser: PropTypes.func.isRequired
     },
     getInitialState: function(){
         return {
@@ -20,7 +18,6 @@ export default React.createClass({
             company: "",
             deal: this.props.deal,
             errors: {},
-            user: Parse.User.current()
         };
     },
     clear: function(){
@@ -37,51 +34,14 @@ export default React.createClass({
         return false;
     },
     saveStakeholder: function(){
-        var self = this;
-        var stakeholderRequest = {
+        let userInfo = {
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             company: this.state.company,
             email: this.state.email,
             role: this.state.role
         };
-        Parse.Cloud.run("addStakeholder", {
-            dealId: self.state.deal.objectId,
-            stakeholder: stakeholderRequest
-        }).then(function( result ) {
-            if ( result.exists ){
-                alert("this user is already a stakeholder on this opportunity.");
-                return;
-            }
-            var createdUser = result.user
-            // createdUser.firstName = createdUser.firstName
-            // createdUser.lastName = createdUser.lastName
-            // createdUser.email = createdUser.email
-            // createdUser.company = createdUser.company
-            let stakeholder = new Stakeholder();
-            stakeholder.set({
-                "user": createdUser,
-                "deal": self.state.deal,
-                "role": stakeholderRequest.role,
-                "inviteAccepted": false,
-                "invitedBy": self.state.user
-            });
-            stakeholder.save().catch(console.error);
-
-            let comment = new DealComment();
-            comment.set({
-                deal: self.props.deal,
-                message: RoostUtil.getFullName(Parse.User.current()) + " added " + RoostUtil.getFullName(createdUser) + " to the opportunity.",
-                author: null,
-                username: "OneRoost Bot",
-                navLink: {type:"participant"}
-            });
-            comment.save().catch(console.error);
-
-        }, function(error){
-            alert("this user is already a stakeholder on this opportunity.");
-            console.error(error);
-        });
+        this.props.inviteUser(userInfo)
     },
     render: function(){
         let {errors, firstName, lastName, email, company} = this.state

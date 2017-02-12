@@ -1,9 +1,11 @@
-import DealComment, {createQuery, Schema} from "models/DealComment";
+import * as DealComment from "models/DealComment";
 import {Pointer as DealPointer} from "models/Deal"
 import {Map, List, fromJS} from "immutable"
 import {normalize} from "normalizr"
 import {addSubscription, handler} from "ducks/subscriptions"
 import * as Notification from "ducks/notification"
+import {toJSON} from "RoostUtil"
+import * as log from "LoggingUtil"
 
 export const ADD_COMMENT = "oneroost/comments/ADD_COMMENT"
 export const COMMENTS_LOAD_REQUEST = "oneroost/comments/COMMENTS_LOAD_REQUEST"
@@ -26,10 +28,12 @@ export default function reducer(state=initialState, action){
         case ADD_COMMENT:
             let {payload} = action;
             let id = payload.get("objectId");
-            state = state.set("ids", state.get("ids").unshift(id))
+            if ( !state.get("ids").includes(id) ){
+                state = state.set("ids", state.get("ids").unshift(id))
+            }
             break;
         case COMMENTS_LOAD_REQUEST:
-            state = state.set("isLoading", false)
+            state = state.set("isLoading", true)
             break;
         case COMMENTS_LOAD_SUCCESS:
             state = state.set("isLoading", false)
@@ -47,7 +51,7 @@ export default function reducer(state=initialState, action){
 
 // Actions
 const commentsQuery = (dealId) => {
-    const query = createQuery()
+    const query = DealComment.createQuery()
     query.include("author")
     query.equalTo( "deal", DealPointer(dealId) )
     query.descending("createdAt")
@@ -55,31 +59,28 @@ const commentsQuery = (dealId) => {
     return query;
 }
 
-export const addComment = function(comment){
-    return (dispatch, getState) => {
-        dispatch({
-            type: Notification.COMMENT_ADDED,
-            payload: comment,
-            dealId: comment.get("deal").get("objectId"),
-            dispatcher: dispatch,
-        })
-        dispatch( {
-            type: ADD_COMMENT,
-            dealId: comment.get("deal").id || comment.get("deal").get("objectId"),
-            payload: comment,
-            entities: normalize(comment.toJS(), Schema).entities
-        })
-    }
+export const addComment = (comment) => (dispatch, getState) => {
+    dispatch({
+        type: Notification.COMMENT_ADDED,
+        payload: comment,
+        dealId: comment.get("deal").get("objectId"),
+        dispatcher: dispatch,
+    })
+    dispatch( {
+        type: ADD_COMMENT,
+        dealId: comment.get("deal").id || comment.get("deal").get("objectId"),
+        payload: comment,
+        entities: normalize(toJSON(comment), DealComment.Schema).entities
+    })
 }
 
+
 export const subscribeComments = function(dealId){
-    console.log("subscribe comments called");
     return (dispatch, getState) => {
-        console.log("executing subscribe comments");
         const query = commentsQuery(dealId)
         dispatch(addSubscription("COMMENTS", dealId, query, handler({
             create: (result) => dispatch(addComment(fromJS(result.toJSON()))),
-            delete: () => console.log("not implemented")
+            delete: () => log.info("not implemented")
         }) ))
     }
 }
@@ -88,7 +89,7 @@ export const loadComments = function(dealId, force=false){
     return (dispatch, getState) =>{
         let {roosts} = getState();
         if ( roosts.has(dealId) && roosts.get(dealId).get("comments").get("hasLoaded") && !roosts.get(dealId).get("comments").get("isLoading") && !force ){
-            console.warn("not loading comments as it has been loaded before")
+            log.warn("not loading comments as it has been loaded before")
             return null
         }
 
@@ -104,10 +105,10 @@ export const loadComments = function(dealId, force=false){
                 type: COMMENTS_LOAD_SUCCESS,
                 dealId: dealId,
                 payload: comments,
-                entities: normalize(comments, [Schema]).entities
+                entities: normalize(comments, [DealComment.Schema]).entities
             })
         }).catch(error => {
-            console.error(error)
+            log.error(error)
             dispatch({
                 type: COMMENTS_LOAD_ERROR,
                 dealId: dealId,
@@ -119,10 +120,11 @@ export const loadComments = function(dealId, force=false){
 
 exports.createComment = function(message){
     return (dispatch) => {
-        let comment = new DealComment();
-        comment.set(message);
+        let comment = DealComment.fromJS(message)
         comment.save().then(saved => {
             dispatch(addComment(comment));
+        }).catch(error => {
+            log.error(error)
         })
     }
 }

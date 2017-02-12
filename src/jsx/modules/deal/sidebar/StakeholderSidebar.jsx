@@ -2,8 +2,9 @@ import React, { PropTypes } from "react"
 import {connect} from "react-redux"
 import AddStakeholderButton from "AddStakeholderButton";
 import Stakeholder from "Stakeholder"
-import {removeStakeholder} from "ducks/stakeholders"
+import {removeStakeholder} from "ducks/roost/stakeholders"
 import {archiveOpportunity} from "ducks/opportunities"
+import {submitReadyRoost} from "ducks/roost/roost"
 
 const StakeholderSidebar = React.createClass({
     propTypes: {
@@ -11,6 +12,7 @@ const StakeholderSidebar = React.createClass({
         stakeholders: PropTypes.arrayOf(PropTypes.object).isRequired,
         isLoading: PropTypes.bool.isRequired,
         removeStakeholder: PropTypes.func,
+        submitReadyRoost: PropTypes.func,
     },
     getDefaultProps(){
         return {
@@ -51,7 +53,10 @@ const StakeholderSidebar = React.createClass({
                     return <Stakeholder key={"stakeholder_" + stakeholder.objectId}
                         stakeholder={stakeholder}
                         deal={deal}
-                        isEdit={false}/>
+                        isEdit={false}
+                        removeStakeholder={this.props.removeStakeholder}
+                        submitReadyRoost={this.props.submitReadyRoost}
+                        />
                 })}
             </div>
         }
@@ -72,7 +77,9 @@ const StakeholderSidebar = React.createClass({
                             stakeholder={stakeholder}
                             deal={deal}
                             isEdit={isEdit}
-                            removeStakeholder={this.props.removeStakeholder}/>
+                            removeStakeholder={this.props.removeStakeholder}
+                            submitReadyRoost={this.props.submitReadyRoost}
+                            />
                     })}
                 </div>
                 {inactiveBlock}
@@ -93,6 +100,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         removeStakeholder: (stakeholder) => {
             dispatch(removeStakeholder(stakeholder))
             dispatch(archiveOpportunity(stakeholder))
+        },
+        submitReadyRoost: (stakeholder, deal) => {
+            dispatch(submitReadyRoost(stakeholder, deal))
         }
     }
 }

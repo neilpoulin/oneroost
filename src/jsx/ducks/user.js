@@ -5,65 +5,13 @@ import * as RoostUtil from "RoostUtil"
 import {normalize} from "normalizr"
 import * as User from "models/User"
 import Raven from "raven-js"
+import * as log from "LoggingUtil"
+
 export const UPDATE_USER = "oneroost/user/UPADATE_USER"
 export const LOGIN_SUCCESS = "oneroost/user/LOGIN_SUCCESS"
 export const LOGOUT = "oneroost/user/LOGOUT"
 
 
-
-export const loginSuccessAction = (user) => {
-    Raven.setUserContext({
-        email: user.email,
-        id: user.objectId
-    })
-    let entities = normalize(RoostUtil.toJSON(user), User.Schema).entities
-    return {
-        type: LOGIN_SUCCESS,
-        payload: user,
-        entities,
-    }
-}
-
-export const loadCurrentUser = () => (dispatch, getState) => {
-    let currentUser = RoostUtil.toJSON(Parse.User.current());
-    if ( !currentUser ){
-        return null;
-    }
-    dispatch(loginSuccessAction(currentUser))
-}
-
-export const userLoggedIn = ( user ) => (dispatch, getState) => {
-    if ( !user ){
-        return null
-    }
-    dispatch(loginSuccessAction(user))
-}
-
-export const userLogOut = () => (dispatch, getState) => {
-    Parse.User.logOut().then((result) => {
-        dispatch({
-            type: LOGOUT,
-        })
-    }).catch(console.error);
-}
-
-export const updateUserAction = (user) => {
-    user = RoostUtil.toJSON(user);
-    let entities = normalize(user, User.Schema).entities
-    return {
-        type: UPDATE_USER,
-        payload: user,
-        entities,
-    }
-}
-
-export const saveUser = (updates) => (dispatch, getState) => {
-    let currentUser = Parse.User.current();
-    currentUser.set(updates)
-    currentUser.save().then(saved => {
-        dispatch(updateUserAction(saved))
-    }).catch(console.log)
-}
 
 const initialState = Map({
     isLoading: false,
@@ -71,6 +19,7 @@ const initialState = Map({
     userId:  null,
     admin: false,
     isLoggedIn: false,
+    roostTemplates: Map({}),
 });
 
 export default function reducer(state=initialState, action){
@@ -97,4 +46,61 @@ export default function reducer(state=initialState, action){
             break;
     }
     return state;
+}
+
+
+export const loginSuccessAction = (user) => {
+    Raven.setUserContext({
+        email: user.email,
+        id: user.objectId
+    })
+    let entities = normalize(RoostUtil.toJSON(user), User.Schema).entities
+    return {
+        type: LOGIN_SUCCESS,
+        payload: user,
+        entities,
+    }
+}
+
+// TODO: create a register new user method
+
+export const loadCurrentUser = () => (dispatch, getState) => {
+    let currentUser = RoostUtil.toJSON(Parse.User.current());
+    if ( !currentUser ){
+        return null;
+    }
+    dispatch(loginSuccessAction(currentUser))
+}
+
+export const userLoggedIn = ( user ) => (dispatch, getState) => {
+    if ( !user ){
+        return null
+    }
+    dispatch(loginSuccessAction(user))
+}
+
+export const userLogOut = () => (dispatch, getState) => {
+    Parse.User.logOut().then((result) => {
+        dispatch({
+            type: LOGOUT,
+        })
+    }).catch(log.error);
+}
+
+export const updateUserAction = (user) => {
+    user = RoostUtil.toJSON(user);
+    let entities = normalize(user, User.Schema).entities
+    return {
+        type: UPDATE_USER,
+        payload: user,
+        entities,
+    }
+}
+
+export const saveUser = (updates) => (dispatch, getState) => {
+    let currentUser = Parse.User.current();
+    currentUser.set(updates)
+    currentUser.save().then(saved => {
+        dispatch(updateUserAction(saved))
+    }).catch(log.error)
 }

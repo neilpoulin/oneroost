@@ -5,6 +5,7 @@ import {normalize} from "normalizr"
 import {Map, Set} from "immutable"
 import * as RoostUtil from "RoostUtil"
 import {addSubscription, handler} from "ducks/subscriptions"
+import * as log from "LoggingUtil"
 
 export const OPPORTUNITY_LOAD_REQUEST = "oneroost/opportunity/OPPORTUNITY_LOAD_REQUEST"
 export const OPPORTUNITY_LOAD_SUCCESS = "oneroost/opportunity/OPPORTUNITY_LOAD_SUCCESS"
@@ -52,12 +53,12 @@ export default function reducer(state=initialState, action){
             var stakeholder = action.payload;
             var dealId = stakeholder.get("deal").get("objectId");
             state = state.set("deals", state.get("deals").filterNot(id => id === dealId))
-            state = state.set("archivedDeals", state.get("archivedDeals").push(dealId))
+            state = state.set("archivedDeals", state.get("archivedDeals").add(dealId))
             break;
         case UNARCHIVE_OPPORTUNITIY:
             var stakeholder = action.payload;
             var dealId = stakeholder.get("deal").get("objectId");
-            state = state.set("deals", state.get("deals").push(dealId))
+            state = state.set("deals", state.get("deals").add(dealId))
             state = state.set("archivedDeals", state.get("archivedDeals").filterNot(id => id === dealId))
             break;
         case SHOW_ARCHIVED:
@@ -74,13 +75,14 @@ export default function reducer(state=initialState, action){
 
 // Queries
 const opportunitiesQuery = (userId) => {
-    let query = new Parse.Query("Stakeholder");
-    query.include("deal");
-    query.include(["deal.account"]);
-    query.include("deal.createdBy");
-    query.include("deal.readyRoostUser");
-    query.equalTo("user", User.Pointer(userId) );
-    query.equalTo("inviteAccepted", true);
+    let query = new Parse.Query("Stakeholder")
+    query.include("deal")
+    query.include(["deal.account"])
+    query.include("deal.createdBy")
+    query.include("deal.readyRoostUser")
+    query.include("deal.template")
+    query.equalTo("user", User.Pointer(userId) )
+    query.equalTo("inviteAccepted", true)
     return query
 }
 
@@ -118,7 +120,6 @@ export const archiveOpportunity = (stakeholder) => (dispatch, getState) => {
     });
 }
 
-
 export const unarchiveOpportunity = (stakeholder) => (dispatch, getState) => {
     let userId = stakeholder.user.objectId
     dispatch({
@@ -129,7 +130,7 @@ export const unarchiveOpportunity = (stakeholder) => (dispatch, getState) => {
 }
 
 export const subscribeOpportunities = (userId) => (dispatch, getState)=> {
-    console.log("subscribing to comments")
+    log.info("subscribing to comments")
     let query = opportunitiesQuery(userId)
     dispatch(addSubscription("OPPORTUNITIES", userId, query, handler({
         create: (result) => dispatch(addOpportunity(userId, result))
@@ -139,7 +140,7 @@ export const subscribeOpportunities = (userId) => (dispatch, getState)=> {
 export const loadOpportunities = (userId, force=false) => (dispatch, getState) => {
     let {opportunitiesByUser} = getState();
     if ( opportunitiesByUser.has(userId) && opportunitiesByUser.get(userId).get("hasLoaded") && !opportunitiesByUser.get(userId).get("isLoading") && !force ){
-        console.warn("not loading opportunities as they were already fetched")
+        log.warn("not loading opportunities as they were already fetched")
         return null
     }
 
@@ -169,7 +170,7 @@ export const loadOpportunities = (userId, force=false) => (dispatch, getState) =
             })
         })
     }).catch(error => {
-        console.error(error);
+        log.error(error);
         dispatch({
             type: OPPORTUNITY_LOAD_ERROR,
             userId: userId,

@@ -9,6 +9,7 @@ import TermsOfServiceDisclaimer from "TermsOfServiceDisclaimer"
 import {loginValidation, registerValidation} from "RegistrationValidations"
 import {connect} from "react-redux"
 import {userLoggedIn} from "ducks/user"
+import * as log from "LoggingUtil"
 
 const LoginComponent = React.createClass({
     propTypes: {
@@ -117,7 +118,7 @@ const LoginComponent = React.createClass({
         }
         let alert = {alert: {message: message, level: "danger"}};
         this.setState({"errors": alert});
-        console.error(error);
+        log.error(error);
         this.hideLoading();
     },
     handleRegisterSuccess(user){
@@ -177,6 +178,7 @@ const LoginComponent = React.createClass({
                 user.set("password", this.state.password);
                 user.set("firstName", this.state.firstName);
                 user.set("lastName", this.state.lastName);
+                user.set("company", this.state.company)
                 user.set("passwordChangeRequired", false);
                 user.signUp( null, {
                     success: (savedUser) => {

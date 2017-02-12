@@ -1,5 +1,6 @@
 import React, { PropTypes } from "react"
 import Modal from "react-modal"
+import * as log from "LoggingUtil"
 
 const Takeover = React.createClass({
     propTypes: {
@@ -19,7 +20,7 @@ const Takeover = React.createClass({
     getDefaultProps(){
         return {
             open: false,
-            onSave: function(){console.warn("No onSave function passed to Takeover")},
+            onSave: function(){log.warn("No onSave function passed to Takeover")},
             onCancel: function(){},
             saveButtonText: "Save",
             cancelButtonText: "Cancel",

@@ -6,9 +6,10 @@ import {denormalize} from "normalizr"
 import {connect} from "react-redux"
 import * as Deal from "models/Deal"
 import * as NextStep from "models/NextStep"
-import {loadNextStepsForDeals} from "ducks/nextSteps"
+import {loadNextStepsForDeals} from "ducks/roost/nextSteps"
 import _ from "lodash"
 import moment from "moment"
+import * as log from "LoggingUtil"
 
 const headers = [
     {
@@ -35,7 +36,12 @@ const headers = [
         label: "Next Step",
         clickable: false,
         sortable: false,
-    }
+    },
+    {
+        label: "RPF Title",
+        clickable: false,
+        sortable: false,
+    },
 ]
 
 const OpportunitiesTable = React.createClass({
@@ -169,7 +175,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         loadNextSteps: (dealIds=[]) => {
-            console.log("Loading next steps for deals", dealIds)
+            log.info("Loading next steps for deals", dealIds)
             dispatch(loadNextStepsForDeals(dealIds))
         }
     }

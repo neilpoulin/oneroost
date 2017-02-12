@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import {connect} from "react-redux"
-import {deleteStep} from "ducks/nextSteps"
+import {deleteStep} from "ducks/roost/nextSteps"
 import * as RoostUtil from "RoostUtil"
 
 const NextStepDeleteButton = React.createClass({
@@ -12,8 +12,7 @@ const NextStepDeleteButton = React.createClass({
     handleDelete(){
         var message = RoostUtil.getFullName(this.props.user) + " deleted Next Step: " + this.props.step.title
         this.props.deleteStep(message)
-        this.props.afterDelete();
-        // this.props.step.destroy().catch(error => console.error);
+        this.props.afterDelete();        
     },
     render () {
         var button =

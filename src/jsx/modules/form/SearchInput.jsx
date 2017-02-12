@@ -1,4 +1,5 @@
 import React, { PropTypes } from "react"
+import * as log from "LoggingUtil"
 
 const SearchInput = React.createClass({
     propTypes: {
@@ -12,7 +13,7 @@ const SearchInput = React.createClass({
     },
     getDefaultProps(){
         return {
-            onKeyUp: () => {console.log("key up on search no implemented")},
+            onKeyUp: () => {log.info("key up on search no implemented")},
             onSearch: () => this.props.onKeyUp
         }
     },

@@ -11,7 +11,8 @@ import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormGroup from "FormGroup"
 import {validations} from "nextsteps/NextStepValidations"
 import {Pointer} from "models/modelUtil"
-import {createNextStep} from "ducks/nextSteps"
+import {createNextStep} from "ducks/roost/nextSteps"
+import * as log from "LoggingUtil"
 
 const NextStepForm = React.createClass({
     propTypes: {
@@ -33,7 +34,7 @@ const NextStepForm = React.createClass({
     },
     doSubmit: function () {
         var errors = FormUtil.getErrors(this.state, validations)
-        console.log(errors);
+        log.info(errors);
         if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
             this.saveNextStep();
             return true;

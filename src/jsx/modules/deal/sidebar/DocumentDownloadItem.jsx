@@ -2,6 +2,7 @@ import React, { PropTypes } from "react"
 import Parse from "parse"
 import moment from "moment"
 import * as RoostUtil from "RoostUtil"
+import * as log from "LoggingUtil"
 
 const DocumentDownloadItem = React.createClass({
     propTypes: {
@@ -17,15 +18,15 @@ const DocumentDownloadItem = React.createClass({
         let self = this;
         let {doc} = this.props;
         if ( this.state.downloadUrl ){
-            console.log("already has a download url, not fetching it again");
+            log.info("already has a download url, not fetching it again");
             return
         }
         Parse.Cloud.run("getPresignedGetUrl", {
             documentId: doc.objectId
         }).then(result => {
-            console.log(result);
+            log.info(result);
             if (result.url.indexOf( "https://s3.amazonaws.com") != -1 ){
-                console.warn("Failed to get a valid S3 url, trying again.", result.url)
+                log.warn("Failed to get a valid S3 url, trying again.", result.url)
                 if ( self.urlAttempts < 3 ){
                     self.getPresignedGetUrl();
                     self.urlAttempts = self.urlAttempts + 1;

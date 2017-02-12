@@ -8,7 +8,9 @@ import numeral from "numeral"
 import {linkValidation, fileValidation} from "DocumentValidation"
 import FormInputGroup from "FormInputGroup"
 import FormGroup from "FormGroup"
-import {createDocument} from "ducks/documents"
+import {createDocument} from "ducks/roost/documents"
+import * as log from "LoggingUtil"
+
 
 const re = /(?:\.([^.]+))?$/;
 
@@ -35,7 +37,7 @@ const DocumentUploadForm = React.createClass({
     doSubmit(){
         var self = this;
         var errors = this.getValidations();
-        console.log(errors);
+        log.info(errors);
         if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
             this.saveDocument();
             return true;
@@ -55,7 +57,7 @@ const DocumentUploadForm = React.createClass({
         this.props.createDocument(data);
     },
     onDrop: function(files){
-        console.log(files);
+        log.info(files);
         var self = this;
         let {deal} = this.props;
         files.forEach(function(file){
@@ -65,7 +67,7 @@ const DocumentUploadForm = React.createClass({
                 dealId: deal.objectId,
                 type: file.type
             }).then(function( result ) {
-                console.log("recieved presignedurl", result);
+                log.info("recieved presignedurl", result);
                 self.doUpload(file, result);
 
                 self.setState({
@@ -91,15 +93,15 @@ const DocumentUploadForm = React.createClass({
         .set("Content-Type", file.type)
         .send(file)
         .on("progress", function(e) {
-            console.log("Percentage done: ", numeral( e.percent).format("0,0"));
+            log.info("Percentage done: ", numeral( e.percent).format("0,0"));
             self.setState({uploading: true, percent: e.percent});
         })
         .end(function(err, response){
             if ( err ){
-                console.error("something went wrong uploading the file", err);
+                log.error("something went wrong uploading the file", err);
                 self.setState({uploadSuccess: false});
             } else{
-                console.log("file uploaded successfully", response);
+                log.info("file uploaded successfully", response);
                 s3info.type = file.type;
                 s3info.size = file.size;
                 self.setState({type: file.type,

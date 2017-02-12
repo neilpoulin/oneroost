@@ -4,9 +4,10 @@ import * as RoostUtil from "RoostUtil"
 import {Map, Set} from "immutable"
 import * as Requirement from "models/Requirement"
 import {normalize} from "normalizr"
-import {createComment} from "ducks/comments"
+import {createComment} from "ducks/roost/comments"
 import {addSubscription, handler} from "ducks/subscriptions"
 import {Pointer as DealPointer} from "models/Deal"
+import * as log from "LoggingUtil"
 
 export const REQUIREMENT_LOAD_REQUEST = "oneroost/requirements/REQUIREMENT_LOAD_REQUEST"
 export const REQUIREMENT_LOAD_SUCCESS = "oneroost/requirements/REQUIREMENT_LOAD_SUCCESS"
@@ -61,10 +62,10 @@ export const requirmentUpdatedAction = (requirement) => {
 
 
 export const updateRequirement = (requirement, changes, message) => (dispatch, getState) => {
-    console.log("TODO: update requirement")
+    log.info("TODO: update requirement")
     requirement = Requirement.fromJS(requirement);
     requirement.set(changes);
-    requirement.save().then(saved => {}).catch(console.error)
+    requirement.save().then(saved => {}).catch(log.error)
 
     dispatch(requirmentUpdatedAction(requirement))
 
@@ -80,7 +81,7 @@ export const updateRequirement = (requirement, changes, message) => (dispatch, g
 export const loadRequirements = (dealId, force=false) => (dispatch, getState) => {
     let {roosts} = getState()
     if ( roosts.has(dealId) && roosts.get(dealId).get("requirements").get("hasLoaded") && !roosts.get(dealId).get("stakeholders").get("isLoading") && !force ){
-        console.warn("not loading requirements as it has been loaded before")
+        log.warn("not loading requirements as it has been loaded before")
         return null
     }
     dispatch({
@@ -98,7 +99,7 @@ export const loadRequirements = (dealId, force=false) => (dispatch, getState) =>
             entities: entities
         })
     }).catch(error => {
-        console.error(error)
+        log.error(error)
         dispatch({
             type: REQUIREMENT_LOAD_ERROR,
             error: {
@@ -111,7 +112,7 @@ export const loadRequirements = (dealId, force=false) => (dispatch, getState) =>
 }
 
 export const subscribeRequirements = (dealId) => (dispatch, getState) => {
-    console.log("requiesting subscription to requirements for deal")
+    log.info("requiesting subscription to requirements for deal")
     const query = requirementsForDealQuery(dealId)
     dispatch( addSubscription("REQUIREMENTS", dealId, query, handler({
         update: (requirement) => dispatch(requirmentUpdatedAction(requirement)),

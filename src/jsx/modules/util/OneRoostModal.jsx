@@ -1,5 +1,6 @@
 import React, { PropTypes } from "react"
 import Modal from "react-bootstrap-modal";
+import * as log from "LoggingUtil"
 
 const OneRoostModal = React.createClass({
     propTypes: {
@@ -35,14 +36,14 @@ const OneRoostModal = React.createClass({
         let submit = form.doSubmit
         var success = submit();
         //check if the save was successful and we should close the form
-        console.log("submitting form resulted in ", success);
+        log.info("submitting form resulted in ", success);
         if ( typeof success === "boolean" )
         {
             return success;
         }
         else{
             //no success was returned, so defaulting to true
-            console.warn("No doSubmit success value was returned, defaulting to true");
+            log.warn("No doSubmit success value was returned, defaulting to true");
             return true;
         }
     },

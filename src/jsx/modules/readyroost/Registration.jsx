@@ -1,8 +1,8 @@
 import React, { PropTypes } from "react"
 import LoginComponent from "LoginComponent"
 import ReactGA from "react-ga"
-import Parse from "parse"
 import TermsOfServiceDisclaimer from "TermsOfServiceDisclaimer"
+import * as log from "LoggingUtil"
 
 const Registration = React.createClass({
     propTypes: {
@@ -29,13 +29,13 @@ const Registration = React.createClass({
         }
     },
     loginSuccess(){
-        console.log("login success");
+        log.info("login success");
 
         ReactGA.event({
           category: "ReadyRoost",
           action: "Log in"
         });
-        this.props.saveValues({currentUser: Parse.User.current()});
+        // this.props.saveValues({currentUser: this.props.currentUser});
         this.props.nextStep();
     },
     doLogin(e){

@@ -3,8 +3,9 @@ import Parse from "parse"
 import {Pointer as DealPointer} from "models/Deal"
 import {Pointer as UserPointer} from "models/User"
 import AutosizeTextarea from "react-textarea-autosize"
-import {createComment} from "ducks/comments"
+import {createComment} from "ducks/roost/comments"
 import { connect } from "react-redux"
+import * as log from "LoggingUtil"
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -40,7 +41,7 @@ const AddComment = React.createClass({
     getDefaultProps: function(){
         return {
             onHeightChange: function(){
-                console.log("warning: no onHeightChange function specified for AddComment.jsx");
+                log.info("warning: no onHeightChange function specified for AddComment.jsx");
             }
         }
     },
