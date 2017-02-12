@@ -29,7 +29,7 @@ export default function reducer(state=initialState, action){
             let id = payload.get("objectId");
             if ( !state.get("ids").includes(id) ){
                 state = state.set("ids", state.get("ids").unshift(id))
-            }            
+            }
             break;
         case COMMENTS_LOAD_REQUEST:
             state = state.set("isLoading", false)
@@ -123,7 +123,7 @@ exports.createComment = function(message){
     return (dispatch) => {
         let comment = DealComment.fromJS(message)
         comment.save().then(saved => {
-            // dispatch(addComment(comment));
+            dispatch(addComment(comment));
         }).catch(error => {
             console.error(error)
         })
