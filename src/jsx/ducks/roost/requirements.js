@@ -74,7 +74,7 @@ export const updateRequirement = (requirement, changes, message) => (dispatch, g
         message: message,
         author: null,
         username: "OneRoost Bot",
-        navLink: {type: "requirement", id: requirement.id}
+        navLink: {type: "requirement"}
     }))
 }
 

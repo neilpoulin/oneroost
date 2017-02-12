@@ -322,11 +322,10 @@ gulp.task("version:src", function () {
     var pkg = require("./package.json")
     let version = {}
     git.revParse({args:"HEAD"}, function (err, hash) {
-
-        console.log("current git hash: " + hash);
         version.hash = hash
         version.version = pkg.version
         let versionJSON = JSON.stringify(version)
+        gutil.log("version results: src", version)
         string_src("version.js", "var oneroostVersion=" + versionJSON)
             .pipe(gulp.dest(paths.dest.frontendjs))
 
@@ -339,10 +338,9 @@ gulp.task("version:bundle", function(){
     var pkg = require("./package.json")
     let version = {}
     git.revParse({args:"HEAD"}, function (err, hash) {
-
-        console.log("current git hash: " + hash);
         version.hash = hash
         version.version = pkg.version
+        gutil.log("version results: bundle", version)
         let versionJSON = JSON.stringify(version)
         return string_src("version.js", "var oneroostVersion=" + versionJSON)
             .pipe(gulp.dest(paths.dest.frontendjs))

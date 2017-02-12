@@ -32,6 +32,8 @@ const SystemComment = React.createClass({
                 case "document":
                     path = "/documents";
                     break;
+                case "requirement":
+                    path = "/requirements";
                 default:
                     break;
             }

@@ -9,6 +9,8 @@ version: 0.1
 phases:
   install:
     commands:
+      - echo getting git rev-parse HEAD
+      - git rev-parse HEAD
       - echo list files
       - ls
       - echo Installing Yarn...
