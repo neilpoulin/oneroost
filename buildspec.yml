@@ -20,7 +20,7 @@ phases:
       - which gulp && gulp -v
       - echo install sentry-cli
       - curl -sL https://sentry.io/get-cli/ | bash
-      - sentry installed correctly at ->
+      - echo checking sentry installed correctly at
       - which sentry-cli
   pre_build:
     commands:
