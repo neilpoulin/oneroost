@@ -10,6 +10,8 @@ import * as Deal from "models/Deal"
 import * as Account from "models/Account"
 import { Map } from "immutable"
 import * as log from "LoggingUtil"
+import * as RoostUtil from "RoostUtil"
+import ReactGA from "react-ga"
 
 
 export const DEAL_LOAD_REQUEST = "oneroost/roost/DEAL_LOAD_REQUSET"
@@ -86,14 +88,19 @@ export const updateDeal = (dealJSON, changes, message, type) => (dispatch, getSt
         entities: entities,
         dealId: dealJSON.objectId
     });
+    if ( message ){
+        let comment = {
+            deal: deal,
+            message: message,
+            author: null,
+            username: "OneRoost Bot",
+        }
+        if ( type ){
+            comment.navLink = {type: type}
+        }
 
-    dispatch(comments.createComment({
-        deal: deal,
-        message: message,
-        author: null,
-        username: "OneRoost Bot",
-        navLink: {type: type}
-    }))
+        dispatch(comments.createComment(comment))
+    }
 }
 
 export const loadDeal = (dealId, force=false) => {
@@ -130,6 +137,24 @@ export const loadDeal = (dealId, force=false) => {
             })
         });
     }
+}
+
+export const submitReadyRoost = (stakeholder, deal) => (dispatch, getState) => {
+    Parse.Cloud.run("submitReadyRoost", {
+        dealId: deal.objectId,
+        stakeholderId: stakeholder.objectId
+    }).then(function( result ) {
+        log.info(result);
+        alert("We have let " + RoostUtil.getFullName(stakeholder.user) + " know that the Roost is ready for them to review.")
+
+        dispatch(updateDeal(deal, {readyRoostSubmitted: new Date()}, "The opportunity has been submitted"))
+
+        ReactGA.set({ userId: Parse.User.current().objectId });
+        ReactGA.event({
+          category: "ReadyRoost",
+          action: "Submitted ReadyRoost"
+        });
+    });
 }
 
 const roostReducer = (state=initialState, action) => {

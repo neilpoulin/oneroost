@@ -1,15 +1,13 @@
 import React, {PropTypes} from "react";
-import Parse from "parse";
 import * as RoostUtil from "RoostUtil"
-import ReactGA from "react-ga"
-import * as log from "LoggingUtil"
 
 const Stakeholder = React.createClass({
     propTypes: {
         isEdit: PropTypes.bool,
         stakeholder: PropTypes.object.isRequired,
         deal: PropTypes.object.isRequired,
-        removeStakeholder: PropTypes.func,
+        removeStakeholder: PropTypes.func.isRequired,
+        submitReadyRoost: PropTypes.func.isRequired
     },
     getDefaultProps(){
         return {
@@ -26,21 +24,7 @@ const Stakeholder = React.createClass({
     submitRoost(){
         var self = this;
         var {stakeholder, deal} = self.props
-        Parse.Cloud.run("submitReadyRoost", {
-            dealId: deal.objectId,
-            stakeholderId: stakeholder.objectId
-        }).then(function( result ) {
-            log.info(result);
-            alert("We have let " + RoostUtil.getFullName(stakeholder.user) + " know that the Roost is ready for them to review.")
-
-            deal.set({readyRoostSubmitted: new Date()});
-            deal.save().catch(log.error);
-            ReactGA.set({ userId: Parse.User.current().objectId });
-            ReactGA.event({
-              category: "ReadyRoost",
-              action: "Submitted ReadyRoost"
-            });
-        });
+        this.props.submitReadyRoost(stakeholder, deal)
     },
     render: function () {
         var {stakeholder, isEdit, deal} = this.props;
