@@ -4,7 +4,7 @@ import NavLink from "NavLink"
 const OpportunityTemplate = React.createClass({
     propTypes: {
         template: PropTypes.object.isRequired,
-        user: PropTypes.object.isRequired,
+        user: PropTypes.object,
     },
     render () {
         const {template} = this.props;
