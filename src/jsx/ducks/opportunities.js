@@ -52,12 +52,12 @@ export default function reducer(state=initialState, action){
             var stakeholder = action.payload;
             var dealId = stakeholder.get("deal").get("objectId");
             state = state.set("deals", state.get("deals").filterNot(id => id === dealId))
-            state = state.set("archivedDeals", state.get("archivedDeals").push(dealId))
+            state = state.set("archivedDeals", state.get("archivedDeals").add(dealId))
             break;
         case UNARCHIVE_OPPORTUNITIY:
             var stakeholder = action.payload;
             var dealId = stakeholder.get("deal").get("objectId");
-            state = state.set("deals", state.get("deals").push(dealId))
+            state = state.set("deals", state.get("deals").add(dealId))
             state = state.set("archivedDeals", state.get("archivedDeals").filterNot(id => id === dealId))
             break;
         case SHOW_ARCHIVED:

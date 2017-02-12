@@ -154,7 +154,7 @@ const Comments = React.createClass({
             allComments = allComments.reverse();
             var items = [];
             var previousComment = null;
-            allComments.forEach(function(comment){
+            allComments.forEach(function(comment, i){
                 var currentDate = comment.createdAt
                 var previousDate = previousComment != null ? previousComment.createdAt : null;
                 var isSameDate = RoostUtil.isSameDate( currentDate, previousDate );
@@ -163,7 +163,7 @@ const Comments = React.createClass({
                 {
                     var separator =
                     <CommentDateSeparator
-                        key={"dateSeparator_comment_" + comment.objectId }
+                        key={"dateSeparator_comment_" + comment.objectId + "_" + i}
                         previousDate={previousDate}
                         nextDate={comment.createdAt}
                         />
@@ -172,7 +172,7 @@ const Comments = React.createClass({
 
                 var forceShowUsername = component.forceShowUsername(currentDate, previousDate);
                 var item =
-                <CommentItem key={"commentItem_" + comment.objectId}
+                <CommentItem key={"commentItem_" + comment.objectId + "_" + i}
                     comment={comment}
                     previousComment={previousComment}
                     forceShowUsername={forceShowUsername}

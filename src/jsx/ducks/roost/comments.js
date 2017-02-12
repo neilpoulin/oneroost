@@ -4,6 +4,7 @@ import {Map, List, fromJS} from "immutable"
 import {normalize} from "normalizr"
 import {addSubscription, handler} from "ducks/subscriptions"
 import * as Notification from "ducks/notification"
+import {toJSON} from "RoostUtil"
 
 export const ADD_COMMENT = "oneroost/comments/ADD_COMMENT"
 export const COMMENTS_LOAD_REQUEST = "oneroost/comments/COMMENTS_LOAD_REQUEST"
@@ -26,7 +27,9 @@ export default function reducer(state=initialState, action){
         case ADD_COMMENT:
             let {payload} = action;
             let id = payload.get("objectId");
-            state = state.set("ids", state.get("ids").unshift(id))
+            if ( !state.get("ids").includes(id) ){
+                state = state.set("ids", state.get("ids").unshift(id))
+            }            
             break;
         case COMMENTS_LOAD_REQUEST:
             state = state.set("isLoading", false)
@@ -66,7 +69,7 @@ export const addComment = (comment) => (dispatch, getState) => {
         type: ADD_COMMENT,
         dealId: comment.get("deal").id || comment.get("deal").get("objectId"),
         payload: comment,
-        entities: normalize(comment.toJS(), DealComment.Schema).entities
+        entities: normalize(toJSON(comment), DealComment.Schema).entities
     })
 }
 
@@ -120,7 +123,7 @@ exports.createComment = function(message){
     return (dispatch) => {
         let comment = DealComment.fromJS(message)
         comment.save().then(saved => {
-            dispatch(addComment(comment));
+            // dispatch(addComment(comment));
         }).catch(error => {
             console.error(error)
         })

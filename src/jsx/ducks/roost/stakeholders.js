@@ -22,23 +22,23 @@ export const initialState = Map({
 export default function reducer(state=initialState, action){
     switch (action.type) {
         case STAKEHOLDER_LOAD_REQUEST:
-        state = state.set("isLoading", true)
-        break;
+            state = state.set("isLoading", true)
+            break;
         case STAKEHOLDER_LOAD_SUCCESS:
-        state = state.set("isLoading", false)
-        state = state.set("hasLoaded", true)
-        state = state.set("ids", List(action.payload.map(stakeholder => stakeholder.get("objectId"))))
-        break;
+            state = state.set("isLoading", false)
+            state = state.set("hasLoaded", true)
+            state = state.set("ids", List(action.payload.map(stakeholder => stakeholder.get("objectId"))))
+            break;
         case STAKEHOLDER_LOAD_ERROR:
-        state = state.set("isLoading", false);
-        break;
+            state = state.set("isLoading", false);
+            break;
         case ADD_STAKEHOLDER:
-        state = state.set("ids", state.get("ids").push(action.payload.get("objectId")))
-        break;
+            state = state.set("ids", state.get("ids").push(action.payload.get("objectId")))
+            break;
         case UPDATE_STAKEHOLDER:
-        break;
+            break;
         default:
-        break;
+            break;
     }
     return state;
 }
@@ -61,7 +61,7 @@ export const removeStakeholder = (json) => (dispatch, getState) => {
     })
 
     var fullName = RoostUtil.getFullName(currentUser)
-    var message = fullName + " removed " + RoostUtil.getFullName(json.user) + " as from the opportunity.";
+    var message = fullName + " removed " + RoostUtil.getFullName(json.user) + " from the opportunity.";
     dispatch(createComment({
         deal: stakeholder.get("deal"),
         message: message,
