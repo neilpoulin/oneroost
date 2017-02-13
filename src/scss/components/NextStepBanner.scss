@@ -1,6 +1,6 @@
 $nextStepBannerHeight: 60px;
 @import "NextStepItem";
-
+$fadeSize: 50px;
 
 
 #NextStepsBannerContainer{
@@ -12,6 +12,12 @@ $nextStepBannerHeight: 60px;
     .NextStepBannerItem{
         // height: 100%;
         flex-shrink: 1;
+        position: relative;
+        &.NextStepsContainer:after {
+            content: "";
+            position: relative;
+            padding-right: $fadeSize;
+        }
     }
     .CompletedStepsContainer{
         white-space: nowrap;
@@ -30,6 +36,17 @@ $nextStepBannerHeight: 60px;
         display: flex;
         align-items: center;
         justify-content: center;
+        &:before {
+            content: "";
+            text-align: left;
+            position: absolute;
+            bottom: 0;
+            left: -$fadeSize;
+            width: $fadeSize;
+            height: 100%;
+            background: linear-gradient(90deg,rgba(255,252,248,0),#fffcf8 100%);
+            z-index: 5000;
+        }
     }
 
 
