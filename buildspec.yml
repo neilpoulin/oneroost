@@ -9,8 +9,6 @@ version: 0.1
 phases:
   install:
     commands:
-      - echo getting git rev-parse HEAD
-      - git rev-parse HEAD
       - echo list files
       - ls
       - echo Installing Yarn...
@@ -33,6 +31,8 @@ phases:
   build:
     commands:
       - echo Build started on `date`
+      - echo getting git rev-parse HEAD
+      - git rev-parse HEAD
       - echo starting the gulp build process
       - gulp build:all
       - echo build:all conmpleted... zipping...
