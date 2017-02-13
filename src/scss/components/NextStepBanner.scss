@@ -44,7 +44,7 @@ $fadeSize: 50px;
             left: -$fadeSize;
             width: $fadeSize;
             height: 100%;
-            background: linear-gradient(90deg,rgba(255,252,248,0),#fffcf8 100%);
+            background: linear-gradient(90deg,rgba(255,252,248,0),$globalBg 100%);
             z-index: 5000;
         }
     }

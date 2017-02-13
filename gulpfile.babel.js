@@ -318,11 +318,27 @@ function string_src(filename, string) {
 
 gulp.task("version", ["version:src", "version:bundle"])
 
+function getHashFromAwsPipeline(){
+    let pipeline = require("pipeline.json");
+    try{
+        if ( pipeline ){
+            return pipeline.stageStates[0].actionStates[0].currentRevision.revisionId
+        }
+    } catch (e){
+        gutil.log(gutil.colors.red(e))
+        return null;
+    }
+    return null
+}
+
 gulp.task("version:src", function () {
     var pkg = require("./package.json")
     let version = {}
     git.revParse({args:"HEAD"}, function (err, hash) {
         version.hash = hash
+        if ( !hash ){
+            version.hash = getHashFromAwsPipeline()
+        }
         version.version = pkg.version
         let versionJSON = JSON.stringify(version)
         gutil.log("version results: src", version)
