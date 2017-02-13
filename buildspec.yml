@@ -33,7 +33,7 @@ phases:
       - echo Build started on `date`
     #   - echo getting git rev-parse HEAD
     #   - git rev-parse HEAD
-      - echo outting codepipelin source version into file ($CODEBUILD_SOURCE_VERSION)
+      - echo outputting codepipelin source version into file for version $CODEBUILD_SOURCE_VERSION
       - echo $CODEBUILD_SOURCE_VERSION > pipelineVersion.txt
       - echo starting the gulp build process
       - gulp build:all
