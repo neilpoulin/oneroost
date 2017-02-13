@@ -1,6 +1,6 @@
 {
   "name": "oneroost",
-  "version": "2.1.11",
+  "version": "2.1.12",
   "description": "oneroost application",
   "main": "main.js",
   "scripts": {
