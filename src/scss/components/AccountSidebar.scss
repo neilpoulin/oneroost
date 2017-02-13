@@ -13,7 +13,7 @@ $hoverTextColor: $activeColor;
 #accountSidebar{
     background-color: $backgroundColor;
     color: $secondaryColor;
-    padding: 0px 10px 0px 10px;
+    padding: 0px 0px 0px 10px;
     font-family: AlrightSans,Helvetica Neue,Helvetica,Arial,sans-serif;
     border-right: $borderWeightThick solid $borderColorThick;
     display:flex;
@@ -24,6 +24,9 @@ $hoverTextColor: $activeColor;
     .AddAccountButton{
         text-align: center;
         padding: 10px 0px 30px 00px;
+    }
+    > :not(.AccountSidebarList){
+        padding-right: 10px;
     }
 }
 
@@ -55,7 +58,7 @@ $hoverTextColor: $activeColor;
         & ~ .AccountSidebarItem{
             a {
                 color: lighten($secondaryColor, $disabledFade);
-            }            
+            }
         }
     }
 
@@ -78,7 +81,7 @@ $hoverTextColor: $activeColor;
 
         font-weight: 400;
         a{
-            padding: 10px 5px 10px 5px;
+            padding: 10px 15px 10px 5px;
             text-decoration: none;
             display: block;
             background-color: inherit;
