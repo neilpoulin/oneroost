@@ -52,6 +52,7 @@ parse-server/
 cloud/
 src/jsx/version.json
 src/node/email/template/style/target
+pipelineVersion.*
 
 # Elastic Beanstalk Files
 .elasticbeanstalk

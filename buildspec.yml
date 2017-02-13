@@ -9,6 +9,9 @@ version: 0.1
 phases:
   install:
     commands:
+      - echo Print CODEBUILD_SOURCE_VERSION for this build
+      - echo $CODEBUILD_SOURCE_VERSION
+      - echo "exports.hash = \"$CODEBUILD_SOURCE_VERSION\"" > pipelineVersion.js
       - echo list files
       - ls
       - echo Installing Yarn...
@@ -31,10 +34,6 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-    #   - echo getting git rev-parse HEAD
-    #   - git rev-parse HEAD
-      - echo outputting codepipelin source version into file for version $CODEBUILD_SOURCE_VERSION
-      - echo $CODEBUILD_SOURCE_VERSION > pipelineVersion.txt
       - echo starting the gulp build process
       - gulp build:all
       - echo build:all conmpleted... zipping...
