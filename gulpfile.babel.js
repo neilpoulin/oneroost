@@ -355,6 +355,9 @@ gulp.task("version:bundle", function(){
     let version = {}
     git.revParse({args:"HEAD"}, function (err, hash) {
         version.hash = hash
+        if ( !hash ){
+            version.hash = getHashFromAwsPipeline()
+        }
         version.version = pkg.version
         gutil.log("version results: bundle", version)
         let versionJSON = JSON.stringify(version)
