@@ -33,7 +33,8 @@ phases:
       - echo Build started on `date`
     #   - echo getting git rev-parse HEAD
     #   - git rev-parse HEAD
-      - aws codepipeline --region us-east-1 get-pipeline-state --name $PIPELINE > pipeline.json
+      - echo outting codepipelin source version into file ($CODEBUILD_SOURCE_VERSION)
+      - echo $CODEBUILD_SOURCE_VERSION > pipelineVersion.txt
       - echo starting the gulp build process
       - gulp build:all
       - echo build:all conmpleted... zipping...

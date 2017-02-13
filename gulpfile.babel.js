@@ -201,7 +201,7 @@ gulp.task("compress", ["css:compress"]);
 gulp.task("build:frontend", ["compress","bundle", "sass", "fonts", "lint"]);
 gulp.task("build:all", ["compress","bundle:prod", "sass", "fonts", "build:cloud", "set-prod-node-env"]);
 
-gulp.task("build:dev", ["bundle","css", "build:cloud-dev"]);
+gulp.task("build:dev", ["bundle","css", "build:cloud-dev", "version"]);
 
 gulp.task("watch", ["build:dev"], function () {
     gulp.watch(paths.src.styles, ["css", "sass"]);
@@ -319,16 +319,13 @@ function string_src(filename, string) {
 gulp.task("version", ["version:src", "version:bundle"])
 
 function getHashFromAwsPipeline(){
-    let pipeline = require("pipeline.json");
+    let pipeline = require("pipelineVersion.txt");
     try{
-        if ( pipeline ){
-            return pipeline.stageStates[0].actionStates[0].currentRevision.revisionId
-        }
+        return pipeline
     } catch (e){
         gutil.log(gutil.colors.red(e))
         return null;
-    }
-    return null
+    }    
 }
 
 gulp.task("version:src", function () {
