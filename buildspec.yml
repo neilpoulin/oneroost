@@ -9,6 +9,8 @@ version: 0.1
 phases:
   install:
     commands:
+      - echo dumping all environment variables
+      - printenv
       - echo Print CODEBUILD_SOURCE_VERSION for this build
       - echo $CODEBUILD_SOURCE_VERSION
       - echo "exports.hash = \"$CODEBUILD_SOURCE_VERSION\"" > pipelineVersion.js
