@@ -12,11 +12,9 @@ phases:
       - echo dumping all environment variables
       - printenv
       - echo putting CODEBUILD_BUILD_ID=$CODEBUILD_BUILD_ID into file
-      - echo "{\"build_id\": \"$CODEBUILD_BUILD_ID\"}" > codebuild_build.json
-      - echo "putting pipeline info into file"
+      - echo {\"build_id\": \"$CODEBUILD_BUILD_ID\"} > codebuild_build.json
+      - echo putting pipeline info into file
       - aws codepipeline --region us-east-1 get-pipeline-state --name $PIPELINE --output json > pipeline.json
-      - echo list files
-      - ls
       - echo Installing Yarn...
       - npm install -g yarn
       - npm install node-sass
