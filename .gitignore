@@ -53,6 +53,8 @@ cloud/
 src/jsx/version.json
 src/node/email/template/style/target
 pipelineVersion.*
+pipeline.*
+codebuild_build.*
 
 # Elastic Beanstalk Files
 .elasticbeanstalk

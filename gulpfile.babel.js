@@ -319,9 +319,9 @@ function string_src(filename, string) {
 gulp.task("version", ["version:src", "version:bundle"])
 
 function getHashFromAwsPipeline(){
-    let pipeline = require("./pipelineVersion.js");
+    let pipeline = require("./pipeline.json");
     try{
-        return pipeline.hash
+        return pipeline.stageStates[0].actionStates[0].currentRevision.revisionId
     } catch (e){
         gutil.log(gutil.colors.red(e))
         return null;
