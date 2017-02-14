@@ -12,8 +12,8 @@ phases:
       - echo dumping all environment variables
       - printenv
       - echo Print CODEBUILD_SOURCE_VERSION for this build
-      - echo $CODEBUILD_SOURCE_VERSION
-      - echo "exports.hash = \"$CODEBUILD_SOURCE_VERSION\"" > pipelineVersion.js
+      - echo "putting revision hash into file"
+      - echo "exports.hash = $(aws codepipeline get-pipeline-state --name oneroost --output json | jq -c '.stageStates[].actionStates[] | select(.actionName=="Source") | .currentRevision.revisionId' )" > pipelineVersion.js
       - echo list files
       - ls
       - echo Installing Yarn...
