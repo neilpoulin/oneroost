@@ -11,8 +11,8 @@ phases:
     commands:
       - echo dumping all environment variables
       - printenv
-      - echo putting CODEBUILD_BUILD_ID=$CODEBUILD_BUILD_ID into file
-      - echo {\"build_id\": \"$CODEBUILD_BUILD_ID\"} > codebuild_build.json
+    #   - echo putting CODEBUILD_BUILD_ID=$CODEBUILD_BUILD_ID into file
+    #   - echo "export const build_id = \"$CODEBUILD_BUILD_ID\"" > codebuild_build.js
       - echo putting pipeline info into file
       - aws codepipeline --region us-east-1 get-pipeline-state --name $PIPELINE --output json > pipeline.json
       - echo Installing Yarn...
