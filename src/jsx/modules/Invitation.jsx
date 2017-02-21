@@ -4,7 +4,7 @@ import * as RoostUtil from "RoostUtil"
 import FormInputGroup from "FormInputGroup"
 import FormUtil from "FormUtil"
 import LoadingIndicator from "LoadingIndicator"
-import {loginValidatoin, confirmValidation} from "InvitationValidation"
+import {loginValidation, confirmValidation} from "InvitationValidation"
 import Logo from "Logo"
 import RoostNav from "RoostNav"
 import {connect} from "react-redux"
@@ -72,7 +72,7 @@ const Invitation = withRouter( React.createClass({
         const {password} = this.state
 
 
-        let validation = loginValidatoin;
+        let validation = {};
         if ( user.passwordChangeRequired ){
             validation = confirmValidation;
         }

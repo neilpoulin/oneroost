@@ -4,6 +4,8 @@ import {normalize} from "normalizr"
 import * as Stakeholder from "models/Stakeholder"
 import * as log from "LoggingUtil"
 import {logInAsUser, createPassword} from "ducks/user"
+import {createComment} from "ducks/roost/comments"
+import * as RoostUtil from "RoostUtil"
 
 export const LOAD_REQUEST = "oneroost/invitation/LOAD_REQUEST"
 export const LOAD_SUCCESS = "oneroost/invitation/LOAD_SUCCESS"
@@ -156,12 +158,21 @@ export const loadInvitationByStakeholderId = (stakeholderId, force=false) => (di
     })
 }
 
-export const acceptInvite = (stakeholder) => (dispatch, getState) => {
+export const acceptInvite = (stakeholderJSON) => (dispatch, getState) => {
     return new Promise((resolve, reject) => {
-        stakeholder = Stakeholder.fromJSON(stakeholder)
+        let stakeholder = Stakeholder.fromJSON(stakeholderJSON)
         stakeholder.set({"inviteAccepted": true})
         stakeholder.save().then(success => {
             dispatch(acceptInviteSuccessAction(stakeholder.id))
+            let message = RoostUtil.getFullName(stakeholderJSON.user) + " has accepted their invitation."
+            dispatch(createComment({
+                deal: stakeholder.get("deal"),
+                message: message,
+                author: null,
+                username: "OneRoost Bot",
+                navLink: {type:"participant"}
+            }))
+
             resolve(stakeholder)
         }).catch(error => {
             dispatch(acceptInviteErrorAction(stakeholder.id, error))

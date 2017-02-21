@@ -11,6 +11,6 @@ export const confirmValidation = {
     "confirmPassword": new Validation(FormUtil.matchesField("password"), "error", "Your passwords must match.")
 
 }
-export const loginValidatoin = {
+export const loginValidation = {
     "password": passwordValidation
 }
