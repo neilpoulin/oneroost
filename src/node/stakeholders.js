@@ -66,6 +66,7 @@ exports.initialize = function()
     Parse.Cloud.define("saveNewPassword", function(request, response) {
         var password = request.params.password;
         var userId = request.params.userId;
+        console.log("saving new password", JSON.stringify(request.params))
         // var stakeholderId = request.params.stakeholderId;
         new Parse.Query(Parse.User).get(userId, {useMasterKey: true}).then(function(user){
             console.log("saveNewPassword: found user: " + userId);
@@ -80,8 +81,7 @@ exports.initialize = function()
                     response.success({message: "succesfully saved the user's password"})
                 }).catch(error => response.error({message: "Failed to update the user's password", error: error}));
             }
-        })
-
+        }).catch(console.error)
     });
 
     Parse.Cloud.define("validateStakeholder", async function(request, response){

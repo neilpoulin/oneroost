@@ -203,7 +203,7 @@ gulp.task("build:all", ["compress","bundle:prod", "sass", "fonts", "build:cloud"
 
 gulp.task("build:dev", ["bundle","css", "build:cloud-dev", "version"]);
 
-gulp.task("watch", ["build:dev"], function () {
+gulp.task("watch", ["build:dev", "version"], function () {
     gulp.watch(paths.src.styles, ["css", "sass"]);
     gulp.watch(paths.src.frontend, ["bundle"]);
     gulp.watch(paths.src.node, ["build:cloud-dev"]);

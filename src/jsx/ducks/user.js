@@ -104,3 +104,33 @@ export const saveUser = (updates) => (dispatch, getState) => {
         dispatch(updateUserAction(saved))
     }).catch(log.error)
 }
+
+export const logInAsUser = (userId, password) => (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+        Parse.Cloud.run("getUserWithEmail", {userId: userId})
+        .then(function({user}){
+            let emailUser = user.toJSON()
+            let email = emailUser.email
+            Parse.User.logIn(email, password).then(user => {
+                resolve(dispatch(userLoggedIn(user.toJSON())))
+            })
+        }).catch(reject);
+    })
+}
+
+export const createPassword = (user, password, allowAnonymous=false) => (dispatch, getState) => {
+    const state = getState()
+    const userId = user.objectId;
+    return new Promise((resolve, reject) => {
+        if ( state.user.userId !== user.objectId && !allowAnonymous ){
+            reject({error: "Unauthorized to change password for " + userId})
+        }
+        else if ( !user.passwordChangeRequired ){
+            reject({error: "No password change required, " + userId})
+        }
+        resolve(Parse.Cloud.run("saveNewPassword", {
+            password: password,
+            userId: userId
+        }))
+    })
+}

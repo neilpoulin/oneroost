@@ -1,5 +1,4 @@
 import React, { PropTypes } from "react"
-import Parse from "parse"
 import {withRouter} from "react-router"
 import * as RoostUtil from "RoostUtil"
 import FormInputGroup from "FormInputGroup"
@@ -12,15 +11,29 @@ import {denormalize} from "normalizr"
 import * as Stakeholder from "models/Stakeholder"
 import * as Deal from "models/Deal"
 import * as User from "models/User"
-import {loadInvitationByStakeholderId, acceptInvite} from "ducks/invitation"
 import * as log from "LoggingUtil"
+import {loadInvitationByStakeholderId, acceptInvite} from "ducks/invitation"
+import {logInAsUser, createPassword} from "ducks/user"
+import Unauthorized from "Unauthorized"
 
 const Invitation = withRouter( React.createClass({
     propTypes: {
         router: PropTypes.object.isRequired,
         params: PropTypes.shape({
             stakeholderId: PropTypes.string.isRequired
-        })
+        }),
+        isLoading: PropTypes.bool.isRequired,
+        roost: PropTypes.object,
+        invitedBy: PropTypes.object,
+        stakeholder: PropTypes.object,
+        isLoggedIn: PropTypes.bool,
+        inviteAccepted: PropTypes.bool,
+    },
+    getDefaultProps(){
+        return {
+            isLoading: true,
+            isLoggedIn: false,
+        }
     },
     getInitialState: function(){
         return {
@@ -31,53 +44,17 @@ const Invitation = withRouter( React.createClass({
             errors: {}
         }
     },
-    fetchData(stakeholderId){
-        var stakeholderQuery = new Parse.Query("Stakeholder");
-        let self = this;
-        stakeholderQuery.include("user");
-        stakeholderQuery.include("deal");
-        stakeholderQuery.include("invitedBy");
-        stakeholderQuery.get(stakeholderId).then(stakeholder => {
-            self.setState({
-                stakeholder: stakeholder,
-                loading: false,
-            })
-        }).catch(error => {
-            log.error(error);
-            self.setState({
-                stakeholder: null,
-                loading: false,
-            })
-        });
-    },
     componentWillMount(){
-        let stakeholderId = this.props.params.stakeholderId;
-        log.info("component will mount, stakeholderId = ", stakeholderId)
-        this.fetchData(stakeholderId)
+        this.props.loadData()
     },
     componentWillUpdate(nextProps, nextState){
-        if ( this.props.params.stakeholderId !== nextProps.params.stakeholderId ){
-            let stakeholderId = nextProps.params.stakeholderId;
-            this.setState({
-                loading: true,
-                stakeholder: null
-            });
-            log.info("component will update, new stakeholder id different than previous", stakeholderId)
-            this.fetchData(stakeholderId)
-        }
-
-        if ( !this.state.loading && this.state.stakeholder ){ //stakeholder loaded
-            var stakeholder = this.state.stakeholder;
+        if (!this.props.isLoading) {
+            const {stakeholder, isLoggedIn, roost} = this.props;
             var stakeholderUser = stakeholder.user
-            var currentUser = Parse.User.current().toJSON();
-            var dealId = stakeholder.deal.objectId;
+            var dealId = roost.objectId;
 
-            if ( currentUser && stakeholderUser.objectId !== currentUser.objectId ){
-                this.sendToUnauthorized();
-                return;
-            }
-
-            if ( stakeholder.inviteAccepted || !currentUser && !stakeholderUser.passwordChangeRequired ){  // OR the user needs to log in
+            if ( stakeholder.inviteAccepted || !isLoggedIn && !stakeholderUser.passwordChangeRequired )  // OR the user needs to log in
+            {
                 this.sendToRoost( dealId );
             }
         }
@@ -90,81 +67,62 @@ const Invitation = withRouter( React.createClass({
         this.props.router.replace("/roosts/" + roostId )
     },
     acceptInvite: function(){
-        var self = this;
-        let stakeholder = this.state.stakeholder;
-        stakeholder.set("inviteAccepted", true);
-        stakeholder.save().then(response => {
-            self.sendToRoost(stakeholder.deal.objectId)}
-        )
+        let stakeholder = this.props.stakeholder;
+        this.props.acceptInvite(stakeholder)
     },
     submitPassword: function(){
         let self = this;
-        let stakeholder = this.state.stakeholder;
-        let deal = stakeholder.deal
-        let dealId = deal.objectId;
-        let user = stakeholder.user
-        let userId = user.objectId;
+        const {stakeholder, logInAsUser, acceptInvite, changePassword, isLoggedIn} = this.props
+        const {deal, user} = stakeholder
+        const {password} = this.state
+        const userId = user.objectId
+
         let validation = loginValidatoin;
         if ( user.passwordChangeRequired ){
             validation = confirmValidation;
         }
         let errors = FormUtil.getErrors(this.state, validation);
-        log.info(errors);
         if ( !FormUtil.hasErrors(errors) ){
-            if ( user.passwordChangeRequired ){
-                Parse.Cloud.run("saveNewPassword", {
-                    password: self.state.password,
-                    stakeholderId: stakeholder.objectId,
-                    userId: userId
+            if ( user.passwordChangeRequired && !isLoggedIn ){
+                changePassword(user, password).then(() => {
+                    logInAsUser(userId, password).then(() => {
+                        acceptInvite(stakeholder).then(() => {
+                            self.sendToRoost(deal.objectId)
+                        })
+                    })
+                }).catch(error => {
+                    log.error(error)
                 })
-                .then( function(result) {
-                    stakeholder.set("inviteAccepted", true);
-                    stakeholder.save().then(result => {
-                        Parse.Cloud.run("getUserWithEmail", {userId: userId})
-                        .then(function(emailUser){
-                            emailUser = emailUser.toJSON()
-                            let email = emailUser.user.email
-                            Parse.User.logIn(email, self.state.password, {
-                                success: function(){
-                                    self.sendToRoost(dealId)
-                                },
-                                error: function(){
-                                    log.info("failed to log in after changing password");
-                                }
-                            });
-                        });
-                    }).catch(error => log.error("error saving stakeholder", error));
-                },
-                function(error) {
-                    log.info("Something went wrong", error);
-                });
             }
-            else {
-                self.sendToRoost(dealId)
+            else if (!isLoggedIn) {
+                logInAsUser(userId, password).then(() => {
+                    acceptInvite(stakeholder).then(() => {
+                        self.sendToRoost(deal.objectId)
+                    })
+                }).catch(error => {
+                    log.error(error)
+                })
             }
-            self.setState({errors: {}});
-            return true;
+            else if (isLoggedIn){
+                acceptInvite(stakeholder).then(() => {
+                    self.sendToRoost(deal.objectId)
+                })
+            }
         }
-        self.setState({errors: errors});
-        return false;
     },
     render () {
-        if ( this.state.loading )
+        const {isLoading,
+            stakeholder,
+            roost,
+            inviteAccepted,
+            currentUserId,
+            isLoggedIn} = this.props;
+        const {errors, password, confirmPassword} = this.state;
+        if ( isLoading )
         {
-            return (
-                <div>
-                    <RoostNav/>
-                    <div className="container col-md-4 col-md-offset-4">
-                        <div className="row-fluid">
-                            <div className="container-fluid">
-                                <Logo className="header"/>
-                                <div className="container col-md-4 col-md-offset-4"><i className="fa fa-spin fa-spinner"></i> Loading...</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>)
+            return <div>Loading....</div>
         }
-        else if (!this.state.stakeholder)
+        else if (!stakeholder)
         {
             return (
                 <div>
@@ -179,8 +137,16 @@ const Invitation = withRouter( React.createClass({
                     </div>
                 </div>)
         }
-        let {errors, password, confirmPassword, stakeholder} = this.state;
-        var currentUser = Parse.User.current();
+        else if ( isLoggedIn && currentUserId !== stakeholder.user.objectId ){
+            return <Unauthorized/>
+        }
+        else if (inviteAccepted && isLoggedIn ){
+            this.sendToRoost(roost.objectId)
+            return <div>Redirecting to Opportunity</div>
+        } else if ( inviteAccepted){
+            return <div>Redirecting to Opportunity</div>
+        }
+
         let deal = stakeholder.deal
         var form = null
         if ( stakeholder.user.passwordChangeRequired )
@@ -218,7 +184,7 @@ const Invitation = withRouter( React.createClass({
 
             </div>
         }
-        else if( currentUser && !currentUser.passwordChangeRequired ){
+        else if( stakeholder.user && !stakeholder.user.passwordChangeRequired ){
             form =
             <div className = "form">
                 <div className="form-group">
@@ -249,11 +215,10 @@ const Invitation = withRouter( React.createClass({
     }
 }) )
 
-
 const mapStateToProps = (state, ownProps) => {
     let entities = state.entities.toJS()
     let invitationByStakeholder = state.invitationsByStakeholder.toJS()
-    let currentUser = state.user
+    let currentUser = state.user.toJS()
     let stakeholderId = ownProps.params.stakeholderId
     let invitation = invitationByStakeholder[stakeholderId]
     let stakeholder = null
@@ -276,6 +241,7 @@ const mapStateToProps = (state, ownProps) => {
         invitedBy,
         roost,
         isLoggedIn: currentUser.isLoggedIn,
+        currentUserId: currentUser.userId,
         inviteAccepted
     }
 }
@@ -286,7 +252,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(loadInvitationByStakeholderId(stakeholderId))
         },
         acceptInvite: (stakeholder) => {
-            dispatch(acceptInvite(stakeholder))
+            return dispatch(acceptInvite(stakeholder))
+        },
+        changePassword: (userId, password) => {
+            return dispatch(createPassword(userId, password, true))
+        },
+        logInAsUser: (userId, password) => {
+            return dispatch(logInAsUser(userId, password))
         }
     }
 }

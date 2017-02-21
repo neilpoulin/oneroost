@@ -129,11 +129,15 @@ export const loadInvitationByStakeholderId = (stakeholderId, force=false) => (di
 }
 
 export const acceptInvite = (stakeholder) => (dispatch, getState) => {
-    stakeholder = Stakeholder.fromJSON(stakeholder)
-    stakeholder.set({"inviteAccepted": true})
-    stakeholder.save().then(success => {
-        dispatch(acceptInviteSuccessAction(stakeholder.objectId))
-    }).error(error => {
-        dispatch(acceptInviteErrorAction(stakeholder.objetId, error))
+    return new Promise((resolve, reject) => {
+        stakeholder = Stakeholder.fromJSON(stakeholder)
+        stakeholder.set({"inviteAccepted": true})
+        stakeholder.save().then(success => {
+            dispatch(acceptInviteSuccessAction(stakeholder.id))
+            resolve(stakeholder)
+        }).catch(error => {
+            dispatch(acceptInviteErrorAction(stakeholder.id, error))
+            reject()
+        })
     })
 }

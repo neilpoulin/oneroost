@@ -3,13 +3,22 @@
 <script type="text/javascript">
     window.OneRoost = {};
     OneRoost.Config = <%-env%>;
-    console.log("Version from config.ejs", oneroostVersion)
-    Raven.config('https://50020b1e8db94c39be96db010cdbba4f@sentry.io/128546', {
+    var ravenCfg = {
         environment: OneRoost.Config.environment,
-        release: oneroostVersion.hash,
-        tags: {
+    }
+    console.log("Version from config.ejs", oneroostVersion)    
+    if (oneroostVersion) {
+        ravenCfg.release = oneroostVersion.hash;
+        ravenCfg.tags = {
             git_commit: oneroostVersion.hash,
             git_tag: oneroostVersion.version
         }
-    }).install()
+
+    }
+    Raven.config('https://50020b1e8db94c39be96db010cdbba4f@sentry.io/128546', ravenCfg).install()
+
+    if (!oneroostVersion) {
+        console.warn("No version information found!");
+    }
+
 </script>

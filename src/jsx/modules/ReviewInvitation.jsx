@@ -27,7 +27,6 @@ const ReviewInvitation = withRouter( React.createClass({
             isLoggedIn: false,
         }
     },
-
     getInitialState: function(){
         return {
             password: null,
@@ -76,6 +75,7 @@ const ReviewInvitation = withRouter( React.createClass({
 
         var result =
         <div className="container col-md-6 col-md-offset-3">
+            <RoostNav/>
             <div className="row-fluid">
                 <div className="container-fluid">
                     <h2>Review Opportunity</h2>
