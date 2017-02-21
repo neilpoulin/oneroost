@@ -120,7 +120,7 @@ gulp.task("transpile:node", ["clean:node"], function(){
     .pipe(gulp.dest(paths.build.node));
 });
 
-gulp.task("move:cloud", ["clean:node", "transpile:node"], function(){
+gulp.task("move:cloud", ["clean:node", "transpile:node", "sass:node", "fonts:node"], function(){
     gulp.src(paths.build.node + "/**/*")
     .pipe(gulp.dest(paths.dest.cloud));
 });
@@ -196,7 +196,7 @@ gulp.task("set-prod-node-env", function() {
 gulp.task("build:node", ["clean:node", "transpile:node", "sass:node", "fonts:node"]);
 gulp.task("build:node-noclean", ["transpile:node", "sass:node", "fonts:node"]);
 gulp.task("build:cloud-dev", ["build:node-noclean", "move:cloud"]);
-gulp.task("build:cloud", ["build:node", "move:cloud"]);
+gulp.task("build:cloud", ["build:node", "sass:node", "fonts:node", "move:cloud"]);
 gulp.task("compress", ["css:compress"]);
 gulp.task("build:frontend", ["compress","bundle", "sass", "fonts", "lint"]);
 gulp.task("build:all", ["compress","bundle:prod", "sass", "fonts", "build:cloud", "set-prod-node-env"]);
