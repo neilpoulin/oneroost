@@ -3,15 +3,20 @@ import Parse from "parse"
 import {normalize} from "normalizr"
 import * as Stakeholder from "models/Stakeholder"
 import * as log from "LoggingUtil"
+import {logInAsUser, createPassword} from "ducks/user"
 
 export const LOAD_REQUEST = "oneroost/invitation/LOAD_REQUEST"
 export const LOAD_SUCCESS = "oneroost/invitation/LOAD_SUCCESS"
 export const LOAD_ERROR = "oneroost/invitation/LOAD_ERROR"
 export const INVITE_ACCEPTED_SUCCESS = "oneroost/invitation/INVITE_ACCEPTED_SUCCESS"
 export const INVITE_ACCEPTED_ERROR = "oneroost/invitation/INVITE_ACCEPTED_ERROR"
+export const SUBMIT_INVITE_REQUEST = "oneroost/invititation/SUBMIT_INVITE_REQUEST"
+export const SUBMIT_INVITE_SUCCESS = "oneroost/invititation/SUBMIT_INVITE_SUCCESS"
+export const SUBMIT_INVITE_ERROR = "oneroost/invititation/SUBMIT_INVITE_ERROR"
 
 export const initialState = Map({
     isLoading: false,
+    isSaving: false,
     hasLoaded: false,
     lastLoaded: null,
     inviteAccepted: false,
@@ -45,7 +50,16 @@ export default function reducer(state=initialState, action){
         case INVITE_ACCEPTED_SUCCESS:
             state = state.set("inviteAccepted", true)
         case INVITE_ACCEPTED_ERROR:
-            state.set("error", action.error)
+            state = state.set("error", action.error)
+        case SUBMIT_INVITE_REQUEST:
+            state = state.set("isSaving", true)
+            state = state.set("error", null)
+        case SUBMIT_INVITE_SUCCESS:
+            state = state.set("isSaving", false)
+            state = state.set("error", null)
+        case SUBMIT_INVITE_ERROR:
+            state = state.set("isSaving", false)
+            state = state.set("error", action.error)
         default:
             break;
     }
@@ -63,6 +77,20 @@ const fetchStakeholderById = (stakeholderId) => {
 }
 
 // action creators
+const acceptInviteRequest = (stakeholderId) => {
+    return {
+        type: SUBMIT_INVITE_REQUEST,
+        stakeholderId,
+    }
+}
+
+const acceptInviteSuccess = (stakeholderId) => {
+    return {
+        type: SUBMIT_INVITE_SUCCESS,
+        stakeholderId,
+    }
+}
+
 const invitationLoadRequestAction = (stakeholderId) => {
     return {
         type: LOAD_REQUEST,
@@ -139,5 +167,40 @@ export const acceptInvite = (stakeholder) => (dispatch, getState) => {
             dispatch(acceptInviteErrorAction(stakeholder.id, error))
             reject()
         })
+    })
+}
+
+export const submitInviteAccept = (stakeholder, password) => (dispatch, getState) => {
+    const {isLoggedIn} = getState().user.toJS()
+    const {user} = stakeholder
+    const userId = user.objectId
+    dispatch(acceptInviteRequest(stakeholder.objectId))
+    return new Promise((resolve, reject) => {
+        if ( user.passwordChangeRequired && !isLoggedIn ){
+            dispatch(createPassword(user, password, true)).then(() => {
+                dispatch(logInAsUser(userId, password)).then(() => {
+                    dispatch(acceptInvite(stakeholder)).then(() => {
+                        resolve(dispatch(acceptInviteSuccess(stakeholder.objectId)))
+                    })
+                })
+            }).catch(error => {
+                log.error(error)
+            })
+        }
+        else if (!isLoggedIn) {
+            dispatch(logInAsUser(userId, password)).then(() => {
+                dispatch(acceptInvite(stakeholder)).then(() => {
+                    resolve(dispatch(acceptInviteSuccess(stakeholder.objectId)))
+                })
+            }).catch(error => {
+                log.error(error)
+                reject()
+            })
+        }
+        else if (isLoggedIn){
+            dispatch(acceptInvite(stakeholder)).then(() => {
+                resolve(dispatch(acceptInviteSuccess(stakeholder.objectId)))
+            })
+        }
     })
 }

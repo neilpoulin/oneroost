@@ -3,6 +3,7 @@ import {withRouter} from "react-router"
 import * as RoostUtil from "RoostUtil"
 import FormInputGroup from "FormInputGroup"
 import FormUtil from "FormUtil"
+import LoadingIndicator from "LoadingIndicator"
 import {loginValidatoin, confirmValidation} from "InvitationValidation"
 import Logo from "Logo"
 import RoostNav from "RoostNav"
@@ -11,9 +12,7 @@ import {denormalize} from "normalizr"
 import * as Stakeholder from "models/Stakeholder"
 import * as Deal from "models/Deal"
 import * as User from "models/User"
-import * as log from "LoggingUtil"
-import {loadInvitationByStakeholderId, acceptInvite} from "ducks/invitation"
-import {logInAsUser, createPassword} from "ducks/user"
+import {loadInvitationByStakeholderId, submitInviteAccept} from "ducks/invitation"
 import Unauthorized from "Unauthorized"
 
 const Invitation = withRouter( React.createClass({
@@ -66,16 +65,12 @@ const Invitation = withRouter( React.createClass({
     {
         this.props.router.replace("/roosts/" + roostId )
     },
-    acceptInvite: function(){
-        let stakeholder = this.props.stakeholder;
-        this.props.acceptInvite(stakeholder)
-    },
-    submitPassword: function(){
+    submit: function(){
         let self = this;
-        const {stakeholder, logInAsUser, acceptInvite, changePassword, isLoggedIn} = this.props
-        const {deal, user} = stakeholder
+        const {stakeholder} = this.props
+        const {user, deal} = stakeholder
         const {password} = this.state
-        const userId = user.objectId
+
 
         let validation = loginValidatoin;
         if ( user.passwordChangeRequired ){
@@ -83,31 +78,12 @@ const Invitation = withRouter( React.createClass({
         }
         let errors = FormUtil.getErrors(this.state, validation);
         if ( !FormUtil.hasErrors(errors) ){
-            if ( user.passwordChangeRequired && !isLoggedIn ){
-                changePassword(user, password).then(() => {
-                    logInAsUser(userId, password).then(() => {
-                        acceptInvite(stakeholder).then(() => {
-                            self.sendToRoost(deal.objectId)
-                        })
-                    })
-                }).catch(error => {
-                    log.error(error)
-                })
-            }
-            else if (!isLoggedIn) {
-                logInAsUser(userId, password).then(() => {
-                    acceptInvite(stakeholder).then(() => {
-                        self.sendToRoost(deal.objectId)
-                    })
-                }).catch(error => {
-                    log.error(error)
-                })
-            }
-            else if (isLoggedIn){
-                acceptInvite(stakeholder).then(() => {
-                    self.sendToRoost(deal.objectId)
-                })
-            }
+            this.props.acceptInvite(stakeholder, password).then( () => {
+                self.sendToRoost(deal.objectId)
+            })
+        }
+        else {
+            this.setState({errors: errors})
         }
     },
     render () {
@@ -116,6 +92,7 @@ const Invitation = withRouter( React.createClass({
             roost,
             inviteAccepted,
             currentUserId,
+            isSaving,
             isLoggedIn} = this.props;
         const {errors, password, confirmPassword} = this.state;
         if ( isLoading )
@@ -178,7 +155,7 @@ const Invitation = withRouter( React.createClass({
                         errors={errors}
                         />
                     <div className="">
-                        <button className="btn btn-success btn-block" onClick={this.submitPassword}>Accept Invite</button>
+                        <button className="btn btn-success btn-block" onClick={this.submit}>Accept Invite</button>
                     </div>
                 </div>
 
@@ -188,9 +165,14 @@ const Invitation = withRouter( React.createClass({
             form =
             <div className = "form">
                 <div className="form-group">
-                    <button className="btn btn-success btn-block" onClick={this.acceptInvite}>Accept Invite</button>
+                    <button className="btn btn-success btn-block" onClick={this.submit}>Accept Invite</button>
                 </div>
             </div>
+        }
+
+        let savingIndicator = null
+        if (isSaving){
+            savingIndicator = <LoadingIndicator message="Saving..."/>
         }
 
         var result =
@@ -208,6 +190,7 @@ const Invitation = withRouter( React.createClass({
                     </div>
                 </div>
                 {form}
+                {savingIndicator}
             </div>
         </div>
 
@@ -226,9 +209,11 @@ const mapStateToProps = (state, ownProps) => {
     let invitedBy = null
     let isLoading = true
     let inviteAccepted = false
+    let isSaving = false
 
     if ( invitation && !invitation.isLoading && invitation.hasLoaded ){
         isLoading = invitation.isLoading
+        isSaving = invitation.isSaving
         stakeholder = denormalize(invitation.stakeholderId, Stakeholder.Schema, entities)
         roost = denormalize(invitation.dealId, Deal.Schema, entities)
         invitedBy = denormalize(invitation.invitedBy, User.Schema, entities)
@@ -240,6 +225,7 @@ const mapStateToProps = (state, ownProps) => {
         stakeholder,
         invitedBy,
         roost,
+        isSaving,
         isLoggedIn: currentUser.isLoggedIn,
         currentUserId: currentUser.userId,
         inviteAccepted
@@ -251,15 +237,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loadData: () => {
             dispatch(loadInvitationByStakeholderId(stakeholderId))
         },
-        acceptInvite: (stakeholder) => {
-            return dispatch(acceptInvite(stakeholder))
+        acceptInvite: (stakeholder, password) => {
+            return dispatch(submitInviteAccept(stakeholder, password))
         },
-        changePassword: (userId, password) => {
-            return dispatch(createPassword(userId, password, true))
-        },
-        logInAsUser: (userId, password) => {
-            return dispatch(logInAsUser(userId, password))
-        }
     }
 }
 
