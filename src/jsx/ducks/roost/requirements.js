@@ -7,6 +7,7 @@ import {normalize} from "normalizr"
 import {createComment} from "ducks/roost/comments"
 import {addSubscription, handler} from "ducks/subscriptions"
 import {Pointer as DealPointer} from "models/Deal"
+import {LOADED_ENTITIES} from "ducks/entities"
 import * as log from "LoggingUtil"
 
 export const REQUIREMENT_LOAD_REQUEST = "oneroost/requirements/REQUIREMENT_LOAD_REQUEST"
@@ -49,6 +50,13 @@ const requirementsForDealQuery = (dealId) => {
     return query;
 }
 
+const requirementsForDealsQuery = (dealIds) => {
+    let pointers = dealIds.map(dealId => DealPointer(dealId))
+    let query = new Parse.Query(Requirement.className)
+    query.containedIn("deal", pointers)
+    return query
+}
+
 export const requirmentUpdatedAction = (requirement) => {
     let requirementJSON = RoostUtil.toJSON(requirement)
     let entities = normalize(requirementJSON, Requirement.Schema).entities
@@ -76,6 +84,38 @@ export const updateRequirement = (requirement, changes, message) => (dispatch, g
         username: "OneRoost Bot",
         navLink: {type: "requirement"}
     }))
+}
+
+export const loadRequirementsForDealIds = (dealIds=[]) => (dispatch, getState) => {
+
+    let {roosts} = getState()
+    let dealIdsToLoad = dealIds.filter(dealId => {
+        // no roost exists OR it does exist and requirements have NOT been loaded
+        return !roosts.has(dealId) || !roosts.get(dealId).get("requirements").get("hasLoaded") && !roosts.get(dealId).get("requirements").get("isLoading")
+    })
+
+    if ( dealIdsToLoad.length === 0){
+        return null
+    }
+
+    let query = requirementsForDealsQuery(dealIdsToLoad)
+    let findResults = query.find()
+    // notify that we're loading requirements for deals
+    dealIdsToLoad.forEach(id => {
+        dispatch({
+            type: REQUIREMENT_LOAD_REQUEST,
+            dealId: id
+        })
+    })
+    findResults.then(results => {
+        let json = results.map(requirement => requirement.toJSON())
+        let entities = normalize(json, [Requirement.Schema]).entities || {}
+        dispatch({
+            type: LOADED_ENTITIES,
+            entities,
+        })
+    }).catch(log.error)
+
 }
 
 export const loadRequirements = (dealId, force=false) => (dispatch, getState) => {

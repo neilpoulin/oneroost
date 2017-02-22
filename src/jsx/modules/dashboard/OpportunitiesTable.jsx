@@ -6,10 +6,14 @@ import {denormalize} from "normalizr"
 import {connect} from "react-redux"
 import * as Deal from "models/Deal"
 import * as NextStep from "models/NextStep"
+import * as Requirement from "models/Requirement"
 import {loadNextStepsForDeals} from "ducks/roost/nextSteps"
+import {loadRequirementsForDealIds} from "ducks/roost/requirements"
 import _ from "lodash"
 import moment from "moment"
 import * as log from "LoggingUtil"
+
+const RFP_TITLE = "RFP Title"
 
 const headers = [
     {
@@ -38,7 +42,7 @@ const headers = [
         sortable: false,
     },
     {
-        label: "RPF Title",
+        label: RFP_TITLE,
         clickable: false,
         sortable: false,
     },
@@ -65,6 +69,7 @@ const OpportunitiesTable = React.createClass({
         const {opportunities} = this.props
         const dealIds = opportunities.map(({deal}) => deal.objectId)
         this.props.loadNextSteps(dealIds)
+        this.props.loadRequirements(dealIds)
     },
     componentWillUpdate(nextProps, nextState){
         const oldOpps = this.props.opportunities;
@@ -76,13 +81,13 @@ const OpportunitiesTable = React.createClass({
         this.props.loadNextSteps(dealIds)
     },
     render () {
-        const {opportunities, currentUser} = this.props
+        const {opportunities, currentUser, headings, requirementHeadings, showRequirements} = this.props
         return (
             <table className="table OpportunitiesTable">
-                <TableHeader columns={headers} />
+                <TableHeader columns={headings} />
                 <tbody>
                     {opportunities.map((opp, i) => {
-                        return <TableRow opportunity={opp} key={"opportunities_table_row_" + i} currentUser={currentUser}/>
+                        return <TableRow opportunity={opp} key={"opportunities_table_row_" + i} currentUser={currentUser} showRequirements={showRequirements} requirementHeadings={requirementHeadings} />
                     })}
                 </tbody>
             </table>
@@ -96,9 +101,10 @@ const mapStateToProps = (state, ownProps) => {
     let entities = state.entities.toJS()
     let myOpportunities = state.opportunitiesByUser.get(userId)
     let dashboard = state.dashboard.toJS()
+
+    let selectedTemplate = ownProps.template
     let deals = []
     let archivedDeals = []
-
     let query = dashboard.searchTerm
     // let isLoading = true
     if ( myOpportunities ){
@@ -118,11 +124,23 @@ const mapStateToProps = (state, ownProps) => {
         group[dealId] = steps
         return group
     }, {})
+
+    let requirementIds = Object.values(entities.requirements).filter(req => allDealIds.indexOf(req.deal) != -1)
+    let requirements = denormalize(requirementIds, [Requirement.Schema], entities)
+    let requirementsByDealId = requirements.reduce((group, req) => {
+        let dealId = req.deal.objectId
+        let reqs = group[dealId] || []
+        reqs.push(req)
+        group[dealId] = reqs
+        return group
+    }, {})
+
     let opportunities = deals.map(deal => {
         return {
             deal: deal,
             archived: false,
             nextSteps: nextStepsByDealId[deal.objectId] || [],
+            requirements: requirementsByDealId[deal.objectId] || [],
             searchScore: 0,
         }
     })
@@ -134,8 +152,33 @@ const mapStateToProps = (state, ownProps) => {
             searchScore: 0,
         }
     })
-
+    let headings = headers
+    let requirementHeadings = []
     let allOpportunities = opportunities.concat(archivedOpportunities)
+    let showRequirements = false
+    if ( selectedTemplate ){
+        let selectedTemplateId = selectedTemplate.objectId
+        showRequirements = true
+        allOpportunities = allOpportunities.filter(opp => {
+            return opp.deal.template && opp.deal.template.objectId === selectedTemplateId
+        })
+        headings = headings.filter(h => {
+            return h.label !== RFP_TITLE
+        })
+
+        if (selectedTemplate.requirements){
+            selectedTemplate.requirements.forEach(req => {
+                let header = {
+                    label: req.title,
+                    clickable: false,
+                    sortable: false,
+                }
+                headings.push(header)
+                requirementHeadings.push(header)
+            })
+        }
+
+    }
 
     if (query != null && query.trim()){
         query = query.trim().replace(/ +(?= )/g,"");
@@ -165,10 +208,15 @@ const mapStateToProps = (state, ownProps) => {
         })
     }
 
+
+
     return {
         opportunities: allOpportunities,
         userId,
         currentUser,
+        headings,
+        requirementHeadings,
+        showRequirements,
     }
 }
 
@@ -177,6 +225,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loadNextSteps: (dealIds=[]) => {
             log.info("Loading next steps for deals", dealIds)
             dispatch(loadNextStepsForDeals(dealIds))
+        },
+        loadRequirements: (dealIds=[]) => {
+            log.info("Loading requirements for deals", dealIds)
+            dispatch(loadRequirementsForDealIds(dealIds))
         }
     }
 }

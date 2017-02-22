@@ -11,17 +11,24 @@ const TableRow = React.createClass({
             documents: PropTypes.arrayOf(PropTypes.object),
             nextSteps: PropTypes.arrayOf(PropTypes.object)
         }).isRequired,
-        currentUser: PropTypes.object.isRequired
+        currentUser: PropTypes.object.isRequired,
+        showRequirements: PropTypes.bool,
+        requirementHeadings: PropTypes.arrayOf(PropTypes.object).isRequired
     },
     render () {
 
-        const {currentUser, opportunity} = this.props;
+        const {currentUser,
+            opportunity,
+            showRequirements,
+            requirementHeadings,
+        } = this.props;
         const {deal,
             // stakeholders,
             //  comments,
             //  documents,
             nextSteps,
             archived,
+            requirements,
          } = opportunity
 
          let sortedSteps = nextSteps.filter(step => {
@@ -42,6 +49,33 @@ const TableRow = React.createClass({
                     </div>
              </div>
          }
+
+        let templateCell = null
+        if ( !showRequirements ){
+            templateCell = <td>
+                {deal.template ? deal.template.title : ""}
+            </td>
+        }
+
+        let requirementCells = []
+        if ( showRequirements && requirementHeadings && requirementHeadings.length > 0){
+            requirementCells = requirementHeadings.map( heading => {
+                let requirement = requirements.find(req => {
+                    return req.title.trim().toLowerCase() === heading.label.trim().toLowerCase()
+                })
+                let cell = <td key={"req_deal_" + deal.objectId}>--</td>
+                if ( requirement ){
+                    let icon = <i className="fa fa-times not-completed"></i>
+                    if ( requirement.completedDate ){
+                        icon = <i className="fa fa-check completed"></i>
+                    }
+                    cell = <td key={"req_cell_" + requirement.objectId } className="requirement" data-value={requirement.completedDate ? true : false}>
+                        {icon}
+                    </td>
+                }
+                return cell;
+            })
+        }
 
         return (
             <tr className={archived? "archived" : ""}>
@@ -64,9 +98,10 @@ const TableRow = React.createClass({
                 <td>
                     {nextStep}
                 </td>
-                <td>
-                    {deal.template ? deal.template.title : ""}
-                </td>
+                {templateCell}
+                {requirementCells.map((req) => {
+                    return req
+                })}
             </tr>
         )
     }

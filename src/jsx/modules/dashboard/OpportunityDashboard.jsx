@@ -5,7 +5,7 @@ import RoostNav from "navigation/RoostNav"
 import AddAccountButton from "account/AddAccountButton"
 import BetaUserWelcome from "BetaUserWelcome"
 import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
-import {setShowArchived, searchOpportunities} from "ducks/dashboard"
+import {setShowArchived, searchOpportunities, setTemplateId} from "ducks/dashboard"
 import OpportunitiesTable from "OpportunitiesTable"
 import ToggleButton from "ToggleButton"
 import LoadingIndicator from "LoadingIndicator"
@@ -39,6 +39,8 @@ const OpportunityDashboard = React.createClass({
             templates,
             templatesLoading,
             archivedTemplates,
+            selectedTemplateId,
+            selectedTemplate,
             doSearch} = this.props
         let contents = null
         if ( isLoading ){
@@ -48,7 +50,7 @@ const OpportunityDashboard = React.createClass({
             contents = <BetaUserWelcome userId={userId} templates={templates} templatesLoading={templatesLoading} archivedTemplates={archivedTemplates}/>
         }
         else{
-            contents = <OpportunitiesTable userId={userId} currentUser={currentUser}/>
+            contents = <OpportunitiesTable userId={userId} currentUser={currentUser} template={selectedTemplate}/>
         }
 
         let toggleArchivedButton = null
@@ -63,6 +65,16 @@ const OpportunityDashboard = React.createClass({
                 block={false}
                 active={showArchived} />
         }
+        let templateSelector = null
+        if ( templates ){
+            templateSelector =
+            <select className="TemplateSelector" onChange={e => this.props.setTemplateId(e.target.value)} value={selectedTemplateId || ""}>
+                <option value="">-- Show All --</option>
+                {templates.map(template => {
+                    return <option key={"template_selector_" + template.objectId} value={template.objectId} >{template.title}</option>
+                })}
+            </select>
+        }
 
         return (
             <div className="OpportunityDashboard">
@@ -70,6 +82,7 @@ const OpportunityDashboard = React.createClass({
                 <div className="secondaryNav container">
                     <h2 className="hidden-sm hidden-xs">Dashboard</h2>
                     <div className="actions">
+                        {templateSelector}
                         <SearchInput
                             onKeyUp={doSearch}
                             onSearch={doSearch}
@@ -112,11 +125,17 @@ const mapStateToProps = (state, ownProps) => {
     let templatesLoading = false;
     let templates = []
     let archivedTemplates = []
+    let selectedTemplate = null
+    let selectedTemplateId = dashboard.selectedTemplateId
     if ( myTemplates ){
         templatesLoading = myTemplates.isLoading;
         templates = denormalize(myTemplates.templateIds, [Template.Schema], entities)
         archivedTemplates = denormalize(myTemplates.archivedTemplateIds, [Template.Schema], entities)
+        if ( selectedTemplateId ){
+            selectedTemplate = denormalize(selectedTemplateId, Template.Schema, entities)
+        }
     }
+
 
     return {
         showTable,
@@ -124,6 +143,8 @@ const mapStateToProps = (state, ownProps) => {
         userId,
         isLoading,
         showArchived: dashboard.showArchived,
+        selectedTemplateId,
+        selectedTemplate,
         hasArchivedDeals,
         templates,
         templatesLoading,
@@ -145,6 +166,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         },
         doSearch: (query) => {
             dispatch(searchOpportunities(query))
+        },
+        setTemplateId: (templateId) => {
+            dispatch(setTemplateId(templateId))
         }
     }
 }
