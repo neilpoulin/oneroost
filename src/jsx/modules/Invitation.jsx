@@ -97,7 +97,18 @@ const Invitation = withRouter( React.createClass({
         const {errors, password, confirmPassword} = this.state;
         if ( isLoading )
         {
-            return <div>Loading....</div>
+            return (
+                <div>
+                    <RoostNav/>
+                    <div className="container col-md-4 col-md-offset-4">
+                        <div className="row-fluid">
+                            <div className="container-fluid text-center">
+                                <Logo className="header"/>
+                                <LoadingIndicator message="Loading..."/>
+                            </div>
+                        </div>
+                    </div>
+                </div>)
         }
         else if (!stakeholder)
         {
@@ -117,11 +128,20 @@ const Invitation = withRouter( React.createClass({
         else if ( isLoggedIn && currentUserId !== stakeholder.user.objectId ){
             return <Unauthorized/>
         }
-        else if (inviteAccepted && isLoggedIn ){
+        else if ( !stakeholder.user.passwordChangeRequired && !isLoggedIn && !inviteAccepted || inviteAccepted){
             this.sendToRoost(roost.objectId)
-            return <div>Redirecting to Opportunity</div>
-        } else if ( inviteAccepted){
-            return <div>Redirecting to Opportunity</div>
+            return (
+                <div>
+                    <RoostNav/>
+                    <div className="container col-md-4 col-md-offset-4">
+                        <div className="row-fluid">
+                            <div className="container-fluid text-center">
+                                <Logo className="header"/>
+                                <LoadingIndicator message="Redirecting to Login"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>)
         }
 
         let deal = stakeholder.deal

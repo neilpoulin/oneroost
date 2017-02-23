@@ -6,6 +6,7 @@ import {denormalize} from "normalizr"
 import * as Stakeholder from "models/Stakeholder"
 import * as Deal from "models/Deal"
 import * as User from "models/User"
+import Logo from "Logo"
 import RoostNav from "RoostNav"
 import {loadInvitationByStakeholderId, acceptInvite} from "ducks/invitation"
 import LoadingIndicator from "LoadingIndicator"
@@ -61,7 +62,7 @@ const ReviewInvitation = withRouter( React.createClass({
         this.props.acceptInvite(stakeholder)
     },
     render () {
-        const {isLoading, stakeholder, invitedBy, roost, inviteAccepted} = this.props;
+        const {isLoading, stakeholder, invitedBy, roost, inviteAccepted, isLoggedIn} = this.props;
 
         if (isLoading)
         {
@@ -73,10 +74,33 @@ const ReviewInvitation = withRouter( React.createClass({
         }
         else if (!stakeholder)
         {
-            return <div>No invites found for that ID</div>
-        } else if (inviteAccepted){
+            return (
+                <div>
+                    <RoostNav/>
+                    <div className="container col-md-4 col-md-offset-4">
+                        <div className="row-fluid">
+                            <div className="container-fluid text-center">
+                                <Logo className="header"/>
+                                <div>No invites found for that ID</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>)
+        }
+        else if (!isLoggedIn || inviteAccepted){
             this.sendToRoost(roost.objectId)
-            return <div>Redirecting to Opportunity</div>
+            return (
+                <div>
+                    <RoostNav/>
+                    <div className="container col-md-4 col-md-offset-4">
+                        <div className="row-fluid">
+                            <div className="container-fluid text-center">
+                                <Logo className="header"/>
+                                <LoadingIndicator message="Redirecting to Login"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>)
         }
 
         var result =
@@ -106,7 +130,7 @@ const ReviewInvitation = withRouter( React.createClass({
 const mapStateToProps = (state, ownProps) => {
     let entities = state.entities.toJS()
     let invitationByStakeholder = state.invitationsByStakeholder.toJS()
-    let currentUser = state.user
+    let currentUser = state.user.toJS()
     let stakeholderId = ownProps.params.stakeholderId
     let invitation = invitationByStakeholder[stakeholderId]
     let stakeholder = null

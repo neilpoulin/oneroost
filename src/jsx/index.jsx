@@ -149,7 +149,7 @@ render(
                     </Route>
                 </Route>
                 <Route path="/invitations/:stakeholderId" component={Invitation}/>
-                <Route path="/review/:stakeholderId" component={ReviewInvitation}/>
+                <Route path="/review/:stakeholderId" component={ReviewInvitation} onEnter={requireAuthOrParam}/>
                 <Route path="/unsubscribe">
                     <Route path=":emailRecipientId" component={Unsubscribe}></Route>
                 </Route>
