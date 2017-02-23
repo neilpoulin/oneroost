@@ -18,6 +18,17 @@ $fadeSize: 50px;
             position: relative;
             padding-right: $fadeSize;
         }
+        &.shadowProvider:before {
+            content: "";
+            text-align: left;
+            position: absolute;
+            bottom: 0;
+            left: -$fadeSize;
+            width: $fadeSize;
+            height: 100%;
+            background: linear-gradient(90deg,rgba(255,252,248,0),$globalBg 100%);
+            z-index: 5000;
+        }
     }
     .CompletedStepsContainer{
         white-space: nowrap;
@@ -36,17 +47,6 @@ $fadeSize: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
-        &:before {
-            content: "";
-            text-align: left;
-            position: absolute;
-            bottom: 0;
-            left: -$fadeSize;
-            width: $fadeSize;
-            height: 100%;
-            background: linear-gradient(90deg,rgba(255,252,248,0),$globalBg 100%);
-            z-index: 5000;
-        }
     }
 
 

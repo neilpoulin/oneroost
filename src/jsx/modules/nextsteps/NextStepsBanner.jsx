@@ -64,6 +64,7 @@ const NextStepBanner = React.createClass({
                     return item;
                 })}
             </div>
+            <div className="shadowProvider NextStepBannerItem"></div>
             {addButton}
         </div>
 

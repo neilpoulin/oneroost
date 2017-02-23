@@ -6,7 +6,9 @@ import {denormalize} from "normalizr"
 import * as Stakeholder from "models/Stakeholder"
 import * as Deal from "models/Deal"
 import * as User from "models/User"
+import RoostNav from "RoostNav"
 import {loadInvitationByStakeholderId, acceptInvite} from "ducks/invitation"
+import LoadingIndicator from "LoadingIndicator"
 
 const ReviewInvitation = withRouter( React.createClass({
     propTypes: {
@@ -63,7 +65,11 @@ const ReviewInvitation = withRouter( React.createClass({
 
         if (isLoading)
         {
-            return <div>Loading....</div>
+            return <div>
+                <RoostNav/>
+                <LoadingIndicator/>
+            </div>
+
         }
         else if (!stakeholder)
         {
