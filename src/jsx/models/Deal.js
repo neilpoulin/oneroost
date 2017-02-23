@@ -23,6 +23,7 @@ export const Schema = new schema.Entity(
             processStrategy: processStrategy
 
         }),
+        template: Template.Schema
     },
     {
         idAttribute: idAttribute,
