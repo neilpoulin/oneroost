@@ -13,6 +13,7 @@ import SearchInput from "SearchInput"
 import * as RoostUtil from "RoostUtil"
 import {loadTemplates} from "ducks/userTemplates"
 import * as Template from "models/Template"
+import * as Deal from "models/Deal"
 import {denormalize} from "normalizr"
 
 const OpportunityDashboard = React.createClass({
@@ -113,27 +114,31 @@ const mapStateToProps = (state, ownProps) => {
     let isLoading = true
     let showTable = false
     let hasArchivedDeals = false
+    let templates = []
+
     if ( myOpportunities ){
         myOpportunities = myOpportunities.toJS()
         isLoading = myOpportunities.isLoading
         showTable = myOpportunities.deals.length > 0 || myOpportunities.archivedDeals.length > 0
         hasArchivedDeals = myOpportunities.archivedDeals.length > 0
+        let deals = denormalize( myOpportunities.deals, [Deal.Schema], entities)
+        templates = deals.filter(deal => !!deal.template).map(deal => deal.template)
     }
 
     const myTemplates = templatesByUser[userId]
 
     let templatesLoading = false;
-    let templates = []
+
     let archivedTemplates = []
     let selectedTemplate = null
     let selectedTemplateId = dashboard.selectedTemplateId
     if ( myTemplates ){
         templatesLoading = myTemplates.isLoading;
-        templates = denormalize(myTemplates.templateIds, [Template.Schema], entities)
+        templates = templates.concat(denormalize(myTemplates.templateIds, [Template.Schema], entities))
         archivedTemplates = denormalize(myTemplates.archivedTemplateIds, [Template.Schema], entities)
-        if ( selectedTemplateId ){
-            selectedTemplate = denormalize(selectedTemplateId, Template.Schema, entities)
-        }
+    }
+    if ( selectedTemplateId ){
+        selectedTemplate = denormalize(selectedTemplateId, Template.Schema, entities)
     }
 
 
