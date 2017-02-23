@@ -222,7 +222,7 @@ const mapStateToProps = (state, ownProps) => {
         })
 
         return {
-            "company": RoostUtil.getRoostDisplayName(opp.deal, currentUser),
+            "company": "\"" + RoostUtil.getRoostDisplayName(opp.deal, currentUser) + "\"",
             "budget (low)": "\"" + opp.deal.budget.low + "\"",
             "budget (high)": "\"" + opp.deal.budget.high + "\"",
             "problem statement": "\"" + opp.deal.dealName + "\"",
