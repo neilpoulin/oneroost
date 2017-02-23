@@ -7,17 +7,19 @@ import {connect} from "react-redux"
 import * as Deal from "models/Deal"
 import * as NextStep from "models/NextStep"
 import * as Requirement from "models/Requirement"
+import * as Template from "models/Template"
 import {loadNextStepsForDeals} from "ducks/roost/nextSteps"
 import {loadRequirementsForDealIds} from "ducks/roost/requirements"
 import _ from "lodash"
 import moment from "moment"
 import * as log from "LoggingUtil"
+import {convertArrayOfObjectsToCSV} from "DataUtil"
 
 const RFP_TITLE = "RFP Title"
 
 const headers = [
     {
-        label: "Opportunity",
+        label: "Company",
         clickable: false,
         sortable: false,
     },
@@ -58,7 +60,8 @@ const OpportunitiesTable = React.createClass({
             nextSteps: PropTypes.arrayOf(PropTypes.object)
         })),
         currentUser: PropTypes.object.isRequired,
-        userId: PropTypes.string.isRequired
+        userId: PropTypes.string.isRequired,
+        exportCsvData: PropTypes.func.isRequired,
     },
     getDefaultProps() {
         return {
@@ -101,8 +104,8 @@ const mapStateToProps = (state, ownProps) => {
     let entities = state.entities.toJS()
     let myOpportunities = state.opportunitiesByUser.get(userId)
     let dashboard = state.dashboard.toJS()
+    let {selectedTemplateId} = dashboard
 
-    let selectedTemplate = ownProps.template
     let deals = []
     let archivedDeals = []
     let query = dashboard.searchTerm
@@ -156,8 +159,9 @@ const mapStateToProps = (state, ownProps) => {
     let requirementHeadings = []
     let allOpportunities = opportunities.concat(archivedOpportunities)
     let showRequirements = false
-    if ( selectedTemplate ){
-        let selectedTemplateId = selectedTemplate.objectId
+    if ( selectedTemplateId ){
+        // let selectedTemplateId = selectedTemplate.objectId
+        let selectedTemplate = denormalize(selectedTemplateId, Template.Schema, entities)
         showRequirements = true
         allOpportunities = allOpportunities.filter(opp => {
             return opp.deal.template && opp.deal.template.objectId === selectedTemplateId
@@ -208,7 +212,28 @@ const mapStateToProps = (state, ownProps) => {
         })
     }
 
+    let args = {data: allOpportunities.map(opp => {
+        let requirementData = {}
+        requirementHeadings.map( heading => {
+            let requirement = requirements.find(req => {
+                return req.title.trim().toLowerCase() === heading.label.trim().toLowerCase()
+            })
+            requirementData["\"" + heading.label + "\""] = requirement && requirement.completedDate ? true : false
+        })
 
+        return {
+            "company": RoostUtil.getRoostDisplayName(opp.deal, currentUser),
+            "budget (low)": "\"" + opp.deal.budget.low + "\"",
+            "budget (high)": "\"" + opp.deal.budget.high + "\"",
+            "problem statement": "\"" + opp.deal.dealName + "\"",
+            "last activity": "\"" + RoostUtil.formatDateShort(opp.deal.updatedAt) + "\"",
+            ...requirementData,
+            "Template Name": opp.deal.template ? "\"" + opp.deal.template.title + "\"" : ""
+        }
+    })}
+    let data = convertArrayOfObjectsToCSV(args)
+
+    ownProps.exportCsvData(data)
 
     return {
         opportunities: allOpportunities,

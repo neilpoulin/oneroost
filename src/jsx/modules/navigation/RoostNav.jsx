@@ -32,6 +32,7 @@ const RoostNav = React.createClass({
         var adminLink =<NavLink tag="li" to="/admin" className="">Admin</NavLink>
         let helpLink = <NavLink tag="li" to="/help" className="">Help</NavLink>
         var roostsLink = null
+        let reportingLink = null
         if ( !isAdmin ){
             adminLink = null;
         }
@@ -40,6 +41,7 @@ const RoostNav = React.createClass({
         var registerNav = null;
         if ( user ){
             roostsLink = <NavLink to="/roosts">Opportunities</NavLink>
+            reportingLink = <NavLink to="/reporting">Reporting</NavLink>
             rightNav =
             <li className="dropdown">
                 <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -79,6 +81,7 @@ const RoostNav = React.createClass({
 
                 <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul className="nav navbar-nav">
+                        {reportingLink}
                         {roostsLink}
                         {helpLink}
                     </ul>

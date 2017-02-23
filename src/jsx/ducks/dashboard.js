@@ -6,6 +6,7 @@ export const HIDE_ARCHIVED = "oneroost/dashboard/HIDE_ARCHIVED"
 export const SET_SEARCH_TERM = "oneroost/dashboard/SET_SEARCH_TERM"
 export const RESET = "oneroost/dashboard/RESET"
 export const SET_TEMPALTE_ID = "oneroost/dashboard/SET_TEMPALTE_ID"
+export const SET_EXPORT_CSV_DATA = "oneroost/dashboard/SET_EXPORT_CSV_DATA"
 
 const initialState = Map({
     isLoading: false,
@@ -14,6 +15,7 @@ const initialState = Map({
     sortDirection: null,
     showArchived: false,
     selectedTemplateId: null,
+    csvData: null
 });
 export default function reducer(state=initialState,action) {
     switch (action.type) {
@@ -31,6 +33,13 @@ export default function reducer(state=initialState,action) {
             break;
         case SET_TEMPALTE_ID:
             state = state.set("selectedTemplateId", action.payload.get("templateId"))
+            break;
+        case SET_EXPORT_CSV_DATA:
+            let data = action.payload
+            if(data){
+                data = "data:text/csv;charset=utf-8," + data
+            }
+            state = state.set("csvData", data)
             break;
         default:
             break;
@@ -64,5 +73,12 @@ export const setTemplateId = (templateId) => {
         payload: {
             templateId,
         }
+    }
+}
+
+export const setExportCsvData = (data) => {
+    return {
+        type: SET_EXPORT_CSV_DATA,
+        payload: data
     }
 }

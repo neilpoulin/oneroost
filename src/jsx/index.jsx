@@ -23,6 +23,7 @@ import NextStepCompletedSidebar from "deal/sidebar/NextStepCompletedSidebar"
 import DocumentsSidebar from "deal/sidebar/DocumentsSidebar"
 import RequirementsSidebar from "deal/sidebar/RequirementsSidebar"
 import OpportunityDashboard from "OpportunityDashboard"
+import UserHomePage from "UserHomePage"
 import Unauthorized from "Unauthorized"
 import Invitation from "Invitation"
 import ReviewInvitation from "ReviewInvitation"
@@ -129,8 +130,9 @@ render(
                 <Route path="/help" component={HelpPage}/>
                 <Route path="/terms" component={TermsOfServicePage}/>
                 <Route path="/privacy" component={PrivacyPage}/>
+                <Route path="/reporting" component={OpportunityDashboard}/>
                 <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
-                    <IndexRoute component={OpportunityDashboard}/>
+                    <IndexRoute component={UserHomePage}/>
                     <Route path="unauthorized" component={Unauthorized}/>
                     <Redirect from=":dealId" to="/roosts/:dealId/messages" />
                     <Route path=":dealId" component={Roost}>

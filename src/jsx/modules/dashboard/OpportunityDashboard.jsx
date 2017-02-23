@@ -5,7 +5,7 @@ import RoostNav from "navigation/RoostNav"
 import AddAccountButton from "account/AddAccountButton"
 import BetaUserWelcome from "BetaUserWelcome"
 import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
-import {setShowArchived, searchOpportunities, setTemplateId} from "ducks/dashboard"
+import {setShowArchived, searchOpportunities, setTemplateId, setExportCsvData} from "ducks/dashboard"
 import OpportunitiesTable from "OpportunitiesTable"
 import ToggleButton from "ToggleButton"
 import LoadingIndicator from "LoadingIndicator"
@@ -28,6 +28,7 @@ const OpportunityDashboard = React.createClass({
     },
     componentDidMount(){
         this.props.loadData()
+        document.title = "Reporting | OneRoost"
     },
     render () {
         const {showTable,
@@ -41,8 +42,10 @@ const OpportunityDashboard = React.createClass({
             templatesLoading,
             archivedTemplates,
             selectedTemplateId,
-            selectedTemplate,
-            doSearch} = this.props
+            doSearch,
+            csvData,
+            setExportCsvData,
+            } = this.props
         let contents = null
         if ( isLoading ){
             contents = <LoadingIndicator message="Loading Dashboard" size="large"/>
@@ -51,7 +54,7 @@ const OpportunityDashboard = React.createClass({
             contents = <BetaUserWelcome userId={userId} templates={templates} templatesLoading={templatesLoading} archivedTemplates={archivedTemplates}/>
         }
         else{
-            contents = <OpportunitiesTable userId={userId} currentUser={currentUser} template={selectedTemplate}/>
+            contents = <OpportunitiesTable userId={userId} currentUser={currentUser} exportCsvData={setExportCsvData}/>
         }
 
         let toggleArchivedButton = null
@@ -67,12 +70,18 @@ const OpportunityDashboard = React.createClass({
                 active={showArchived} />
         }
         let templateSelector = null
+        let selectedTemplate = templates.find(temp => temp.objectId === selectedTemplateId)
+        let exportButton = null;
+        if (selectedTemplate && csvData){
+            exportButton = <a href={encodeURI(csvData)} download={selectedTemplate.title + ".csv"} className="btn btn-success">Export</a>
+        }
+
         if ( templates ){
             templateSelector =
             <select className="TemplateSelector" onChange={e => this.props.setTemplateId(e.target.value)} value={selectedTemplateId || ""}>
                 <option value="">-- Show All --</option>
-                {templates.map(template => {
-                    return <option key={"template_selector_" + template.objectId} value={template.objectId} >{template.title}</option>
+                {templates.map((template, i) => {
+                    return <option key={"template_selector_" + template.objectId + "_" + i} value={template.objectId} >{template.title}</option>
                 })}
             </select>
         }
@@ -83,11 +92,12 @@ const OpportunityDashboard = React.createClass({
                 <div className="secondaryNav container">
                     <h2 className="hidden-sm hidden-xs">Dashboard</h2>
                     <div className="actions">
-                        {templateSelector}
                         <SearchInput
                             onKeyUp={doSearch}
                             onSearch={doSearch}
                             />
+                        {templateSelector}
+                        {exportButton}
                         {toggleArchivedButton}
                         <AddAccountButton
                             onSuccess={this.afterAddAccount}
@@ -122,7 +132,15 @@ const mapStateToProps = (state, ownProps) => {
         showTable = myOpportunities.deals.length > 0 || myOpportunities.archivedDeals.length > 0
         hasArchivedDeals = myOpportunities.archivedDeals.length > 0
         let deals = denormalize( myOpportunities.deals, [Deal.Schema], entities)
-        templates = deals.filter(deal => !!deal.template).map(deal => deal.template)
+        let dealTemplates = deals.filter(deal => !!deal.template).map(deal => deal.template)
+        dealTemplates.forEach(dealTempalte => {
+            let existing = templates.find(t => {
+                return t.objectId === dealTempalte.objectId
+            })
+            if ( !existing){
+                templates.push(dealTempalte)
+            }
+        })
     }
 
     const myTemplates = templatesByUser[userId]
@@ -130,17 +148,18 @@ const mapStateToProps = (state, ownProps) => {
     let templatesLoading = false;
 
     let archivedTemplates = []
-    let selectedTemplate = null
     let selectedTemplateId = dashboard.selectedTemplateId
     if ( myTemplates ){
         templatesLoading = myTemplates.isLoading;
-        templates = templates.concat(denormalize(myTemplates.templateIds, [Template.Schema], entities))
+        let myTemplateIds = myTemplates.templateIds.filter(id => {
+            return !templates.find(t => {
+                return t.objectId === id
+            })
+        })
+        templates = templates.concat(denormalize(myTemplateIds, [Template.Schema], entities))
+
         archivedTemplates = denormalize(myTemplates.archivedTemplateIds, [Template.Schema], entities)
     }
-    if ( selectedTemplateId ){
-        selectedTemplate = denormalize(selectedTemplateId, Template.Schema, entities)
-    }
-
 
     return {
         showTable,
@@ -149,11 +168,11 @@ const mapStateToProps = (state, ownProps) => {
         isLoading,
         showArchived: dashboard.showArchived,
         selectedTemplateId,
-        selectedTemplate,
         hasArchivedDeals,
         templates,
         templatesLoading,
-        archivedTemplates
+        archivedTemplates,
+        csvData: dashboard.csvData,
     }
 }
 
@@ -174,6 +193,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         },
         setTemplateId: (templateId) => {
             dispatch(setTemplateId(templateId))
+        },
+        setExportCsvData: (data) => {
+            dispatch(setExportCsvData(data))
         }
     }
 }

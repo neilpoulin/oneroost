@@ -86,6 +86,13 @@ export const formatDate = function(dateString){
     return null;
 }
 
+export const formatDateShort = function(dateString){
+    if (dateString != null && dateString != undefined) {
+        return moment(dateString).format("YYYY-MM-DD");
+    }
+    return null;
+}
+
 export const formatMoney = function(amount, includeSymbol){
     var format = "($0[.]0a)";
     if (!includeSymbol) {
