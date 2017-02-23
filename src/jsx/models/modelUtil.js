@@ -1,11 +1,10 @@
-import Parse from "parse";
 import {copyJSON, transformDatesInObject} from "RoostUtil"
 
 export const processStrategy = (entity) => {
     let copy = copyJSON(entity);
     delete copy["__type"]
     copy = transformDatesInObject(copy)
-    
+
     return copy
 }
 
@@ -17,14 +16,16 @@ export const idAttribute = (entity) => {
 export const TEST_STRING = "TESTING"
 
 
-exports.Pointer = function(className, id, opts){
-    let type = Parse.Object.extend(className);
-    let obj = new type();
-    obj.id = id;
-
-    if (opts){
-        obj.set(opts);
+export const Pointer = (className, arg) => {
+    if ( !arg ){
+        return null
     }
-
-    return obj;
+    let objectId = arg;
+    if ( typeof arg == "object" ){
+        objectId = arg.objectId || arg.id
+    } else if ( typeof arg == "string" ){
+        objectId = arg
+    }
+    if ( !objectId ) return null
+    return { "__type": "Pointer", "className": className, "objectId": objectId } ;
 }

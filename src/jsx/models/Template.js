@@ -22,4 +22,20 @@ export const fromJS = (json) => {
     return new Template(template)
 }
 
+
+export const Pointer = (arg) => {
+    if ( !arg ){
+        return null
+    }
+    let userId = arg;
+    if ( typeof arg == "object" ){
+        userId = arg.objectId || arg.id
+    } else if ( typeof arg == "string" ){
+        userId = arg
+    }
+    if ( !userId ) return null
+    return { "__type": "Pointer", "className": className, "objectId": userId } ;
+}
+
+
 export default Template
