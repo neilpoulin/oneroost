@@ -3,6 +3,7 @@ var EmailSender = require("./../EmailSender.js");
 var EmailUtil = require("./../util/EmailUtil.js");
 var NotificationSettings = require("./NotificationSettings")
 var ParseCloud = require("parse-cloud-express");
+import Raven from "raven"
 var Parse = ParseCloud.Parse;
 Parse.serverURL = envUtil.serverURL;
 
@@ -59,6 +60,7 @@ exports.afterSave = function(){
         }
         catch(e){
             console.error("Something went wrong with sending NextStep email", e);
+            Raven.captureException(e)
         }
     });
 }

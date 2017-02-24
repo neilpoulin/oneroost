@@ -1,6 +1,7 @@
 var envUtil = require("./util/envUtil.js");
 var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
+import Raven from "raven"
 Parse.serverURL = envUtil.serverURL;
 exports.initialize = function()
 {
@@ -50,6 +51,7 @@ exports.initialize = function()
         catch(e){
             console.error("Failed to execute addStakeholder function", e);
             response.error({error: "something went wrong", object: e });
+            Raven.captureException(e)
         }
 
     });
@@ -60,7 +62,10 @@ exports.initialize = function()
             console.log("found user: ", user);
             return response.success({user: user});
         })
-        .catch(error => response.error(error));
+        .catch(error => {
+            Raven.captureException(error)
+            response.error(error)
+        });
     });
 
     Parse.Cloud.define("saveNewPassword", function(request, response) {
@@ -76,12 +81,19 @@ exports.initialize = function()
                 user.set("password", password);
                 user.set("passwordChangeRequired", false);
                 Parse.Cloud.useMasterKey();
-                user.save(null, {useMasterKey: true}).then(function(user){
+                user.save(null, {useMasterKey: true}).then(user => {
                     console.log("successfully changed password");
                     response.success({message: "succesfully saved the user's password"})
-                }).catch(error => response.error({message: "Failed to update the user's password", error: error}));
+                }).catch(error => {
+                    Raven.captureException(error)
+                    response.error({message: "Failed to update the user's password", error: error})
+
+                });
             }
-        }).catch(console.error)
+        }).catch(e => {
+            console.error(e)
+            Raven.captureException(e)
+        })
     });
 
     Parse.Cloud.define("validateStakeholder", async function(request, response){
@@ -113,6 +125,7 @@ exports.initialize = function()
             }
         } catch(error){
             console.error(error);
+            Raven.captureException(error)
             return response.error({
                 message: "something went wrong looking up the stakeholder",
                 authorized: false
@@ -142,6 +155,7 @@ async function createStakeholderUser( stakeholder, deal, invitedBy ){
             },
             error: function( created, error ){
                 console.error( "failed to create stakeholder user.", error );
+                Raven.captureException(error)
                 reject( {error: "failed to create stakeholder user."} );
             }
         });

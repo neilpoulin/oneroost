@@ -6,6 +6,7 @@ var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
 var NotificationSettings = require("./NotificationSettings");
 var Documents = require("./../documents/Documents.js");
+import Raven from "raven"
 Parse.serverURL = envUtil.serverURL;
 
 
@@ -51,7 +52,7 @@ exports.afterSave = function(){
                     attachments.push(attachment);
                 }
 
-                var data = {                    
+                var data = {
                     user: uploadedBy.toJSON(),
                     dealName: deal.get("dealName"),
                     documentName: doc.get("fileName"),
@@ -71,6 +72,7 @@ exports.afterSave = function(){
         }
         catch(e){
             console.error("Something unexpected happened in the Document after save trigger", e);
+            Raven.captureException(e)
         }
 
     });

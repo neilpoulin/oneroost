@@ -23,7 +23,8 @@ export const Schema = new schema.Entity(
             processStrategy: processStrategy
 
         }),
-        template: Template.Schema
+        template: Template.Schema,
+        lastActiveUser: User.Schema,
     },
     {
         idAttribute: idAttribute,
@@ -50,6 +51,7 @@ export const fromJS = (json) => {
     deal.readyRoostUser = User.Pointer(deal.readyRoostUser)
     deal.account = Account.Pointer(deal.account)
     deal.template = Template.Pointer(deal.template)
+    deal.lastActiveUser = User.Pointer(deal.lastActiveUser)
     return new Deal(deal)
 }
 

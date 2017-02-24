@@ -1,6 +1,7 @@
 var envUtil = require("./../util/envUtil.js");
 var EmailSender = require("./../EmailSender.js");
 var EmailUtil = require("./../util/EmailUtil.js");
+import Raven from "raven"
 
 var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
@@ -75,6 +76,7 @@ exports.afterSave = function(){
         }
         catch (e){
             console.error("Failed to save stakeholder", e);
+            Raven.captureException(e)
         }
     });
 }

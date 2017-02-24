@@ -1,3 +1,4 @@
+import Raven from "raven"
 var uuid = require("uuid");
 var AWS = require("aws-sdk");
 AWS.config.region = "us-east-1";
@@ -55,6 +56,7 @@ function registerPresignedGetUrl(){
             error: function(error){
                 console.log("somethign failed when fetching the document", error);
                 response.error({error: error});
+                Raven.captureException(error)
             }
         });
     });

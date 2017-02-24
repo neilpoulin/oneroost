@@ -2,6 +2,7 @@ var AWS = require("aws-sdk");
 var ses = new AWS.SES({region: "us-east-1"});
 var envUtil = require("./../util/envUtil");
 var mailcomposer = require("mailcomposer");
+import Raven from "raven"
 
 var Mail = function(){
     this.recipients = [];
@@ -99,6 +100,7 @@ Mail.prototype.buildRawEmail = function(callback){
     raw.build(function(err, buffer){
         if ( err ){
             console.error("Failed to generate email", err);
+            Raven.captureException(err)
         } else {
             console.log("successfully built email, attempting to send it");
             callback(mail, buffer);
@@ -119,6 +121,7 @@ exports.sendEmail = function( mail )
     } catch (e) {
         console.log("failed to send", e);
         response.message = "failed to send";
+        Raven.captureException(e)
         return response;
     }
 }
@@ -138,6 +141,7 @@ function sendRawMail( mail, buffer ){
     ses.sendRawEmail(params, function(err, data) {
         if (err){
             console.log(err, err.stack); // an error occurred
+            Raven.captureException(err);
         }
         else{
             console.log("successfully sent email to", mail.recipients);           // successful response

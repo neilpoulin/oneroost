@@ -1,4 +1,5 @@
 var ParseCloud = require("parse-cloud-express");
+import Raven from "raven"
 var Parse = ParseCloud.Parse
 
 exports.Settings = {
@@ -25,5 +26,5 @@ exports.checkNotificationSettings = function( property, value, callback ){
         if ( settings[property] == value ){
             callback()
         }
-    } );
+    } ).catch(Raven.captureException);
 }

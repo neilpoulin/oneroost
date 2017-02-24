@@ -3,6 +3,7 @@ import EmailSender from "./../EmailSender.js"
 import envUtil from "./../util/envUtil.js"
 import {Parse} from "parse-cloud-express"
 import NotificationSettings from "./NotificationSettings"
+import Raven from "raven"
 
 Parse.serverURL = envUtil.serverURL;
 
@@ -36,8 +37,9 @@ async function sendCommentEmail( comment ){
             EmailSender.sendTemplate( "commentNotif", data, recipients );
         }
     }
-    catch(e){        
+    catch(e){
         console.error("something went wrong with the comment sender", e);
+        Raven.captureException(e)
     }
 }
 
@@ -61,6 +63,18 @@ exports.afterSave = function(io){
         this block is to send an email... TBD if we want to send these or not.
         */
 
+        try{
+            comment.get("deal").set({
+                lastActiveAt: new Date(),
+                lastActiveUser: req.user
+            }).save().then(saved => {
+                console.log("successfully saved deal after comment save");
+            }).catch(Raven.captureException)
+        }catch (e){
+            console.error("Failed to update deal with last activity date", e)
+            Raven.captureException(e);
+        }
+
         if ( comment.get("author") != null )
         {
             var query = new Parse.Query( "DealComment" );
@@ -72,8 +86,9 @@ exports.afterSave = function(io){
                     broadcast(comment);
                     sendCommentEmail( comment );
                 },
-                error: function(){
-                    console.error("failed to get the deal from the comment.");
+                error: function(error){
+                    console.error("failed to get the deal from the comment.", error);
+                    Raven.captureException(error)
                 }
             } );
         }
@@ -82,5 +97,6 @@ exports.afterSave = function(io){
         }
     }, function(error){
         console.error("failed to execute DealComment query.", error);
+        Raven.captureException(error)
     });
 }

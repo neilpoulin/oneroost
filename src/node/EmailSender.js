@@ -4,6 +4,7 @@ var Parse = ParseCloud.Parse;
 var TemplateUtil = require("./util/TemplateUtil");
 var SESEmailSender = require("./email/SESEmailSender");
 var EmailRecipient = Parse.Object.extend("EmailRecipient");
+import Raven from "raven"
 Parse.serverURL = envUtil.serverURL;
 
 
@@ -24,6 +25,7 @@ exports.sendTemplate = function( templateName, data, sendTo ){
         }
         catch (e){
             console.log("something went wrong creating or fetching the recipient for ", to, e );
+            Raven.captureException(e)
         }
     } );
 }
@@ -40,7 +42,10 @@ function templateSender( templateName, data ){
             TemplateUtil.renderEmail(templateName, data)
             .then(function(templateResults){
                 sendEmail(templateResults, data, to);
-            }).catch(e => console.error("[" + templateName + "] Failed to send email ", e));
+            }).catch(e => {
+                console.error("[" + templateName + "] Failed to send email ", e)
+                Raven.captureException(e)
+            });
         } else {
             console.log("User has unsubscribed, not sending email", recipient)
         }
@@ -183,6 +188,7 @@ exports.sendPlainEmail = async function({subject, text, html, to}){
         }
         catch( e ){
             console.log("Something went wrong", e);
+            Raven.captureException(e)
             return
         }
     } );
