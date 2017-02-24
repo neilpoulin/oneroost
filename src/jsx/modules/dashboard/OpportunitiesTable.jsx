@@ -34,6 +34,11 @@ const headers = [
         sortable: false,
     },
     {
+        label: "Created",
+        clicable: false,
+        sortable: false,
+    },
+    {
         label: "Budget",
         clickable: false,
         sortable: false,
@@ -215,18 +220,20 @@ const mapStateToProps = (state, ownProps) => {
     let args = {data: allOpportunities.map(opp => {
         let requirementData = {}
         requirementHeadings.map( heading => {
-            let requirement = requirements.find(req => {
+            let requirement = opp.requirements.find(req => {
                 return req.title.trim().toLowerCase() === heading.label.trim().toLowerCase()
             })
             requirementData["\"" + heading.label + "\""] = requirement && requirement.completedDate ? true : false
         })
-
+        const {deal} = opp
         return {
             "company": "\"" + RoostUtil.getRoostDisplayName(opp.deal, currentUser) + "\"",
-            "budget (low)": "\"" + opp.deal.budget.low + "\"",
-            "budget (high)": "\"" + opp.deal.budget.high + "\"",
-            "problem statement": "\"" + opp.deal.dealName + "\"",
-            "last activity": "\"" + RoostUtil.formatDateShort(opp.deal.updatedAt) + "\"",
+            "budget (low)": "\"" + deal.budget.low + "\"",
+            "budget (high)": "\"" + deal.budget.high + "\"",
+            "problem statement": "\"" + deal.dealName + "\"",
+            "last activity": "\"" + RoostUtil.formatDateShort(deal.lastActiveAt || deal.updatedAt) + "\"",
+            "last active user": "\"" + RoostUtil.getFullName(deal.lastActiveUser) + "\"",
+            "created": "\"" + deal.createdAt + "\"",
             ...requirementData,
             "Template Name": opp.deal.template ? "\"" + opp.deal.template.title + "\"" : ""
         }

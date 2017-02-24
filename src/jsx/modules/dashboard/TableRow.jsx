@@ -93,6 +93,9 @@ const TableRow = React.createClass({
                     {RoostUtil.formatDate( deal.lastActiveAt || deal.updatedAt)}
                 </td>
                 <td>
+                    {RoostUtil.formatDurationAsDays(deal.createdAt)}
+                </td>
+                <td>
                     {RoostUtil.getBudgetString(deal, "--")}
                 </td>
                 <td>
