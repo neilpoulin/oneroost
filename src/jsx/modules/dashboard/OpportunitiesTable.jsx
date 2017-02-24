@@ -232,7 +232,7 @@ const mapStateToProps = (state, ownProps) => {
             "budget (high)": "\"" + deal.budget.high + "\"",
             "problem statement": "\"" + deal.dealName + "\"",
             "last activity": "\"" + RoostUtil.formatDateShort(deal.lastActiveAt || deal.updatedAt) + "\"",
-            "last active user": "\"" + RoostUtil.getFullName(deal.lastActiveUser) + "\"",
+            "last active user": "\"" + (deal.lastActiveUser ? RoostUtil.getFullName(deal.lastActiveUser) : "") + "\"",
             "created": "\"" + deal.createdAt + "\"",
             ...requirementData,
             "Template Name": opp.deal.template ? "\"" + opp.deal.template.title + "\"" : ""

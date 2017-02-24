@@ -41,7 +41,7 @@ exports.afterSave = function(){
                     dealName: deal.get("dealName"),
                     modifiedBy: modifiedBy.toJSON(),
                     stepTitle: step.get("title"),
-                    author: author.toJSON(),
+                    author: author ? author.toJSON() : null,
                     incompleteSteps: incompleteSteps,
                     completedDate: step.get("completedDate"),
                     stepStatus: status,
