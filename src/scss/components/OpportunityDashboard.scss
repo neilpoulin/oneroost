@@ -1,3 +1,5 @@
+$archivedFade: 30%;
+
 .OpportunityDashboard{
     .secondaryNav{
         display: flex;
@@ -43,7 +45,13 @@
     .OpportunitiesTable {
         tr{
             &.archived{
-                background: yellow;
+                color: lighten($secondaryColor, $archivedFade);
+                a{
+                    color: lighten($roostOrange, $archivedFade);
+                    &:hover{
+                        color: lighten($roostOrange, $archivedFade - 20);
+                    }
+                }
             }
         }
         td{
