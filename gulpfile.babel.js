@@ -24,7 +24,9 @@ import {paths, bootstrapPaths, fontAwesomePaths, GoogleMaterialColors, reactModa
 
 var devEnvProps = {
     AWS_PROFILE: "oneroost",
-    GA_TRACKING_CODE: "UA-87950724-3"
+    GA_TRACKING_CODE: "UA-87950724-3",
+    STRIPE_PUBLISH_KEY: process.env.STRIPE_PUBLISH_KEY_TEST,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY_TEST,
 }
 
 var sassOpts = {
