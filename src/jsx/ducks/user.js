@@ -20,6 +20,7 @@ const initialState = Map({
     admin: false,
     isLoggedIn: false,
     roostTemplates: Map({}),
+    plan: null,
 });
 
 export default function reducer(state=initialState, action){

@@ -1,11 +1,15 @@
-import React, { PropTypes } from "react"
+import React from "react"
 import PlanWidget from "PlanWidget"
+import {FREE as Plan} from "plans"
 
-const planName = "Free"
-const features = ["Free 1", "Free 2", "Free 3", "free 4 free 4 free 4free 4 free 4 free 4 free 4 free 4"]
 const FreeWidget = React.createClass({
     render () {
-        return <PlanWidget name={planName} features={features} price={0} panelType="warning"/>
+        return <PlanWidget
+            name={Plan.name}
+            features={Plan.features}
+            price={Plan.price}
+            period={Plan.duration}
+            panelType="warning"/>
     }
 })
 

@@ -60,7 +60,7 @@ export const getCurrentUser = function(state){
     let userId = state.user.get("userId")
     let entities = state.entities.toJS()
     const currentUser = userId ? denormalize(userId, User.Schema, entities) : null
-    return this.toJSON(currentUser)
+    return toJSON(currentUser)
 }
 
 export const getFullName = function( parseUser ){
@@ -139,20 +139,20 @@ export const isValidEmail = function(email){
     return re.test(email);
 }
 
-export const isNotCurrentUser = function(user){
-    return !this.isCurrentUser(user);
-}
-
 export const isCurrentUser = function(user){
     if (user){
         let userId = user.objectId || user.id;
         if ( typeof userId === "object" ){
             userId = userId.objectId;
         }
-
+        log.warn("Using Parse.User in method isCurrentUser")
         return Parse.User.current().id === userId
     }
     return false;
+}
+
+export const isNotCurrentUser = function(user){
+    return !isCurrentUser(user);
 }
 
 function getRoostNameForParseUser( deal, displayFor ){
@@ -161,8 +161,8 @@ function getRoostNameForParseUser( deal, displayFor ){
     displayFor = displayFor || this.getCurrentUser();
     let createdBy = deal.get("createdBy");
 
-    let isCreator = this.isCurrentUser(createdBy);
-    let isReadyRoostUser = this.isCurrentUser(readyRoostUser);
+    let isCreator = isCurrentUser(createdBy);
+    let isReadyRoostUser = isCurrentUser(readyRoostUser);
 
     if ( !createdBy ){
         log.warn("There is no created by on the deal object", deal);
@@ -191,8 +191,8 @@ export const getRoostDisplayName = function(deal, displayFor){
     displayFor = displayFor || this.getCurrentUser();
     let createdBy = deal.createdBy;
 
-    let isCreator = this.isCurrentUser(createdBy);
-    let isReadyRoostUser = this.isCurrentUser(readyRoostUser);
+    let isCreator = isCurrentUser(createdBy);
+    let isReadyRoostUser = isCurrentUser(readyRoostUser);
 
     if ( !createdBy ){
         log.warn("There is no created by on the deal object", deal);

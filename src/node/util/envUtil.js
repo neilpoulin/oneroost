@@ -143,7 +143,8 @@ exports.getEnv = function(){
             "applicationId": APP_ID,
             "gaTrackingId": GA_TRACKING_ID,
             "emailTemplates": TemplateUtil.getTemplateNames(),
-            "environment": ENV_NAME
+            "environment": ENV_NAME,
+            "stripePublishKey": STRIPE_PUBLISH_KEY,
         };
 
         var json = JSON.stringify( props );

@@ -7,7 +7,7 @@ const OneRoostModal = React.createClass({
         title: PropTypes.string.isRequired,
         show: PropTypes.bool,
         saveText: PropTypes.string,
-        cancelText: PropTypes.string
+        cancelText: PropTypes.string,
     },
     getInitialState: function(){
         return {
@@ -19,7 +19,7 @@ const OneRoostModal = React.createClass({
         return {
             saveText: "Save",
             cancelText: "Cancel",
-            show: false
+            show: false,
         };
     },
     closeModal: function(){

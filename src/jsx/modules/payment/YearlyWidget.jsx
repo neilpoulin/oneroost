@@ -1,21 +1,23 @@
-import React, { PropTypes } from "react"
+import React, {PropTypes} from "react"
 import PlanWidget, {BEST_VALUE} from "PlanWidget"
-
-
-const features = ["Yearly 1", "yearly 2"]
-const planName = "Yearly"
+import {YEARLY_USER as Plan} from "plans"
 
 const YearlyWidget = React.createClass({
+    propTypes: {
+        showSignUp: PropTypes.bool,
+    },
     render () {
         return <PlanWidget
-            name={planName}
-            features={features}
-            price={150}
-            period="year"
+            name={Plan.name}
+            features={Plan.features}
+            price={Plan.price}
+            period={Plan.period}
             panelType="success"
             showCornerFlash={true}
             cornerFlashType={BEST_VALUE}
-            showFreeTrial={true}/>
+            freeTrial={Plan.freeTrial}
+            stripePlanId={Plan.stripePlanId}
+            />
     }
 })
 
