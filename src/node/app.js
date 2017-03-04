@@ -25,6 +25,7 @@ import TemplateUtil from"./util/TemplateUtil"
 import Documents from "./documents/Documents"
 import ReadyRoost from "./roost/ReadyRoost"
 import BeforeSave from "./triggers/BeforeSave"
+import Subscription from "./subscription/Subscription"
 import AWSXRay from "aws-xray-sdk";
 import compression from "compression";
 import Raven from "raven"
@@ -89,6 +90,7 @@ Notifications.initialize(io);
 Documents.initialize();
 Stakeholders.initialize();
 ReadyRoost.initialize();
+Subscription();
 
 app.use(AWSXRay.express.closeSegment());
 

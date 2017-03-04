@@ -37,6 +37,7 @@ import HelpPage from "help/HelpPage"
 import ReactGA from "react-ga"
 import TermsOfServicePage from "TermsOfServicePage"
 import PrivacyPage from "PrivacyPage"
+import PlansPage from "payment/PlansPage"
 import configureStore from "./store/configureStore"
 import { syncHistoryWithStore } from "react-router-redux"
 Parse.initialize(OneRoost.Config.applicationId);
@@ -131,6 +132,7 @@ render(
                 <Route path="/terms" component={TermsOfServicePage}/>
                 <Route path="/privacy" component={PrivacyPage}/>
                 <Route path="/reporting" component={OpportunityDashboard}/>
+                <Route path="/plans" component={PlansPage}/>
                 <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
                     <IndexRoute component={UserHomePage}/>
                     <Route path="unauthorized" component={Unauthorized}/>

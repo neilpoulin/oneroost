@@ -4,8 +4,8 @@ import RoostNav from "navigation/RoostNav"
 import Logo from "Logo"
 import * as log from "LoggingUtil"
 
-const LoginPage = React.createClass({
-    handleLogoutError: function( user, error ){        
+const RegisterPage = React.createClass({
+    handleLogoutError: function( user, error ){
         log.error( error );
     },
     componentDidMount(){
@@ -24,4 +24,4 @@ const LoginPage = React.createClass({
     }
 })
 
-export default LoginPage
+export default RegisterPage

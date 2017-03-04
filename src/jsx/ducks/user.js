@@ -16,10 +16,12 @@ export const LOGOUT = "oneroost/user/LOGOUT"
 const initialState = Map({
     isLoading: false,
     hasLoaded: false,
-    userId:  null,
+    userId: null,
+    email: null,
     admin: false,
     isLoggedIn: false,
     roostTemplates: Map({}),
+    plan: null,
 });
 
 export default function reducer(state=initialState, action){
@@ -28,19 +30,19 @@ export default function reducer(state=initialState, action){
             var user = action.payload
             state = state.set("userId", user.get("objectId"))
             state = state.set("admin", user.get("admin"))
+            state = state.set("email", user.get("email"))
             break;
         case LOGIN_SUCCESS:
             var user = action.payload
             state = state.set("hasLoaded", true)
             state = state.set("isLoggedIn", true)
             state = state.set("userId", user.get("objectId"))
-            state = state.set("admin", user.get("admin"))
+            state = state.set("admin", user.get("admin") || false)
+            state = state.set("email", user.get("email"))
             break;
         case LOGOUT:
+            state = initialState
             state = state.set("hasLoaded", true)
-            state = state.set("currentUser", null)
-            state = state.set("userId", null)
-            state = state.set("isLoggedIn", false)
             break;
         default:
             break;

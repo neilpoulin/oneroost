@@ -15,6 +15,9 @@ var ENV_NAME = process.env.ENV_NAME || "dev"
 var DOCUMENTS_S3_BUCKET = "oneroost-documents";
 var DOCUMENTS_PATH = "documents"
 var GA_TRACKING_ID = process.env.GA_TRACKING_ID || "UA-87950724-3"
+var STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || "SK_NOT_DEFINED"
+var STRIPE_PUBLISH_KEY = process.env.STRIPE_PUBLISH_KEY || "PK_NOT_DEFINED"
+
 var PUBLIC_SERVER_URL = HOSTNAME + PARSE_MOUNT;
 
 if ( SERVER_URL.trim().indexOf("http:") != 0 )
@@ -43,6 +46,8 @@ console.log("ENV_NAME: " + ENV_NAME);
 console.log("HOSTNAME: " + HOSTNAME);
 console.log("node title: ", process.title);
 console.log("GA Tracking ID", GA_TRACKING_ID);
+console.log("STRIPE_SECRET_KEY: ", "******")
+console.log("STRIPE_PUBLISH_KEY: ", STRIPE_PUBLISH_KEY)
 
 exports.getParseServerUrl = function(){
     return SERVER_URL;
@@ -111,6 +116,14 @@ exports.getGaTrackingId = function(){
     return GA_TRACKING_ID;
 }
 
+exports.getStripeSecretKey = function(){
+    return STRIPE_SECRET_KEY;
+}
+
+exports.getStripePublishKey = function(){
+    return STRIPE_PUBLISH_KEY;
+}
+
 exports.getEmailFromName = function(){
     if ( this.isDev()){
         return "Dev OneRoost"
@@ -130,7 +143,8 @@ exports.getEnv = function(){
             "applicationId": APP_ID,
             "gaTrackingId": GA_TRACKING_ID,
             "emailTemplates": TemplateUtil.getTemplateNames(),
-            "environment": ENV_NAME
+            "environment": ENV_NAME,
+            "stripePublishKey": STRIPE_PUBLISH_KEY,
         };
 
         var json = JSON.stringify( props );

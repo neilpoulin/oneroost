@@ -1,8 +1,10 @@
+import Raven from "raven"
 var ParseCloud = require("parse-cloud-express");
 var moment = require("moment");
 var Parse = ParseCloud.Parse;
 var EmailSender = require("./../EmailSender.js");
 var envUtil = require("./../util/envUtil.js");
+
 
 const DOCS_CONFIG_KEY = "readyRoostDocs";
 const STEPS_CONFIG_KEY = "readyRoostSteps";
@@ -68,6 +70,7 @@ async function processReadyRoostRequest(currentUser, params, response){
     }
     catch(e){
         console.error("Something went wrong setting up the ready roost", e);
+        Raven.captureException(e);
         response.error({error: "Something went wrong setting up the ready roost", params: params});
     }
 }
