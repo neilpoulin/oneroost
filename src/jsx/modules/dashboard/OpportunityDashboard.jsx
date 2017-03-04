@@ -181,7 +181,7 @@ const mapStateToProps = (state, ownProps) => {
         templatesLoading,
         archivedTemplates,
         csvData: dashboard.csvData,
-        currentPlanId: hasAccess,
+        hasAccess,
     }
 }
 
