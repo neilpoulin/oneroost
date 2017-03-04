@@ -31,7 +31,7 @@ const RoostNav = React.createClass({
         var landingPage = <Link to="/" className={"navbar-brand account-link " + (this.props.showHome ? "visible-lg visible-md" : "") }>{chickenSvg}<span className="title">OneRoost</span></Link>;
         var adminLink =<NavLink tag="li" to="/admin" className="">Admin</NavLink>
         let helpLink = <NavLink tag="li" to="/help" className="">Help</NavLink>
-        let plansLink = <NavLink tag="li" to="/plans" className="">Pricing</NavLink>
+        // let plansLink = <NavLink tag="li" to="/plans" className="">Pricing</NavLink>
         var roostsLink = null
         let reportingLink = null
         if ( !isAdmin ){
@@ -84,7 +84,6 @@ const RoostNav = React.createClass({
                     <ul className="nav navbar-nav">
                         {reportingLink}
                         {roostsLink}
-                        {plansLink}
                         {helpLink}
                     </ul>
                     {registerNav}

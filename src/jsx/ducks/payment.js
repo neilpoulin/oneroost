@@ -12,12 +12,15 @@ export const CREATE_CUSTOMER_REQUEST = "oneroost/payment/CREATE_CUSTOMER_REQUEST
 export const CREATE_CUSTOMER_SUCCESS = "oneroost/payment/CREATE_CUSTOMER_SUCCESS"
 export const CREATE_CUSTOMER_ERROR = "oneroost/payment/CREATE_CUSTOMER_ERROR"
 
+export const CREATE_SUBSCRIPTION_REQUEST = "oneroost/payment/CREATE_SUBSCRIPTION_REQUEST"
+export const CREATE_SUBSCRIPTION_SUCCESS = "oneroost/payment/CREATE_SUBSCRIPTION_SUCCESS"
+export const CREATE_SUBSCRIPTION_ERROR = "oneroost/payment/CREATE_SUBSCRIPTION_ERROR"
+
 const initialState = Map({
     currentPlanId: null,
     selectedPlanId: null,
     isLoading: false,
     customerId: null,
-    hasPaid: false,
     couponCode: null
 });
 
@@ -41,6 +44,15 @@ export default function reducer(state=initialState, action){
             state = state.set("isLoading", false);
             break;
         case CREATE_CUSTOMER_ERROR:
+            state = state.set("isLoading", false);
+            break;
+        case CREATE_SUBSCRIPTION_REQUEST:
+            state = state.set("isLoading", true);
+            break;
+        case CREATE_SUBSCRIPTION_SUCCESS:
+            state = state.set("isLoading", false);
+            break;
+        case CREATE_SUBSCRIPTION_ERROR:
             state = state.set("isLoading", false);
             break;
         default:
@@ -97,11 +109,18 @@ export const getCustomerId = () => (dispatch, getState) =>{
 
 export const createSubscription = (planId, stripeToken, customerId) => (dispatch, getState) => {
     log.info("creating plan with planId = " + planId + ", stripeToken = " + stripeToken + ", customerId = " + customerId)
+    dispatch({
+        type: CREATE_SUBSCRIPTION_REQUEST
+    });
     Parse.Cloud.run("createSubscription", {
         planId,
         stripeToken,
     }).then(response => {
         log.info("success!", response)
+        dispatch({
+            type: CREATE_SUBSCRIPTION_SUCCESS,
+            payload: response.subscription
+        })
         dispatch(saveUser({
             stripePlanId: planId,
             stripeSubscriptionId: response.subscriptionId,
@@ -109,6 +128,9 @@ export const createSubscription = (planId, stripeToken, customerId) => (dispatch
         }))
     }).catch(error => {
         log.error(error)
+        dispatch({
+            type: CREATE_SUBSCRIPTION_ERROR
+        })
     })
 }
 

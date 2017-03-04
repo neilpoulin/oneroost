@@ -67,6 +67,7 @@ const PlanWidget = React.createClass({
             isSelected,
             isCurrentPlan,
             isLoggedIn,
+            email,
             canSelectPlan} = this.props
             let priceLabel = <span>${price}<span className="subscript">/{period.toLowerCase()}</span></span>
             if ( price === 0 ){
@@ -100,6 +101,7 @@ const PlanWidget = React.createClass({
                 allowRememberMe
                 token={this.onToken}
                 reconfigureOnUpdate={false}
+                email={email}
                 >
                 <button className="btn btn-primary">
                     Choose {name}
@@ -167,11 +169,14 @@ const PlanWidget = React.createClass({
         const isSelected = payment.selectedPlanId == ownProps.stripePlanId && ownProps.stripePlanId != null
         const isCurrentPlan = payment.currentPlanId == ownProps.stripePlanId;
         const isLoggedIn = user.isLoggedIn
+        const email = user.email
+
         return {
             isSelected,
             isCurrentPlan,
             canSelectPlan: !payment.currentPlanId && isLoggedIn,
             isLoggedIn,
+            email,
         }
     }
 

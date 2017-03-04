@@ -15,6 +15,7 @@ import {loadTemplates} from "ducks/userTemplates"
 import * as Template from "models/Template"
 import * as Deal from "models/Deal"
 import {denormalize} from "normalizr"
+import DashboardPaywall from "DashboardPaywall"
 
 const OpportunityDashboard = React.createClass({
     propTypes: {
@@ -45,9 +46,13 @@ const OpportunityDashboard = React.createClass({
             doSearch,
             csvData,
             setExportCsvData,
+            hasAccess,
             } = this.props
         let contents = null
-        if ( isLoading ){
+        if (!hasAccess){
+            return <DashboardPaywall/>
+        }
+        else if ( isLoading ){
             contents = <LoadingIndicator message="Loading Dashboard" size="large"/>
         }
         else if ( !showTable ){
@@ -118,6 +123,10 @@ const mapStateToProps = (state, ownProps) => {
     let dashboard = state.dashboard.toJS()
     let currentUser = RoostUtil.getCurrentUser(state)
     const templatesByUser = state.templatesByUser.toJS()
+    const payment = state.payment.toJS()
+
+    let hasAccess = payment.currentPlanId || currentUser.admin
+
     let userId = currentUser.objectId
     let myOpportunities = state.opportunitiesByUser.get(userId)
     const entities = state.entities.toJS()
@@ -144,7 +153,6 @@ const mapStateToProps = (state, ownProps) => {
     }
 
     const myTemplates = templatesByUser[userId]
-
     let templatesLoading = false;
 
     let archivedTemplates = []
@@ -173,6 +181,7 @@ const mapStateToProps = (state, ownProps) => {
         templatesLoading,
         archivedTemplates,
         csvData: dashboard.csvData,
+        currentPlanId: hasAccess,
     }
 }
 
