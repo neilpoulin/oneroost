@@ -57,7 +57,12 @@ export const getCurrentUser = function(state){
         log.warn("No 'state' passed in to RoostUtil.getCurrentUser()... using Parse.User.current() ")
         return Parse.User.current();
     }
-    let userId = state.user.get("userId")
+    let stateUser = state.user
+    if (Iterable.isIterable(state.user)){
+        stateUser = state.user.toJS()
+    }
+
+    let userId = stateUser.userId
     let entities = state.entities.toJS()
     const currentUser = userId ? denormalize(userId, User.Schema, entities) : null
     return this.toJSON(currentUser)

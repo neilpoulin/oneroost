@@ -82,8 +82,8 @@ const UserHomePage = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps) => {
-    const currentUser = Parse.User.current()
-    let userId = currentUser.id;
+    const currentUser = RoostUtil.getCurrentUser(state)
+    let userId = currentUser.objectId;
     let entities = state.entities.toJS()
     let myOpportunities = state.opportunitiesByUser.get(userId)
     let deals = []
@@ -100,7 +100,7 @@ const mapStateToProps = (state, ownProps) => {
         archivedDeals: archivedDeals,
         isLoading: isLoading,
         userId,
-        currentUser: RoostUtil.getCurrentUser(state)
+        currentUser,
     }
 }
 
