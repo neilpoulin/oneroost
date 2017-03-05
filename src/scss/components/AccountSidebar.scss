@@ -76,7 +76,6 @@ $hoverTextColor: $activeColor;
         border-top: $borderThin;
     }
     .AccountSidebarItem, .UserHomeListItem{
-        font-weight: 400;
         a{
             padding: 10px 15px 10px 5px;
             text-decoration: none;
@@ -107,6 +106,7 @@ $hoverTextColor: $activeColor;
         .dealName{
             @extend .lead;
             margin-bottom: 0px;
+            font-weight: 400;
         }
 
     }
