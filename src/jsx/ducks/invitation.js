@@ -187,6 +187,7 @@ export const submitInviteAccept = (stakeholder, password) => (dispatch, getState
     const userId = user.objectId
     dispatch(acceptInviteRequest(stakeholder.objectId))
     return new Promise((resolve, reject) => {
+        // TODO: don't nest these promises
         if ( user.passwordChangeRequired && !isLoggedIn ){
             dispatch(createPassword(user, password, true)).then(() => {
                 dispatch(logInAsUser(userId, password)).then(() => {

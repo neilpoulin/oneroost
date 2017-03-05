@@ -61,7 +61,9 @@ const LoginComponent = React.createClass({
             showTermsOfService: true,
             success: function(user){
                 const { location, router , afterLoginPath} = this;
-                if (location && location.state && location.state.nextPathname && window.location.pathname != location.state.nextPathname) {
+                if ( location && location.query.forward){
+                    router.replace(location.query.forward)
+                } else if (location && location.state && location.state.nextPathname && window.location.pathname != location.state.nextPathname) {
                     router.replace(location.state.nextPathname)
                 } else {
                     router.replace(afterLoginPath)

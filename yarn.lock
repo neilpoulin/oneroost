@@ -1158,7 +1158,7 @@ block-stream@*:
   dependencies:
     inherits "~2.0.0"
 
-bluebird@^2.9.30:
+bluebird@^2.10.2, bluebird@^2.9.30:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-2.11.0.tgz#534b9033c022c9579c56ba3b3e5a5caafbb650e1"
 
@@ -4759,7 +4759,7 @@ lodash.isobject@~2.4.1:
   dependencies:
     lodash._objecttypes "~2.4.1"
 
-lodash.isplainobject@^4.0.4:
+lodash.isplainobject@^4.0.4, lodash.isplainobject@^4.0.6:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz#7c526a52d89b45c45cc690b88163be0497f550cb"
 
@@ -6249,7 +6249,7 @@ qs@2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/qs/-/qs-2.2.4.tgz#2e9fbcd34b540e3421c924ecd01e90aa975319c8"
 
-qs@2.4.2:
+qs@2.4.2, qs@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-2.4.2.tgz#f7ce788e5777df0b5010da7f7c4e73ba32470f5a"
 
@@ -6499,6 +6499,10 @@ react-select@^1.0.0-beta12:
   dependencies:
     classnames "^2.2.4"
     react-input-autosize "^1.1.0"
+
+react-stripe-checkout@^2.2.5:
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/react-stripe-checkout/-/react-stripe-checkout-2.2.5.tgz#1369fb44f522cfa21ba451d6be97d1a2b86ff84a"
 
 react-textarea-autosize@^4.0.2:
   version "4.0.5"
@@ -7542,6 +7546,15 @@ strip-indent@^1.0.1:
 strip-json-comments@~1.0.1, strip-json-comments@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-1.0.4.tgz#1e15fbcac97d3ee99bf2d73b4c656b082bbafb91"
+
+stripe@^4.15.0:
+  version "4.15.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-4.15.0.tgz#b97beb4a2c33f7347b9563e2a197203e6e23db63"
+  dependencies:
+    bluebird "^2.10.2"
+    lodash.isplainobject "^4.0.6"
+    object-assign "^4.1.0"
+    qs "^2.4.2"
 
 strong-data-uri@^1.0.0:
   version "1.0.4"

@@ -16,7 +16,6 @@ const TableRow = React.createClass({
         requirementHeadings: PropTypes.arrayOf(PropTypes.object).isRequired
     },
     render () {
-
         const {currentUser,
             opportunity,
             showRequirements,

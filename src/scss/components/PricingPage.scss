@@ -1,0 +1,24 @@
+.PricingPage{
+    .heading{
+        text-align: center;
+    }
+    .plans{
+        display: flex;
+        justify-content: center;
+        > .PlanWidget{
+            margin: 25px;            
+        }
+    }
+}
+
+
+@media (max-width: $screen-sm-min) {
+    .PricingPage{
+        .plans{
+            flex-direction: column;
+            > .PlanWidget{
+                flex-basis: auto;
+            }
+        }
+    }
+}
