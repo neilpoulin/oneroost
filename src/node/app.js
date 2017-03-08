@@ -28,9 +28,16 @@ import BeforeSave from "./triggers/BeforeSave"
 import Subscription from "./subscription/Subscription"
 import AWSXRay from "aws-xray-sdk";
 import compression from "compression";
+import version from "./version.json";
 import Raven from "raven"
 Raven.config("https://50020b1e8db94c39be96db010cdbba4f:0f4123892fd44bfd92b85a003645fdc3@sentry.io/128546",{
-    environment: envUtil.getEnvName()
+    environment: envUtil.getEnvName(),
+    release: version.hash,
+    tags: {
+        git_commit: version.hash,
+        git_tag: version.version,
+        platform: "node"
+    }
 }).install();
 AWSXRay.setDefaultName(envUtil.getEnvName());
 AWSXRay.config([AWSXRay.plugins.EC2]);
@@ -38,7 +45,6 @@ AWSXRay.config([AWSXRay.plugins.ElasticBeanstalk]);
 
 var app = express();
 app.use(AWSXRay.express.openSegment());
-
 var server = http.Server(app);
 var io = socket(server);
 app.engine("ejs", ejs.__express);

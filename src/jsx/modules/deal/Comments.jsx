@@ -133,7 +133,7 @@ const Comments = React.createClass({
     render: function(){
         const component = this;
         const {deal} = this.props;
-        const {comments, commentLimit, lastFetchCount, additionalComments, nextNextStepId} = this.props;
+        const {comments, commentLimit, lastFetchCount, additionalComments, nextNextStepId, showOnboarding} = this.props;
         var commentsSection = null;
         if (this.props.isLoading)
         {
@@ -156,24 +156,25 @@ const Comments = React.createClass({
             allComments = allComments.reverse();
             var items = [];
             var previousComment = null;
-
-            items.push(<div>
-                <h3>Getting Started</h3>
-                <div className="lead">
-                    Complete the steps below
-                </div>
-                <ul>
-                    <li>
-                        <Link to={`/roosts/${deal.objectId}/requirements`}>Complete all requirements</Link>
-                    </li>
-                    <li>
-                        <Link to={`/roosts/${deal.objectId}/steps` + (nextNextStepId ? `/${nextNextStepId}` : "")}>Review Next Steps</Link>
-                    </li>
-                    <li>
-                        <Link to={`/roosts/${deal.objectId}/participants`}>Submit Proposal</Link>
-                    </li>
-                </ul>
-            </div>)
+            if (showOnboarding){
+                items.push(<div key="getting_started">
+                    <h3>Getting Started</h3>
+                    <div className="lead">
+                        Complete the steps below
+                    </div>
+                    <ul>
+                        <li>
+                            <Link to={`/roosts/${deal.objectId}/requirements`}>Complete all requirements</Link>
+                        </li>
+                        <li>
+                            <Link to={`/roosts/${deal.objectId}/steps` + (nextNextStepId ? `/${nextNextStepId}` : "")}>Review Next Steps</Link>
+                        </li>
+                        <li>
+                            <Link to={`/roosts/${deal.objectId}/participants`}>Submit Proposal</Link>
+                        </li>
+                    </ul>
+                </div>)
+            }
 
             allComments.forEach(function(comment, i){
                 var currentDate = comment.createdAt
@@ -257,6 +258,7 @@ const mapStateToProps = (immutableState, ownProps) => {
         commentLimit,
         lastFetchCount,
         nextNextStepId,
+        showOnboarding: deal.readyRoostUser && !deal.readyRoostSubmitted
     }).toJS()
 }
 

@@ -3,15 +3,22 @@
 <script type="text/javascript">
     window.OneRoost = {};
     OneRoost.Config = <%-env%>;
-    var ravenCfg = {
-        environment: OneRoost.Config.environment,
+
+    var env = OneRoost.Config.environment;
+    if ( env.indexOf("prod") != -1 ){
+        env = "prod"
     }
-    console.log("Version from config.ejs", oneroostVersion)    
+
+    var ravenCfg = {
+        environment: env,
+    }
+    console.log("Version from config.ejs", oneroostVersion)
     if (oneroostVersion) {
         ravenCfg.release = oneroostVersion.hash;
         ravenCfg.tags = {
             git_commit: oneroostVersion.hash,
-            git_tag: oneroostVersion.version
+            git_tag: oneroostVersion.version,
+            platform: "browser"
         }
 
     }

@@ -1,5 +1,5 @@
 var TemplateUtil = require("./TemplateUtil")
-
+var version = require("./../version.json")
 var appEnv = null;
 
 var APP_ID = process.env.PARSE_APP_ID || "TFy4TyyJJGpG7gnOUWzOZNtMcCkqQlYTfa4mJWQq";
@@ -48,6 +48,8 @@ console.log("node title: ", process.title);
 console.log("GA Tracking ID", GA_TRACKING_ID);
 console.log("STRIPE_SECRET_KEY: ", "******")
 console.log("STRIPE_PUBLISH_KEY: ", STRIPE_PUBLISH_KEY)
+console.log("GIT_HASH", version.hash)
+console.log("GIT_TAG", version.version)
 
 exports.getParseServerUrl = function(){
     return SERVER_URL;
@@ -134,6 +136,10 @@ exports.getEmailFromName = function(){
     else{
         return "OneRoost Notifications"
     }
+}
+
+exports.getVersion = function(){
+    return version;
 }
 
 exports.getEnv = function(){

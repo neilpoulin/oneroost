@@ -36,6 +36,8 @@ export const zipPaths = [
 ]
 
 export const paths = {
+    src_jsx: "src/jsx",
+    src_node: "src/node",
     src: {
         root: "./src",
         webpackModules: "./src/jsx",

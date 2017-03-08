@@ -318,7 +318,7 @@ function string_src(filename, string) {
 }
 
 
-gulp.task("version", ["version:src", "version:bundle"])
+gulp.task("version", ["version:src", "version:bundle", "version:node"])
 
 function getHashFromAwsPipeline(){
     let pipeline = require("./pipeline.json");
@@ -345,7 +345,7 @@ gulp.task("version:src", function () {
             .pipe(gulp.dest(paths.dest.frontendjs))
 
         return string_src("version.json", versionJSON)
-            .pipe(gulp.dest("src/jsx"))
+            .pipe(gulp.dest(paths.src_jsx))
     });
 })
 
@@ -362,6 +362,26 @@ gulp.task("version:bundle", function(){
         let versionJSON = JSON.stringify(version)
         return string_src("version.js", "var oneroostVersion=" + versionJSON)
             .pipe(gulp.dest(paths.dest.frontendjs))
+    });
+})
+
+
+gulp.task("version:node", function(){
+    var pkg = require("./package.json")
+    let version = {}
+    git.revParse({args:"HEAD"}, function (err, hash) {
+        // version.hash = hash
+        // if ( !hash ){
+            version.hash = getHashFromAwsPipeline()
+        // }
+        version.version = pkg.version
+        let versionJSON = JSON.stringify(version)
+        gutil.log("version results: src", version)
+        string_src("version.js", "var oneroostVersion=" + versionJSON)
+            .pipe(gulp.dest(paths.dest.frontendjs))
+
+        return string_src("version.json", versionJSON)
+            .pipe(gulp.dest(paths.src_node))
     });
 })
 
