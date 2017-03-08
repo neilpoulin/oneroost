@@ -21,7 +21,7 @@ const initialState = Map({
     selectedPlanId: null,
     isLoading: false,
     customerId: null,
-    couponCode: null
+    couponCode: null,
 });
 
 export default function reducer(state=initialState, action){

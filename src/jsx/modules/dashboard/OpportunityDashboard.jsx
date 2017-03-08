@@ -47,6 +47,7 @@ const OpportunityDashboard = React.createClass({
             csvData,
             setExportCsvData,
             hasAccess,
+            setTemplateId,
             } = this.props
         let contents = null
         if (!hasAccess){
@@ -83,7 +84,7 @@ const OpportunityDashboard = React.createClass({
 
         if ( templates ){
             templateSelector =
-            <select className="TemplateSelector" onChange={e => this.props.setTemplateId(e.target.value)} value={selectedTemplateId || ""}>
+            <select className="TemplateSelector" onChange={e => {setTemplateId(e.target.value)}} value={selectedTemplateId || ""}>
                 <option value="">-- Show All --</option>
                 {templates.map((template, i) => {
                     return <option key={"template_selector_" + template.objectId + "_" + i} value={template.objectId} >{template.title}</option>
@@ -124,9 +125,12 @@ const mapStateToProps = (state, ownProps) => {
     let currentUser = RoostUtil.getCurrentUser(state)
     const templatesByUser = state.templatesByUser.toJS()
     const payment = state.payment.toJS()
+    const config = state.config.toJS()
 
     let hasAccess = payment.currentPlanId || currentUser.admin
-
+    if (!config.paymentEnabled){
+        hasAccess = true
+    }
     let userId = currentUser.objectId
     let myOpportunities = state.opportunitiesByUser.get(userId)
     const entities = state.entities.toJS()
@@ -173,7 +177,7 @@ const mapStateToProps = (state, ownProps) => {
         showTable,
         currentUser,
         userId,
-        isLoading,
+        isLoading: isLoading || !currentUser,
         showArchived: dashboard.showArchived,
         selectedTemplateId,
         hasArchivedDeals,

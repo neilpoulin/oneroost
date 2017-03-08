@@ -233,7 +233,7 @@ gulp.task("inspect", function () {
 }));
 });
 
-gulp.task("start:prod", ["watch:prod"], function(){
+gulp.task("start:prod", ["version", "watch:prod"], function(){
     // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
     nodemon({
         script: "main.js",

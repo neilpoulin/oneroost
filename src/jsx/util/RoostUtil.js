@@ -144,30 +144,38 @@ export const isValidEmail = function(email){
     return re.test(email);
 }
 
-export const isCurrentUser = function(user){
+export const isCurrentUser = function(user, currentUser){
     if (user){
         let userId = user.objectId || user.id;
         if ( typeof userId === "object" ){
             userId = userId.objectId;
         }
-        log.warn("Using Parse.User in method isCurrentUser")
-        return Parse.User.current().id === userId
+
+        let currentUserId = null
+        if (!currentUser){
+            log.warn("Using Parse.User in method isCurrentUser")
+            currentUserId = Parse.User.current().id
+        } else {
+            currentUserId = currentUser.objectId || currentUser.userId
+        }
+        return currentUserId === userId
     }
     return false;
 }
 
-export const isNotCurrentUser = function(user){
-    return !isCurrentUser(user);
+export const isNotCurrentUser = function(user, currentUser){
+    return !isCurrentUser(user, currentUser);
 }
 
-function getRoostNameForParseUser( deal, displayFor ){
+function getRoostNameForParseUser( deal, displayFor, currentUser ){
+    log.warn("Using getRoostNameForParseUser")
     let readyRoostUser = deal.get("readyRoostUser");
     let account = deal.get("account");
-    displayFor = displayFor || this.getCurrentUser();
+    displayFor = displayFor || getCurrentUser();
     let createdBy = deal.get("createdBy");
 
-    let isCreator = isCurrentUser(createdBy);
-    let isReadyRoostUser = isCurrentUser(readyRoostUser);
+    let isCreator = isCurrentUser(createdBy, currentUser);
+    let isReadyRoostUser = isCurrentUser(readyRoostUser, currentUser);
 
     if ( !createdBy ){
         log.warn("There is no created by on the deal object", deal);
@@ -188,16 +196,16 @@ function getRoostNameForParseUser( deal, displayFor ){
 export const getRoostDisplayName = function(deal, displayFor){
     if (deal instanceof Parse.Object || Map.isMap(deal)){
         // throw "Attempting to get roost name from a non parse object", deal;
-        return getRoostNameForParseUser(deal, displayFor)
+        return getRoostNameForParseUser(deal, displayFor, displayFor)
     }
 
     let readyRoostUser = deal.readyRoostUser;
     let account = deal.account;
-    displayFor = displayFor || this.getCurrentUser();
+    displayFor = displayFor || getCurrentUser();
     let createdBy = deal.createdBy;
 
-    let isCreator = isCurrentUser(createdBy);
-    let isReadyRoostUser = isCurrentUser(readyRoostUser);
+    let isCreator = createdBy && createdBy.objectId == displayFor.objectId
+    let isReadyRoostUser = readyRoostUser && readyRoostUser.objectId == displayFor.objectId
 
     if ( !createdBy ){
         log.warn("There is no created by on the deal object", deal);

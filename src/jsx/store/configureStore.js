@@ -4,6 +4,7 @@ import thunkMiddleware from "redux-thunk"
 import logger from "middleware/logger"
 import immutableParse from "middleware/immutable-parse"
 import {loadCurrentUser} from "ducks/user"
+import {loadConfig} from "ducks/config"
 import {getCurrentLogLevel, DEBUG} from "LoggingUtil"
 
 const configureStore = preloadedState => {
@@ -14,6 +15,7 @@ const configureStore = preloadedState => {
     }
     const store = createStore(reducers, composeEnhancers(applyMiddleware(...middlewares)));
     store.dispatch(loadCurrentUser())
+    store.dispatch(loadConfig())
     return store
 }
 

@@ -67,6 +67,7 @@ const OpportunitiesTable = React.createClass({
         currentUser: PropTypes.object.isRequired,
         userId: PropTypes.string.isRequired,
         exportCsvData: PropTypes.func.isRequired,
+        isLoading: PropTypes.bool.isRequired,
     },
     getDefaultProps() {
         return {
@@ -87,9 +88,14 @@ const OpportunitiesTable = React.createClass({
         }
         const dealIds = opportunities.map(({deal}) => deal.objectId)
         this.props.loadNextSteps(dealIds)
+
+        nextProps.exportCsvData(nextProps.csvData)
     },
     render () {
-        const {opportunities, currentUser, headings, requirementHeadings, showRequirements} = this.props
+        const {opportunities, currentUser, headings, requirementHeadings, showRequirements, isLoading} = this.props
+        if (isLoading){
+            return null
+        }
         return (
             <table className="table OpportunitiesTable">
                 <TableHeader columns={headings} />
@@ -114,10 +120,10 @@ const mapStateToProps = (state, ownProps) => {
     let deals = []
     let archivedDeals = []
     let query = dashboard.searchTerm
-    // let isLoading = true
+    let isLoading = true
     if ( myOpportunities ){
         myOpportunities = myOpportunities.toJS()
-        // isLoading = myOpportunities.isLoading;
+        isLoading = myOpportunities.isLoading;
         deals = denormalize( myOpportunities.deals, [Deal.Schema], entities)
         archivedDeals = dashboard.showArchived ? denormalize( myOpportunities.archivedDeals, [Deal.Schema], entities) : []
     }
@@ -217,30 +223,32 @@ const mapStateToProps = (state, ownProps) => {
         })
     }
 
-    let args = {data: allOpportunities.map(opp => {
-        let requirementData = {}
-        requirementHeadings.map( heading => {
-            let requirement = opp.requirements.find(req => {
-                return req.title.trim().toLowerCase() === heading.label.trim().toLowerCase()
+    let args = []
+    if (currentUser){
+        args = {data: allOpportunities.map(opp => {
+            let requirementData = {}
+            requirementHeadings.map( heading => {
+                let requirement = opp.requirements.find(req => {
+                    return req.title.trim().toLowerCase() === heading.label.trim().toLowerCase()
+                })
+                requirementData["\"" + heading.label + "\""] = requirement && requirement.completedDate ? true : false
             })
-            requirementData["\"" + heading.label + "\""] = requirement && requirement.completedDate ? true : false
-        })
-        const {deal} = opp
-        return {
-            "company": "\"" + RoostUtil.getRoostDisplayName(opp.deal, currentUser) + "\"",
-            "budget (low)": "\"" + deal.budget.low + "\"",
-            "budget (high)": "\"" + deal.budget.high + "\"",
-            "problem statement": "\"" + deal.dealName + "\"",
-            "last activity": "\"" + RoostUtil.formatDateShort(deal.lastActiveAt || deal.updatedAt) + "\"",
-            "last active user": "\"" + (deal.lastActiveUser ? RoostUtil.getFullName(deal.lastActiveUser) : "") + "\"",
-            "created": "\"" + deal.createdAt + "\"",
-            ...requirementData,
-            "Template Name": opp.deal.template ? "\"" + opp.deal.template.title + "\"" : ""
-        }
-    })}
-    let data = convertArrayOfObjectsToCSV(args)
+            const {deal} = opp
+            return {
+                "company": "\"" + RoostUtil.getRoostDisplayName(opp.deal, currentUser) + "\"",
+                "budget (low)": "\"" + deal.budget.low + "\"",
+                "budget (high)": "\"" + deal.budget.high + "\"",
+                "problem statement": "\"" + deal.dealName + "\"",
+                "last activity": "\"" + RoostUtil.formatDateShort(deal.lastActiveAt || deal.updatedAt) + "\"",
+                "last active user": "\"" + (deal.lastActiveUser ? RoostUtil.getFullName(deal.lastActiveUser) : "") + "\"",
+                "created": "\"" + deal.createdAt + "\"",
+                ...requirementData,
+                "Template Name": opp.deal.template ? "\"" + opp.deal.template.title + "\"" : ""
+            }
+        })}
+    }
 
-    ownProps.exportCsvData(data)
+    let data = convertArrayOfObjectsToCSV(args)
 
     return {
         opportunities: allOpportunities,
@@ -249,6 +257,8 @@ const mapStateToProps = (state, ownProps) => {
         headings,
         requirementHeadings,
         showRequirements,
+        csvData: data,
+        isLoading: isLoading || !currentUser
     }
 }
 
