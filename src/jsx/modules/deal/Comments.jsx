@@ -13,6 +13,7 @@ import {denormalize} from "normalizr"
 import * as Comment from "models/DealComment"
 import {loadComments, subscribeComments} from "ducks/roost/comments"
 import * as log from "LoggingUtil"
+import {Link} from "react-router"
 
 const Comments = React.createClass({
     propTypes: {
@@ -132,7 +133,7 @@ const Comments = React.createClass({
     render: function(){
         const component = this;
         const {deal} = this.props;
-        const {comments, commentLimit, lastFetchCount, additionalComments} = this.props;
+        const {comments, commentLimit, lastFetchCount, additionalComments, nextNextStepId} = this.props;
         var commentsSection = null;
         if (this.props.isLoading)
         {
@@ -155,6 +156,25 @@ const Comments = React.createClass({
             allComments = allComments.reverse();
             var items = [];
             var previousComment = null;
+
+            items.push(<div>
+                <h3>Getting Started</h3>
+                <div className="lead">
+                    Complete the steps below
+                </div>
+                <ul>
+                    <li>
+                        <Link to={`/roosts/${deal.objectId}/requirements`}>Complete all requirements</Link>
+                    </li>
+                    <li>
+                        <Link to={`/roosts/${deal.objectId}/steps` + (nextNextStepId ? `/${nextNextStepId}` : "")}>Review Next Steps</Link>
+                    </li>
+                    <li>
+                        <Link to={`/roosts/${deal.objectId}/participants`}>Submit Proposal</Link>
+                    </li>
+                </ul>
+            </div>)
+
             allComments.forEach(function(comment, i){
                 var currentDate = comment.createdAt
                 var previousDate = previousComment != null ? previousComment.createdAt : null;
@@ -228,14 +248,15 @@ const mapStateToProps = (immutableState, ownProps) => {
     const {ids, commentLimit, lastFetchCount, isLoading} = roost.comments
     const comments = denormalize(ids, [Comment.Schema], entities)
     const additionalComments = []
-
+    const nextNextStepId = roost.nextSteps.length > 0 ? roost.nextSteps.ids[0] : null
     return Map({
         isLoading,
         dealId,
         comments,
         additionalComments,
         commentLimit,
-        lastFetchCount
+        lastFetchCount,
+        nextNextStepId,
     }).toJS()
 }
 

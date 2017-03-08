@@ -75,7 +75,7 @@ const Onboarding = withRouter( React.createClass({
                   category: "ReadyRoost",
                   action: "Created ReadyRoost"
                 });
-            self.props.router.replace("/roosts/" + (result.roost.objectId || result.roost.id));
+            self.props.router.replace("/roosts/" + (result.roost.objectId || result.roost.id) + "/requirements");
         },
         function(error){
             log.error("can not create roost, already have one for this user", error);

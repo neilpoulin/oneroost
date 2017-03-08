@@ -52,7 +52,7 @@ const Stakeholder = React.createClass({
         if ( stakeholder.readyRoostApprover && !stakeholder.inviteAccepted && !deal.readyRoostSubmitted ){
             actionButton =
             <button onClick={this.submitRoost} className="btn btn-primary">
-                <i className="fa fa-check"></i> Submit Ready Roost
+                <i className="fa fa-check"></i> Submit Opportunity
             </button>;
         }
         else if (stakeholder.readyRoostApprover && deal.readyRoostSubmitted && !stakeholder.inviteAccepted ){
