@@ -1,5 +1,5 @@
 import reducers from "reducers"
-import { createStore, applyMiddleware } from "redux"
+import { createStore, applyMiddleware, compose } from "redux"
 import thunkMiddleware from "redux-thunk"
 import logger from "middleware/logger"
 import immutableParse from "middleware/immutable-parse"
@@ -8,15 +8,11 @@ import {getCurrentLogLevel, DEBUG} from "LoggingUtil"
 
 const configureStore = preloadedState => {
     let middlewares = [thunkMiddleware, immutableParse]
+    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
     if ( getCurrentLogLevel() <= DEBUG ){
         middlewares.push(logger)
     }
-    const store = createStore(
-        reducers,
-        applyMiddleware(
-            ...middlewares
-        )
-    );
+    const store = createStore(reducers, composeEnhancers(applyMiddleware(...middlewares)));
     store.dispatch(loadCurrentUser())
     return store
 }

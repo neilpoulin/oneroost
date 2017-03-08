@@ -248,7 +248,7 @@ const mapStateToProps = (immutableState, ownProps) => {
     const {ids, commentLimit, lastFetchCount, isLoading} = roost.comments
     const comments = denormalize(ids, [Comment.Schema], entities)
     const additionalComments = []
-    const nextNextStepId = roost.nextSteps.length > 0 ? roost.nextSteps.ids[0] : null
+    const nextNextStepId = roost.nextSteps.ids.length > 0 ? roost.nextSteps.ids[0] : null
     return Map({
         isLoading,
         dealId,
