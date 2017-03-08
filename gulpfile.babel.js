@@ -122,7 +122,7 @@ gulp.task("transpile:node", ["clean:node"], function(){
     .pipe(gulp.dest(paths.build.node));
 });
 
-gulp.task("move:cloud", ["clean:node", "transpile:node", "sass:node", "fonts:node"], function(){
+gulp.task("move:cloud", ["clean:node", "transpile:node", "sass:node", "fonts:node", "version:node"], function(){
     gulp.src(paths.build.node + "/**/*")
     .pipe(gulp.dest(paths.dest.cloud));
 });
@@ -198,7 +198,7 @@ gulp.task("set-prod-node-env", function() {
 gulp.task("build:node", ["clean:node", "transpile:node", "sass:node", "fonts:node"]);
 gulp.task("build:node-noclean", ["transpile:node", "sass:node", "fonts:node"]);
 gulp.task("build:cloud-dev", ["build:node-noclean", "move:cloud"]);
-gulp.task("build:cloud", ["build:node", "sass:node", "fonts:node", "move:cloud"]);
+gulp.task("build:cloud", ["build:node", "sass:node", "fonts:node", "version:node", "move:cloud"]);
 gulp.task("compress", ["css:compress"]);
 gulp.task("build:frontend", ["compress","bundle", "sass", "fonts", "lint"]);
 gulp.task("build:all", ["compress","bundle:prod", "sass", "fonts", "build:cloud", "set-prod-node-env"]);
@@ -370,10 +370,10 @@ gulp.task("version:node", function(){
     var pkg = require("./package.json")
     let version = {}
     git.revParse({args:"HEAD"}, function (err, hash) {
-        // version.hash = hash
-        // if ( !hash ){
+        version.hash = hash
+        if ( !hash ){
             version.hash = getHashFromAwsPipeline()
-        // }
+        }
         version.version = pkg.version
         let versionJSON = JSON.stringify(version)
         gutil.log("version results: src", version)
