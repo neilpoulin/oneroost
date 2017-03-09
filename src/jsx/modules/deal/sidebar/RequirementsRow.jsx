@@ -29,8 +29,8 @@ const RequirementsRow = React.createClass({
 
         let action = null
         if (navLink){
-            action = <NavLink tag="span" to={getUrl(navLink, dealId)} className="btn btn-outline-primary">
-                {navLink.text || `go to ${navLink.type}`}
+            action = <NavLink tag="span" to={getUrl(navLink, dealId)} linkClassName="btn btn-outline-secondary btn-sm">
+                {navLink.text || `Go to ${navLink.type}`}
             </NavLink>
         }
         return (

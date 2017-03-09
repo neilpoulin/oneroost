@@ -113,6 +113,7 @@ function createRequirements(profileUser, roost, template){
             onboarding: true,
             createdBy: profileUser,
             modifiedBy: profileUser,
+            navLink: req.navLink,
             title: req.title,
             description: req.description,
             active: true,
@@ -219,7 +220,7 @@ function createDocs(createdBy, roost, template, config){
 }
 
 function getReadyRoostMessage(createdByUser, roostName){
-    return "Welcome to OneRoost. This is your Activity Feed. All actions taken will be displayed here.\n";    
+    return "Welcome to OneRoost. This is your Activity Feed. All actions taken will be displayed here.\n";
 }
 
 function getMaxReadyRoostsPerUser(){
