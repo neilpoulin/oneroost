@@ -1,6 +1,7 @@
 import React, { PropTypes } from "react"
 import moment from "moment"
 import NavLink from "NavLink"
+import {getUrl} from "LinkTypes"
 
 const SystemComment = React.createClass({
     propTypes: {
@@ -10,42 +11,6 @@ const SystemComment = React.createClass({
     {
         var date = comment.createdAt;
         return moment(date).format("h:mm A");
-    },
-    buildLink: function(comment){
-        if (comment.navLink)
-        {
-            var path = "/";
-
-            switch (comment.navLink.type) {
-                case "step":
-                    path = "/steps"
-                    break;
-                case "participant":
-                    path ="/participants";
-                    break;
-                case "investment":
-                    path = "/budget"
-                    break;
-                case "timeline":
-                    path = "/timeline"
-                    break;
-                case "document":
-                    path = "/documents";
-                    break;
-                case "requirement":
-                    path = "/requirements";
-                default:
-                    break;
-            }
-            var link = "/roosts/" + comment.deal.objectId + path;
-            if ( comment.navLink.id )
-            {
-                link += "/" + comment.navLink.id;
-            }
-
-            return link;
-        }
-        return null;
     },
     render () {
         var {comment} = this.props
@@ -63,12 +28,11 @@ const SystemComment = React.createClass({
             postTime = null;
         }
 
-        var link = this.buildLink(comment);
         var messageWrapper = <span className="message">{message}</span>
-        if ( link )
+        if ( comment.navLink )
         {
             messageWrapper =
-            <NavLink tag="span" to={link} className="messageLink message">
+            <NavLink tag="span" to={getUrl(comment.navLink, comment.deal.objectId)} className="messageLink message">
                 {message}
             </NavLink>
         }
