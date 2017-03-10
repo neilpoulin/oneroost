@@ -122,12 +122,14 @@ gulp.task("transpile:node", ["clean:node"], function(){
     .pipe(gulp.dest(paths.build.node));
 });
 
-gulp.task("move:cloud", ["clean:node", "transpile:node", "sass:node", "fonts:node", "version:node"], function(){
+gulp.task("move:cloud", ["clean:node", "transpile:node", "sass:node", "fonts:node"], function(){
     gulp.src(paths.build.node + "/**/*")
     .pipe(gulp.dest(paths.dest.cloud));
 });
 
-gulp.task("bundle", ["version"], function(done){
+gulp.task("bundle:clean", ["clean:js", "bundle", "version:bundle-clean"])
+
+gulp.task("bundle", ["version:bundle"], function(done){
     let plugins = [];
     if (process.env.NODE_ENV === "production"){
         gutil.log(gutil.colors.green("**************** Bundling for production ******************"));
@@ -195,9 +197,9 @@ gulp.task("set-prod-node-env", function() {
     return process.env.NODE_ENV = "production";
 });
 
-gulp.task("build:node", ["clean:node", "transpile:node", "sass:node", "fonts:node"]);
+gulp.task("build:node", ["clean:node", "transpile:node", "sass:node", "fonts:node", "version:node"]);
 gulp.task("build:node-noclean", ["transpile:node", "sass:node", "fonts:node"]);
-gulp.task("build:cloud-dev", ["build:node-noclean", "move:cloud"]);
+gulp.task("build:cloud-dev", ["build:node-noclean", "move:cloud", "version:node"]);
 gulp.task("build:cloud", ["build:node", "sass:node", "fonts:node", "version:node", "move:cloud"]);
 gulp.task("compress", ["css:compress"]);
 gulp.task("build:frontend", ["compress","bundle", "sass", "fonts", "lint"]);
@@ -205,9 +207,9 @@ gulp.task("build:all", ["compress","bundle:prod", "sass", "fonts", "build:cloud"
 
 gulp.task("build:dev", ["bundle","css", "build:cloud-dev", "version"]);
 
-gulp.task("watch", ["build:dev", "version"], function () {
+gulp.task("watch", ["clean:js", "build:dev"], function () {
     gulp.watch(paths.src.styles, ["css", "sass"]);
-    gulp.watch(paths.src.frontend, ["bundle"]);
+    gulp.watch(paths.src.frontend, ["bundle", "version:bundle"]);
     gulp.watch(paths.src.node, ["build:cloud-dev"]);
     gulp.watch(paths.src.nodetemplates, ["build:cloud-dev"]);
 });
@@ -245,7 +247,11 @@ gulp.task("start:prod", ["version", "watch:prod"], function(){
     })
 });
 
-gulp.task("start", ["mongo-start","clean", "update-config", "watch"], function(){
+gulp.task("start", ["mongo-start","clean", "update-config", "watch", "move:cloud", "start:node"], function(){
+
+});
+
+gulp.task("start:node", function(){
     // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
     nodemon({
         script: "main.js",
@@ -255,7 +261,7 @@ gulp.task("start", ["mongo-start","clean", "update-config", "watch"], function()
     .on("restart", function () {
         console.log("nodemon restarted the node server!")
     })
-});
+})
 
 gulp.task("debug", ["mongo-start", "clean", "update-config", "watch", "inspect"], function(){
     // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
@@ -340,7 +346,6 @@ gulp.task("version:src", function () {
         // }
         version.version = pkg.version
         let versionJSON = JSON.stringify(version)
-        gutil.log("version results: src", version)
         string_src("version.js", "var oneroostVersion=" + versionJSON)
             .pipe(gulp.dest(paths.dest.frontendjs))
 
@@ -349,7 +354,7 @@ gulp.task("version:src", function () {
     });
 })
 
-gulp.task("version:bundle", function(){
+gulp.task("version:bundle", ["clean:js"], function(){
     var pkg = require("./package.json")
     let version = {}
     git.revParse({args:"HEAD"}, function (err, hash) {
@@ -358,7 +363,6 @@ gulp.task("version:bundle", function(){
             version.hash = getHashFromAwsPipeline()
         }
         version.version = pkg.version
-        gutil.log("version results: bundle", version)
         let versionJSON = JSON.stringify(version)
         return string_src("version.js", "var oneroostVersion=" + versionJSON)
             .pipe(gulp.dest(paths.dest.frontendjs))
@@ -376,7 +380,6 @@ gulp.task("version:node", function(){
         }
         version.version = pkg.version
         let versionJSON = JSON.stringify(version)
-        gutil.log("version results: src", version)
         string_src("version.js", "var oneroostVersion=" + versionJSON)
             .pipe(gulp.dest(paths.dest.frontendjs))
 

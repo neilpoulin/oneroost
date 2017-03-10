@@ -12,6 +12,7 @@ export const initialState = Map({
     isLoading: false,
     hasLoaded: false,
     lastLoaded: null,
+    error: null,
 });
 
 export default function reducer(state=initialState, action){
@@ -25,7 +26,8 @@ export default function reducer(state=initialState, action){
             state = state.set("lastLoaded", new Date())
             break;
         case LOAD_TEMPLATE_ERROR:
-            state = state.set("isLoading", true);
+            state = state.set("isLoading", false)
+            state = state.set("error", action.error)
             break;
         default:
             break
@@ -63,14 +65,27 @@ export const loadTemplate = (templateId, force=false) => (dispatch, getState) =>
             payload: template,
         })
     }).catch(error => {
-        log.error(error);
+        let level = "SEVERE"
+        let message = "Failed to load the template"
+        log.warn(error)
+        if (error && error.code){
+            switch (error.code) {
+                case 101:
+                    // not found
+                    level = "INFO"
+                    message = "Cound not find the proposal"
+                    break;
+                default:
+                    break;
+            }
+        }
         dispatch({
             type: LOAD_TEMPLATE_ERROR,
             templateId,
             error: {
                 error: error,
-                message: "Failed to load the template",
-                level: "SEVERE"
+                message,
+                level,
             }
         })
     })

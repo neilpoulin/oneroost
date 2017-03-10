@@ -89,12 +89,12 @@ const ReadyRoostPage = React.createClass({
         }
     },
     render () {
-        let {currentUser, template, isLoading, createReadyRoost} = this.props;
+        let {currentUser, template, isLoading, createReadyRoost, error} = this.props;
 
         if ( isLoading ){
             return <LoadingTakeover messsage={"Loading Profile"}/>
         }
-        if( !template )
+        if( !template || error )
         {
             return <FourOhFourPage/>
         }
@@ -122,16 +122,22 @@ const mapStateToProps = (state, ownProps) => {
     const templates = state.templates.toJS()
     const templateId = ownProps.params.templateId
     const currentUser = RoostUtil.getCurrentUser(state)
-    const entities = state.entities.toJS()
-    let template = templates[templateId]
+    let templateState = templates[templateId]
     let isLoading = true
-    if ( template && template.hasLoaded ){
-        isLoading = template.isLoading;
-        template = denormalize(templateId, Template.Schema, entities)
+    let template = null
+    let error = null
+    if ( templateState ){
+        isLoading = templateState.isLoading;
+        error = templateState.error;
+        if (templateState.hasLoaded && !templateState.error){
+            const entities = state.entities.toJS()
+            template = denormalize(templateId, Template.Schema, entities)
+        }
     }
     return {
         isLoading,
         template,
+        error,
         currentUser
     }
 }
