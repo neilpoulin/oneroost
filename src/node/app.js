@@ -39,12 +39,12 @@ Raven.config("https://50020b1e8db94c39be96db010cdbba4f:0f4123892fd44bfd92b85a003
         platform: "node"
     }
 }).install();
-AWSXRay.setDefaultName(envUtil.getEnvName());
+
 AWSXRay.config([AWSXRay.plugins.EC2]);
 AWSXRay.config([AWSXRay.plugins.ElasticBeanstalk]);
 
 var app = express();
-app.use(AWSXRay.express.openSegment());
+app.use(AWSXRay.express.openSegment(envUtil.getEnvName()));
 var server = http.Server(app);
 var io = socket(server);
 app.engine("ejs", ejs.__express);

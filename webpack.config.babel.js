@@ -2,6 +2,8 @@ import {paths} from "./build-paths"
 import webpack from "webpack"
 import "babel-polyfill"
 
+process.traceDeprecation = true
+
 module.exports = {
     entry: ["babel-polyfill","index.jsx"],
     context: __dirname + "/src/jsx",
