@@ -20,6 +20,10 @@ import git from "gulp-git"
 import bump from "gulp-bump"
 import filter from "gulp-filter"
 import tagVersion from "gulp-tag-version"
+import browserSync from "browser-sync"
+import webpackDevMiddleware from "webpack-dev-middleware"
+import webpackHotMiddleware from "webpack-hot-middleware"
+
 import {paths, bootstrapPaths, fontAwesomePaths, GoogleMaterialColors, reactModalBootstrap, infiniteCalendar} from "./build-paths";
 
 var devEnvProps = {
@@ -40,7 +44,6 @@ var sassOpts = {
         "./src/scss/**/*.scss"
     ]
 };
-
 
 gulp.task("fonts", ["sass"], function () {
     return gulp.src(paths.src.fonts)
@@ -129,7 +132,9 @@ gulp.task("move:cloud", ["clean:node", "transpile:node", "sass:node", "fonts:nod
 
 gulp.task("bundle:clean", ["clean:js", "bundle", "version:bundle-clean"])
 
-gulp.task("bundle", ["version:bundle"], function(done){
+
+
+function getWebpackConfig(){
     let plugins = [];
     if (process.env.NODE_ENV === "production"){
         gutil.log(gutil.colors.green("**************** Bundling for production ******************"));
@@ -146,10 +151,17 @@ gulp.task("bundle", ["version:bundle"], function(done){
     }
     else{
         gutil.log(gutil.colors.green("**************** Bundling for dev ******************"));
+        plugins = plugins.concat([
+            new webpack.HotModuleReplacementPlugin(),
+        ])
     }
     webpackConfig.devtool = "source-map";
     webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
+    return webpackConfig;
+}
 
+gulp.task("bundle", ["version:bundle"], function(done){
+    let webpack = getWebpackConfig()
     webpack(webpackConfig).run((err, stats) => {
         if (err) {
             var error = new gutil.PluginError("bundle", err);
@@ -205,11 +217,16 @@ gulp.task("compress", ["css:compress"]);
 gulp.task("build:frontend", ["compress","bundle", "sass", "fonts", "lint"]);
 gulp.task("build:all", ["compress","bundle:prod", "sass", "fonts", "build:cloud", "set-prod-node-env"]);
 
-gulp.task("build:dev", ["bundle","css", "build:cloud-dev", "version"]);
+gulp.task("build:dev", [
+    // "bundle",
+    "css",
+    "build:cloud-dev",
+    "version"
+]);
 
 gulp.task("watch", ["clean:js", "build:dev"], function () {
     gulp.watch(paths.src.styles, ["css", "sass"]);
-    gulp.watch(paths.src.frontend, ["bundle", "version:bundle"]);
+    // gulp.watch(paths.src.frontend, ["bundle", "version:bundle"]);
     gulp.watch(paths.src.node, ["build:cloud-dev"]);
     gulp.watch(paths.src.nodetemplates, ["build:cloud-dev"]);
 });
@@ -310,17 +327,17 @@ gulp.task("update-config", ["mongo-start"], function(){
 })
 
 function string_src(filename, string) {
-  var src = require("stream").Readable({ objectMode: true })
-  src._read = function () {
-    this.push(new gutil.File({
-      cwd: "",
-      base: "",
-      path: filename,
-      contents: new Buffer(string)
-    }))
-    this.push(null)
-  }
-  return src
+    var src = require("stream").Readable({ objectMode: true })
+    src._read = function () {
+        this.push(new gutil.File({
+            cwd: "",
+            base: "",
+            path: filename,
+            contents: new Buffer(string)
+        }))
+        this.push(null)
+    }
+    return src
 }
 
 
@@ -342,15 +359,15 @@ gulp.task("version:src", function () {
     git.revParse({args:"HEAD"}, function (err, hash) {
         // version.hash = hash
         // if ( !hash ){
-            version.hash = getHashFromAwsPipeline()
+        version.hash = getHashFromAwsPipeline()
         // }
         version.version = pkg.version
         let versionJSON = JSON.stringify(version)
         string_src("version.js", "var oneroostVersion=" + versionJSON)
-            .pipe(gulp.dest(paths.dest.frontendjs))
+        .pipe(gulp.dest(paths.dest.frontendjs))
 
         return string_src("version.json", versionJSON)
-            .pipe(gulp.dest(paths.src_jsx))
+        .pipe(gulp.dest(paths.src_jsx))
     });
 })
 
@@ -365,7 +382,7 @@ gulp.task("version:bundle", ["clean:js"], function(){
         version.version = pkg.version
         let versionJSON = JSON.stringify(version)
         return string_src("version.js", "var oneroostVersion=" + versionJSON)
-            .pipe(gulp.dest(paths.dest.frontendjs))
+        .pipe(gulp.dest(paths.dest.frontendjs))
     });
 })
 
@@ -381,27 +398,27 @@ gulp.task("version:node", function(){
         version.version = pkg.version
         let versionJSON = JSON.stringify(version)
         string_src("version.js", "var oneroostVersion=" + versionJSON)
-            .pipe(gulp.dest(paths.dest.frontendjs))
+        .pipe(gulp.dest(paths.dest.frontendjs))
 
         return string_src("version.json", versionJSON)
-            .pipe(gulp.dest(paths.src_node))
+        .pipe(gulp.dest(paths.src_node))
     });
 })
 
 function inc(importance) {
     // get all the files to bump version in
     return gulp.src(["./package.json"])
-        // bump the version number in those files
-        .pipe(bump({type: importance}))
-        // save it back to filesystem
-        .pipe(gulp.dest("./"))
-        // commit the changed version number
-        .pipe(git.commit("bump package version: " + importance))
+    // bump the version number in those files
+    .pipe(bump({type: importance}))
+    // save it back to filesystem
+    .pipe(gulp.dest("./"))
+    // commit the changed version number
+    .pipe(git.commit("bump package version: " + importance))
 
-        // read only one file to get the version number
-        .pipe(filter("package.json"))
-        // **tag it in the repository**
-        .pipe(tagVersion());
+    // read only one file to get the version number
+    .pipe(filter("package.json"))
+    // **tag it in the repository**
+    .pipe(tagVersion());
 }
 
 gulp.task("patch", function() { return inc("patch"); })

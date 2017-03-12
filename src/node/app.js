@@ -51,8 +51,7 @@ app.engine("ejs", ejs.__express);
 app.use(bodyParser.json());
 app.use("/parse", getParseServer());
 app.use("/admin/dashboard", getParseDashboard());
-app.use(compression({level: 9}));
-app.use("/static", express.static(__dirname + "./../public"));
+
 app.use(favicon(__dirname + "./../public/favicon.ico"));
 app.set("views", "cloud/views");
 
@@ -61,6 +60,29 @@ app.locals.formatTime = function(time) {
     return moment(time).format("MMMM Do YYYY, h:mm a");
 };
 
+if ( !envUtil.isProd() ){
+    console.log("Using Hot Module Reloader")
+    var webpack = require("webpack");
+    var webpackConfig = require("./../webpack.dev.config.js");
+    var publicPath = webpackConfig.output.publicPath;
+    console.log("public Path = ", publicPath)
+    var compiler = webpack(webpackConfig);
+
+    app.use(require("webpack-dev-middleware")(compiler, {
+        noInfo: false,
+        publicPath: publicPath,
+        stats: {colors: true}
+    }));
+    app.use(require("webpack-hot-middleware")(compiler, {
+        log: console.log,
+    }));
+    app.use("/static/css", express.static(__dirname + "./../public/css"));
+    app.use("/static/images", express.static(__dirname + "./../public/images"));
+
+} else {
+    app.use(compression({level: 9}));
+    app.use("/static", express.static(__dirname + "./../public"));
+}
 
 app.get("/admin/emails/:templateName", function(req, resp){
     TemplateUtil.renderSample(req.params.templateName).then(function(templates){
