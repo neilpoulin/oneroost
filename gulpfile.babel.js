@@ -16,13 +16,8 @@ import nodeInspector from "gulp-node-inspector"
 import cleanCSS from "gulp-clean-css"
 import webpack from "webpack"
 import webpackConfig from "./webpack.config.babel.js"
-import git from "gulp-git"
-import bump from "gulp-bump"
-import filter from "gulp-filter"
-import tagVersion from "gulp-tag-version"
-import browserSync from "browser-sync"
-import webpackDevMiddleware from "webpack-dev-middleware"
-import webpackHotMiddleware from "webpack-hot-middleware"
+
+import gulptasks from "./scripts/gulp/tasks"
 
 import {paths, bootstrapPaths, fontAwesomePaths, GoogleMaterialColors, reactModalBootstrap, infiniteCalendar} from "./build-paths";
 
@@ -59,35 +54,35 @@ gulp.task("sass:node", ["clean:cloud-style", "clean:node"], function(){
     return gulp.src(paths.src.styles)
     .pipe(gulp.dest(paths.build.nodeStyles))
 });
+//
+// gulp.task("sass", ["clean:css"], function () {
+//     var scssStream = gulp.src(paths.src.styleEntry)
+//     .pipe(sass(sassOpts).on("error", sass.logError))
+//     .pipe(concat(paths.dest.styleName));
+//     var lessStream = gulp.src(reactModalBootstrap.stylesheets)
+//     .pipe(less())
+//     .pipe(concat("less-files.less"));
+//     var cssStream = gulp.src(infiniteCalendar.stylesheets)
+//     .pipe(concat("css-files.css"));
+//
+//     var mergedStream = merge(scssStream, lessStream, cssStream)
+//     .pipe(concat("styles.css"))
+//     .pipe(gulp.dest(paths.build.cssbundle));
+//
+//     return mergedStream;
+// });
 
-gulp.task("sass", ["clean:css"], function () {
-    var scssStream = gulp.src(paths.src.styleEntry)
-    .pipe(sass(sassOpts).on("error", sass.logError))
-    .pipe(concat(paths.dest.styleName));
-    var lessStream = gulp.src(reactModalBootstrap.stylesheets)
-    .pipe(less())
-    .pipe(concat("less-files.less"));
-    var cssStream = gulp.src(infiniteCalendar.stylesheets)
-    .pipe(concat("css-files.css"));
-
-    var mergedStream = merge(scssStream, lessStream, cssStream)
-    .pipe(concat("styles.css"))
-    .pipe(gulp.dest(paths.build.cssbundle));
-
-    return mergedStream;
-});
-
-gulp.task("clean:cloud-style", function(){
-    return del([paths.build.cloudStyles + "/**.*css"]);
-});
+// gulp.task("clean:cloud-style", function(){
+//     return del([paths.build.cloudStyles + "/**.*css"]);
+// });
 
 gulp.task("clean:css", function(){
     return del(["./public/css/**.css"]);
 });
 
-gulp.task("clean:node", function(){
-    return del([paths.build.node]);
-});
+// gulp.task("clean:node", function(){
+//     return del([paths.build.node]);
+// });
 
 gulp.task("clean:js", function(){
     return del(["./public/bundle", paths.build.frontendjs]);
@@ -105,30 +100,30 @@ gulp.task("lint", function () {
     .pipe(eslint.format());
 });
 
-gulp.task("transpile:node", ["clean:node"], function(){
-    gulp.src(paths.src.node)
-    .pipe(plumber({
-        handleErrors: function(error){
-            console.error(error);
-            this.emit("end");
-        }
-    }))
-    .pipe(babel())
-    .on("error", function (err) {
-        gutil.log(gutil.colors.red("[Task \"transpile:node\"][Babel Error]"));
-        gutil.log(gutil.colors.red(err.message));
-    })
-    .pipe(plumber.stop())
-    .pipe(gulp.dest(paths.build.node));
-
-    return gulp.src(paths.src.nodetemplates)
-    .pipe(gulp.dest(paths.build.node));
-});
-
-gulp.task("move:cloud", ["clean:node", "transpile:node", "sass:node", "fonts:node"], function(){
-    gulp.src(paths.build.node + "/**/*")
-    .pipe(gulp.dest(paths.dest.cloud));
-});
+// gulp.task("transpile:node", ["clean:node"], function(){
+//     gulp.src(paths.src.node)
+//     .pipe(plumber({
+//         handleErrors: function(error){
+//             console.error(error);
+//             this.emit("end");
+//         }
+//     }))
+//     .pipe(babel())
+//     .on("error", function (err) {
+//         gutil.log(gutil.colors.red("[Task \"transpile:node\"][Babel Error]"));
+//         gutil.log(gutil.colors.red(err.message));
+//     })
+//     .pipe(plumber.stop())
+//     .pipe(gulp.dest(paths.build.node));
+//
+//     return gulp.src(paths.src.nodetemplates)
+//     .pipe(gulp.dest(paths.build.node));
+// });
+//
+// gulp.task("move:cloud", ["clean:node", "transpile:node", "sass:node", "fonts:node"], function(){
+//     gulp.src(paths.build.node + "/**/*")
+//     .pipe(gulp.dest(paths.dest.cloud));
+// });
 
 gulp.task("bundle:clean", ["clean:js", "bundle", "version:bundle-clean"])
 
@@ -161,7 +156,7 @@ function getWebpackConfig(){
 }
 
 gulp.task("bundle", ["version:bundle"], function(done){
-    let webpack = getWebpackConfig()
+    let webpackConfig = getWebpackConfig()
     webpack(webpackConfig).run((err, stats) => {
         if (err) {
             var error = new gutil.PluginError("bundle", err);
@@ -209,26 +204,26 @@ gulp.task("set-prod-node-env", function() {
     return process.env.NODE_ENV = "production";
 });
 
-gulp.task("build:node", ["clean:node", "transpile:node", "sass:node", "fonts:node", "version:node"]);
-gulp.task("build:node-noclean", ["transpile:node", "sass:node", "fonts:node"]);
-gulp.task("build:cloud-dev", ["build:node-noclean", "move:cloud", "version:node"]);
-gulp.task("build:cloud", ["build:node", "sass:node", "fonts:node", "version:node", "move:cloud"]);
+// gulp.task("build:node", ["clean:node", "transpile:node", "sass:node", "fonts:node", "version:node"]);
+// gulp.task("build:node-noclean", ["transpile:node", "sass:node", "fonts:node"]);
+// gulp.task("build:cloud-dev", ["build:node-noclean", "move:cloud", "version:node"]);
+// gulp.task("build:cloud", ["build:node", "sass:node", "fonts:node", "version:node", "move:cloud"]);
 gulp.task("compress", ["css:compress"]);
 gulp.task("build:frontend", ["compress","bundle", "sass", "fonts", "lint"]);
 gulp.task("build:all", ["compress","bundle:prod", "sass", "fonts", "build:cloud", "set-prod-node-env"]);
 
 gulp.task("build:dev", [
     // "bundle",
-    "css",
-    "build:cloud-dev",
+    // "css",
+    // "build:cloud-dev",
     "version"
 ]);
 
 gulp.task("watch", ["clean:js", "build:dev"], function () {
-    gulp.watch(paths.src.styles, ["css", "sass"]);
+    // gulp.watch(paths.src.styles, ["css", "sass"]);
     // gulp.watch(paths.src.frontend, ["bundle", "version:bundle"]);
-    gulp.watch(paths.src.node, ["build:cloud-dev"]);
-    gulp.watch(paths.src.nodetemplates, ["build:cloud-dev"]);
+    // gulp.watch(paths.src.node, ["build:cloud-dev"]);
+    // gulp.watch(paths.src.nodetemplates, ["build:cloud-dev"]);
 });
 
 
@@ -325,102 +320,3 @@ gulp.task("update-config", ["mongo-start"], function(){
     var command = "mongo localhost:27017/oneroost-db db/scripts/update_configs.js";
     runCommand(command);
 })
-
-function string_src(filename, string) {
-    var src = require("stream").Readable({ objectMode: true })
-    src._read = function () {
-        this.push(new gutil.File({
-            cwd: "",
-            base: "",
-            path: filename,
-            contents: new Buffer(string)
-        }))
-        this.push(null)
-    }
-    return src
-}
-
-
-gulp.task("version", ["version:src", "version:bundle", "version:node"])
-
-function getHashFromAwsPipeline(){
-    let pipeline = require("./pipeline.json");
-    try{
-        return pipeline.stageStates[0].actionStates[0].currentRevision.revisionId
-    } catch (e){
-        gutil.log(gutil.colors.red(e))
-        return null;
-    }
-}
-
-gulp.task("version:src", function () {
-    var pkg = require("./package.json")
-    let version = {}
-    git.revParse({args:"HEAD"}, function (err, hash) {
-        // version.hash = hash
-        // if ( !hash ){
-        version.hash = getHashFromAwsPipeline()
-        // }
-        version.version = pkg.version
-        let versionJSON = JSON.stringify(version)
-        string_src("version.js", "var oneroostVersion=" + versionJSON)
-        .pipe(gulp.dest(paths.dest.frontendjs))
-
-        return string_src("version.json", versionJSON)
-        .pipe(gulp.dest(paths.src_jsx))
-    });
-})
-
-gulp.task("version:bundle", ["clean:js"], function(){
-    var pkg = require("./package.json")
-    let version = {}
-    git.revParse({args:"HEAD"}, function (err, hash) {
-        version.hash = hash
-        if ( !hash ){
-            version.hash = getHashFromAwsPipeline()
-        }
-        version.version = pkg.version
-        let versionJSON = JSON.stringify(version)
-        return string_src("version.js", "var oneroostVersion=" + versionJSON)
-        .pipe(gulp.dest(paths.dest.frontendjs))
-    });
-})
-
-
-gulp.task("version:node", function(){
-    var pkg = require("./package.json")
-    let version = {}
-    git.revParse({args:"HEAD"}, function (err, hash) {
-        version.hash = hash
-        if ( !hash ){
-            version.hash = getHashFromAwsPipeline()
-        }
-        version.version = pkg.version
-        let versionJSON = JSON.stringify(version)
-        string_src("version.js", "var oneroostVersion=" + versionJSON)
-        .pipe(gulp.dest(paths.dest.frontendjs))
-
-        return string_src("version.json", versionJSON)
-        .pipe(gulp.dest(paths.src_node))
-    });
-})
-
-function inc(importance) {
-    // get all the files to bump version in
-    return gulp.src(["./package.json"])
-    // bump the version number in those files
-    .pipe(bump({type: importance}))
-    // save it back to filesystem
-    .pipe(gulp.dest("./"))
-    // commit the changed version number
-    .pipe(git.commit("bump package version: " + importance))
-
-    // read only one file to get the version number
-    .pipe(filter("package.json"))
-    // **tag it in the repository**
-    .pipe(tagVersion());
-}
-
-gulp.task("patch", function() { return inc("patch"); })
-gulp.task("feature", function() { return inc("minor"); })
-gulp.task("release", function() { return inc("major"); })

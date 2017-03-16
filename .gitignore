@@ -47,6 +47,7 @@ node_modules
 
 db/data/*
 build/
+dist/
 logs/
 parse-server/
 cloud/

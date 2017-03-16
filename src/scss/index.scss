@@ -2,15 +2,15 @@ $fa-font-path: "./fonts";
 @import "mixins";
 @import "variables";
 @import "fonts";
-@import "bootstrap";
+@import "~bootstrap";
 @import "bootstrap-custom/custom";
-@import "font-awesome";
+@import "~font-awesome";
 
-@import "sass-material-colors";
-@import "sass-material-colors-classes";
-@import "sass-material-colors-placeholders";
+// @import "~sass-material-colors";
+// @import "~sass-material-colors-classes";
+// @import "~sass-material-colors-placeholders";
 
-@import "react-select/default";
+@import "~react-select/default";
 
 @import "components";
 
