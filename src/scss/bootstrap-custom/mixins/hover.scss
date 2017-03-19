@@ -1,4 +1,4 @@
-@import "~bootstrap";
+@import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
 
 @mixin hover {
     &:hover { @content }

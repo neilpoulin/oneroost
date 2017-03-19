@@ -4,29 +4,8 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const extractCss = new ExtractTextPlugin("style-bundle.css");
 const path = require("path")
 
-import {paths,
-    bootstrapPaths,
-    fontAwesomePaths,
-    GoogleMaterialColors,
-    reactModalBootstrap,
-    // infiniteCalendar
-} from "./build-paths";
 const outputDir = "dist";
-const indexFile = path.join("src", "scss", "index_test.scss")
-
-
-var sassOpts = {
-    outputStyle: "nested",
-    precison: 3,
-    errLogToConsole: true,
-    includePaths: [bootstrapPaths.stylesheets,
-        fontAwesomePaths.stylesheets,
-        GoogleMaterialColors.stylesheets,
-        reactModalBootstrap.stylesheets,
-        "./src/scss/**/*.scss"
-    ]
-};
-
+const indexFile = path.join("src", "scss", "index.scss")
 
 process.traceDeprecation = true
 
@@ -71,13 +50,13 @@ module.exports = {
                             loader: "sass-loader",
                             options: {
                                 sourceMap: true,
-                                // includePaths: sassOpts.includePaths
                             }
                         },
                         {
                             loader: "sass-resources-loader",
                             options: {
                                 resources: "./src/scss/sass-resources.scss",
+                                sourceMap: true,
                             }
                         }
                     ]
@@ -86,9 +65,11 @@ module.exports = {
         },
         plugins: [
             extractCss,
-            // new webpack.ProvidePlugin({
-            //     "window.Tether": "tether"
-            // }),
+            new webpack.ProvidePlugin({
+                $: "jquery",
+                jQuery: "jquery",
+                Tether: "tether",
+            }),
         ],
         resolve: {
             extensions: [".scss", ".css"],
