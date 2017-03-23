@@ -6,7 +6,6 @@ process.traceDeprecation = true
 
 module.exports = {
     entry: {
-        // style: [path.join(__dirname, "src", "scss", "index.scss")],
         scripts: [
             "webpack/hot/dev-server",
             "webpack-hot-middleware/client",
@@ -15,12 +14,12 @@ module.exports = {
             path.join(__dirname, "src", "scss", "index.scss")
         ]
     },
-    // context: path.join(__dirname, "/src/jsx"),
     output: {
         path: path.join(__dirname, "/public/bundle"),
         filename: "[name].js",
         publicPath: "http://dev.oneroost.com/static/bundle",
     },
+    devtool: "source-map",
     module: {
         rules: [
             {
@@ -39,15 +38,10 @@ module.exports = {
             },
             {
                 test: /\.scss$/,
-                    // fallback: "style-loader",
                     use: [
                         {
                             loader: "style-loader"
                         },
-                        // {
-                        //     loader: "postcss-loader",
-                        //     options: {}
-                        // },
                         {
                             loader: "css-loader",
                             options: {
@@ -81,7 +75,6 @@ module.exports = {
         }),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-
     ],
     resolve: {
         extensions: [".js", ".jsx", ".json", ".scss", ".css"],

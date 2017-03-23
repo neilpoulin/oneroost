@@ -60,7 +60,12 @@ app.locals.formatTime = function(time) {
     return moment(time).format("MMMM Do YYYY, h:mm a");
 };
 
-if ( !envUtil.isProd() ){
+if (process.env.NODE_ENV === "production") {
+    console.log("****PRODUCTION - USING BUNDLED ASSETS****")
+    app.use(compression({level: 9}));
+    app.use("/static", express.static(__dirname + "./../public"));
+} else {
+    console.log("***** DEVELOPMENT ENV **** ")
     console.log("Using Hot Module Reloader")
     var webpack = require("webpack");
     var webpackConfig = require("./../webpack.dev.config.babel.js");
@@ -72,17 +77,13 @@ if ( !envUtil.isProd() ){
         publicPath: publicPath,
         stats: {colors: true}
     }));
-    
+
     app.use(require("webpack-hot-middleware")(compiler, {
         log: console.log,
     }));
     // app.use("/static/css", express.static(__dirname + "./../public/css"));
     app.use("/static/images", express.static(__dirname + "./../public/images"));
 
-} else {
-    console.log("****PRODUCTION - USING BUNDLED ASSETS****")
-    app.use(compression({level: 9}));
-    app.use("/static", express.static(__dirname + "./../public"));
 }
 
 app.get("/admin/emails/:templateName", function(req, resp){

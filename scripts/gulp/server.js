@@ -14,6 +14,15 @@ var devEnvProps = {
     GA_TRACKING_CODE: "UA-87950724-3",
     STRIPE_PUBLISH_KEY: process.env.STRIPE_PUBLISH_KEY_TEST,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY_TEST,
+    NODE_ENV: "development"
+}
+
+var prodEnvProps = {
+    AWS_PROFILE: "oneroost",
+    GA_TRACKING_CODE: "UA-87950724-3",
+    STRIPE_PUBLISH_KEY: process.env.STRIPE_PUBLISH_KEY_TEST,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY_TEST,
+    NODE_ENV: "production"
 }
 
 const transpileNode = () =>{
@@ -32,6 +41,9 @@ const transpileNode = () =>{
     .pipe(plumber.stop())
     .pipe(gulp.dest(paths.build.node));
     // move the templates
+    gulp.src(paths.src.nodeview)
+    .pipe(gulp.dest(paths.build.node));
+
     return gulp.src(paths.src.nodetemplates)
     .pipe(gulp.dest(paths.build.node));
 }
@@ -66,14 +78,15 @@ const buildEmails = (done) => {
     });
 }
 
-const startServer = () => {
+const startServer = (props) => {
     gutil.log("starting the server");
     nodemon({
         script: "main.js",
         watch: ["cloud"],
         ext: "js html ejs json",
         ignore: ["email/template/*"],
-        env: devEnvProps
+        delay: "2500",
+        env: props || devEnvProps
     })
     .on("restart", function () {
         console.log("nodemon restarted the node server!")
@@ -138,6 +151,10 @@ gulp.task("build:node", ["clean:node", "transpile:node:clean", "email:styles:cle
     done();
 })
 
+gulp.task("node", ["build:node", "copy:node:build:sync"], function(){
+    gutil.log("built and copied all files from scratch to the cloud directory");
+})
+
 gulp.task("start:dev", ["clean:node", "build:node", "copy:node:build:sync", "watch:node" ], function(){
     // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
     startServer();
@@ -150,6 +167,6 @@ gulp.task("watch:node", function(){
     gulp.watch(paths.src.nodetemplates, ["emails:watch"]);
 })
 
-gulp.task("start:nobuild", function(){
-    startServer()
+gulp.task("start:prod", ["set-prod-node-env"], function(){
+    startServer(prodEnvProps)
 })

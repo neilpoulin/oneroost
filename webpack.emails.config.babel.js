@@ -15,6 +15,7 @@ module.exports = {
         path: path.join(__dirname, outputDir),
         filename: "email-bundle.js",
     },
+    devtool: "source-map",
     module: {
         rules: [
             {

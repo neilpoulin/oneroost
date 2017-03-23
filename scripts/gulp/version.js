@@ -28,7 +28,7 @@ gulp.task("version:src", function () {
     });
 })
 
-gulp.task("version:bundle", ["clean:js"], function(){
+gulp.task("version:bundle", function(){
     var pkg = require("./../../package.json")
     let version = {}
     git.revParse({args:"HEAD"}, function (err, hash) {
