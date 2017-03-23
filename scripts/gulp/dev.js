@@ -1,13 +1,19 @@
 import gulp from "gulp"
 import gutil from "gulp-util"
-import git from "gulp-git"
-import sass from "gulp-sass"
-import concat from "gulp-concat"
-import less from "gulp-less"
-import merge from "merge-stream"
-import {paths, bootstrapPaths, fontAwesomePaths, GoogleMaterialColors, reactModalBootstrap, infiniteCalendar} from "./../../build-paths";
+// import git from "gulp-git"
+// import sass from "gulp-sass"
+// import concat from "gulp-concat"
+// import less from "gulp-less"
+// import merge from "merge-stream"
+// import {paths, bootstrapPaths, fontAwesomePaths, GoogleMaterialColors, reactModalBootstrap, infiniteCalendar} from "./../../build-paths";
 // start dev server with hot reloading
+import {baseDir} from "./util"
 
+
+gulp.task("dev-test", function(){
+    gutil.log("dev Test");
+    gutil.log("base dir = ", baseDir);
+});
 //
 // var sassOpts = {
 //     outputStyle: "nested",
@@ -37,3 +43,8 @@ import {paths, bootstrapPaths, fontAwesomePaths, GoogleMaterialColors, reactModa
 //
 //     return mergedStream;
 // });
+
+// gulp.task("update-config", ["mongo-start"], function(){
+//     var command = "mongo localhost:27017/oneroost-db db/scripts/update_configs.js";
+//     runCommand(command);
+// })

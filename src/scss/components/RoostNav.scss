@@ -1,6 +1,5 @@
 @import "logo";
 .RoostNav{
-    background-color: blue;
     .navbar-brand{
         &:not(.roost-title){
             @extend .logo-font;

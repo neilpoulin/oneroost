@@ -1,7 +1,7 @@
 import gulp from "gulp"
-import gutil from "gulp-util"
 import git from "gulp-git"
-import {getHashFromAwsPipeline, string_src} from "./git"
+import {getHashFromAwsPipeline} from "./git"
+import {string_src} from "./util"
 import {paths} from "./../../build-paths";
 
 gulp.task("version-test", () => {

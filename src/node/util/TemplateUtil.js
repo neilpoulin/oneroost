@@ -14,12 +14,10 @@ var emailTemplates = [
 ];
 var templates = {};
 
-var bootstrapSass = path.resolve(__dirname, "..", "..", "node_modules", "bootstrap-sass", "assets", "stylesheets");
-var fontAwesome = path.resolve(__dirname, "..", "..", "node_modules", "font-awesome", "scss");
-var materialColors = path.resolve(__dirname, "..", "..", "node_modules", "sass-material-colors", "sass");
-
-initializeHandlebars();
-initializeEmails();
+exports.initialize = function(){
+    initializeHandlebars();
+    initializeEmails();
+}
 
 exports.getTemplateNames = function(){
     return emailTemplates
@@ -35,7 +33,12 @@ exports.renderEmail = function(templateName, data){
 exports.renderSample = function( name, number ){
     number = number || 0;
 
-    var template = templates[name];
+    var templateDir = path.join(templateRoot, name);
+    console.log("creating template", name);
+    var template = new EmailTemplate(templateDir, {sassOptions: {
+        includePaths: [styleDir]
+    }});
+    templates[name] = template;
     return template.render( getSampleData(name, number) );
 }
 
@@ -88,7 +91,7 @@ function initializeEmails(){
         var templateDir = path.join(templateRoot, name);
         console.log("creating template", name);
         var template = new EmailTemplate(templateDir, {sassOptions: {
-            includePaths: [bootstrapSass, fontAwesome, materialColors, styleDir]
+            includePaths: [styleDir]
         }});
         templates[name] = template;
     });

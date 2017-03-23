@@ -67,12 +67,12 @@ if ( !envUtil.isProd() ){
     var publicPath = webpackConfig.output.publicPath;
     console.log("public Path = ", publicPath)
     var compiler = webpack(webpackConfig);
-
     app.use(require("webpack-dev-middleware")(compiler, {
         noInfo: false,
         publicPath: publicPath,
         stats: {colors: true}
     }));
+    
     app.use(require("webpack-hot-middleware")(compiler, {
         log: console.log,
     }));
@@ -80,6 +80,7 @@ if ( !envUtil.isProd() ){
     app.use("/static/images", express.static(__dirname + "./../public/images"));
 
 } else {
+    console.log("****PRODUCTION - USING BUNDLED ASSETS****")
     app.use(compression({level: 9}));
     app.use("/static", express.static(__dirname + "./../public"));
 }
@@ -135,6 +136,8 @@ server.listen(port, function() {
 });
 
 getLiveQueryServer(server);
+
+TemplateUtil.initialize()
 
 function getParseDashboard()
 {

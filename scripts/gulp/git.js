@@ -13,20 +13,6 @@ import filter from "gulp-filter"
 import tagVersion from "gulp-tag-version"
 // import {paths} from "./../../build-paths";
 
-export const string_src = (filename, string) => {
-    var src = require("stream").Readable({ objectMode: true })
-    src._read = function () {
-        this.push(new gutil.File({
-            cwd: "",
-            base: "",
-            path: filename,
-            contents: new Buffer(string)
-        }))
-        this.push(null)
-    }
-    return src
-}
-
 export const getHashFromAwsPipeline = () => {
     let pipeline = require("./../../pipeline.json");
     try{

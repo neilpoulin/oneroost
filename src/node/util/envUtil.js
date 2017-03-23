@@ -151,6 +151,7 @@ exports.getEnv = function(){
             "emailTemplates": TemplateUtil.getTemplateNames(),
             "environment": ENV_NAME,
             "stripePublishKey": STRIPE_PUBLISH_KEY,
+            "version": version,
         };
 
         var json = JSON.stringify( props );
