@@ -7,7 +7,6 @@ import babel from "gulp-babel"
 import nodemon from "gulp-nodemon"
 import webpack from "webpack"
 import {getWebpackConfig} from "./util"
-// import {string_src} from "./util"
 
 var devEnvProps = {
     AWS_PROFILE: "oneroost",
@@ -25,27 +24,27 @@ var prodEnvProps = {
     NODE_ENV: "production"
 }
 
-const transpileNode = () =>{
+const transpileNode = () => {
     gulp.src(paths.src.node)
-    .pipe(plumber({
-        handleErrors: function(error){
-            console.error(error);
-            this.emit("end");
-        }
-    }))
-    .pipe(babel())
-    .on("error", function (err) {
-        gutil.log(gutil.colors.red("[Task \"transpile:node\"][Babel Error]"));
-        gutil.log(gutil.colors.red(err.message));
-    })
-    .pipe(plumber.stop())
-    .pipe(gulp.dest(paths.build.node));
+        .pipe(plumber({
+            handleErrors: function(error){
+                console.error(error);
+                this.emit("end");
+            }
+        }))
+        .pipe(babel())
+        .on("error", function (err) {
+            gutil.log(gutil.colors.red("[Task \"transpile:node\"][Babel Error]"));
+            gutil.log(gutil.colors.red(err.message));
+        })
+        .pipe(plumber.stop())
+        .pipe(gulp.dest(paths.build.node));
     // move the templates
     gulp.src(paths.src.nodeview)
-    .pipe(gulp.dest(paths.build.node));
+        .pipe(gulp.dest(paths.build.node));
 
     return gulp.src(paths.src.nodetemplates)
-    .pipe(gulp.dest(paths.build.node));
+        .pipe(gulp.dest(paths.build.node));
 }
 
 const buildEmails = (done) => {
@@ -53,11 +52,12 @@ const buildEmails = (done) => {
     webpack(config).run((err, stats) => {
         if (err){
             var error = new gutil.PluginError("bundle", err);
-            gutil.log( gutil.colors.red(error));
+            gutil.log(gutil.colors.red(error));
             if (done) {
                 done();
             }
-        } else{
+        }
+        else{
             gutil.log("[email:styles - webpack]", stats.toString({
                 colors: true,
                 version: true,
@@ -88,21 +88,21 @@ const startServer = (props) => {
         delay: "2500",
         env: props || devEnvProps
     })
-    .on("restart", function () {
-        console.log("nodemon restarted the node server!")
-    })
+        .on("restart", function () {
+            console.log("nodemon restarted the node server!")
+        })
 }
 
 const copyBuildToCloud = () => {
     gutil.log("Coping all build files to the cloud directory");
     return gulp.src(paths.build.node + "/**/*")
-    .pipe(gulp.dest(paths.dest.cloud));
+        .pipe(gulp.dest(paths.dest.cloud));
 }
 
 const copyEmailTemplatesToCloud = () => {
     gutil.log("Coping Email Template files to the cloud directory");
     return gulp.src(paths.build.node + "/email/template/**/*")
-    .pipe(gulp.dest(paths.dest.cloud + "/email/template"));
+        .pipe(gulp.dest(paths.dest.cloud + "/email/template"));
 }
 
 gulp.task("clean:node", function(done){
@@ -155,9 +155,11 @@ gulp.task("node", ["build:node", "copy:node:build:sync"], function(){
     gutil.log("built and copied all files from scratch to the cloud directory");
 })
 
-gulp.task("start:dev", ["clean:node", "build:node", "copy:node:build:sync", "watch:node" ], function(){
+gulp.task("start", ["clean:node", "node", "watch:node" ], function(){
     // gulp.src("").pipe(shell(["mongod --dbpath=data/db"]));
+    gutil.log("Starting node server...")
     startServer();
+    gutil.log("Node server started.")
 })
 
 gulp.task("watch:node", function(){
@@ -167,6 +169,10 @@ gulp.task("watch:node", function(){
     gulp.watch(paths.src.nodetemplates, ["emails:watch"]);
 })
 
-gulp.task("start:prod", ["set-prod-node-env"], function(){
+gulp.task("start:prod", ["clean:node", "node", "watch:node"], function(){
+    startServer(prodEnvProps)
+})
+
+gulp.task("start:no-build", ["set-prod-node-env"], function(){
     startServer(prodEnvProps)
 })

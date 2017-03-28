@@ -2,18 +2,21 @@
 import gulp from "gulp"
 import gutil from "gulp-util"
 import webpack from "webpack"
+import del from "del"
+import {paths} from "./../../build-paths"
 import {getWebpackConfig} from "./util"
 
-gulp.task("bundle", ["version:bundle"], function(done){
+const bundle = (done, withStats=false) => {
     let webpackConfig = getWebpackConfig("prod")
     webpack(webpackConfig).run((err, stats) => {
         if (err) {
             var error = new gutil.PluginError("bundle", err);
-            gutil.log( gutil.colors.red(error));
+            gutil.log(gutil.colors.red(error));
             if (done) {
                 done();
             }
-        } else {
+        }
+        else {
             gutil.log("[webpack:build-prod]", stats.toString({
                 colors: true,
                 version: true,
@@ -30,12 +33,20 @@ gulp.task("bundle", ["version:bundle"], function(done){
                 done();
             }
         }
-    }
-);
+    })
+}
+
+gulp.task("bundle", ["set-prod-node-env", "version:bundle"], function(done){
+    bundle(done, false)
 })
 
+gulp.task("bundle:stats", ["set-prod-node-env", "version:bundle"], function(done){
+    bundle(done, true)
+})
 
-gulp.task("bundle:prod", ["set-prod-node-env", "bundle"]);
+gulp.task("clean", function(done){
+    return del([paths.build.node, paths.build.root, paths.dest.cloud, paths.dest.bundle]);
+});
 
 gulp.task("set-prod-node-env", function() {
     return process.env.NODE_ENV = "production";

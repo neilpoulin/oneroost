@@ -3,7 +3,7 @@ require("babel-polyfill")
 const path = require("path")
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const extractCss = new ExtractTextPlugin("styles.css");
+const extractCss = new ExtractTextPlugin({filename: "styles.css", allChunks: false});
 
 process.traceDeprecation = true
 
@@ -32,7 +32,16 @@ module.exports = {
                 test: /\.js[x]?$/,
                 exclude: /(node_modules|bower_components|cloud|build)/,
                 // include: [path.join(__dirname, paths.src_jsx)],
-                loaders: ["babel-loader?presets[]=react,presets[]=es2015"],
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        cacheDirectory: true,
+                        presets: [
+                            "react",
+                            "es2015"
+                        ]
+                    }
+                }
             },
             {
                 test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
@@ -45,15 +54,11 @@ module.exports = {
                     use: [
                         {
                             loader: "css-loader",
-                            options: {
-                                sourceMap: true
-                            }
+                            options: {sourceMap: true}
                         },
                         {
                             loader: "sass-loader",
-                            options: {
-                                sourceMap: true,
-                            }
+                            options: {sourceMap: true, }
                         },
                         {
                             loader: "sass-resources-loader",
@@ -75,14 +80,8 @@ module.exports = {
             Tether: "tether",
         }),
         new webpack.NoEmitOnErrorsPlugin(),
-        new webpack.DefinePlugin({
-            "process.env": {
-                NODE_ENV: JSON.stringify("production")
-            }
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            sourceMap: true
-        }),
+        new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("production")}}),
+        new webpack.optimize.UglifyJsPlugin({sourceMap: true}),
         new OptimizeCssAssetsPlugin()
     ],
     resolve: {

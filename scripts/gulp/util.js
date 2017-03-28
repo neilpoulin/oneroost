@@ -6,11 +6,9 @@ export const baseDir = path.join(__dirname, "..", "..")
 export const getWebpackConfig = (name="") => {
     let configPath = path.join(baseDir, `webpack.${name}.config.babel.js`)
     console.log("Getting Webpack config for " + name + " = " + configPath);
-    let config = require(configPath);
-    console.log(config)
+    let config = require(configPath);    
     return config;
 }
-
 
 export const runCommand = (command, log=false) => {
     command = `cd ${baseDir} && ${command}`
@@ -19,15 +17,12 @@ export const runCommand = (command, log=false) => {
             gutil.log(gutil.colors.yellow(stdout))
         }
 
-        gutil.log(stderr.toString({
-            colors: true
-        }));
+        gutil.log(stderr.toString({colors: true}));
         if (err !== null) {
             console.log("exec error: " + err);
         }
     });
 }
-
 
 export const string_src = (filename, string) => {
     var src = require("stream").Readable({ objectMode: true })

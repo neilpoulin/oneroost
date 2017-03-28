@@ -1,5 +1,5 @@
 require("console-stamp")(console, {
-    pattern:"HH:MM:sstt ddd yyyy-mm-dd",
+    pattern: "HH:MM:sstt ddd yyyy-mm-dd",
     colors: {
         stamp: "yellow",
         label: "white",
@@ -30,7 +30,7 @@ import AWSXRay from "aws-xray-sdk";
 import compression from "compression";
 import version from "./version.json";
 import Raven from "raven"
-Raven.config("https://50020b1e8db94c39be96db010cdbba4f:0f4123892fd44bfd92b85a003645fdc3@sentry.io/128546",{
+Raven.config("https://50020b1e8db94c39be96db010cdbba4f:0f4123892fd44bfd92b85a003645fdc3@sentry.io/128546", {
     environment: envUtil.getEnvName(),
     release: version.hash,
     tags: {
@@ -64,30 +64,14 @@ if (process.env.NODE_ENV === "production") {
     console.log("****PRODUCTION - USING BUNDLED ASSETS****")
     app.use(compression({level: 9}));
     app.use("/static", express.static(__dirname + "./../public"));
-} else {
-    console.log("***** DEVELOPMENT ENV **** ")
-    console.log("Using Hot Module Reloader")
-    var webpack = require("webpack");
-    var webpackConfig = require("./../webpack.dev.config.babel.js");
-    var publicPath = webpackConfig.output.publicPath;
-    console.log("public Path = ", publicPath)
-    var compiler = webpack(webpackConfig);
-    app.use(require("webpack-dev-middleware")(compiler, {
-        noInfo: false,
-        publicPath: publicPath,
-        stats: {colors: true}
-    }));
-
-    app.use(require("webpack-hot-middleware")(compiler, {
-        log: console.log,
-    }));
-    // app.use("/static/css", express.static(__dirname + "./../public/css"));
-    app.use("/static/images", express.static(__dirname + "./../public/images"));
-
+}
+else {
+    const devSetup = require("./dev");
+    devSetup.intitialize(app);    
 }
 
 app.get("/admin/emails/:templateName", function(req, resp){
-    TemplateUtil.renderSample(req.params.templateName).then(function(templates){
+    TemplateUtil.renderSample(req.params.templateName).then(templates => {
         resp.render("emailSample.ejs", templates);
     });
 });
@@ -98,19 +82,18 @@ app.get("/admin/emails/:templateName/:number", function(req, resp){
     });
 });
 
-
-app.get("*", function( request, response ){
+app.get("*", function(request, response){
     var env = envUtil.getEnv();
     var homePage = "index.ejs";
     var params = env.json;
-    response.render( homePage, params);
+    response.render(homePage, params);
 });
 
 io.on("connection", function(socket){
     //no op here - will join namespaced rooms later
-  socket.on("disconnect", function(){
+    socket.on("disconnect", function(){
     //no op
-  });
+    });
 }).on("error", function(error){
     console.log("recieved a websocket error: ", error);
 });
@@ -140,8 +123,7 @@ getLiveQueryServer(server);
 
 TemplateUtil.initialize()
 
-function getParseDashboard()
-{
+function getParseDashboard(){
     return new ParseDashboard(ParseDashboardConfig);
 }
 
@@ -153,8 +135,7 @@ function getLiveQueryServer(httpServer){
     });
 }
 
-function getParseServer()
-{
+function getParseServer(){
     return new ParseServer({
         databaseURI: envUtil.getDatabaseUrl(),
         cloud: "main.js",
@@ -170,7 +151,7 @@ function getParseServer()
         publicServerURL: envUtil.getPublicServerUrl(),
         appName: "OneRoost",
         emailAdapter: SESParseAdapter({}),
-        filesAdapter:  new S3Adapter(
+        filesAdapter: new S3Adapter(
             envUtil.getAwsId(),
             envUtil.getAwsSecretId(),
             "parse-direct-access",

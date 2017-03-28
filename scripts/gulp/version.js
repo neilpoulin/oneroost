@@ -4,10 +4,6 @@ import {getHashFromAwsPipeline} from "./git"
 import {string_src} from "./util"
 import {paths} from "./../../build-paths";
 
-gulp.task("version-test", () => {
-    console.log(getHashFromAwsPipeline())
-})
-
 gulp.task("version", ["version:src", "version:bundle", "version:node"])
 
 gulp.task("version:src", function () {
@@ -42,7 +38,6 @@ gulp.task("version:bundle", function(){
         .pipe(gulp.dest(paths.dest.frontendjs))
     });
 })
-
 
 gulp.task("version:node", function(){
     var pkg = require("./../../package.json")
