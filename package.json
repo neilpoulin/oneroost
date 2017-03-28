@@ -8,7 +8,7 @@
     "dashboard": "parse-dashboard --config parse-dashboard-config.json",
     "build": "gulp install",
     "debug": "node debug main.js",
-    "start": "gulp install && node main.js oneroost-npm",
+    "start": "node main.js oneroost-npm",
     "stop": "pkill --signal SIGINT oneroost-npm"
   },
   "repository": {
