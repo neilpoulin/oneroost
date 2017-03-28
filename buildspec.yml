@@ -37,7 +37,7 @@ phases:
       - echo Build started on `date`
       - echo starting the gulp build process
       - gulp version
-      - gulp bundle
+      - gulp install
       - echo source directory = $CODEBUILD_SRC_DIR
   post_build:
     commands:

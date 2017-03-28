@@ -1,24 +1,24 @@
 
-export const bootstrapRoot = "./node_modules/bootstrap-sass/";
-export const bootstrapPaths = {
+var bootstrapRoot = "./node_modules/bootstrap-sass/";
+var bootstrapPaths = {
     fonts: bootstrapRoot + "assets/fonts/**/*",
     stylesheets: bootstrapRoot + "assets/stylesheets"
 };
 
-export const fontAwesomeRoot = "./node_modules/font-awesome/";
-export const fontAwesomePaths = {
+var fontAwesomeRoot = "./node_modules/font-awesome/";
+var fontAwesomePaths = {
     fonts: fontAwesomeRoot + "fonts/**/*",
     stylesheets: fontAwesomeRoot + "scss"
 };
 
-export const materialColorsRoot = "./node_modules/sass-material-colors/";
-export const GoogleMaterialColors = {stylesheets: materialColorsRoot + "sass"};
+var materialColorsRoot = "./node_modules/sass-material-colors/";
+var GoogleMaterialColors = {stylesheets: materialColorsRoot + "sass"};
 
-export const reactModalBootstrap = {stylesheets: "./node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less"};
+var reactModalBootstrap = {stylesheets: "./node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less"};
 
-export const infiniteCalendar = {stylesheets: "./node_modules/react-infinite-calendar/styles.css"}
+var infiniteCalendar = {stylesheets: "./node_modules/react-infinite-calendar/styles.css"}
 
-export const zipPaths = [
+var zipPaths = [
     "./.ebextensions/**/*",
     "./.elasticbeanstalk/**/*",
     "./buildspec.yml",
@@ -29,7 +29,7 @@ export const zipPaths = [
     "./yarn.lock"
 ]
 
-export const paths = {
+var paths = {
     src_jsx: "src/jsx",
     src_node: "src/node",
     src: {
@@ -69,3 +69,5 @@ export const paths = {
         scriptName: "bundle.js"
     }
 };
+
+module.exports.paths = paths;

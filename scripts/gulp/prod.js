@@ -1,10 +1,10 @@
 // Prod tasks - bundle and serve bundles
-import gulp from "gulp"
-import gutil from "gulp-util"
-import webpack from "webpack"
-import del from "del"
-import {paths} from "./../../build-paths"
-import {getWebpackConfig} from "./util"
+var gulp = require("gulp")
+var gutil = require("gulp-util")
+var webpack = require("webpack")
+var del = require("del")
+var {paths} = require("./../../build-paths")
+var {getWebpackConfig} = require("./util")
 
 const bundle = (done, withStats=false) => {
     let webpackConfig = getWebpackConfig("prod")
@@ -39,6 +39,8 @@ const bundle = (done, withStats=false) => {
 gulp.task("bundle", ["set-prod-node-env", "version:bundle"], function(done){
     bundle(done, false)
 })
+
+gulp.task("install", ["bundle", "node"]);
 
 gulp.task("bundle:stats", ["set-prod-node-env", "version:bundle"], function(done){
     bundle(done, true)

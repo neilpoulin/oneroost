@@ -6,8 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dashboard": "parse-dashboard --config parse-dashboard-config.json",
+    "build": "gulp install",
     "debug": "node debug main.js",
-    "start": "node main.js oneroost-npm",
+    "start": "gulp install && node main.js oneroost-npm",
     "stop": "pkill --signal SIGINT oneroost-npm"
   },
   "repository": {

@@ -1,11 +1,11 @@
-import gulp from "gulp"
-import gutil from "gulp-util"
-import git from "gulp-git"
-import bump from "gulp-bump"
-import filter from "gulp-filter"
-import tagVersion from "gulp-tag-version"
+var gulp = require("gulp")
+var gutil = require("gulp-util")
+var git = require("gulp-git")
+var bump = require("gulp-bump")
+var filter = require("gulp-filter")
+var tagVersion = require("gulp-tag-version")
 
-export const getHashFromAwsPipeline = () => {
+module.exports.getHashFromAwsPipeline = () => {
     let pipeline = require("./../../pipeline.json");
     try{
         return pipeline.stageStates[0]

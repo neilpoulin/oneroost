@@ -1,17 +1,20 @@
-import path from "path"
-import gutil from "gulp-util"
-import {exec} from "child_process"
-export const baseDir = path.join(__dirname, "..", "..")
+var path = require("path")
+var gutil = require("gulp-util")
+var exec = require("child_process").exec
 
-export const getWebpackConfig = (name="") => {
+var baseDir = path.join(__dirname, "..", "..")
+
+module.exports.baseDir = baseDir
+
+module.exports.getWebpackConfig = (name="") => {
     let configPath = path.join(baseDir, `webpack.${name}.config.babel.js`)
     console.log("Getting Webpack config for " + name + " = " + configPath);
-    let config = require(configPath);    
+    let config = require(configPath);
     return config;
 }
 
-export const runCommand = (command, log=false) => {
-    command = `cd ${baseDir} && ${command}`
+module.exports.runCommand = function(command, log){
+    command = "cd " + baseDir + " && " + "command"
     exec(command, function (err, stdout, stderr) {
         if (log){
             gutil.log(gutil.colors.yellow(stdout))
@@ -24,7 +27,7 @@ export const runCommand = (command, log=false) => {
     });
 }
 
-export const string_src = (filename, string) => {
+module.exports.string_src = function(filename, string){
     var src = require("stream").Readable({ objectMode: true })
     src._read = function () {
         this.push(new gutil.File({

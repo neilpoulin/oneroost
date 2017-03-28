@@ -1,13 +1,13 @@
-import gulp from "gulp"
-import gutil from "gulp-util"
-import {paths} from "./../../build-paths"
-import del from "del"
-import plumber from "gulp-plumber"
-import babel from "gulp-babel"
-import nodemon from "gulp-nodemon"
-import webpack from "webpack"
-import {getWebpackConfig} from "./util"
-
+var gulp = require("gulp")
+var gutil = require("gulp-util")
+var {paths} = require("./../../build-paths")
+var del = require("del")
+var plumber = require("gulp-plumber")
+var babel = require("gulp-babel")
+var nodemon = require("gulp-nodemon")
+var webpack = require("webpack")
+var util = require("./util")
+var getWebpackConfig = util.getWebpackConfig
 var devEnvProps = {
     AWS_PROFILE: "oneroost",
     GA_TRACKING_CODE: "UA-87950724-3",
@@ -152,7 +152,7 @@ gulp.task("build:node", ["clean:node", "transpile:node:clean", "email:styles:cle
 })
 
 gulp.task("node", ["build:node", "copy:node:build:sync"], function(){
-    gutil.log("built and copied all files from scratch to the cloud directory");
+    gutil.log("built and copied all files = require( scratch to the cloud directory");
 })
 
 gulp.task("start", ["clean:node", "node", "watch:node" ], function(){
