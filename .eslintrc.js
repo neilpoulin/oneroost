@@ -87,10 +87,10 @@ module.exports = {
             "ArrayExpression": "first",
             "ObjectExpression": 1
         }],
-        "object-curly-newline": ["error", {
-            "ObjectExpression": { multiline: true, minProperties: 2 },
-            "ObjectPattern": { multiline: true, minProperties: 2 }
-        }],
+        // "object-curly-newline": ["error", {
+        //     "ObjectExpression": { multiline: true, minProperties: 2 },
+        //     "ObjectPattern": { multiline: true, minProperties: 2 }
+        // }],
         "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 1 }],
         "comma-spacing": ["error", { "before": false, "after": true }],
         "space-in-parens": ["error", "never"],

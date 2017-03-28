@@ -11,23 +11,7 @@ var fontAwesomePaths = {
     stylesheets: fontAwesomeRoot + "scss"
 };
 
-var materialColorsRoot = "./node_modules/sass-material-colors/";
-var GoogleMaterialColors = {stylesheets: materialColorsRoot + "sass"};
-
 var reactModalBootstrap = {stylesheets: "./node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less"};
-
-var infiniteCalendar = {stylesheets: "./node_modules/react-infinite-calendar/styles.css"}
-
-var zipPaths = [
-    "./.ebextensions/**/*",
-    "./.elasticbeanstalk/**/*",
-    "./buildspec.yml",
-    "./main.js",
-    "./cloud/**/*",
-    "./package.json",
-    "./public/**/*",
-    "./yarn.lock"
-]
 
 var paths = {
     src_jsx: "src/jsx",

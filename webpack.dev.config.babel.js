@@ -20,7 +20,7 @@ module.exports = {
         filename: "[name].js",
         publicPath: "http://dev.oneroost.com/static/bundle",
     },
-    devtool: "eval-cheap-module-source-map",        
+    devtool: "eval-cheap-module-source-map",
     module: {
         rules: [
             {
@@ -105,6 +105,6 @@ module.exports = {
     ],
     resolve: {
         extensions: [".js", ".jsx", ".json", ".scss", ".css"],
-        modules: ["jsx", "modules", "ducks", "util", "admin", "payment", "deal", "form", "modules/dashboard", "navigation", "node_modules", "models", "actions", "reducers", "store", "middleware", "version"],
+        modules: ["jsx", "modules", "ducks", "util", "admin", "company", "payment", "deal", "form", "modules/dashboard", "navigation", "node_modules", "models", "actions", "reducers", "store", "middleware", "version"],
     },
 };
