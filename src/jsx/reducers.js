@@ -12,6 +12,7 @@ import templates from "ducks/templates"
 import invitationsByStakeholder from "ducks/invitationsByStakeholder"
 import payment from "ducks/payment"
 import config from "ducks/config"
+import companyPagesByUrl from "ducks/companyPagesByUrl"
 
 const reducers = combineReducers({
     entities,
@@ -27,6 +28,7 @@ const reducers = combineReducers({
     invitationsByStakeholder,
     payment,
     config,
+    companyPagesByUrl
 });
 
 export default reducers;

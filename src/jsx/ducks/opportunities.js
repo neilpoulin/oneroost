@@ -40,7 +40,7 @@ export default function reducer(state=initialState, action){
         case ADD_OPPORTUNITY:
             var stakeholder = action.payload;
             var dealId = stakeholder.get("deal").get("objectId")
-            if ( stakeholder.get("active") !== false ){
+            if (stakeholder.get("active") !== false){
                 state = state.set("deals", state.get("deals").add(dealId))
                 state = state.set("archivedDeals", state.get("archivedDeals").delete(dealId))
             }
@@ -81,7 +81,7 @@ const opportunitiesQuery = (userId) => {
     query.include("deal.createdBy")
     query.include("deal.readyRoostUser")
     query.include("deal.template")
-    query.equalTo("user", User.Pointer(userId) )
+    query.equalTo("user", User.Pointer(userId))
     query.equalTo("inviteAccepted", true)
     return query
 }
@@ -129,7 +129,7 @@ export const unarchiveOpportunity = (stakeholder) => (dispatch, getState) => {
     });
 }
 
-export const subscribeOpportunities = (userId) => (dispatch, getState)=> {
+export const subscribeOpportunities = (userId) => (dispatch, getState) => {
     log.info("subscribing to comments")
     let query = opportunitiesQuery(userId)
     dispatch(addSubscription("OPPORTUNITIES", userId, query, handler({
@@ -139,7 +139,7 @@ export const subscribeOpportunities = (userId) => (dispatch, getState)=> {
 
 export const loadOpportunities = (userId, force=false) => (dispatch, getState) => {
     let {opportunitiesByUser} = getState();
-    if ( opportunitiesByUser.has(userId) && opportunitiesByUser.get(userId).get("hasLoaded") && !opportunitiesByUser.get(userId).get("isLoading") && !force ){
+    if (opportunitiesByUser.has(userId) && opportunitiesByUser.get(userId).get("hasLoaded") && !opportunitiesByUser.get(userId).get("isLoading") && !force){
         log.warn("not loading opportunities as they were already fetched")
         return null
     }
@@ -151,34 +151,36 @@ export const loadOpportunities = (userId, force=false) => (dispatch, getState) =
 
     let query = opportunitiesQuery(userId)
 
-    query.find().then(stakeholders => {
-        let active = stakeholders.filter( obj => obj.get("active") !== false );
-        let archived = stakeholders.filter( obj => obj.get("active") === false );
+    query.find()
+        .then(stakeholders => {
+            let active = stakeholders.filter(obj => obj.get("active") !== false);
+            let archived = stakeholders.filter(obj => obj.get("active") === false);
 
-        let deals = Set(active.map(stakeholder => Map(stakeholder.get("deal").toJSON())));
-        let archivedDeals = Set(archived.map(stakeholder => Map(stakeholder.get("deal").toJSON())));
+            let deals = Set(active.map(stakeholder => Map(stakeholder.get("deal").toJSON())));
+            let archivedDeals = Set(archived.map(stakeholder => Map(stakeholder.get("deal").toJSON())));
 
-        let allDeals = deals.concat(archivedDeals);
-        let entities = normalize(allDeals.toJS(), [Deal.Schema]).entities || {};
-        dispatch({
-            type: OPPORTUNITY_LOAD_SUCCESS,
-            userId: userId,
-            entities: entities,
-            payload: Map({
-                deals,
-                archivedDeals
+            let allDeals = deals.concat(archivedDeals);
+            let entities = normalize(allDeals.toJS(), [Deal.Schema]).entities || {};
+            dispatch({
+                type: OPPORTUNITY_LOAD_SUCCESS,
+                userId: userId,
+                entities: entities,
+                payload: Map({
+                    deals,
+                    archivedDeals
+                })
             })
         })
-    }).catch(error => {
-        log.error(error);
-        dispatch({
-            type: OPPORTUNITY_LOAD_ERROR,
-            userId: userId,
-            error: {
-                message: "Failed to fetch opportunities",
-                level: "ERROR",
-                error: error
-            }
+        .catch(error => {
+            log.error(error);
+            dispatch({
+                type: OPPORTUNITY_LOAD_ERROR,
+                userId: userId,
+                error: {
+                    message: "Failed to fetch opportunities",
+                    level: "ERROR",
+                    error: error
+                }
+            })
         })
-    })
 }
