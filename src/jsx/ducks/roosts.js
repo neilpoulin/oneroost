@@ -1,4 +1,3 @@
-// import { createAction } from "redux-actions";
 // import merge from "lodash/merge"
 import Parse from "parse"
 import Deal from "models/Deal";

@@ -12,17 +12,11 @@ export const fontAwesomePaths = {
 };
 
 export const materialColorsRoot = "./node_modules/sass-material-colors/";
-export const GoogleMaterialColors = {
-    stylesheets: materialColorsRoot + "sass"
-};
+export const GoogleMaterialColors = {stylesheets: materialColorsRoot + "sass"};
 
-export const reactModalBootstrap = {
-    stylesheets: "./node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less"
-};
+export const reactModalBootstrap = {stylesheets: "./node_modules/react-bootstrap-modal/lib/styles/rbm-patch.less"};
 
-export const infiniteCalendar = {
-    stylesheets: "./node_modules/react-infinite-calendar/styles.css"
-}
+export const infiniteCalendar = {stylesheets: "./node_modules/react-infinite-calendar/styles.css"}
 
 export const zipPaths = [
     "./.ebextensions/**/*",
@@ -42,10 +36,11 @@ export const paths = {
         root: "./src",
         webpackModules: "./src/jsx",
         jsEntry: "./src/jsx/index.jsx",
-        frontend: ["./src/jsx/**/*.jsx","./src/jsx/**/*.js"],
+        frontend: ["./src/jsx/**/*.jsx", "./src/jsx/**/*.js"],
         node: ["./src/node/**/*.js"],
-        nodetemplates: ["./src/node/**/*.hbs", "./src/node/**/*.scss", "./src/node/**/*.json", "./src/node/**/*.ejs" ],
+        nodetemplates: ["./src/node/**/*.hbs", "./src/node/**/*.scss", "./src/node/**/*.json" ],
         gulpfile: ["./gulpfile.babel.js"],
+        nodeview: ["./src/node/**/*.ejs"],
         styles: ["./src/scss/**/*.scss"],
         styleEntry: "./src/scss/index.scss",
         all: ["./src/**/*.js", "./src/**/*.jsx", "./cloud/**/*.js", "./gulpfile.js"],
@@ -67,6 +62,7 @@ export const paths = {
         root: "./public",
         css: "./public/css",
         frontendjs: "./public/bundle",
+        bundle: "./public/bundle",
         cloud: "./cloud",
         fonts: "./public/css/fonts",
         styleName: "styles.css",

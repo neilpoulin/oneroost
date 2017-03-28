@@ -1,9 +1,8 @@
 <script src="https://cdn.ravenjs.com/3.10.0/raven.min.js" crossorigin="anonymous"></script>
-<script src="/static/bundle/version.js" type="application/javascript"></script>
 <script type="text/javascript">
     window.OneRoost = {};
     OneRoost.Config = <%-env%>;
-
+    var version = OneRoost.Config.version;
     var env = OneRoost.Config.environment;
     if ( env.indexOf("prod") != -1 ){
         env = "prod"
@@ -12,19 +11,19 @@
     var ravenCfg = {
         environment: env,
     }
-    console.log("Version from config.ejs", oneroostVersion)
-    if (oneroostVersion) {
-        ravenCfg.release = oneroostVersion.hash;
+    console.log("Version from env ", version)
+    if (version) {
+        ravenCfg.release = version.hash;
         ravenCfg.tags = {
-            git_commit: oneroostVersion.hash,
-            git_tag: oneroostVersion.version,
+            git_commit: version.hash,
+            git_tag: version.version,
             platform: "browser"
         }
 
     }
     Raven.config('https://50020b1e8db94c39be96db010cdbba4f@sentry.io/128546', ravenCfg).install()
 
-    if (!oneroostVersion) {
+    if (!version) {
         console.warn("No version information found!");
     }
 

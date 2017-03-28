@@ -1,16 +1,18 @@
-$fa-font-path: "./fonts";
+// $fa-font-path: "./fonts";
+$bootstrap-sass-asset-helper: true;
+$fa-font-path: "~font-awesome/fonts";
+@import "~font-awesome/scss/font-awesome";
+@import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+@import "./sass-resources";
+
+
 @import "mixins";
 @import "variables";
 @import "fonts";
-@import "bootstrap";
+
 @import "bootstrap-custom/custom";
-@import "font-awesome";
 
-@import "sass-material-colors";
-@import "sass-material-colors-classes";
-@import "sass-material-colors-placeholders";
-
-@import "react-select/default";
+@import "~react-select/scss/default.scss";
 
 @import "components";
 

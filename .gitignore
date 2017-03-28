@@ -27,6 +27,7 @@ _site
 *.esproj
 *.sublime-project
 *.sublime-workspace
+.happypack/
 nbproject
 Thumbs.db
 .tags*
@@ -47,6 +48,7 @@ node_modules
 
 db/data/*
 build/
+dist/
 logs/
 parse-server/
 cloud/
@@ -56,6 +58,7 @@ src/node/email/template/style/target
 pipelineVersion.*
 pipeline.*
 codebuild_build.*
+stats.json
 
 # Elastic Beanstalk Files
 .elasticbeanstalk

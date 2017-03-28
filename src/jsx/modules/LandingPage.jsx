@@ -2,10 +2,8 @@ import React, { PropTypes } from "react"
 import { withRouter } from "react-router"
 import RoostNav from "RoostNav"
 
-const LandingPage = withRouter( React.createClass({
-    PropTypes: {
-        location: PropTypes.object.isRequired
-    },
+const LandingPage = withRouter(React.createClass({
+    PropTypes: {location: PropTypes.object.isRequired},
     componentDidMount(){
         document.title = "OneRoost"
     },
@@ -24,6 +22,6 @@ const LandingPage = withRouter( React.createClass({
         </div>
         return page;
     }
-}) )
+}))
 
 export default LandingPage
