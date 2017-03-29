@@ -12,21 +12,23 @@ import templates from "ducks/templates"
 import invitationsByStakeholder from "ducks/invitationsByStakeholder"
 import payment from "ducks/payment"
 import config from "ducks/config"
+import brandsByUrl from "ducks/brandsByUrl"
 
 const reducers = combineReducers({
-    entities,
-    roosts,
-    opportunitiesByUser,
-    user,
-    subscriptions,
-    routing,
-    notifications,
-    dashboard,
-    templatesByUser,
-    templates,
-    invitationsByStakeholder,
-    payment,
+    brandsByUrl,
     config,
+    dashboard,
+    entities,
+    invitationsByStakeholder,
+    notifications,
+    opportunitiesByUser,
+    payment,
+    roosts,
+    routing,
+    subscriptions,
+    templates,
+    templatesByUser,
+    user,
 });
 
 export default reducers;

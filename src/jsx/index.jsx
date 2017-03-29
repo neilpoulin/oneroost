@@ -40,6 +40,7 @@ import PrivacyPage from "PrivacyPage"
 import PlansPage from "payment/PlansPage"
 import configureStore from "./store/configureStore"
 import { syncHistoryWithStore } from "react-router-redux"
+import BrandPage from "brand/BrandPage"
 Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;
 Parse.serverURL = window.location.origin + "/parse";
@@ -47,9 +48,9 @@ const store = configureStore()
 ReactGA.initialize(OneRoost.Config.gaTrackingId, getGaOptions());
 const history = syncHistoryWithStore(browserHistory, store)
 // let unsubscribe =
-store.subscribe(() =>{
+store.subscribe(() => {
 
- })
+})
 
 function getGaOptions(){
     var gaOptions = {};
@@ -63,11 +64,10 @@ function logPageView() {
     ReactGA.pageview(window.location.pathname);
 }
 
-function requireAuthOrParam( nextState, replace ){
+function requireAuthOrParam(nextState, replace){
     var userId = store.getState().user.get("userId")
     let {accept} = nextState.location.query;
-    if (!userId && !!accept )
-    {
+    if (!userId && !!accept) {
         replace({
             pathname: "/invitations/" + accept,
             state: { nextPathname: nextState.location.pathname }
@@ -79,7 +79,7 @@ function requireAuthOrParam( nextState, replace ){
             state: { nextPathname: nextState.location.pathname }
         })
     }
-    else if ( !!accept ){
+    else if (!!accept){
         replace({
             pathname: nextState.location.pathname,
             state: { nextPathname: nextState.location.pathname }
@@ -89,7 +89,7 @@ function requireAuthOrParam( nextState, replace ){
 
 function requireAdmin(nextState, replace){
     let isAdmin = store.getState().user.get("admin")
-    if ( !isAdmin ){
+    if (!isAdmin){
         replace({
             pathname: "/unauthorized",
             state: { nextPathname: nextState.location.pathname || "/unauthorized" }
@@ -99,8 +99,7 @@ function requireAdmin(nextState, replace){
 
 function requireAnonymous(nextState, replace){
     let isLoggedIn = store.getState().user.get("isLoggedIn")
-    if ( isLoggedIn )
-    {
+    if (isLoggedIn) {
         replace({
             pathname: "/roosts",
             state: { nextPathname: nextState.location.pathname || "/roosts" }
@@ -162,6 +161,7 @@ render(
                     <Route path="emails" component={EmailTemplates}/>
                 </Route>
                 <Route path="/unauthorized" component={UnauthorizedPage}></Route>
+                <Route path=":vanityUrl" component={BrandPage}></Route>
             </Route>
         </Router>
     </Provider>

@@ -9,7 +9,7 @@ export const initialState = Map({})
 
 export default function reducer(state=initialState, action){
     let stakeholderId = action.stakeholderId
-    if ( !stakeholderId && actions.indexOf(action.type) === -1 ){
+    if (!stakeholderId && actions.indexOf(action.type) === -1){
         return state
     }
     state = state.set(stakeholderId, invitationReducer(state.get(stakeholderId), action))
