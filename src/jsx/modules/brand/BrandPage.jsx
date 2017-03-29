@@ -4,6 +4,7 @@ import {initialState, loadPage} from "ducks/brand"
 import LoadingTakeover from "LoadingTakeover"
 import TemplateLink from "TemplateLink"
 import {Link} from "react-router"
+import FourOhFourPage from "FourOhFourPage"
 
 const BrandPage = React.createClass({
     propTypes: {
@@ -15,7 +16,11 @@ const BrandPage = React.createClass({
         this.props.load();
     },
     render () {
-        const {isLoading, logoUrl, templates, pageTitle} = this.props;
+        const {isLoading, logoUrl, templates, pageTitle, error} = this.props;
+        if (error){
+            return <FourOhFourPage/>
+        }
+
         if (isLoading){
             return <LoadingTakeover/>
         }
@@ -35,7 +40,7 @@ const BrandPage = React.createClass({
                     {$title}
                 </div>
 
-                <div className="intro">
+                <div className="intro lead">
                     <b>Marketing Vendor Categories:</b> Begin proposal process by clicking into a category
                 </div>
                 <div className="categories">

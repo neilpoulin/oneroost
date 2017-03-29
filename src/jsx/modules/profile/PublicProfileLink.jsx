@@ -1,7 +1,6 @@
 import React, { PropTypes } from "react"
 import NavLink from "NavLink"
 
-
 const PublicProfileLink = React.createClass({
     propTypes: {
         userId: PropTypes.string.isRequired,
@@ -17,7 +16,7 @@ const PublicProfileLink = React.createClass({
     },
     render () {
         let content = this.props.children;
-        if ( !content ){
+        if (!content){
             content = `${window.location.origin}/proposals/${this.props.userId}`
         }
 

@@ -14,7 +14,7 @@ const TemplateLink = React.createClass({
                 <span className="title">{template.category}</span>
                 <ul className="list-unstyled list">
                     {template.services.map((service, i) =>
-                        <li key={`service_${i}`}>{service}</li>                
+                        <li key={`service_${i}`}>{service}</li>
                     )}
                 </ul>
             </Link>

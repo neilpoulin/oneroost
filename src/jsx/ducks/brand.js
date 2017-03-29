@@ -39,9 +39,11 @@ export default function reducer(state=initialState, action){
             state = state.set("showRoostNav", !!payload.showRoostNav)
             state = state.set("templates", payload.templates);
             state = state.set("companyName", payload.companyName);
+            break;
         case LOAD_PAGE_ERROR:
             state = state.set("error", action.error)
             state = state.set("isLoading", false)
+            break;
         default:
             break;
     }
@@ -66,6 +68,18 @@ export const loadPage = (vanityUrl) => (dispatch, getState) => {
 
     getBrandPageByUrl(vanityUrl)
         .then(page => {
+            if (!page){
+                log.warn("No page found for " + vanityUrl)
+                dispatch({
+                    type: LOAD_PAGE_ERROR,
+                    vanityUrl,
+                    error: {
+                        level: "ERROR",
+                        message: "No page found for url " + vanityUrl
+                    }
+                })
+                return;
+            }
             page = page.toJSON()
             dispatch({
                 type: LOAD_PAGE_SUCCESS,
@@ -78,6 +92,7 @@ export const loadPage = (vanityUrl) => (dispatch, getState) => {
             // TODO: handle not found errors, present a friendly page
             dispatch({
                 type: LOAD_PAGE_ERROR,
+                vanityUrl,
                 error: {
                     level: "ERROR",
                     message: "Failed to load brand page",
