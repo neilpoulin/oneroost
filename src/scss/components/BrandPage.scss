@@ -1,0 +1,97 @@
+.BrandPage{
+    footer{
+        margin-top: 5rem;
+    }
+    .roostLink{
+        color: $roostDarkGray;
+        &:hover{
+            text-decoration: none;
+            color: $roostOrange;
+        }
+    }
+
+    .intro{
+        margin-bottom: 2rem;
+    }
+
+    .header{
+        margin-bottom: 2rem;
+        position: relative;
+        height: 10rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .title{
+            font-size: 5rem;
+            font-weight: 300;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        .brandLogo{
+            max-height: 100%;
+            position: absolute;
+            left: 0;
+            &:last-child{
+                position: relative;
+            }
+        }
+    }
+
+
+    .categories{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        .category{
+            width: 32%;
+            margin-bottom: 2%;
+            min-height: 15rem;
+            border: 1px solid;
+            box-sizing: border-box;
+            border: $borderThick;
+            color: black;
+            transition: all .3s ease;
+            border-radius: 5px;
+            &:hover{
+                text-decoration: none;
+                border-color: $roostOrange;
+                .title{
+                    background-color: $roostOrange;
+                }
+            }
+            .title{
+                display: block;
+                text-align: center;
+                padding: 5px;
+                font-size: 1.5em;
+                border-bottom: $borderThin;
+                margin-bottom: 5px;
+                background-color: $roostDarkGray;
+                color: $white;
+            }
+            .list{
+                padding: 0px 10px 10px 10px;
+                text-align: center;
+            }
+        }
+    }
+}
+
+@media (max-width: $screen-md-min) {
+    .BrandPage{
+        .categories{
+            .category{
+                width: 49%;
+            }
+        }
+    }
+}
+
+@media (max-width: $screen-sm-min) {
+    .BrandPage{
+        .categories{
+            .category{
+                width: 100%;
+            }
+        }
+    }
+}

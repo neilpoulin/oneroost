@@ -40,7 +40,7 @@ import PrivacyPage from "PrivacyPage"
 import PlansPage from "payment/PlansPage"
 import configureStore from "./store/configureStore"
 import { syncHistoryWithStore } from "react-router-redux"
-import CustomCompanyPage from "company/CustomCompanyPage"
+import BrandPage from "brand/BrandPage"
 Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;
 Parse.serverURL = window.location.origin + "/parse";
@@ -161,7 +161,7 @@ render(
                     <Route path="emails" component={EmailTemplates}/>
                 </Route>
                 <Route path="/unauthorized" component={UnauthorizedPage}></Route>
-                <Route path=":companyName" component={CustomCompanyPage}></Route>
+                <Route path=":vanityUrl" component={BrandPage}></Route>
             </Route>
         </Router>
     </Provider>

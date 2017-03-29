@@ -11,8 +11,6 @@ export const UPDATE_USER = "oneroost/user/UPADATE_USER"
 export const LOGIN_SUCCESS = "oneroost/user/LOGIN_SUCCESS"
 export const LOGOUT = "oneroost/user/LOGOUT"
 
-
-
 const initialState = Map({
     isLoading: false,
     hasLoaded: false,
@@ -50,7 +48,6 @@ export default function reducer(state=initialState, action){
     return state;
 }
 
-
 export const loginSuccessAction = (user) => {
     Raven.setUserContext({
         email: user.email,
@@ -68,25 +65,27 @@ export const loginSuccessAction = (user) => {
 
 export const loadCurrentUser = () => (dispatch, getState) => {
     let currentUser = RoostUtil.toJSON(Parse.User.current());
-    if ( !currentUser ){
+    if (!currentUser){
         return null;
     }
     dispatch(loginSuccessAction(currentUser))
 }
 
-export const userLoggedIn = ( user ) => (dispatch, getState) => {
-    if ( !user ){
+export const userLoggedIn = (user) => (dispatch, getState) => {
+    if (!user){
         return null
     }
     dispatch(loginSuccessAction(user))
 }
 
 export const userLogOut = () => (dispatch, getState) => {
-    Parse.User.logOut().then((result) => {
-        dispatch({
-            type: LOGOUT,
+    Parse.User.logOut()
+        .then((result) => {
+            dispatch({
+                type: LOGOUT,
+            })
         })
-    }).catch(log.error);
+        .catch(log.error);
 }
 
 export const updateUserAction = (user) => {
@@ -102,21 +101,24 @@ export const updateUserAction = (user) => {
 export const saveUser = (updates) => (dispatch, getState) => {
     let currentUser = Parse.User.current();
     currentUser.set(updates)
-    currentUser.save().then(saved => {
-        dispatch(updateUserAction(saved))
-    }).catch(log.error)
+    currentUser.save()
+        .then(saved => {
+            dispatch(updateUserAction(saved))
+        })
+        .catch(log.error)
 }
 
 export const logInAsUser = (userId, password) => (dispatch, getState) => {
     return new Promise((resolve, reject) => {
         Parse.Cloud.run("getUserWithEmail", {userId: userId})
-        .then(function({user}){
-            let emailUser = user.toJSON()
-            let email = emailUser.email
-            Parse.User.logIn(email, password).then(user => {
-                resolve(dispatch(userLoggedIn(user.toJSON())))
+            .then(function({user}){
+                let emailUser = user.toJSON()
+                let email = emailUser.email
+                Parse.User.logIn(email, password).then(user => {
+                    resolve(dispatch(userLoggedIn(user.toJSON())))
+                })
             })
-        }).catch(reject);
+            .catch(reject);
     })
 }
 
@@ -124,10 +126,10 @@ export const createPassword = (user, password, allowAnonymous=false) => (dispatc
     const state = getState()
     const userId = user.objectId;
     return new Promise((resolve, reject) => {
-        if ( state.user.userId !== user.objectId && !allowAnonymous ){
+        if (state.user.userId !== user.objectId && !allowAnonymous){
             reject({error: "Unauthorized to change password for " + userId})
         }
-        else if ( !user.passwordChangeRequired ){
+        else if (!user.passwordChangeRequired){
             reject({error: "No password change required, " + userId})
         }
         resolve(Parse.Cloud.run("saveNewPassword", {

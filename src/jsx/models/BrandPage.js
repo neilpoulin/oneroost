@@ -2,13 +2,12 @@ import Parse from "parse"
 import { schema } from "normalizr"
 import {copyJSON} from "RoostUtil"
 import {processStrategy, idAttribute} from "models/modelUtil"
-import * as User from "models/User"
 
-export const className = "Account"
-const Account = Parse.Object.extend(className);
+export const className = "BrandPage"
+const BrandPage = Parse.Object.extend(className);
 
 exports.Schema = new schema.Entity(
-    "accounts", {
+    "brands", {
 
     },
     {
@@ -21,20 +20,20 @@ export const Pointer = (arg) => {
     if (!arg){
         return null
     }
-    let accountId = arg
+    let brandPageId = arg
     if (typeof arg == "object"){
-        accountId = arg.objectId || arg.id
+        brandPageId = arg.objectId || arg.id
     }
     else if (typeof arg == "string"){
-        accountId = arg
+        brandPageId = arg
     }
-    return Account.createWithoutData(accountId);
+    return BrandPage.createWithoutData(brandPageId);
 }
 
 export const fromJS = (json) => {
-    let account = copyJSON(json);
-    account.createdBy = User.Pointer(account.createdBy)
-    return new Account(account)
+    let brand = copyJSON(json);
+
+    return new BrandPage(brand)
 }
 
-export default Account;
+export default BrandPage;

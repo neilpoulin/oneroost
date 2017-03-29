@@ -47,7 +47,7 @@ const getTemplateById = (templateId) => {
 
 export const loadTemplate = (templateId, force=false) => (dispatch, getState) => {
     let {templates} = getState();
-    if ( templates.has(templateId) && templates.get(templateId).get("hasLoaded") && !force ){
+    if (templates.has(templateId) && templates.get(templateId).get("hasLoaded") && !force){
         return null
     }
     dispatch({
@@ -55,39 +55,40 @@ export const loadTemplate = (templateId, force=false) => (dispatch, getState) =>
         templateId: templateId
     })
 
-    getTemplateById(templateId).then(template => {
-        template = template.toJSON()
-        let entities = normalize(template, Template.Schema).entities || {}
-        dispatch({
-            type: LOAD_TEMPLATE_SUCCESS,
-            templateId,
-            entities,
-            payload: template,
+    getTemplateById(templateId)
+        .then(template => {
+            template = template.toJSON()
+            let entities = normalize(template, Template.Schema).entities || {}
+            dispatch({
+                type: LOAD_TEMPLATE_SUCCESS,
+                templateId,
+                entities,
+                payload: template,
+            })
         })
-    }).catch(error => {
-        let level = "SEVERE"
-        let message = "Failed to load the template"
-        log.warn(error)
-        if (error && error.code){
-            switch (error.code) {
-                case 101:
+        .catch(error => {
+            let level = "SEVERE"
+            let message = "Failed to load the template"
+            log.warn(error)
+            if (error && error.code){
+                switch (error.code) {
+                    case 101:
                     // not found
-                    level = "INFO"
-                    message = "Cound not find the proposal"
-                    break;
-                default:
-                    break;
+                        level = "INFO"
+                        message = "Cound not find the proposal"
+                        break;
+                    default:
+                        break;
+                }
             }
-        }
-        dispatch({
-            type: LOAD_TEMPLATE_ERROR,
-            templateId,
-            error: {
-                error: error,
-                message,
-                level,
-            }
+            dispatch({
+                type: LOAD_TEMPLATE_ERROR,
+                templateId,
+                error: {
+                    error: error,
+                    message,
+                    level,
+                }
+            })
         })
-    })
-
 }
