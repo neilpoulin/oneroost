@@ -3,6 +3,7 @@ $bootstrap-sass-asset-helper: true;
 $fa-font-path: "~font-awesome/fonts";
 @import "~font-awesome/scss/font-awesome";
 @import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+@import "~react-infinite-calendar/styles.css";
 @import "./sass-resources";
 
 
