@@ -72,7 +72,7 @@ module.exports = {
         "newline-per-chained-call": [
             "error",
             {
-                "ignoreChainWithDepth": 2
+                "ignoreChainWithDepth": 3
             }
         ],
         "object-property-newline": ["error", {

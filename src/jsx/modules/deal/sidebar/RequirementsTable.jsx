@@ -7,7 +7,7 @@ import {getCurrentUser} from "RoostUtil"
 const RequirementsTable = React.createClass({
     propTypes: {
         requirements: PropTypes.arrayOf(PropTypes.shape({
-            completedDate: PropTypes.string,
+            completedDate: PropTypes.any,
             objectId: PropTypes.string,
         })),
         updateRequirement: PropTypes.func.isRequired,
@@ -30,7 +30,6 @@ const RequirementsTable = React.createClass({
         </table>
     }
 })
-
 
 const mapStateToProps = (state, ownProps) => {
     const currentUser = getCurrentUser(state)

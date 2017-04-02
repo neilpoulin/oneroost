@@ -12,7 +12,6 @@ export const DOCUMENT_LOAD_REQUEST = "oneroost/documents/DOCUMENT_LOAD_REQUEST"
 export const DOCUMENT_LOAD_SUCCESS = "oneroost/documents/DOCUMENT_LOAD_SUCCESS"
 export const DOCUMENT_LOAD_ERROR = "oneroost/documents/DOCUMENT_LOAD_ERROR"
 
-
 export const initialState = Map({
     isLoading: false,
     hasLoaded: false,
@@ -40,7 +39,6 @@ export default function reducer(state=initialState, action){
     return state;
 }
 
-
 export const addDocument = (doc) => {
     let entities = normalize(doc.toJSON(), Document.Schema).entities
     return {
@@ -56,7 +54,7 @@ export const createDocument = (dealId, newDoc) => (dispatch, getState) => {
     var user = Parse.User.current();
     doc.set("createdBy", user);
     doc.set("deal", Deal.Pointer(dealId))
-    doc.save().then( saved => {
+    doc.save().then(saved => {
         dispatch(addDocument(saved))
         let message = RoostUtil.getFullName(user) + " has uploaded " + saved.get("fileName")
         dispatch(createComment({
@@ -64,14 +62,21 @@ export const createDocument = (dealId, newDoc) => (dispatch, getState) => {
             message: message,
             author: null,
             username: "OneRoost Bot",
-            navLink: {type: "document", id: saved.id}
+            navLink: {type: "document"}
         }))
     })
 }
 
 export const loadDocuments = (dealId, force=false) => (dispatch, getState) => {
     let {roosts} = getState();
-    if ( roosts.has(dealId) && roosts.get(dealId).get("documents").get("hasLoaded") && !roosts.get(dealId).get("documents").get("isLoading") && !force ){
+    if (roosts.has(dealId)
+        && roosts.get(dealId)
+            .get("documents")
+            .get("hasLoaded")
+        && !roosts.get(dealId)
+            .get("documents")
+            .get("isLoading")
+        && !force) {
         log.warn("not loading documents, already loaded once")
         return null
     }
@@ -80,26 +85,28 @@ export const loadDocuments = (dealId, force=false) => (dispatch, getState) => {
         dealId: dealId,
     })
     let documentsQuery = new Parse.Query(Document.className);
-    documentsQuery.equalTo( "deal", Deal.Pointer(dealId) )
-    documentsQuery.find().then(documents => {
-        let json = documents.map(doc => doc.toJSON())
-        let entities = normalize(json, [Document.Schema]).entities || {}
-        dispatch({
-            type: DOCUMENT_LOAD_SUCCESS,
-            dealId: dealId,
-            payload: List(json.map(Map)),
-            entities: Map(entities)
+    documentsQuery.descending("createdAt")
+    documentsQuery.equalTo("deal", Deal.Pointer(dealId))
+    documentsQuery.find()
+        .then(documents => {
+            let json = documents.map(doc => doc.toJSON())
+            let entities = normalize(json, [Document.Schema]).entities || {}
+            dispatch({
+                type: DOCUMENT_LOAD_SUCCESS,
+                dealId: dealId,
+                payload: List(json.map(Map)),
+                entities: Map(entities)
+            })
         })
-    }).catch(error => {
-        log.error(error);
-        dispatch({
-            type: DOCUMENT_LOAD_ERROR,
-            error: {
-                error: error,
-                message: "Failed to load documents",
-                level: "ERROR"
-            }
+        .catch(error => {
+            log.error(error);
+            dispatch({
+                type: DOCUMENT_LOAD_ERROR,
+                error: {
+                    error: error,
+                    message: "Failed to load documents",
+                    level: "ERROR"
+                }
+            })
         })
-    })
-
 }

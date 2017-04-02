@@ -25,10 +25,10 @@ function registerPresignedGetUrl(){
 
         var docQuery = new Parse.Query("Document");
         docQuery.matchesKeyInQuery("deal", "deal", stakeholderQuery);
-        docQuery.get( documentId , {
+        docQuery.get(documentId, {
             useMasterKey: true,
-            success: function( doc ){
-                if ( !doc ){
+            success: function(doc){
+                if (!doc){
                     console.log("no document was found matching the query");
                     response.error({message: "the docuemnt was not found for the user and document ID."})
                 }
@@ -62,18 +62,19 @@ function registerPresignedGetUrl(){
     });
 }
 
-exports.getS3Object = async function( s3Key ){
+exports.getS3Object = async function(s3Key){
     var bucket = envUtil.getDocumentsBucket();
     var params = {
         Bucket: bucket,
         Key: s3Key
     };
-    return new Promise(function( resolve, reject){
-        s3.getObject( params, function(err, data){
-            if ( err ){
+    return new Promise(function(resolve, reject){
+        s3.getObject(params, function(err, data){
+            if (err){
                 console.error(err)
                 reject(err);
-            }else {
+            }
+            else {
                 resolve(data);
             }
         });
@@ -109,6 +110,6 @@ function registerPresignedUploadUrl(){
         });
     });
 }
-function getS3Key( roostId, fileName ){
+function getS3Key(roostId, fileName){
     return envUtil.getDocumentsPath() + "/roosts/" + roostId + "/" + uuid.v4() + "/" + fileName;
 }

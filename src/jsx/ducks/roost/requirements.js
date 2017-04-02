@@ -46,7 +46,7 @@ export default function reducer(state=initialState, action){
 const requirementsForDealQuery = (dealId) => {
     let query = new Parse.Query(Requirement.className)
     query.equalTo("deal", DealPointer(dealId))
-
+    query.ascending("displayOrder")
     return query;
 }
 
@@ -68,7 +68,6 @@ export const requirmentUpdatedAction = (requirement) => {
     }
 }
 
-
 export const updateRequirement = (requirement, changes, message) => (dispatch, getState) => {
     log.info("TODO: update requirement")
     requirement = Requirement.fromJS(requirement);
@@ -87,14 +86,15 @@ export const updateRequirement = (requirement, changes, message) => (dispatch, g
 }
 
 export const loadRequirementsForDealIds = (dealIds=[]) => (dispatch, getState) => {
-
     let {roosts} = getState()
     let dealIdsToLoad = dealIds.filter(dealId => {
         // no roost exists OR it does exist and requirements have NOT been loaded
-        return !roosts.has(dealId) || !roosts.get(dealId).get("requirements").get("hasLoaded") && !roosts.get(dealId).get("requirements").get("isLoading")
+        return !roosts.has(dealId)
+            || !roosts.get(dealId).get("requirements").get("hasLoaded")
+            && !roosts.get(dealId).get("requirements").get("isLoading")
     })
 
-    if ( dealIdsToLoad.length === 0){
+    if (dealIdsToLoad.length === 0){
         return null
     }
 
@@ -115,12 +115,11 @@ export const loadRequirementsForDealIds = (dealIds=[]) => (dispatch, getState) =
             entities,
         })
     }).catch(log.error)
-
 }
 
 export const loadRequirements = (dealId, force=false) => (dispatch, getState) => {
     let {roosts} = getState()
-    if ( roosts.has(dealId) && roosts.get(dealId).get("requirements").get("hasLoaded") && !roosts.get(dealId).get("stakeholders").get("isLoading") && !force ){
+    if (roosts.has(dealId) && roosts.get(dealId).get("requirements").get("hasLoaded") && !roosts.get(dealId).get("stakeholders").get("isLoading") && !force){
         log.warn("not loading requirements as it has been loaded before")
         return null
     }
@@ -154,7 +153,7 @@ export const loadRequirements = (dealId, force=false) => (dispatch, getState) =>
 export const subscribeRequirements = (dealId) => (dispatch, getState) => {
     log.info("requiesting subscription to requirements for deal")
     const query = requirementsForDealQuery(dealId)
-    dispatch( addSubscription("REQUIREMENTS", dealId, query, handler({
+    dispatch(addSubscription("REQUIREMENTS", dealId, query, handler({
         update: (requirement) => dispatch(requirmentUpdatedAction(requirement)),
     })))
 }

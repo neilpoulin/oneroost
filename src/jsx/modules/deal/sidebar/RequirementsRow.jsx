@@ -6,7 +6,7 @@ import NavLink from "NavLink"
 const RequirementsRow = React.createClass({
     propTypes: {
         requirement: PropTypes.shape({
-            completedDate: PropTypes.string,
+            completedDate: PropTypes.any,
             objectId: PropTypes.string,
         }).isRequired,
         updateRequirement: PropTypes.func.isRequired,
@@ -50,6 +50,5 @@ const RequirementsRow = React.createClass({
         )
     }
 })
-
 
 export default RequirementsRow

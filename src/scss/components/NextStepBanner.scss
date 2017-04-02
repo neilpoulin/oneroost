@@ -27,7 +27,7 @@ $fadeSize: 50px;
             width: $fadeSize;
             height: 100%;
             background: linear-gradient(90deg,rgba(255,252,248,0),$globalBg 100%);
-            z-index: 5000;
+            z-index: 1000;
         }
     }
     .CompletedStepsContainer{

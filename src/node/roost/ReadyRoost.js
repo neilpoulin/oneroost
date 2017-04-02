@@ -5,7 +5,6 @@ var Parse = ParseCloud.Parse;
 var EmailSender = require("./../EmailSender.js");
 var envUtil = require("./../util/envUtil.js");
 
-
 const DOCS_CONFIG_KEY = "readyRoostDocs";
 const STEPS_CONFIG_KEY = "readyRoostSteps";
 
@@ -30,9 +29,9 @@ async function processReadyRoostRequest(currentUser, params, response){
 
         console.log("query returned for finding existing ready roosts", roosts);
         var maxReadyRoosts = getMaxReadyRoostsPerUser();
-        if ( roosts.length >= maxReadyRoosts ){
+        if (roosts.length >= maxReadyRoosts){
             //max limit reached, log and return error
-            console.warn("max number of ready roosts reached for user ", currentUser );
+            console.warn("max number of ready roosts reached for user ", currentUser);
             response.error({
                 "message": "Max number of ready roosts hit for user",
                 "link": "/roosts/" + roosts[0].id,
@@ -47,7 +46,7 @@ async function processReadyRoostRequest(currentUser, params, response){
             var account = profileUser.get("account")
             var company = profileUser.get("company")
 
-            if ( !account ){
+            if (!account){
                 let accountName = company || (profileUser.get("firstName") + " " + profileUser.get("lastName")).trim() + "\'s Company"
                 console.log("no account existed, creating one", accountName);
                 account = await (new Parse.Object("Account", {accountName: accountName})).save()
@@ -59,8 +58,8 @@ async function processReadyRoostRequest(currentUser, params, response){
                 template: template,
                 account: account,
                 dealName: roostName,
-                profile: {"timeline":"2016-05-13T00:00:00-06:00"},
-                budget: {"low":0,"high":0}
+                profile: {"timeline": "2016-05-13T00:00:00-06:00"},
+                budget: {"low": 0, "high": 0}
             });
             let savedRoost = await roost.save()
             console.log("successfully saved the ready roost");
@@ -88,7 +87,7 @@ async function setupRoost(roost, currentUser, profileUser, template, response){
     console.log("finished setting up ready roost items");
     let toSave = [].concat(comments, steps, docs, stakeholders, requirements);
 
-    console.log("set up all objects...atempting to save", toSave);
+    console.log("set up all objects...attempting to save", toSave);
     Parse.Object.saveAll(toSave, {
         success: function(list) {
             console.log("SUCCESS for all!")
@@ -103,11 +102,11 @@ async function setupRoost(roost, currentUser, profileUser, template, response){
 
 function createRequirements(profileUser, roost, template){
     const requirementsTemplate = template.get("requirements")
-    if ( !template.get("requirements") ){
+    if (!template.get("requirements")){
         return []
     }
     console.log("requirementTemplate = ", requirementsTemplate)
-    let requirements = requirementsTemplate.map(req => {
+    let requirements = requirementsTemplate.map((req, i) => {
         return new Parse.Object("Requirement", {
             deal: roost,
             onboarding: true,
@@ -117,6 +116,7 @@ function createRequirements(profileUser, roost, template){
             title: req.title,
             description: req.description,
             active: true,
+            displayOrder: i
         })
     })
     console.log("requirements to create", requirements);
@@ -150,7 +150,7 @@ function createStakeholders(currentUser, profileUser, template, roost){
             onboarding: true
         })]
 
-    if ( templateStakeholders ){
+    if (templateStakeholders){
         templateStakeholders.map(stakeholder => {
             new Parse.Object("Stakeholder", {
                 deal: roost,
@@ -162,7 +162,8 @@ function createStakeholders(currentUser, profileUser, template, roost){
                 onboarding: true
             })
         })
-    }else {
+    }
+    else {
         // just add the profile user
         toCreate.push(new Parse.Object("Stakeholder", {
             deal: roost,
@@ -180,10 +181,10 @@ function createStakeholders(currentUser, profileUser, template, roost){
 
 function createNextSteps(currentUser, roost, template, config){
     let toCreate = template.get("nextSteps")
-    if ( !toCreate ){
+    if (!toCreate){
         toCreate = config.get(STEPS_CONFIG_KEY);
     }
-    let steps = toCreate.map((step) =>{
+    let steps = toCreate.map((step) => {
         return new Parse.Object("NextStep", {
             dueDate: moment().add(step.offsetDays, "day").toDate(),
             deal: roost,
@@ -199,7 +200,7 @@ function createNextSteps(currentUser, roost, template, config){
 
 function createDocs(createdBy, roost, template, config){
     let toCreate = template.get("documents")
-    if ( !toCreate ){
+    if (!toCreate){
         console.log("falling back to default readyRosot documents")
         toCreate = config.get(DOCS_CONFIG_KEY);
     }
@@ -277,7 +278,7 @@ async function processReadyRoostSubmission(currentUser, params, response){
             messageId: deal.id
         }
         console.log(email);
-        EmailSender.sendTemplate( "readyRoostSubmittedNotif", email, [roostUserAddress] );
+        EmailSender.sendTemplate("readyRoostSubmittedNotif", email, [roostUserAddress]);
 
         response.success({"message": "submitted the roost!"});
     }
@@ -290,7 +291,7 @@ async function processReadyRoostSubmission(currentUser, params, response){
 exports.initialize = function(){
     Parse.Cloud.define("createReadyRoost", function(request, response) {
         var currentUser = request.user;
-        processReadyRoostRequest( currentUser, request.params, response )
+        processReadyRoostRequest(currentUser, request.params, response)
     });
 
     Parse.Cloud.define("submitReadyRoost", function(request, response){
