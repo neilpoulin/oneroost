@@ -29,5 +29,4 @@ export const fromJSON = (json) => {
     return new Stakeholder(stakeholder)
 }
 
-
 export default Stakeholder;

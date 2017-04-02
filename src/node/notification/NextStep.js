@@ -8,11 +8,17 @@ var Parse = ParseCloud.Parse;
 Parse.serverURL = envUtil.serverURL;
 
 exports.afterSave = function(){
-    Parse.Cloud.afterSave( "NextStep", async function( req ){
+    Parse.Cloud.afterSave("NextStep", async function(req){
         try{
             let notificationSetting = await NotificationSettings.getNotificationSetting(NotificationSettings.Settings.NEXT_STEP_EMAILS)
-            if ( notificationSetting ){
+            if (notificationSetting){
                 console.log("Next Step afterSave was triggered... ");
+
+                if (!req.object.existed() && req.object.get("onboarding")){
+                    console.log("New object via 'onboariding'.... not sending email. Exiting")
+                    return true;
+                }
+
                 var stepQuery = new Parse.Query("NextStep");
                 stepQuery.include("deal");
                 stepQuery.include("createdBy"); //this fixed the issue where it didn"t know the properties of the author
@@ -32,8 +38,7 @@ exports.afterSave = function(){
                 var modifiedBy = step.get("modifiedBy");
 
                 var status = "Not Done";
-                if ( step.get("completedDate") != null )
-                {
+                if (step.get("completedDate") != null) {
                     status = "Completed";
                 }
 
@@ -55,7 +60,7 @@ exports.afterSave = function(){
                 console.log("sending Next Step after Save Email with data", data);
                 // var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, author.get("email") );
                 let recipients = await EmailUtil.getActualRecipientsForDeal(deal, modifiedBy.get("email"));
-                EmailSender.sendTemplate( "nextStepNotif", data, recipients );
+                EmailSender.sendTemplate("nextStepNotif", data, recipients);
             }
         }
         catch(e){

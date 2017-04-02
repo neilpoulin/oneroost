@@ -25,11 +25,11 @@ const NextStepDetailForm = React.createClass({
         this.setState({isEdit: false});
     },
     afterDelete: function(){
-        browserHistory.push("/roosts/" + this.props.deal.objectId );
+        browserHistory.push("/roosts/" + this.props.deal.objectId);
     },
     render () {
         var form = null;
-        if ( this.state.isEdit ){
+        if (this.state.isEdit){
             form = <NextStepDetailEdit step={this.props.step}
                 deal={this.props.deal}
                 afterSave={this.afterSave}

@@ -8,8 +8,7 @@ const NextStepStatusChangeButton = React.createClass({
         updateStep: PropTypes.func.isRequired
     },
     toggleComplete: function(){
-        if ( this.props.step.completedDate == null )
-        {
+        if (this.props.step.completedDate == null) {
             this.markAsDone();
         }
         else {
@@ -37,16 +36,16 @@ const NextStepStatusChangeButton = React.createClass({
     render () {
         const {completedDate} = this.props.step;
         var completeButton;
-        if ( completedDate != null ){
+        if (completedDate != null){
             completeButton =
             <button className="btn btn-primary" onClick={this.toggleComplete}>
-                <i className="fa fa-times"/> &nbsp;Not Completed
+                <i className="fa fa-times"/> &nbsp;Mak as Not Complete
             </button>;
         }
         else {
             completeButton =
             <button className="btn btn-primary" onClick={this.toggleComplete}>
-                <i className="fa fa-check"></i>&nbsp;Completed
+                <i className="fa fa-check"></i>&nbsp;Mark as Completed
             </button>
         }
         return completeButton;

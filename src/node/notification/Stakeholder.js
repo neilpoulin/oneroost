@@ -8,7 +8,7 @@ var Parse = ParseCloud.Parse;
 Parse.serverURL = envUtil.serverURL;
 
 exports.afterSave = function(){
-    Parse.Cloud.afterSave( "Stakeholder", async function(req, res){
+    Parse.Cloud.afterSave("Stakeholder", async function(req, res){
         try{
             console.log("Stakeholder afterSave triggered");
             let isNewInvite = !req.object.existed()
@@ -27,8 +27,12 @@ exports.afterSave = function(){
             console.log("checking if is new invite");
             //  = stakeholder.get("updatedAt").getTime() === stakeholder.get("createdAt").getTime();
             // isNewInvite = stakeholder.existed();
-            if ( !isNewInvite ){
+            if (!isNewInvite){
                 console.log("the invite was updated, not created... exiting");
+                return res.success();
+            }
+            else if(stakeholder.get("onboarding")) {
+                console.log("the was for a ready roost, not sending");
                 return res.success();
             }
             console.log("this is a new invite, setting up emails");
@@ -45,14 +49,14 @@ exports.afterSave = function(){
             //notify stakeholders of the addition
             console.log("setting up invite email for existing stakeholders...");
             let existingRecipients = await EmailUtil.getActualRecipientsForDeal(deal, [userEmail, invitedBy.get("email")]);
-            EmailSender.sendTemplate( "invitedStakeholderNotif", notifData, existingRecipients );
+            EmailSender.sendTemplate("invitedStakeholderNotif", notifData, existingRecipients);
             console.log("sent email for existing stakeholders");
             console.log("setting up email for new invitee");
 
-            if ( stakeholder.get("readyRoostApprover") ){
+            if (stakeholder.get("readyRoostApprover")){
                 console.log("this person is a ready roost approver, not sending an invite email");
             }
-            else if ( user.id === invitedBy.id ){
+            else if (user.id === invitedBy.id){
                 console.log("This stakeholder is the same as the person that invited them, not sending an email.");
             }
             else {
@@ -70,7 +74,7 @@ exports.afterSave = function(){
                 var fullName = user.get("firstName") + " " + user.get("lastName");
                 var inviteEmail = {name: fullName, email: userEmail};
                 console.log("sending invite email to ", inviteEmail);
-                EmailSender.sendTemplate( "roostInvite", inviteData, inviteEmail );
+                EmailSender.sendTemplate("roostInvite", inviteData, inviteEmail);
                 console.log("send email for new invitee");
             }
         }
