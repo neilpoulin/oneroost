@@ -29,7 +29,7 @@ module.exports = {
         }
     },
     "globals": {
-
+        "OneRoost": true,
     },
     "rules": {
         "strict": [2, "never"],
