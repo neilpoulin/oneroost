@@ -27,8 +27,7 @@ import * as NextStep from "models/NextStep"
 import * as Requirement from "models/Requirement"
 import * as log from "LoggingUtil"
 
-
-const Roost = withRouter( React.createClass({
+const Roost = withRouter(React.createClass({
     propTypes: {
         params: PropTypes.shape({
             dealId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
@@ -59,13 +58,12 @@ const Roost = withRouter( React.createClass({
             documentsLoading: true,
         }
     },
-    handleUnauthorized()
-    {
+    handleUnauthorized() {
         const { location } = this.props;
         if (location.state && location.state.nextPathname) {
             this.props.router.replace(location.state.nextPathname)
         }
-        else if ( location.query && location.query.accept ){
+        else if (location.query && location.query.accept){
             //what to do here...
             log.info("unauthorized - has accept query params though.");
         }
@@ -77,40 +75,37 @@ const Roost = withRouter( React.createClass({
         let {dealId} = this.props.params;
         this.getData(dealId);
     },
-    componentWillUpdate(nextProps, nextState)
-    {
+    componentWillUpdate(nextProps, nextState) {
         let self = this;
         // let {params} = nextProps;
         // let {dealId=self.props.params.dealId} = params;
         var dealId = nextProps.params.dealId || this.props.params.dealId;
-
+        document.title = (nextProps.deal ? nextProps.deal.dealName : "Opportunities") + " | OneRoost"
         Parse.Cloud.run("validateStakeholder", {
             dealId: dealId
         }).then(({message, authorized, stakeholder}) => {
-            if ( !authorized ){
+            if (!authorized){
                 self.handleUnauthorized();
                 return;
             }
 
-            if ( !stakeholder.inviteAccepted && stakeholder.readyRoostApprover ){
+            if (!stakeholder.inviteAccepted && stakeholder.readyRoostApprover){
                 self.props.router.replace("/review/" + stakeholder.objectId)
             }
-            else if ( !stakeholder.inviteAccepted )
-            {
+            else if (!stakeholder.inviteAccepted) {
                 self.props.router.replace("/invitations/" + stakeholder.objectId)
             }
         });
 
-        if ( nextProps.params.dealId !== this.props.params.dealId ){
+        if (nextProps.params.dealId !== this.props.params.dealId){
             this.resetLoading();
             this.getData(nextProps.params.dealId || this.props.params.dealId);
         }
-
     },
     getData(dealId){
         log.info("setting up roost queries and subscriptions");
         // let self = this;
-        if (this.props.loadData ) {
+        if (this.props.loadData) {
             this.props.loadData(dealId);
         }
     },
@@ -123,7 +118,6 @@ const Roost = withRouter( React.createClass({
         });
     },
     render () {
-
         const {deal,
             stakeholders,
             nextSteps,
@@ -132,23 +126,21 @@ const Roost = withRouter( React.createClass({
             requirements,
             opportunities} = this.props;
 
-            if ( dealLoading )
-            {
-                var message = "Loading...";
-                return (
+        if (dealLoading) {
+            var message = "Loading...";
+            return (
                     <LoadingTakeover size="3x" message={message} />
-                );
-            }
+            );
+        }
 
-            if ( !deal )
-            {
-                return (
+        if (!deal) {
+            return (
                     <div>ERROR</div>
-                )
-            }
+            )
+        }
 
-            var mobileClassesDealTop = "hidden-sm hidden-xs";
-            var dealPage =
+        var mobileClassesDealTop = "hidden-sm hidden-xs";
+        var dealPage =
             <div className="RoostPage">
                 <RoostNav mobileTitle={deal.dealName} showHome={true}/>
                 <div className="RoostBody">
@@ -176,82 +168,82 @@ const Roost = withRouter( React.createClass({
                 </div>
             </div>
 
-            return dealPage;
-        }
-    }) )
+        return dealPage;
+    }
+}))
 
-    const mapStateToProps = (state, ownProps) => {
-        const entities = state.entities.toJS()
-        const roosts = state.roosts.toJS()
-        let dealId = ownProps.params.dealId
-        if ( !entities || !entities.deals ){
-            log.info("entitites not loaded yet");
-            return {};
+const mapStateToProps = (state, ownProps) => {
+    const entities = state.entities.toJS()
+    const roosts = state.roosts.toJS()
+    let dealId = ownProps.params.dealId
+    if (!entities || !entities.deals){
+        log.info("entitites not loaded yet");
+        return {};
+    }
+    let deals = entities.deals;
+    if(!deals){
+        log.warn("failed to get deals key");
+        return {dealLoading: true};
+    }
+    let deal = deals[dealId]
+    let roost = roosts[dealId]
+    if (!roost || !deal || roost.dealLoading){
+        return {
+            dealLoading: true,
         }
-        let deals = entities.deals;
-        if( !deals ){
-            log.warn("failed to get deals key");
-            return {dealLoading: true};
-        }
-        let deal = deals[dealId]
-        let roost = roosts[dealId]
-        if ( !roost || !deal || roost.dealLoading ){
-            return {
-                dealLoading: true,
-            }
-        }
-        deal = denormalize(dealId, Deal.Schema, entities)
-        roost = roost
-        let stakeholders = denormalize(
-            roost.stakeholders.ids,
+    }
+    deal = denormalize(dealId, Deal.Schema, entities)
+    roost = roost
+    let stakeholders = denormalize(
+        roost.stakeholders.ids,
             [Stakeholder.Schema],
-            entities
+        entities
         )
 
-        let documents = denormalize(
-            roost.documents.ids,
+    let documents = denormalize(
+        roost.documents.ids,
             [Document.Schema],
-            entities
+        entities
         )
 
-        let nextSteps = denormalize(
-            roost.nextSteps.ids,
+    let nextSteps = denormalize(
+        roost.nextSteps.ids,
             [NextStep.Schema],
-            entities
+        entities
         ).filter(step => step.active !== false)
 
-        let requirements = denormalize(
-            roost.requirements.ids,
+    let requirements = denormalize(
+        roost.requirements.ids,
             [Requirement.Schema],
-            entities
+        entities
         ).filter(requirement => requirement.active !== false)
 
-        return Map({
-            deal: deal,
-            stakeholders: stakeholders,
-            documents: documents,
-            nextSteps: nextSteps,
-            requirements: requirements
-        }).toJS()
-    }
+    return Map({
+        deal: deal,
+        stakeholders: stakeholders,
+        documents: documents,
+        nextSteps: nextSteps,
+        requirements: requirements
+    }).toJS()
+}
 
-    const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
         // let dealId = ownProps.params.dealId;
-        const currentUser = Parse.User.current()
-        const userId = currentUser.id
-        return {
-            loadData: (dealId) => {
-                dispatch(loadDeal(dealId))
-                dispatch(loadNextSteps(dealId))
-                dispatch(loadDocuments(dealId))
-                dispatch(loadStakeholders(dealId))
-                dispatch(loadOpportunities(userId))
-                dispatch(subscribeOpportunities(userId))
-                dispatch(subscribeNextSteps(dealId))
-                dispatch(loadRequirements(dealId))
-                dispatch(subscribeRequirements(dealId))
-            }
+    const currentUser = Parse.User.current()
+    const userId = currentUser.id
+    return {
+        loadData: (dealId) => {
+            dispatch(loadDeal(dealId))
+            dispatch(loadNextSteps(dealId))
+            dispatch(loadDocuments(dealId))
+            dispatch(loadStakeholders(dealId))
+            dispatch(loadOpportunities(userId))
+            dispatch(subscribeOpportunities(userId))
+            dispatch(subscribeNextSteps(dealId))
+            dispatch(loadRequirements(dealId))
+            dispatch(subscribeRequirements(dealId))
         }
     }
+}
 
-    export default connect(mapStateToProps, mapDispatchToProps)(Roost)
+export default connect(mapStateToProps, mapDispatchToProps)(Roost)

@@ -15,6 +15,9 @@ const BrandPage = React.createClass({
     componentDidMount(){
         this.props.load();
     },
+    componentWillUpdate(){
+        document.title = this.props.companyName ? this.props.companyName + " | OneRoost" : "Opportunities | OneRoost";
+    },
     render () {
         const {isLoading, logoUrl, templates, pageTitle, error} = this.props;
         if (error){
