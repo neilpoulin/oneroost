@@ -83,8 +83,8 @@ const LoginComponent = React.createClass({
         }
         else {
             var user = new Parse.User();
-            user.set("username", this.state.email);
-            user.set("email", this.state.email);
+            user.set("username", this.state.email.toLowerCase());
+            user.set("email", this.state.email.toLowerCase());
             user.set("password", this.state.password);
             user.set("firstName", this.state.firstName);
             user.set("lastName", this.state.lastName);

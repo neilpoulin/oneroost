@@ -33,13 +33,14 @@ export const Schema = new schema.Entity(
 );
 
 export const Pointer = (arg) => {
-    if (!arg ){
+    if (!arg){
         return null
     }
     let dealId = arg
-    if ( typeof arg == "object" ){
+    if (typeof arg == "object"){
         dealId = arg.objectId || arg.id
-    } else if ( typeof arg == "string"){
+    }
+    else if (typeof arg == "string"){
         dealId = arg
     }
     return Deal.createWithoutData(dealId);

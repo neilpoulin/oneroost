@@ -67,7 +67,7 @@ if (process.env.NODE_ENV === "production") {
 }
 else {
     const devSetup = require("./dev");
-    devSetup.intitialize(app);    
+    devSetup.intitialize(app);
 }
 
 app.get("/admin/emails/:templateName", function(req, resp){
@@ -151,11 +151,17 @@ function getParseServer(){
         publicServerURL: envUtil.getPublicServerUrl(),
         appName: "OneRoost",
         emailAdapter: SESParseAdapter({}),
+        customPages: {
+            verifyEmailSuccess: envUtil.getEmailVerifiedPageUrl()
+        },
         filesAdapter: new S3Adapter(
             envUtil.getAwsId(),
             envUtil.getAwsSecretId(),
             "parse-direct-access",
             {directAccess: true}
-        )
+        ),
+        verifyUserEmails: true,
+        emailVerifyTokenValidityDuration: 2 * 60 * 60, // in seconds, 2 hours
+        preventLoginWithUnverifiedEmail: false,
     });
 }

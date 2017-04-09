@@ -60,7 +60,7 @@ const UserHomePage = React.createClass({
                 contents = <OpportunityList deals={deals} archivedDeals={archivedDeals} user={currentUser} className="bg-inherit"></OpportunityList>
             }
             else{
-                contents = <BetaUserWelcome userId={userId}/>
+                contents = <BetaUserWelcome userId={userId} emailVerified={currentUser.emailVerified}/>
             }
         }
 
