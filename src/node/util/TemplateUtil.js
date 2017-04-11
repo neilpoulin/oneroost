@@ -4,14 +4,8 @@ var styleDir = path.resolve(__dirname, "..", "email", "template", "style");
 var Handlebars = require("handlebars");
 var moment = require("moment");
 var EmailTemplate = require("email-templates").EmailTemplate
-var emailTemplates = [
-    "commentNotif",
-    "nextStepNotif",
-    "invitedStakeholderNotif",
-    "roostInvite",
-    "documentAddedNotif",
-    "readyRoostSubmittedNotif"
-];
+const emailTemplates = require("./../email/TemplateConstants")
+
 var templates = {};
 
 exports.initialize = function(){
@@ -20,11 +14,11 @@ exports.initialize = function(){
 }
 
 exports.getTemplateNames = function(){
-    return emailTemplates
+    return Object.values(emailTemplates)
 }
 
 exports.renderEmail = function(templateName, data){
-    if ( emailTemplates.indexOf(templateName) == -1 ){
+    if ( Object.values(emailTemplates).indexOf(templateName) == -1 ){
         throw "You must provide a vaild template";
     }
     return renderTemplate(templateName, data);
@@ -44,7 +38,12 @@ exports.renderSample = function( name, number ){
 
 function renderTemplate( name, data ){
     var template = templates[name];
-    return template.render(data);
+    try{
+        return template.render(data);
+    } catch (e){
+        console.error(e);
+        return Promise.reject(e);
+    }
 }
 
 function initializeHandlebars()
@@ -87,7 +86,7 @@ function initializeHandlebars()
 }
 
 function initializeEmails(){
-    emailTemplates.forEach(function(name){
+    Object.values(emailTemplates).forEach(function(name){
         var templateDir = path.join(templateRoot, name);
         console.log("creating template", name);
         var template = new EmailTemplate(templateDir, {sassOptions: {

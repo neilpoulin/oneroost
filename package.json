@@ -9,7 +9,8 @@
     "build": "gulp install",
     "debug": "node debug main.js",
     "start": "node main.js oneroost-npm",
-    "stop": "pkill --signal SIGINT oneroost-npm"
+    "stop": "pkill --signal SIGINT oneroost-npm",
+    "server": "gulp bundle & gulp start:prod"
   },
   "repository": {
     "type": "git",

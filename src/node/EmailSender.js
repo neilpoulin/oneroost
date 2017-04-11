@@ -17,37 +17,46 @@ exports.sendTemplate = function( templateName, data, sendTo ){
         sendTo = [sendTo];
     }
     console.log("[" + templateName + "] sendTo", sendTo);
+    var promises = [];
     sendTo.forEach( function(to){
         try{
             let recipient = findRecipient(to)
             recipient.then(recipient => sender(recipient, to))
             recipient.catch(error => console.log("[" + templateName + "] something went wrong", error))
+            promises.push(recipient)
         }
         catch (e){
             console.log("something went wrong creating or fetching the recipient for ", to, e );
             Raven.captureException(e)
         }
     } );
+    return Promise.all(promises);
 }
 
 function templateSender( templateName, data ){
     console.log("TemplateSender", templateName, data);
     return function(recipient, to){
-        console.log("RecipientSender", recipient, to)
-        if ( !recipient.get("unsubscribe") )
-        {
-            data.unsubscribeLink = getUnsubscribeUrl(recipient.id);
-            data.unsubscribeEmail = getUnsubscribeEmail(recipient.id);
-            data.recipientId = recipient.id;
-            TemplateUtil.renderEmail(templateName, data)
-            .then(function(templateResults){
-                sendEmail(templateResults, data, to);
-            }).catch(e => {
-                console.error("[" + templateName + "] Failed to send email ", e)
-                Raven.captureException(e)
-            });
-        } else {
-            console.log("User has unsubscribed, not sending email", recipient)
+        try{
+            console.log("RecipientSender", recipient, to)
+            if ( !recipient.get("unsubscribe") )
+            {
+                data.unsubscribeLink = getUnsubscribeUrl(recipient.id);
+                data.unsubscribeEmail = getUnsubscribeEmail(recipient.id);
+                data.recipientId = recipient.id;
+                console.log("Rendinering Email for ", templateName);
+                return TemplateUtil.renderEmail(templateName, data)
+                    .then(function(templateResults){
+                        console.log("Rendering complete... attempting to send");
+                        sendEmail(templateResults, data, to);
+                    }).catch(e => {
+                        console.error("[" + templateName + "] Failed to send email ", e)
+                        Raven.captureException(e)
+                    });
+            } else {
+                console.log("User has unsubscribed, not sending email", recipient)
+            }
+        } catch (e){
+            console.error("something went wrong sending email", e);
         }
     }
 }

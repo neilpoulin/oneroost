@@ -92,7 +92,7 @@ app.get("*", function(request, response){
 io.on("connection", function(socket){
     //no op here - will join namespaced rooms later
     socket.on("disconnect", function(){
-    //no op
+        //no op
     });
 }).on("error", function(error){
     console.log("recieved a websocket error: ", error);

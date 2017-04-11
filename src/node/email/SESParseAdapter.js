@@ -1,5 +1,6 @@
 var EmailSender = require("./../EmailSender");
 var Promise = require("promise");
+import emailTemplates from "./TemplateConstants"
 
 var SESParseAdapter = sesOptions => {
     console.log("parse email adapter for SES");
@@ -17,8 +18,26 @@ var SESParseAdapter = sesOptions => {
                 EmailSender.sendPlainEmail(message);
                 resolve(null);
             });
-        }
+        },
+        sendVerificationEmail: ({ link, appName, user }) => {
+            console.log("sending email verication email");
+            const data = {link, appName, user: user.toJSON()};
+            return new Promise((resolve, reject) => {
+                EmailSender.sendTemplate(emailTemplates.VERIFY_EMAIL_TEMPLATE, data, user.get("email"))
+                resolve(null);
+            })
+        },
+        sendPasswordResetEmail: ({ link, appName, user }) => {
+            console.log("sending password reset email");
+            const data = {link, appName, user: user.toJSON()};
+            return new Promise((resolve, reject) => {
+                EmailSender.sendTemplate(emailTemplates.PASSWORD_RESET_TEMPALTE, data, user.get("email"))
+                resolve(null);
+            })
+        },        
     });
+
+
 }
 
 module.exports = SESParseAdapter;
