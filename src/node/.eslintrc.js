@@ -18,5 +18,5 @@ module.exports = {
         "node": true,
         "mongo": true,
         "es6": true,
-    }
+    },    
 }

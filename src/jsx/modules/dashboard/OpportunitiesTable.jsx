@@ -83,7 +83,7 @@ const OpportunitiesTable = React.createClass({
     componentWillUpdate(nextProps, nextState){
         const oldOpps = this.props.opportunities;
         const {opportunities=[]} = nextProps;
-        if ( opportunities.length === oldOpps.length ){
+        if (opportunities.length === oldOpps.length){
             return
         }
         const dealIds = opportunities.map(({deal}) => deal.objectId)
@@ -121,11 +121,11 @@ const mapStateToProps = (state, ownProps) => {
     let archivedDeals = []
     let query = dashboard.searchTerm
     let isLoading = true
-    if ( myOpportunities ){
+    if (myOpportunities){
         myOpportunities = myOpportunities.toJS()
         isLoading = myOpportunities.isLoading;
-        deals = denormalize( myOpportunities.deals, [Deal.Schema], entities)
-        archivedDeals = dashboard.showArchived ? denormalize( myOpportunities.archivedDeals, [Deal.Schema], entities) : []
+        deals = denormalize(myOpportunities.deals, [Deal.Schema], entities)
+        archivedDeals = dashboard.showArchived ? denormalize(myOpportunities.archivedDeals, [Deal.Schema], entities) : []
     }
 
     let allDealIds = deals.concat(archivedDeals).map(deal => deal.objectId);
@@ -170,7 +170,7 @@ const mapStateToProps = (state, ownProps) => {
     let requirementHeadings = []
     let allOpportunities = opportunities.concat(archivedOpportunities)
     let showRequirements = false
-    if ( selectedTemplateId ){
+    if (selectedTemplateId){
         // let selectedTemplateId = selectedTemplate.objectId
         let selectedTemplate = denormalize(selectedTemplateId, Template.Schema, entities)
         showRequirements = true
@@ -192,11 +192,10 @@ const mapStateToProps = (state, ownProps) => {
                 requirementHeadings.push(header)
             })
         }
-
     }
 
     if (query != null && query.trim()){
-        query = query.trim().replace(/ +(?= )/g,"");
+        query = query.trim().replace(/ +(?= )/g, "");
         let patterns = query.split(" ").map(word => new RegExp(_.escapeRegExp(word), "i"))
 
         allOpportunities = allOpportunities.filter(opp => {
@@ -207,7 +206,7 @@ const mapStateToProps = (state, ownProps) => {
 
             let searchScore = fields.reduce((fieldScore, field) => {
                 return fieldScore + patterns.reduce((patScore, pat) => {
-                    return patScore + ( pat.test(field) ? 1 : 0 )
+                    return patScore + (pat.test(field) ? 1 : 0)
                 }, 0)
             }, 0)
             opp.searchScore = searchScore;
@@ -216,7 +215,8 @@ const mapStateToProps = (state, ownProps) => {
         allOpportunities = allOpportunities.sort((a, b) => {
             return b.searchScore - a.searchScore
         })
-    } else {
+    }
+    else {
         // Sort by activity date:
         allOpportunities = allOpportunities.sort((a, b) => {
             return moment(b.deal.updatedAt).diff(moment(a.deal.updatedAt))
@@ -227,7 +227,7 @@ const mapStateToProps = (state, ownProps) => {
     if (currentUser){
         args = {data: allOpportunities.map(opp => {
             let requirementData = {}
-            requirementHeadings.map( heading => {
+            requirementHeadings.map(heading => {
                 let requirement = opp.requirements.find(req => {
                     return req.title.trim().toLowerCase() === heading.label.trim().toLowerCase()
                 })

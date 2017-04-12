@@ -1,19 +1,8 @@
-const COMMENT_TEMPLATE = "commentNotif"
-const NEXT_STEP_TEMPLATE = "nextStepNotif"
-const INVITED_STAKEHOLDER_TEMPLATE = "invitedStakeholderNotif"
-const ROOST_INVITE_TEMPLATE = "roostInvite"
-const DOCUMENT_ADDED_TEMPLATE = "documentAddedNotif"
-const READY_ROOST_SUBMITTED_TEMPLATE = "readyRoostSubmittedNotif"
-const VERIFY_EMAIL_TEMPLATE = "verifyEmail"
-const PASSWORD_RESET_TEMPALTE = "passwordReset"
-
-module.exports = {
-    COMMENT_TEMPLATE,
-    NEXT_STEP_TEMPLATE,
-    INVITED_STAKEHOLDER_TEMPLATE,
-    ROOST_INVITE_TEMPLATE,
-    DOCUMENT_ADDED_TEMPLATE,
-    READY_ROOST_SUBMITTED_TEMPLATE,
-    VERIFY_EMAIL_TEMPLATE,
-    PASSWORD_RESET_TEMPALTE,
-};
+export const COMMENT_TEMPLATE = "commentNotif"
+export const NEXT_STEP_TEMPLATE = "nextStepNotif"
+export const INVITED_STAKEHOLDER_TEMPLATE = "invitedStakeholderNotif"
+export const ROOST_INVITE_TEMPLATE = "roostInvite"
+export const DOCUMENT_ADDED_TEMPLATE = "documentAddedNotif"
+export const READY_ROOST_SUBMITTED_TEMPLATE = "readyRoostSubmittedNotif"
+export const VERIFY_EMAIL_TEMPLATE = "verifyEmail"
+export const PASSWORD_RESET_TEMPALTE = "passwordReset"

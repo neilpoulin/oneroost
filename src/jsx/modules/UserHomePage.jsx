@@ -3,7 +3,6 @@ import React from "react"
 import { connect } from "react-redux"
 import { withRouter } from "react-router"
 import RoostNav from "navigation/RoostNav"
-import AddAccountButton from "account/AddAccountButton"
 import OpportunityList from "account/OpportunityList"
 import BetaUserWelcome from "BetaUserWelcome"
 import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
@@ -19,12 +18,11 @@ const UserHomePage = React.createClass({
             loading: true
         }
     },
-    getCurrentUser: function()
-    {
+    getCurrentUser() {
         return Parse.User.current();
     },
-    afterAddAccount: function(stakeholder){
-        this.props.router.replace("/roosts/" + stakeholder.deal.objectId )
+    afterAddAccount(stakeholder){
+        this.props.router.replace("/roosts/" + stakeholder.deal.objectId)
     },
     componentDidMount(){
         document.title = "My Opportunities | OneRoost"
@@ -33,13 +31,13 @@ const UserHomePage = React.createClass({
 
     },
     componentWillMount(){
-        if ( this.props.loadData ){
+        if (this.props.loadData){
             this.props.loadData()
         }
     },
     componentWillUpdate(nextProps, nextState){
         log.info("UserHomePage component will update");
-        if ( this.props.userId != nextProps.useId && this.props.loadData ){
+        if (this.props.userId != nextProps.useId && this.props.loadData){
             // this.props.loadData()
         }
     },
@@ -47,16 +45,15 @@ const UserHomePage = React.createClass({
         const {deals, archivedDeals, isLoading, userId, currentUser} = this.props
 
         let contents = null;
-        if ( isLoading ){
+        if (isLoading){
             contents =
             <div>
                 <i className="fa fa-spin fa-spinner"></i>
                 {" Loading..."}
             </div>
         }
-        else
-        {
-            if ( deals.length > 0){
+        else {
+            if (deals.length > 0){
                 contents = <OpportunityList deals={deals} archivedDeals={archivedDeals} user={currentUser} className="bg-inherit"></OpportunityList>
             }
             else{
@@ -67,12 +64,7 @@ const UserHomePage = React.createClass({
         var homePage =
         <div>
             <RoostNav showHome={false}/>
-            <div className="container UserHomePage col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4 lead">
-                <h1>Opportunities</h1>
-                <AddAccountButton
-                    onSuccess={this.afterAddAccount}
-                    btnClassName="btn-block btn-outline-primary"
-                    />
+            <div className="container UserHomePage col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4 lead">                
                 {contents}
             </div>
         </div>
@@ -89,11 +81,11 @@ const mapStateToProps = (state, ownProps) => {
     let deals = []
     let archivedDeals = []
     let isLoading = true
-    if ( myOpportunities ){
+    if (myOpportunities){
         myOpportunities = myOpportunities.toJS()
         isLoading = myOpportunities.isLoading;
-        deals = denormalize( myOpportunities.deals, [Deal.Schema], entities)
-        archivedDeals = denormalize( myOpportunities.deals, [Deal.Schema], entities)
+        deals = denormalize(myOpportunities.deals, [Deal.Schema], entities)
+        archivedDeals = denormalize(myOpportunities.deals, [Deal.Schema], entities)
     }
     return {
         deals: deals,
@@ -115,4 +107,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)( withRouter( UserHomePage ));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(UserHomePage));

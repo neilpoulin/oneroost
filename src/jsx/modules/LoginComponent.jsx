@@ -27,8 +27,7 @@ const LoginComponent = React.createClass({
         var isLoggedIn = false;
         var email = "";
         var user = Parse.User.current();
-        if ( user )
-        {
+        if (user) {
             username = user.username
             isLoggedIn = true;
             email = user.email
@@ -60,12 +59,14 @@ const LoginComponent = React.createClass({
             afterLoginPath: "/roosts",
             showTermsOfService: true,
             success: function(user){
-                const { location, router , afterLoginPath} = this;
-                if ( location && location.query.forward){
+                const { location, router, afterLoginPath} = this;
+                if (location && location.query.forward){
                     router.replace(location.query.forward)
-                } else if (location && location.state && location.state.nextPathname && window.location.pathname != location.state.nextPathname) {
+                }
+                else if (location && location.state && location.state.nextPathname && window.location.pathname != location.state.nextPathname) {
                     router.replace(location.state.nextPathname)
-                } else {
+                }
+                else {
                     router.replace(afterLoginPath)
                 }
             }
@@ -74,10 +75,11 @@ const LoginComponent = React.createClass({
     doLogin: function(){
         var component = this;
         this.showLoading();
-        if ( this.state.isLogin )
-        {
+        if (this.state.isLogin) {
             Parse.User.logIn(this.state.email.toLowerCase(), this.state.password, {
-                success: (saved) => {component.handleLoginSuccess(saved)},
+                success: (saved) => {
+                    component.handleLoginSuccess(saved)
+                },
                 error: component.handleLoginError
             });
         }
@@ -91,8 +93,10 @@ const LoginComponent = React.createClass({
             user.set("passwordChangeRequired", false);
             user.set("company", this.state.company);
             user.set("passwordChangeRequired", false);
-            user.signUp( null, {
-                success: (saved) => {component.handleRegisterSuccess(saved)},
+            user.signUp(null, {
+                success: (saved) => {
+                    component.handleRegisterSuccess(saved)
+                },
                 error: component.handleLoginError
             });
         }
@@ -103,11 +107,9 @@ const LoginComponent = React.createClass({
     hideLoading(){
         this.setState({loading: false});
     },
-    handleLoginError: function(user, error)
-    {
+    handleLoginError: function(user, error) {
         let message = ""
-        switch( error.code )
-        {
+        switch(error.code) {
             case 101: //invalid login params
                 message = "Invalid login credentials, please try again"
                 break;
@@ -125,12 +127,12 @@ const LoginComponent = React.createClass({
     },
     handleRegisterSuccess(user){
         ReactGA.event({
-          category: "User",
-          action: "Registration"
+            category: "User",
+            action: "Registration"
         });
         return this.handleLoginSuccess(user);
     },
-    handleLoginSuccess: function(user){
+    handleLoginSuccess: function(user){        
         this.props.userLoggedIn(user);
         this.props.success();
     },
@@ -155,17 +157,16 @@ const LoginComponent = React.createClass({
         return registerValidation;
     },
     doSubmit(e){
-        if ( e ){
+        if (e){
             e.preventDefault();
         }
         let errors = FormUtil.getErrors(this.state, this.getValidation());
-        if ( !FormUtil.hasErrors(errors) ){
+        if (!FormUtil.hasErrors(errors)){
             var component = this;
             this.showLoading();
-            if ( this.state.isLogin )
-            {
+            if (this.state.isLogin) {
                 Parse.User.logIn(this.state.email.toLowerCase(), this.state.password, {
-                    success: (user) =>{
+                    success: (user) => {
                         this.setState({errors: {}});
                         component.handleLoginSuccess(user);
                     },
@@ -182,7 +183,7 @@ const LoginComponent = React.createClass({
                 user.set("lastName", this.state.lastName);
                 user.set("company", this.state.company)
                 user.set("passwordChangeRequired", false);
-                user.signUp( null, {
+                user.signUp(null, {
                     success: (savedUser) => {
                         this.setState({errors: {}});
                         component.handleLoginSuccess(savedUser)
@@ -196,12 +197,10 @@ const LoginComponent = React.createClass({
     },
     resetPassword: function(){
         var self = this;
-        if ( self.state.email )
-        {
-            if ( !FormUtil.isValidEmail(self.state.email) )
-            {
+        if (self.state.email) {
+            if (!FormUtil.isValidEmail(self.state.email)) {
                 let errors = self.state.errors;
-                errors.alert = {message:"Please enter a valid email and try again.", level: "warning"}
+                errors.alert = {message: "Please enter a valid email and try again.", level: "warning"}
                 self.setState({errors: errors});
                 return
             }
@@ -219,8 +218,7 @@ const LoginComponent = React.createClass({
                 }
             });
         }
-        else
-        {
+        else {
             let errors = self.state.errors;
             errors.alert = errors.alert = {message: "Please enter your email and try again.", level: "warning"};
             self.setState({error: errors});
@@ -234,29 +232,27 @@ const LoginComponent = React.createClass({
             lastName,
             password} = this.state;
 
-        if ( this.state.isLoggedIn )
-        {
+        if (this.state.isLoggedIn) {
             return false;
         }
 
         var btnText = this.state.isLogin ? "Log In" : "Sign Up";
 
         let tabs = null;
-        if ( this.props.showRegister ){
+        if (this.props.showRegister){
             tabs =
             <ul className="nav nav-tabs nav-justified" >
-                <li role="presentation " className={"pointer " + ( this.state.isLogin ? "" : "active" )} >
+                <li role="presentation " className={"pointer " + (this.state.isLogin ? "" : "active")} >
                     <a onClick={this.setIsRegister}>Sign Up</a>
                 </li>
-                <li role="presentation" className={"pointer " + ( this.state.isLogin ? "active" : "" )} >
+                <li role="presentation" className={"pointer " + (this.state.isLogin ? "active" : "")} >
                     <a onClick={this.setIsLogin}>Login</a>
                 </li>
             </ul>;
         }
 
         let alert = null;
-        if ( errors.alert )
-        {
+        if (errors.alert) {
             alert =
             <div className={`errorMessage alert alert-${this.state.errors.alert.level}`}>
                 {this.state.errors.alert.message}
@@ -268,8 +264,8 @@ const LoginComponent = React.createClass({
         let lastNameInput = null;
         let forgotLink = null;
         let nameInput = null;
-        if ( !this.state.isLogin ){
-            if ( this.props.showCompany ){
+        if (!this.state.isLogin){
+            if (this.props.showCompany){
                 companyInput =
                 <FormInputGroup
                     fieldName="company"
@@ -315,7 +311,7 @@ const LoginComponent = React.createClass({
         }
 
         let actionButton = null;
-        if ( this.props.showButton ){
+        if (this.props.showButton){
             actionButton =
             <div className="">
                 <button className="btn btn-primary btn-block"
@@ -376,5 +372,4 @@ const connectOpts = {
     withRef: true
 }
 
-
-export default connect(mapStateToProps, mapDispatchToProps, undefined, connectOpts)(withRouter( LoginComponent, {withRef: true}));
+export default connect(mapStateToProps, mapDispatchToProps, undefined, connectOpts)(withRouter(LoginComponent, {withRef: true}));

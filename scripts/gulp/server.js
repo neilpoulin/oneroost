@@ -85,7 +85,7 @@ const startServer = (props) => {
         watch: ["cloud"],
         ext: "js html ejs json",
         ignore: ["email/template/*"],
-        delay: "2500",
+        delay: "200",
         env: props || devEnvProps
     })
         .on("restart", function () {
@@ -114,7 +114,7 @@ gulp.task("email:styles:clean", ["clean:node"], function(done){
 });
 
 gulp.task("transpile:node:clean", ["clean:node"], function(){
-    transpileNode()
+    return transpileNode()
 });
 
 gulp.task("email:styles", function(done){
@@ -122,19 +122,19 @@ gulp.task("email:styles", function(done){
 })
 
 gulp.task("email:styles:watch", ["email:styles"], function(done){
-    copyEmailTemplatesToCloud()
+    return copyEmailTemplatesToCloud()
 })
 
 gulp.task("transpile:node:watch", ["transpile:node"], function(done){
-    copyBuildToCloud()
+    return copyBuildToCloud()
 })
 
 gulp.task("emails:watch", ["transpile:node", "email:styles"], function(done){
-    copyEmailTemplatesToCloud()
+    return copyEmailTemplatesToCloud()
 })
 
 gulp.task("transpile:node", function(){
-    transpileNode()
+    return transpileNode()
 })
 
 gulp.task("copy:node:build", function(){

@@ -8,24 +8,29 @@ const BetaUserWelcome = React.createClass({
         templatesLoading: PropTypes.bool,
         archivedTemplates: PropTypes.arrayOf(PropTypes.object),
         emailVerified: PropTypes.bool,
+        showTitle: PropTypes.bool,
+        titleText: PropTypes.string,
     },
     getDefaultProps(){
         return {
-            templates: []
+            templates: [],
+            showTitle: false,
+            titleText: "Welcome to OneRoost"
         }
     },
     render () {
-        const {templates, emailVerified} = this.props;
+        const {templates, emailVerified, showTitle, titleText} = this.props;
         let links = null
         let message = ""
 
-        if ( !emailVerified ){
+        if (!emailVerified){
             message = "To get started, you need to verify your email address. Please check your inbox and follow the instructions there"
-        } else {
-            message = "You have successfully verified your email. "
+        }
+        else {
+            message = "You have no opportunities yet."
         }
 
-        if ( templates.length > 0){
+        if (templates.length > 0){
             message = "Get started by sending one of the links below to your prospective partners."
             links = <div className="link-container">
                 {templates.map((template, i) => {
@@ -39,10 +44,10 @@ const BetaUserWelcome = React.createClass({
 
         let welcome =
         <div className="BetaUserWelcome">
-            <h1>Welcome to OneRoost</h1>
+            <h1 display-if={showTitle}>{titleText}</h1>
             {message}
             {links}
-        </div>
+        </div>  
         return welcome;
     }
 })

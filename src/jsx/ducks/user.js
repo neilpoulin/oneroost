@@ -34,6 +34,7 @@ export default function reducer(state=initialState, action){
             var user = action.payload
             state = state.set("hasLoaded", true)
             state = state.set("isLoggedIn", true)
+            state = state.set("emailVerified", !!user.get("emailVerified"))
             state = state.set("userId", user.get("objectId"))
             state = state.set("admin", user.get("admin") || false)
             state = state.set("email", user.get("email"))
@@ -106,6 +107,12 @@ export const saveUser = (updates) => (dispatch, getState) => {
             dispatch(updateUserAction(saved))
         })
         .catch(log.error)
+}
+
+export const refreshCachedUserData = () => (dispatch) => {    
+    Parse.User.current().fetch().then(updated => {
+        dispatch(updateUserAction(updated))
+    })
 }
 
 export const logInAsUser = (userId, password) => (dispatch, getState) => {
