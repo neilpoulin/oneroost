@@ -88,6 +88,6 @@ module.exports = {
     ],
     resolve: {
         extensions: [".js", ".jsx", ".json", ".scss", ".css"],
-        modules: ["jsx", "modules", "ducks", "util", "admin", "brand", "payment", "deal", "form", "modules/dashboard", "navigation", "node_modules", "models", "actions", "reducers", "store", "middleware", "version"],
+        modules: ["jsx", "modules", "ducks", "util", "admin", "brand", "payment", "deal", "form", "modules/dashboard", "navigation", "node_modules", "models", "actions", "reducers", "store", "middleware", "email", "template", "version"],
     },
 };

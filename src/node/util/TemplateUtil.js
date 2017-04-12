@@ -4,14 +4,8 @@ var styleDir = path.resolve(__dirname, "..", "email", "template", "style");
 var Handlebars = require("handlebars");
 var moment = require("moment");
 var EmailTemplate = require("email-templates").EmailTemplate
-var emailTemplates = [
-    "commentNotif",
-    "nextStepNotif",
-    "invitedStakeholderNotif",
-    "roostInvite",
-    "documentAddedNotif",
-    "readyRoostSubmittedNotif"
-];
+import * as emailTemplates from "./../email/TemplateConstants"
+
 var templates = {};
 
 exports.initialize = function(){
@@ -20,17 +14,17 @@ exports.initialize = function(){
 }
 
 exports.getTemplateNames = function(){
-    return emailTemplates
+    return Object.values(emailTemplates)
 }
 
 exports.renderEmail = function(templateName, data){
-    if ( emailTemplates.indexOf(templateName) == -1 ){
+    if (Object.values(emailTemplates).indexOf(templateName) == -1){
         throw "You must provide a vaild template";
     }
     return renderTemplate(templateName, data);
 }
 
-exports.renderSample = function( name, number ){
+exports.renderSample = function(name, number){
     number = number || 0;
 
     var templateDir = path.join(templateRoot, name);
@@ -39,16 +33,21 @@ exports.renderSample = function( name, number ){
         includePaths: [styleDir]
     }});
     templates[name] = template;
-    return template.render( getSampleData(name, number) );
+    return template.render(getSampleData(name, number));
 }
 
-function renderTemplate( name, data ){
+function renderTemplate(name, data){
     var template = templates[name];
-    return template.render(data);
+    try{
+        return template.render(data);
+    }
+    catch (e){
+        console.error(e);
+        return Promise.reject(e);
+    }
 }
 
-function initializeHandlebars()
-{
+function initializeHandlebars(){
     var partialsBase = "./../email/template/_partials/"
     var footerBase = partialsBase + "footer/";
     Handlebars.registerPartial("footer-html", require(footerBase + "html.hbs"));
@@ -79,7 +78,7 @@ function initializeHandlebars()
     })
 
     Handlebars.registerHelper("stepStatusLabel", function(completedDate){
-        if ( !completedDate ){
+        if (!completedDate){
             return "Not Complete"
         }
         return "Completed on " + moment(completedDate).format("MMM D, YYYY");
@@ -87,7 +86,7 @@ function initializeHandlebars()
 }
 
 function initializeEmails(){
-    emailTemplates.forEach(function(name){
+    Object.values(emailTemplates).forEach(function(name){
         var templateDir = path.join(templateRoot, name);
         console.log("creating template", name);
         var template = new EmailTemplate(templateDir, {sassOptions: {
@@ -97,10 +96,10 @@ function initializeEmails(){
     });
 }
 
-function getSampleData( name, number ){
+function getSampleData(name, number){
     var dataDir = "./../email/template/" + name + "/sample.json";
     var data = require(dataDir);
-    if ( data.constructor === Array ){
+    if (data.constructor === Array){
         data = data[number];
     }
     return data;

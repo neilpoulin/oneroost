@@ -1,0 +1,8 @@
+export const COMMENT_TEMPLATE = "commentNotif"
+export const NEXT_STEP_TEMPLATE = "nextStepNotif"
+export const INVITED_STAKEHOLDER_TEMPLATE = "invitedStakeholderNotif"
+export const ROOST_INVITE_TEMPLATE = "roostInvite"
+export const DOCUMENT_ADDED_TEMPLATE = "documentAddedNotif"
+export const READY_ROOST_SUBMITTED_TEMPLATE = "readyRoostSubmittedNotif"
+export const VERIFY_EMAIL_TEMPLATE = "verifyEmail"
+export const PASSWORD_RESET_TEMPALTE = "passwordReset"

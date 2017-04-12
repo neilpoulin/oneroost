@@ -10,7 +10,7 @@ import {getCurrentLogLevel, DEBUG} from "LoggingUtil"
 const configureStore = preloadedState => {
     let middlewares = [thunkMiddleware, immutableParse]
     const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-    if ( getCurrentLogLevel() <= DEBUG ){
+    if (getCurrentLogLevel() <= DEBUG){
         middlewares.push(logger)
     }
     const store = createStore(reducers, composeEnhancers(applyMiddleware(...middlewares)));

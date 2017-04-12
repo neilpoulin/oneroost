@@ -2,7 +2,6 @@ import Parse from "parse"
 import React, {PropTypes} from "react"
 import { connect } from "react-redux"
 import RoostNav from "navigation/RoostNav"
-import AddAccountButton from "account/AddAccountButton"
 import BetaUserWelcome from "BetaUserWelcome"
 import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
 import {setShowArchived, searchOpportunities, setTemplateId, setExportCsvData} from "ducks/dashboard"
@@ -23,7 +22,7 @@ const OpportunityDashboard = React.createClass({
         userId: PropTypes.string.isRequired,
         isLoading: PropTypes.bool.isRequired,
         currentUser: PropTypes.object,
-        templates:  PropTypes.arrayOf(PropTypes.object),
+        templates: PropTypes.arrayOf(PropTypes.object),
         templatesLoading: PropTypes.bool,
         archivedTemplates: PropTypes.arrayOf(PropTypes.object)
     },
@@ -53,18 +52,18 @@ const OpportunityDashboard = React.createClass({
         if (!hasAccess){
             return <DashboardPaywall/>
         }
-        else if ( isLoading ){
+        else if (isLoading){
             contents = <LoadingIndicator message="Loading Dashboard" size="large"/>
         }
-        else if ( !showTable ){
-            contents = <BetaUserWelcome userId={userId} templates={templates} templatesLoading={templatesLoading} archivedTemplates={archivedTemplates}/>
+        else if (!showTable){
+            contents = <BetaUserWelcome emailVerified={currentUser.emailVerified} userId={userId} templates={templates} templatesLoading={templatesLoading} archivedTemplates={archivedTemplates}/>
         }
         else{
             contents = <OpportunitiesTable userId={userId} currentUser={currentUser} exportCsvData={setExportCsvData}/>
         }
 
         let toggleArchivedButton = null
-        if ( hasArchivedDeals){
+        if (hasArchivedDeals){
             toggleArchivedButton =
             <ToggleButton
                 label={"Show Archived: " + (showArchived ? "on" : "off")}
@@ -82,9 +81,11 @@ const OpportunityDashboard = React.createClass({
             exportButton = <a href={encodeURI(csvData)} download={selectedTemplate.title + ".csv"} className="btn btn-success">Export</a>
         }
 
-        if ( templates ){
+        if (templates){
             templateSelector =
-            <select className="TemplateSelector" onChange={e => {setTemplateId(e.target.value)}} value={selectedTemplateId || ""}>
+            <select className="TemplateSelector" onChange={e => {
+                setTemplateId(e.target.value)
+            }} value={selectedTemplateId || ""}>
                 <option value="">-- Show All --</option>
                 {templates.map((template, i) => {
                     return <option key={"template_selector_" + template.objectId + "_" + i} value={template.objectId} >{template.title}</option>
@@ -105,10 +106,6 @@ const OpportunityDashboard = React.createClass({
                         {templateSelector}
                         {exportButton}
                         {toggleArchivedButton}
-                        <AddAccountButton
-                            onSuccess={this.afterAddAccount}
-                            btnClassName="btn-outline-primary btn-sm"
-                            />
                     </div>
 
                 </div>
@@ -139,18 +136,18 @@ const mapStateToProps = (state, ownProps) => {
     let hasArchivedDeals = false
     let templates = []
 
-    if ( myOpportunities ){
+    if (myOpportunities){
         myOpportunities = myOpportunities.toJS()
         isLoading = myOpportunities.isLoading
         showTable = myOpportunities.deals.length > 0 || myOpportunities.archivedDeals.length > 0
         hasArchivedDeals = myOpportunities.archivedDeals.length > 0
-        let deals = denormalize( myOpportunities.deals, [Deal.Schema], entities)
+        let deals = denormalize(myOpportunities.deals, [Deal.Schema], entities)
         let dealTemplates = deals.filter(deal => !!deal.template).map(deal => deal.template)
         dealTemplates.forEach(dealTempalte => {
             let existing = templates.find(t => {
                 return t.objectId === dealTempalte.objectId
             })
-            if ( !existing){
+            if (!existing){
                 templates.push(dealTempalte)
             }
         })
@@ -161,7 +158,7 @@ const mapStateToProps = (state, ownProps) => {
 
     let archivedTemplates = []
     let selectedTemplateId = dashboard.selectedTemplateId
-    if ( myTemplates ){
+    if (myTemplates){
         templatesLoading = myTemplates.isLoading;
         let myTemplateIds = myTemplates.templateIds.filter(id => {
             return !templates.find(t => {

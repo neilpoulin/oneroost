@@ -9,23 +9,14 @@ require("console-stamp")(console, {
 import express from "express"
 import moment from "moment"
 import ejs from "ejs"
-import {ParseServer} from "parse-server"
-import ParseDashboard from "parse-dashboard"
-import ParseDashboardConfig from "./parse-dashboard-config.json"
-import {S3Adapter} from "parse-server"
 import bodyParser from "body-parser"
-import SESParseAdapter from "./email/SESParseAdapter.js"
 import favicon from "serve-favicon"
-import Notifications from "./notification/Notifications.js"
+import {getParseServer, getParseDashboard, getLiveQueryServer} from "./parseServer"
 import envUtil from "./util/envUtil.js"
-import Stakeholders from "./stakeholders.js"
 import http from "http"
 import socket from"socket.io"
 import TemplateUtil from"./util/TemplateUtil"
-import Documents from "./documents/Documents"
-import ReadyRoost from "./roost/ReadyRoost"
-import BeforeSave from "./triggers/BeforeSave"
-import Subscription from "./subscription/Subscription"
+import Triggers from "./triggers/triggers"
 import AWSXRay from "aws-xray-sdk";
 import compression from "compression";
 import version from "./version.json";
@@ -44,14 +35,23 @@ AWSXRay.config([AWSXRay.plugins.EC2]);
 AWSXRay.config([AWSXRay.plugins.ElasticBeanstalk]);
 
 var app = express();
-app.use(AWSXRay.express.openSegment(envUtil.getEnvName()));
 var server = http.Server(app);
+
+process.on("uncaughtException", function(err){
+    console.error(err.stack)
+    server.close();
+})
+process.on("SIGTERM", function(err){
+    console.error(err.stack)
+    server.close();
+})
+
 var io = socket(server);
+app.use(AWSXRay.express.openSegment(envUtil.getEnvName()));
 app.engine("ejs", ejs.__express);
 app.use(bodyParser.json());
 app.use("/parse", getParseServer());
 app.use("/admin/dashboard", getParseDashboard());
-
 app.use(favicon(__dirname + "./../public/favicon.ico"));
 app.set("views", "cloud/views");
 
@@ -67,95 +67,29 @@ if (process.env.NODE_ENV === "production") {
 }
 else {
     const devSetup = require("./dev");
-    devSetup.intitialize(app);    
+    devSetup.intitialize(app);
 }
 
-app.get("/admin/emails/:templateName", function(req, resp){
-    TemplateUtil.renderSample(req.params.templateName).then(templates => {
-        resp.render("emailSample.ejs", templates);
-    });
-});
-
-app.get("/admin/emails/:templateName/:number", function(req, resp){
-    TemplateUtil.renderSample(req.params.templateName, req.params.number).then(function(templates){
-        resp.render("emailSample.ejs", templates);
-    });
-});
-
-app.get("*", function(request, response){
-    var env = envUtil.getEnv();
-    var homePage = "index.ejs";
-    var params = env.json;
-    response.render(homePage, params);
+app.use(function(req, res, next) {
+    require("./routes")(req, res, next);
 });
 
 io.on("connection", function(socket){
     //no op here - will join namespaced rooms later
     socket.on("disconnect", function(){
-    //no op
+        //no op
     });
 }).on("error", function(error){
     console.log("recieved a websocket error: ", error);
 });
 
-BeforeSave.initialize();
-Notifications.initialize(io);
-Documents.initialize();
-Stakeholders.initialize();
-ReadyRoost.initialize();
-Subscription();
+Triggers.initialize(io)
+TemplateUtil.initialize()
 
 app.use(AWSXRay.express.closeSegment());
 
-process.on("uncaughtException", function(err){
-    console.error(err.stack)
-    server.close();
-})
-process.on("SIGTERM", function(err){
-    console.error(err.stack)
-    server.close();
-})
 server.listen(port, function() {
     console.log("parse-server OneRoost running on port " + port + ".");
 });
 
 getLiveQueryServer(server);
-
-TemplateUtil.initialize()
-
-function getParseDashboard(){
-    return new ParseDashboard(ParseDashboardConfig);
-}
-
-function getLiveQueryServer(httpServer){
-    ParseServer.createLiveQueryServer(httpServer, {
-        appId: envUtil.getParseAppId(),
-        masterKey: envUtil.getParseMasterKey(),
-        serverURL: envUtil.getParseServerUrl(),
-    });
-}
-
-function getParseServer(){
-    return new ParseServer({
-        databaseURI: envUtil.getDatabaseUrl(),
-        cloud: "main.js",
-        appId: envUtil.getParseAppId(),
-        fileKey: "myFileKey",
-        masterKey: envUtil.getParseMasterKey(),
-        push: {}, // See the Push wiki page
-        liveQuery: {
-            // classNames: ["User", "Account", "Deal", "DealComment", "NextStep", "Stakeholder"]
-            classNames: ["DealComment", "Deal", "Stakeholder", "NextStep"]
-        },
-        serverURL: envUtil.getParseServerUrl(),
-        publicServerURL: envUtil.getPublicServerUrl(),
-        appName: "OneRoost",
-        emailAdapter: SESParseAdapter({}),
-        filesAdapter: new S3Adapter(
-            envUtil.getAwsId(),
-            envUtil.getAwsSecretId(),
-            "parse-direct-access",
-            {directAccess: true}
-        )
-    });
-}
