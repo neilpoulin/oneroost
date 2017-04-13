@@ -25,14 +25,13 @@ const CreateAccountForm = React.createClass({
             errors: {}
         };
     },
-    doSubmit: function()
-    {
+    doSubmit: function() {
         var self = this;
         var errors = FormUtil.getErrors(this.state, validations);
         log.info(errors);
-        if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
+        if (Object.keys(errors).length === 0 && errors.constructor === Object){
             // this.saveDeal();
-            let {accountName,
+            let {
                 primaryContact,
                 streetAddress,
                 city,
@@ -40,7 +39,6 @@ const CreateAccountForm = React.createClass({
                 zipCode,
                 dealName} = this.state;
             this.props.createRoost({
-                accountName,
                 primaryContact,
                 streetAddress,
                 city,
@@ -57,7 +55,7 @@ const CreateAccountForm = React.createClass({
     },
     render: function(){
         return (
-            <div className="CreateAccount">
+            <div className="CreateAccount">                
                 <FormInputGroup
                     fieldName="accountName"
                     label="Company Name"

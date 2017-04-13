@@ -1,6 +1,5 @@
 import * as Stakeholder from "models/Stakeholder"
 import * as Deal from "models/Deal"
-import * as Account from "models/Account"
 import {normalize} from "normalizr"
 import Parse from "parse"
 import * as RoostUtil from "RoostUtil"
@@ -68,12 +67,12 @@ export const removeStakeholder = (json) => (dispatch, getState) => {
         message: message,
         author: null,
         username: "OneRoost Bot",
-        navLink: {type:"participant"}
+        navLink: {type: "participant"}
     }))
 }
 
 export const createStakeholder = (json, message) => (dispatch, getState) => {
-    if ( !json.hasOwnProperty("active") ){
+    if (!json.hasOwnProperty("active")){
         json["active"] = true;
     }
     let stakeholder = Stakeholder.fromJSON(json);
@@ -85,13 +84,13 @@ export const createStakeholder = (json, message) => (dispatch, getState) => {
         }
         let entities = normalize(savedJSON, Stakeholder.Schema).entities
 
-        if ( message ){
+        if (message){
             dispatch(createComment({
                 deal: json.deal,
                 message,
                 author: null,
                 username: "OneRoost Bot",
-                navLink: {type:"participant"}
+                navLink: {type: "participant"}
             }))
         }
 
@@ -111,8 +110,8 @@ export const inviteUser = (userInfo, deal) => (dispatch, getState) => {
     Parse.Cloud.run("addStakeholder", {
         dealId: deal.objectId,
         stakeholder: userInfo,
-    }).then(function( result ) {
-        if ( result.exists ){
+    }).then(function(result) {
+        if (result.exists){
             alert("this user is already a stakeholder on this opportunity.");
             return;
         }
@@ -125,7 +124,7 @@ export const inviteUser = (userInfo, deal) => (dispatch, getState) => {
             inviteAccepted: false,
         }
         const message = RoostUtil.getFullName(currentUser) + " invited " + RoostUtil.getFullName(createdUser) + " to the opportunity.";
-        dispatch(createStakeholder(stakeholderToCreate, message ))
+        dispatch(createStakeholder(stakeholderToCreate, message))
     }).catch(error => {
         alert("this user is already a stakeholder on this opportunity.");
         log.error(error);
@@ -134,7 +133,7 @@ export const inviteUser = (userInfo, deal) => (dispatch, getState) => {
 
 export const loadStakeholders = (dealId, force=false) => (dispatch, getState) => {
     let {roosts} = getState();
-    if ( roosts.has(dealId) && roosts.get(dealId).get("stakeholders").get("hasLoaded") && !roosts.get(dealId).get("stakeholders").get("isLoading") && !force ){
+    if (roosts.has(dealId) && roosts.get(dealId).get("stakeholders").get("hasLoaded") && !roosts.get(dealId).get("stakeholders").get("isLoading") && !force){
         log.warn("not loading stakeholders as it has been loaded before")
         return null
     }
@@ -142,6 +141,7 @@ export const loadStakeholders = (dealId, force=false) => (dispatch, getState) =>
         type: STAKEHOLDER_LOAD_REQUEST,
         dealId: dealId
     });
+
     var stakeholderQuery = new Parse.Query("Stakeholder");
     stakeholderQuery.equalTo("deal", Deal.Pointer(dealId));
     stakeholderQuery.include("user");
@@ -149,7 +149,6 @@ export const loadStakeholders = (dealId, force=false) => (dispatch, getState) =>
         let json = stakeholders.map(stakeholder => stakeholder.toJSON())
         // let AccountSchema = Account.Schema;
         // let deal = Deal.fromJS(json[0].deal)
-        log.info(Account)
         let entities = normalize(json, [Stakeholder.Schema]).entities || {}
         dispatch({
             type: STAKEHOLDER_LOAD_SUCCESS,

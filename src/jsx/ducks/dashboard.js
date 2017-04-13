@@ -17,7 +17,7 @@ const initialState = Map({
     selectedTemplateId: null,
     csvData: null
 });
-export default function reducer(state=initialState,action) {
+export default function reducer(state=initialState, action) {
     switch (action.type) {
         case SHOW_ARCHIVED:
             state = state.set("showArchived", true)
@@ -55,7 +55,7 @@ export const searchOpportunities = (query) => (dispatch, getState) => {
 }
 
 export const setShowArchived = (showArchived) => (dispatch, getState) => {
-    if ( showArchived ){
+    if (showArchived){
         dispatch({
             type: SHOW_ARCHIVED
         })

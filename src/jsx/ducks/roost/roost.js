@@ -5,14 +5,13 @@ import * as nextSteps from "ducks/roost/nextSteps"
 import * as documents from "ducks/roost/documents"
 import * as stakeholders from "ducks/roost/stakeholders"
 import * as requirements from "ducks/roost/requirements"
+import {LOADED_ENTITIES} from "ducks/entities"
 import Parse from "parse"
 import * as Deal from "models/Deal"
-import * as Account from "models/Account"
 import { Map } from "immutable"
 import * as log from "LoggingUtil"
 import * as RoostUtil from "RoostUtil"
 import ReactGA from "react-ga"
-
 
 export const DEAL_LOAD_REQUEST = "oneroost/roost/DEAL_LOAD_REQUSET"
 export const DEAL_LOAD_SUCCESS = "oneroost/roost/DEAL_LOAD_SUCCESS"
@@ -44,37 +43,27 @@ const initialState = Map({
 
 export const createRoost = (opts) => (dispatch, getState) => {
     let currentUser = Parse.User.current()
-    let account = Account.fromJS({
+    let deal = Deal.fromJS({
         createdBy: currentUser,
-        accountName: opts.accountName,
-        primaryContact: opts.primaryContact,
-        streetAddress: opts.streetAddress,
-        city: opts.city,
-        state: opts.state,
-        zipCode: opts.zipCode,
+        dealName: opts.dealName,
+        profile: {"timeline": "2016-05-13"},
+        budget: {"low": 0, "high": 0}
     })
-    account.save().then(account => {
-        log.info("account created", account)
-        let deal = Deal.fromJS({
-            createdBy: currentUser,
-            dealName: opts.dealName,
-            account: account,
-            profile: {"timeline": "2016-05-13"},
-            budget: {"low": 0, "high": 0}
+    deal.save().then(deal => {
+        log.info("deal created")
+        let entities = normalize(deal.toJSON(), Deal.Schema).entities
+        dispatch({
+            type: LOADED_ENTITIES,
+            entities,
         })
-        //TODO: dispatch account created
-        deal.save().then(deal => {
-            log.info("deal created")
-            //TODO: dispatch deal created
-            dispatch(stakeholders.createStakeholder({
-                deal: deal,
-                user: currentUser,
-                inviteAccepted: true,
-                role: "CREATOR",
-                invitedBy: currentUser,
-                active: true,
-            }))
-        })
+        dispatch(stakeholders.createStakeholder({
+            deal: deal,
+            user: currentUser,
+            inviteAccepted: true,
+            role: "CREATOR",
+            invitedBy: currentUser,
+            active: true,
+        }))
     }).catch(log.error)
 }
 
@@ -88,14 +77,14 @@ export const updateDeal = (dealJSON, changes, message, type) => (dispatch, getSt
         entities: entities,
         dealId: dealJSON.objectId
     });
-    if ( message ){
+    if (message){
         let comment = {
             deal: deal,
             message: message,
             author: null,
             username: "OneRoost Bot",
         }
-        if ( type ){
+        if (type){
             comment.navLink = {type: type}
         }
 
@@ -106,7 +95,7 @@ export const updateDeal = (dealJSON, changes, message, type) => (dispatch, getSt
 export const loadDeal = (dealId, force=false) => {
     return (dispatch, getState) => {
         let {roosts} = getState();
-        if ( roosts.has(dealId) && roosts.get(dealId).get("hasLoaded") && !roosts.get(dealId).get("isLoading") && !force ){
+        if (roosts.has(dealId) && roosts.get(dealId).get("hasLoaded") && !roosts.get(dealId).get("isLoading") && !force){
             log.warn("not loading deal, already loaded")
             return null
         }
@@ -131,7 +120,7 @@ export const loadDeal = (dealId, force=false) => {
         }).catch(error => {
             log.error(error);
             dispatch({
-                type:DEAL_LOAD_ERROR,
+                type: DEAL_LOAD_ERROR,
                 error: error,
                 dealId: dealId
             })
@@ -167,7 +156,7 @@ export const submitReadyRoost = (stakeholder, deal) => (dispatch, getState) => {
     Parse.Cloud.run("submitReadyRoost", {
         dealId: deal.objectId,
         stakeholderId: stakeholder.objectId
-    }).then(function( result ) {
+    }).then(function(result) {
         log.info(result);
         alert("We have let " + RoostUtil.getFullName(stakeholder.user) + " know that the Roost is ready for them to review.")
 
@@ -175,8 +164,8 @@ export const submitReadyRoost = (stakeholder, deal) => (dispatch, getState) => {
 
         ReactGA.set({ userId: Parse.User.current().objectId });
         ReactGA.event({
-          category: "ReadyRoost",
-          action: "Submitted ReadyRoost"
+            category: "ReadyRoost",
+            action: "Submitted ReadyRoost"
         });
     });
 }
@@ -211,7 +200,7 @@ const roost = (state=initialState, action) => {
 
     state = state.set("comments", comments.default(state.get("comments"), action))
     state = state.set("nextSteps", nextSteps.default(state.get("nextSteps"), action))
-    state = state.set("documents",documents.default(state.get("documents"), action))
+    state = state.set("documents", documents.default(state.get("documents"), action))
     state = state.set("stakeholders", stakeholders.default(state.get("stakeholders"), action))
     state = state.set("requirements", requirements.default(state.get("requirements"), action))
     return state;

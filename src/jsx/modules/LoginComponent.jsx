@@ -132,7 +132,7 @@ const LoginComponent = React.createClass({
         });
         return this.handleLoginSuccess(user);
     },
-    handleLoginSuccess: function(user){        
+    handleLoginSuccess: function(user){
         this.props.userLoggedIn(user);
         this.props.success();
     },
@@ -230,22 +230,24 @@ const LoginComponent = React.createClass({
             email,
             firstName,
             lastName,
-            password} = this.state;
+            password,
+            isLogin,
+        } = this.state;
 
         if (this.state.isLoggedIn) {
             return false;
         }
 
-        var btnText = this.state.isLogin ? "Log In" : "Sign Up";
+        var btnText = isLogin ? "Log In" : "Sign Up";
 
         let tabs = null;
         if (this.props.showRegister){
             tabs =
             <ul className="nav nav-tabs nav-justified" >
-                <li role="presentation " className={"pointer " + (this.state.isLogin ? "" : "active")} >
+                <li role="presentation " className={"pointer " + (isLogin ? "" : "active")} >
                     <a onClick={this.setIsRegister}>Sign Up</a>
                 </li>
-                <li role="presentation" className={"pointer " + (this.state.isLogin ? "active" : "")} >
+                <li role="presentation" className={"pointer " + (isLogin ? "active" : "")} >
                     <a onClick={this.setIsLogin}>Login</a>
                 </li>
             </ul>;
@@ -264,7 +266,7 @@ const LoginComponent = React.createClass({
         let lastNameInput = null;
         let forgotLink = null;
         let nameInput = null;
-        if (!this.state.isLogin){
+        if (!isLogin){
             if (this.props.showCompany){
                 companyInput =
                 <FormInputGroup
@@ -282,13 +284,18 @@ const LoginComponent = React.createClass({
                     value={firstName}
                     label="First Name"
                     errors={errors}
+                    name="fname"
+                    autoFocus={!isLogin}
                     onChange={val => this.setState({"firstName": val})}
+                    autocompleteType={"given-name"}
                     />;
             lastNameInput = <FormInputGroup
                 fieldName="lastName"
                 value={lastName}
                 label="Last Name"
                 errors={errors}
+                autocompleteType={"family-name"}
+                name="lname"
                 onChange={val => this.setState({"lastName": val})}
                 />
 
@@ -333,7 +340,11 @@ const LoginComponent = React.createClass({
                     value={email}
                     label="Email"
                     errors={errors}
-                    onChange={val => this.setState({"email": val})}
+                    type={"email"}
+                    autocompleteType={"email"}
+                    name={"email"}
+                    autoFocus={isLogin}
+                    onChange={(val="") => this.setState({"email": val.toLowerCase()})}
                     />
                 {companyInput}
                 <FormInputGroup
@@ -342,6 +353,7 @@ const LoginComponent = React.createClass({
                     label="Password"
                     errors={errors}
                     type={"password"}
+                    name="password"
                     onChange={val => this.setState({"password": val})}
                     />
                 {actionButton}

@@ -13,7 +13,9 @@ const SearchInput = React.createClass({
     },
     getDefaultProps(){
         return {
-            onKeyUp: () => {log.info("key up on search no implemented")},
+            onKeyUp: () => {
+                log.info("key up on search no implemented")
+            },
             onSearch: () => this.props.onKeyUp
         }
     },

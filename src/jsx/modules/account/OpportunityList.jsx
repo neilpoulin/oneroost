@@ -21,17 +21,16 @@ const OpportunityList = React.createClass({
     },
     render () {
         let {user} = this.props
-        var deals = this.props.deals.sort((a, b) => RoostUtil.getRoostDisplayName(a, user).toUpperCase().localeCompare( RoostUtil.getRoostDisplayName(b,user).toUpperCase() ) );
-        var archivedDeals = this.props.archivedDeals.sort((a, b) => RoostUtil.getRoostDisplayName(a, user).toUpperCase().localeCompare( RoostUtil.getRoostDisplayName(b, user).toUpperCase() ) );
+        var deals = this.props.deals.sort((a, b) => RoostUtil.getRoostDisplayName(a, user).toUpperCase().localeCompare(RoostUtil.getRoostDisplayName(b, user).toUpperCase()));
+        var archivedDeals = this.props.archivedDeals.sort((a, b) => RoostUtil.getRoostDisplayName(a, user).toUpperCase().localeCompare(RoostUtil.getRoostDisplayName(b, user).toUpperCase()));
         let archived = []
 
-        if ( this.props.archivedVisible && archivedDeals.length > 0 ){
+        if (this.props.archivedVisible && archivedDeals.length > 0){
             archived.push(<li className="divider" key="archived_divider">Archived</li>)
             archivedDeals.map((deal, i) => {
                 let dealId = deal.objectId
-                let accountId = deal.account.objectId
                 archived.push(<AccountSidebarItem
-                    key={"account_" + accountId + "_deal_" + dealId + "_" + i}
+                    key={`deal_${dealId}_${i}`}
                     deal={deal}
                     />)
             })
@@ -41,10 +40,9 @@ const OpportunityList = React.createClass({
         <ul className={"AccountSidebarList " + this.props.className}>
             {deals.map(function(deal, i){
                 let dealId = deal.objectId
-                let accountId = deal.account.objectId
                 var item =
                 <AccountSidebarItem
-                    key={"account_" + accountId + "_deal_" + dealId + "_" + i}
+                    key={ `deal_${dealId}_${i}_archived`}
                     deal={deal}
                     currentUser={user}
                     />

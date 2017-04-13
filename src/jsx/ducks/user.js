@@ -4,8 +4,10 @@ import {Map} from "immutable"
 import * as RoostUtil from "RoostUtil"
 import {normalize} from "normalizr"
 import * as User from "models/User"
+import * as Account from "models/Account"
 import Raven from "raven-js"
 import * as log from "LoggingUtil"
+import {LOADED_ENTITIES} from "ducks/entities"
 
 export const UPDATE_USER = "oneroost/user/UPADATE_USER"
 export const LOGIN_SUCCESS = "oneroost/user/LOGIN_SUCCESS"
@@ -17,6 +19,7 @@ const initialState = Map({
     userId: null,
     email: null,
     admin: false,
+    accountId: null,
     isLoggedIn: false,
     roostTemplates: Map({}),
     plan: null,
@@ -38,6 +41,7 @@ export default function reducer(state=initialState, action){
             state = state.set("userId", user.get("objectId"))
             state = state.set("admin", user.get("admin") || false)
             state = state.set("email", user.get("email"))
+            state = state.set("accountId", user.getIn(["account", "objectId"], null))
             break;
         case LOGOUT:
             state = initialState
@@ -109,9 +113,32 @@ export const saveUser = (updates) => (dispatch, getState) => {
         .catch(log.error)
 }
 
-export const refreshCachedUserData = () => (dispatch) => {    
+export const refreshCachedUserData = () => (dispatch) => {
     Parse.User.current().fetch().then(updated => {
         dispatch(updateUserAction(updated))
+    })
+}
+
+export const connectToAccount = () => (dispatch, getState) => {
+    const {user} = getState()
+    if (user.get("accountId")){
+        return null;
+    }
+    Parse.Cloud.run("addUserToAccount", {
+        email: user.get("email"),
+        userId: user.get("userId"),
+    }).then(({account, message, user}) => {
+        log.info("success!", message)
+        let userEntities = normalize(RoostUtil.toJSON(user), User.Schema).entities
+        let accountEntities = normalize(RoostUtil.toJSON(account), Account.Schema).entities
+        let entities = Object.assign({}, userEntities, accountEntities)
+        dispatch({
+            type: LOADED_ENTITIES,
+            entities
+        })
+        dispatch(refreshCachedUserData())
+    }).catch(error => {
+        log.error("error", error)
     })
 }
 

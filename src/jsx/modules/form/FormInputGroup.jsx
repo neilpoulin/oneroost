@@ -19,6 +19,9 @@ const FormInputGroup = React.createClass({
         onKeyDown: PropTypes.func,
         onBlur: PropTypes.func,
         horizontal: PropTypes.bool,
+        autocompleteType: PropTypes.string,
+        name: PropTypes.string,
+        autoFocus: PropTypes.bool,
     },
     getDefaultProps(){
         return {
@@ -32,7 +35,9 @@ const FormInputGroup = React.createClass({
             onKeyUp: (e) => {},
             onKeyDown: e => {},
             onBlur: e => {},
-            onChange: (val) => {log.info("called default onChange", val)},
+            onChange: (val) => {
+                log.info("called default onChange", val)
+            },
             horizontal: false,
         }
     },
@@ -45,13 +50,13 @@ const FormInputGroup = React.createClass({
         this.props.onChange(value);
     },
     getAddonBefore(){
-        if ( this.props.addonBefore ){
+        if (this.props.addonBefore){
             return <span className="input-group-addon">{this.props.addonBefore}</span>
         }
         return null;
     },
     getAddonAfter(){
-        if ( this.props.addonAfter ){
+        if (this.props.addonAfter){
             return <span className="input-group-addon">{this.props.addonAfter}</span>
         }
         return null;
@@ -67,9 +72,11 @@ const FormInputGroup = React.createClass({
             onKeyUp={this.props.onKeyUp}
             onKeyDown={this.props.onKeyDown}
             onBlur={this.props.onBlur}
+            autoComplete={this.props.autocompleteType}
+            autoFocus={this.props.autoFocus}
             />
 
-        if ( this.props.addonBefore || this.props.addonAfter ){
+        if (this.props.addonBefore || this.props.addonAfter){
             input =
             <div className="input-group">
                 {this.getAddonBefore()}

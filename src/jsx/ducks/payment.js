@@ -5,7 +5,6 @@ import Parse from "parse"
 import * as log from "LoggingUtil"
 import {LOGIN_SUCCESS, UPDATE_USER, saveUser} from "ducks/user"
 
-
 export const SELECT_PLAN = "oneroost/payment/SELECT_PLAN"
 
 export const CREATE_CUSTOMER_REQUEST = "oneroost/payment/CREATE_CUSTOMER_REQUEST"
@@ -94,7 +93,7 @@ export const createCustomer = () => (dispatch, getState) => {
     })
 }
 
-export const getCustomerId = () => (dispatch, getState) =>{
+export const getCustomerId = () => (dispatch, getState) => {
     return new Promise((resolve, reject) => {
         const state = getState()
         let customerId = state.payment.get("customerId");
@@ -135,6 +134,6 @@ export const createSubscription = (planId, stripeToken, customerId) => (dispatch
 }
 
 export const selectPlan = (planId, stripeToken) => (dispatch, getState) => {
-    dispatch( selectPlanRequest(planId) )
-    dispatch(getCustomerId()).then(customerId => dispatch(createSubscription(planId, stripeToken, customerId)) )
+    dispatch(selectPlanRequest(planId))
+    dispatch(getCustomerId()).then(customerId => dispatch(createSubscription(planId, stripeToken, customerId)))
 }

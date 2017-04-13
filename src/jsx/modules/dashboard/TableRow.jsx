@@ -30,15 +30,15 @@ const TableRow = React.createClass({
             requirements,
          } = opportunity
 
-         let sortedSteps = nextSteps.filter(step => {
-             return step.completedDate == null && step.active !== false
-         }).sort((a, b) => {
+        let sortedSteps = nextSteps.filter(step => {
+            return step.completedDate == null && step.active !== false
+        }).sort((a, b) => {
             return a.dueDate > b.dueDate
-         })
-         let nextStep = null;
-         if ( sortedSteps.length > 0 ){
-             let step = sortedSteps[0]
-             nextStep =
+        })
+        let nextStep = null;
+        if (sortedSteps.length > 0){
+            let step = sortedSteps[0]
+            nextStep =
              <div>
                     <div>
                         {step.title}
@@ -47,28 +47,28 @@ const TableRow = React.createClass({
                         due {RoostUtil.formatDate(step.dueDate)}
                     </div>
              </div>
-         }
+        }
 
         let templateCell = null
-        if ( !showRequirements ){
+        if (!showRequirements){
             templateCell = <td>
                 {deal.template ? deal.template.title : ""}
             </td>
         }
 
         let requirementCells = []
-        if ( showRequirements && requirementHeadings && requirementHeadings.length > 0){
-            requirementCells = requirementHeadings.map( heading => {
+        if (showRequirements && requirementHeadings && requirementHeadings.length > 0){
+            requirementCells = requirementHeadings.map((heading, i) => {
                 let requirement = requirements.find(req => {
                     return req.title.trim().toLowerCase() === heading.label.trim().toLowerCase()
                 })
-                let cell = <td key={"req_deal_" + deal.objectId}>--</td>
-                if ( requirement ){
+                let cell = <td key={`req_deal_${deal.objectId}_${i}`}>--</td>
+                if (requirement){
                     let icon = <i className="fa fa-times not-completed"></i>
-                    if ( requirement.completedDate ){
+                    if (requirement.completedDate){
                         icon = <i className="fa fa-check completed"></i>
                     }
-                    cell = <td key={"req_cell_" + requirement.objectId } className="requirement" data-value={requirement.completedDate ? true : false}>
+                    cell = <td key={`req_cell_${requirement.objectId}_${i}` } className="requirement" data-value={requirement.completedDate ? true : false}>
                         {icon}
                     </td>
                 }
@@ -89,7 +89,7 @@ const TableRow = React.createClass({
                     {deal.dealName}
                 </td>
                 <td>
-                    {RoostUtil.formatDate( deal.lastActiveAt || deal.updatedAt)}
+                    {RoostUtil.formatDate(deal.lastActiveAt || deal.updatedAt)}
                 </td>
                 <td>
                     {RoostUtil.formatDurationAsDays(deal.createdAt)}

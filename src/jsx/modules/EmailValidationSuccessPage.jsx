@@ -2,7 +2,7 @@ import React, { PropTypes } from "react"
 import {withRouter} from "react-router"
 import RoostNav from "RoostNav"
 import {connect} from "react-redux"
-import {refreshCachedUserData} from "ducks/user"
+import {refreshCachedUserData, connectToAccount} from "ducks/user"
 
 const EmailValidationSuccessPage = React.createClass({
     propTypes: {
@@ -31,6 +31,7 @@ const EmailValidationSuccessPage = React.createClass({
 })
 
 const mapStateToProps = (state, ownProps) => {
+    const user = state.user.toJS()
     const {location} = ownProps;
     let username = null;
     if (location && location.query){
@@ -45,8 +46,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, props) => {
     return {
         refreshUser: () => {
-            debugger;
             dispatch(refreshCachedUserData())
+            dispatch(connectToAccount())
         }
     }
 }

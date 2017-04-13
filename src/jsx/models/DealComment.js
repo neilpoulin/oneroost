@@ -16,8 +16,6 @@ export const Schema = new schema.Entity("comments", {
     processStrategy: processStrategy,
 });
 
-
-
 export const createQuery = () => new Parse.Query(className)
 export default DealComment;
 

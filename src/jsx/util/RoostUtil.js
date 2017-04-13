@@ -9,8 +9,8 @@ import * as log from "LoggingUtil"
 export const transformDatesInObject = (json) => {
     Object.keys(json).forEach(key => {
         let value = json[key]
-        if ( value !== null && typeof value === "object" ){
-            if ( value["__type"] === "Date" && value["iso"] ){
+        if (value !== null && typeof value === "object"){
+            if (value["__type"] === "Date" && value["iso"]){
                 json[key] = moment(value["iso"]).toDate()
             }
         }
@@ -19,13 +19,14 @@ export const transformDatesInObject = (json) => {
 }
 
 export const toJSON = function(obj){
-    if ( !obj ){
+    if (!obj){
         return obj
     }
     let json = obj
-    if ( Iterable.isIterable(obj) ){
+    if (Iterable.isIterable(obj)){
         json = json.toJS()
-    } else if ( obj instanceof Parse.Object ){
+    }
+    else if (obj instanceof Parse.Object){
         json = obj.toJSON()
     }
     // Transform stupid Parse dates into iso strings
@@ -34,17 +35,17 @@ export const toJSON = function(obj){
 }
 
 export const copyJSON = function(json){
-    if ( !json ){
+    if (!json){
         return json;
     }
-    if ( json instanceof Parse.Object ){
-       json = json.toJSON()
+    if (json instanceof Parse.Object){
+        json = json.toJSON()
     }
-    if ( Iterable.isIterable(json) ){
+    if (Iterable.isIterable(json)){
         json = json.toJS()
     }
     let copy = fromJS(json).toJS()
-    if ( copy["__type"] ){
+    if (copy["__type"]){
         delete copy["__type"]
     }
     // Transform stupid Parse dates into iso strings
@@ -53,7 +54,7 @@ export const copyJSON = function(json){
 }
 
 export const getCurrentUser = function(state){
-    if ( !state ){
+    if (!state){
         log.warn("No 'state' passed in to RoostUtil.getCurrentUser()... using Parse.User.current() ")
         return Parse.User.current();
     }
@@ -68,16 +69,17 @@ export const getCurrentUser = function(state){
     return toJSON(currentUser)
 }
 
-export const getFullName = function( parseUser ){
+export const getFullName = function(parseUser){
     var fullName = ""
     try{
-        if ( parseUser instanceof Parse.User ){
+        if (parseUser instanceof Parse.User){
             fullName = parseUser.get("firstName") + " " + parseUser.get("lastName")
         }
         else {
             fullName = parseUser.firstName + " " + parseUser.lastName
         }
-    } catch (e){
+    }
+    catch (e){
         log.warn("unable to parse user name, returning empty");
     }
 
@@ -106,28 +108,25 @@ export const formatMoney = function(amount, includeSymbol){
     return numeral(amount).format(format);
 }
 
-export const formatDurationAsDays = function( past ){
-    var numDays = Math.floor( moment.duration( moment().diff(past)).asDays() );
+export const formatDurationAsDays = function(past){
+    var numDays = Math.floor(moment.duration(moment().diff(past)).asDays());
     var formatted = numDays + " days ago";
 
-    if ( numDays < 1 ){
+    if (numDays < 1){
         formatted = "Today";
     }
-    else if ( numDays < 2){
+    else if (numDays < 2){
         formatted = "Yesterday";
     }
 
     return formatted;
 }
 
-export const isSameDate = function(nextDate, previousDate)
-{
-    if (nextDate != null && !(nextDate instanceof Date ) )
-    {
-        nextDate = new Date( nextDate )
+export const isSameDate = function(nextDate, previousDate){
+    if (nextDate != null && !(nextDate instanceof Date)) {
+        nextDate = new Date(nextDate)
     }
-    if ( previousDate != null && !(previousDate instanceof Date) )
-    {
+    if (previousDate != null && !(previousDate instanceof Date)) {
         previousDate = new Date(previousDate)
     }
     var dateToCheck = nextDate;
@@ -147,7 +146,7 @@ export const isValidEmail = function(email){
 export const isCurrentUser = function(user, currentUser){
     if (user){
         let userId = user.objectId || user.id;
-        if ( typeof userId === "object" ){
+        if (typeof userId === "object"){
             userId = userId.objectId;
         }
 
@@ -155,7 +154,8 @@ export const isCurrentUser = function(user, currentUser){
         if (!currentUser){
             log.warn("Using Parse.User in method isCurrentUser")
             currentUserId = Parse.User.current().id
-        } else {
+        }
+        else {
             currentUserId = currentUser.objectId || currentUser.userId
         }
         return currentUserId === userId
@@ -167,27 +167,28 @@ export const isNotCurrentUser = function(user, currentUser){
     return !isCurrentUser(user, currentUser);
 }
 
-function getRoostNameForParseUser( deal, displayFor, currentUser ){
+function getRoostNameForParseUser(deal, displayFor, currentUser){
     log.warn("Using getRoostNameForParseUser")
     let readyRoostUser = deal.get("readyRoostUser");
-    let account = deal.get("account");
     displayFor = displayFor || getCurrentUser();
     let createdBy = deal.get("createdBy");
 
     let isCreator = isCurrentUser(createdBy, currentUser);
     let isReadyRoostUser = isCurrentUser(readyRoostUser, currentUser);
 
-    if ( !createdBy ){
+    if (!createdBy){
         log.warn("There is no created by on the deal object", deal);
     }
 
     let roostName = "";
-    if ( createdBy && !isCreator && createdBy.get("company") ){
+    if (createdBy && !isCreator && createdBy.get("company")){
         roostName = createdBy.get("company")
-    } else if ( readyRoostUser && !isReadyRoostUser && readyRoostUser.get("company") ){
+    }
+    else if (readyRoostUser && !isReadyRoostUser && readyRoostUser.get("company")){
         roostName = readyRoostUser.get("company");
-    } else{
-        roostName = account.get("accountName");
+    }
+    else{
+        roostName = deal.get("dealName")
     }
     return roostName;
 }
@@ -199,32 +200,32 @@ export const getRoostDisplayName = function(deal, displayFor){
         return getRoostNameForParseUser(deal, displayFor, displayFor)
     }
 
-    let readyRoostUser = deal.readyRoostUser;
-    let account = deal.account;
+    let readyRoostUser = deal.readyRoostUser;    
     displayFor = displayFor || getCurrentUser();
     let createdBy = deal.createdBy;
 
     let isCreator = createdBy && createdBy.objectId == displayFor.objectId
     let isReadyRoostUser = readyRoostUser && readyRoostUser.objectId == displayFor.objectId
 
-    if ( !createdBy ){
+    if (!createdBy){
         log.warn("There is no created by on the deal object", deal);
     }
 
     let roostName = "";
-    if ( createdBy && !isCreator && createdBy.company ){
+    if (createdBy && !isCreator && createdBy.company){
         roostName = createdBy.company
-    } else if ( readyRoostUser && !isReadyRoostUser && readyRoostUser.company ){
+    }
+    else if (readyRoostUser && !isReadyRoostUser && readyRoostUser.company){
         roostName = readyRoostUser.company;
-    } else{
-        roostName = account.accountName;
+    }
+    else{
+        roostName = deal.dealName;
     }
     return roostName;
 }
 
-
 export const getBudgetString = (deal, notQuotedString="Not Quoted") => {
-    if ( !deal ){
+    if (!deal){
         return ""
     }
     var budget = deal.budget

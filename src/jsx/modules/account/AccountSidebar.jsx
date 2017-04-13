@@ -45,20 +45,11 @@ const AccountSidebar = React.createClass({
                     <h3>Opportunities</h3>
                     {archivedButton}
                 </div>
-
                 <OpportunityList deals={deals} archivedDeals={archivedDeals} archivedVisible={archivedVisible} user={currentUser}/>
-                <AddAccountButton
-                    btnClassName="btn-outline-secondary btn-block"
-                    onSuccess={this.onSuccess}
-                    >
-                    <i className="fa fa-plus">Create Account</i>
-                </AddAccountButton>
-
             </div>
         )
     }
 })
-
 
 const mapStateToProps = (state, ownProps) => {
     let stateJS = Map(state).toJS()
@@ -67,7 +58,7 @@ const mapStateToProps = (state, ownProps) => {
     let entities = stateJS.entities
     let opportunities = stateJS.opportunitiesByUser[userId] || {}
 
-    if ( stateJS.opportunitiesByUser[userId] ){
+    if (stateJS.opportunitiesByUser[userId]){
         opportunities.deals = denormalize(opportunities.deals, [Deal.Schema], entities)
         opportunities.archivedDeals = denormalize(opportunities.archivedDeals, [Deal.Schema], entities)
     }

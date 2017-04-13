@@ -16,7 +16,9 @@ const AddAccountButton = React.createClass({
     getDefaultProps: function(){
         return {
             btnClassName: "btn-outline-primary",
-            onSuccess: function(){ log.info("this is the default function from AddAccountButton"); }
+            onSuccess: function(){
+                log.info("this is the default function from AddAccountButton"); 
+            }
         }
     },
     render () {
@@ -48,6 +50,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         createRoost: (opts) => dispatch(createRoost(opts))
     }
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddAccountButton)

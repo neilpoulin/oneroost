@@ -17,7 +17,7 @@ const initialize = () => {
             console.log("customer created!!!", customerId)
 
             console.log("plan:", plan);
-            response.success({
+            return response.success({
                 "success": "Created a plan!",
                 customerId,
             })
@@ -29,13 +29,12 @@ const initialize = () => {
         }
     })
 
-
     Parse.Cloud.define("createSubscription", async (request, response) => {
         try{
             const {planId, stripeToken} = request.params
             const user = request.user
             let subscription = await stripe.createSubscription(user, planId, stripeToken)
-            response.success({
+            return response.success({
                 success: true,
                 subscriptionId: subscription.id,
                 subscription,
@@ -46,14 +45,58 @@ const initialize = () => {
         }
         catch(e){
             console.error("Failed to create subscription", e)
-            response.error({
+            Raven.captureException(e)
+            return response.error({
                 success: false,
                 error: e,
                 message: "Something unexpected went wrong while creating the subscription"})
-            Raven.captureException(e)
         }
     })
 
+    Parse.Cloud.define("addUserToAccount", async (request, response) => {
+        try{
+            let user = request.user
+            const {userId, email} = request.params
+            if (!user || user.id != userId || !user.get("emailVerified")){
+                return response.error({
+                    success: false,
+                    message: "User must be logged in with a verified email as the user that is being associated."
+                })
+            }
+            const userDomain = email.split("@")[1]
+            console.log("UserDomain = ", userDomain)
+            let query = new Parse.Query("Account")
+            query.equalTo("emailDomain", userDomain)
+            let account = await query.first()
+            console.log("found account", account)
+
+            // TODO: just create an acount if not found?
+            if (!account){
+                return response.error({
+                    success: false,
+                    message: "No account found for domain"
+                })
+            }
+
+            user.set({account})
+            let savedUser = await user.save(null, {useMasterKey: true})
+            return response.success({
+                success: true,
+                account,
+                user: savedUser,
+                message: `Added user to account ${account.get("name")}`
+            })
+        }
+        catch (e){
+            console.error("Failed to associte user with account", e)
+            Raven.captureException(e)
+            return response.error({
+                success: false,
+                error: e,
+                message: "Something unexpected went wrong while associating the user to an acount."
+            })
+        }
+    })
 }
 
 export default initialize;

@@ -41,22 +41,11 @@ async function processReadyRoostRequest(currentUser, params, response){
         }
         else {
             console.log("did not max out roosts, creating new ready roost");
-            //get user's account if it exists, else create one
-
-            var account = profileUser.get("account")
-            var company = profileUser.get("company")
-
-            if (!account){
-                let accountName = company || (profileUser.get("firstName") + " " + profileUser.get("lastName")).trim() + "\'s Company"
-                console.log("no account existed, creating one", accountName);
-                account = await (new Parse.Object("Account", {accountName: accountName})).save()
-            }
             console.log("creating roost")
             let roost = new Parse.Object("Deal", {
                 createdBy: currentUser,
                 readyRoostUser: profileUser,
                 template: template,
-                account: account,
                 dealName: roostName,
                 profile: {"timeline": "2016-05-13T00:00:00-06:00"},
                 budget: {"low": 0, "high": 0}

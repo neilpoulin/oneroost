@@ -54,7 +54,7 @@ export default function reducer(state=initialState, action){
 //queries
 const stepQuery = (dealId) => {
     let query = new Parse.Query(NextStep.className)
-    query.equalTo( "deal", Pointer(Deal.className, dealId));
+    query.equalTo("deal", Pointer(Deal.className, dealId));
     query.ascending("dueDate");
     return query;
 }
@@ -152,7 +152,7 @@ export const loadNextStepsForDeals = (dealIds=[]) => (dispatch, getState) => {
 
 export const loadNextSteps = (dealId, force=false) => (dispatch, getState) => {
     let {roosts} = getState();
-    if ( roosts.has(dealId) && roosts.get(dealId).get("nextSteps").get("hasLoaded") && !roosts.get(dealId).get("nextSteps").get("isLoading") && !force ){
+    if (roosts.has(dealId) && roosts.get(dealId).get("nextSteps").get("hasLoaded") && !roosts.get(dealId).get("nextSteps").get("isLoading") && !force){
         log.warn("not loading steps as they are already loaded")
         return null
     }
@@ -171,7 +171,6 @@ export const loadNextSteps = (dealId, force=false) => (dispatch, getState) => {
             dealId: dealId,
             entities: Map(entities)
         })
-
     }).catch(error => {
         log.error(error);
         dispatch({
@@ -184,7 +183,6 @@ export const loadNextSteps = (dealId, force=false) => (dispatch, getState) => {
         })
     });
 }
-
 
 export const addNextStepAction = (step) => {
     let entities = normalize(step.toJSON(), NextStep.Schema).entities
@@ -199,7 +197,7 @@ export const addNextStepAction = (step) => {
 export const createNextStep = (nextStep) => {
     return (dispatch) => {
         let step = NextStep.fromJS(nextStep)
-        step.save().then( saved => {
+        step.save().then(saved => {
             var message = RoostUtil.getFullName(Parse.User.current()) + " created Next Step: " + saved.get("title")
             dispatch(addNextStepAction(saved))
             dispatch(createComment({
@@ -209,11 +207,9 @@ export const createNextStep = (nextStep) => {
                 username: "OneRoost Bot",
                 navLink: {type: "step", id: saved.id }
             }))
-
         })
     }
 }
-
 
 export const subscribeNextSteps = (dealId) => {
     return (dispatch, getState) => {
@@ -222,6 +218,6 @@ export const subscribeNextSteps = (dealId) => {
             create: (result) => dispatch(addNextStepAction(result)),
             delete: (step) => dispatch(stepDeletedAction(step)),
             update: (step) => dispatch(stepChangedAction(step)),
-        }) ))
+        })))
     }
 }

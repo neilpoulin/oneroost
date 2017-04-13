@@ -8,24 +8,23 @@ export const processStrategy = (entity) => {
     return copy
 }
 
-
 export const idAttribute = (entity) => {
     return entity.objectId || entity.id || entity.get("objectId");
 }
 
 export const TEST_STRING = "TESTING"
 
-
 export const Pointer = (className, arg) => {
-    if ( !arg ){
+    if (!arg){
         return null
     }
     let objectId = arg;
-    if ( typeof arg == "object" ){
+    if (typeof arg == "object"){
         objectId = arg.objectId || arg.id
-    } else if ( typeof arg == "string" ){
+    }
+    else if (typeof arg == "string"){
         objectId = arg
     }
-    if ( !objectId ) return null
+    if (!objectId) return null
     return { "__type": "Pointer", "className": className, "objectId": objectId } ;
 }

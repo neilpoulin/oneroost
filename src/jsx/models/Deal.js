@@ -1,7 +1,6 @@
 import Parse from "parse";
 import { schema } from "normalizr"
 import {copyJSON} from "RoostUtil"
-import * as Account from "./Account"
 import * as Template from "models/Template"
 import * as User from "models/User"
 import {processStrategy, idAttribute} from "models/modelUtil"
@@ -18,11 +17,6 @@ export const Schema = new schema.Entity(
     {
         createdBy: User.Schema,
         readyRoostUser: User.Schema,
-        account: new schema.Entity("accounts", {}, {
-            idAttribute: idAttribute,
-            processStrategy: processStrategy
-
-        }),
         template: Template.Schema,
         lastActiveUser: User.Schema,
     },
@@ -50,7 +44,6 @@ export const fromJS = (json) => {
     let deal = copyJSON(json);
     deal.createdBy = User.Pointer(deal.createdBy)
     deal.readyRoostUser = User.Pointer(deal.readyRoostUser)
-    deal.account = Account.Pointer(deal.account)
     deal.template = Template.Pointer(deal.template)
     deal.lastActiveUser = User.Pointer(deal.lastActiveUser)
     return new Deal(deal)
