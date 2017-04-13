@@ -27,14 +27,12 @@ const FormGroup = React.createClass({
         let requiredLabelClass = this.props.required ? " required" : ""
         let children = this.props.children
 
-        if ( this.props.horizontal ){
+        if (this.props.horizontal){
             labelClass = `col-sm-${this.props.labelWidth}`
             formClass = "form-inline";
             let valueClass = 12 - this.props.labelWidth;
             children = <div className={`col-sm-${valueClass}`}>{children}</div>
         }
-
-
 
         let form =
         <div className={`form-group ${FormUtil.getErrorClass(this.props.fieldName, this.props.errors)} ${formClass}`}>

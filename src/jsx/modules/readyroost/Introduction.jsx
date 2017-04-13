@@ -15,11 +15,11 @@ const Introduction = React.createClass({
         const {readyRoostUser, template, nextStep} = this.props;
         const requirements = template.requirements
         let requirementsInfo = null
-        if ( template.requirements && template.requirements.length > 0 ){
+        if (template.requirements && template.requirements.length > 0){
             let message = `There ${requirements.length > 1 ? "are" : "is"} ${requirements.length} requirement${requirements.length > 1 ? "s" : ""} for this opportunity`
             requirementsInfo = <RequirementsInfo
                 requirements={requirements}
-                message={message} 
+                message={message}
                 displayNumbered={true}
                 template={template}/>
         }

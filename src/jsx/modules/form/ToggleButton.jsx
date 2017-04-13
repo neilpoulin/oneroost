@@ -31,10 +31,10 @@ const ToggleButton = React.createClass({
         const {active, label, type, activeType, inactiveType, className, block} = this.props
         let btnType = (active ? activeType : inactiveType) || type
         let btnClass = `btn btn-${btnType} ${className}`
-        if ( active ){
+        if (active){
             btnClass = btnClass + " active"
         }
-        if ( block ){
+        if (block){
             btnClass += " btn-block"
         }
         return (

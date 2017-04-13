@@ -68,7 +68,10 @@ const TableRow = React.createClass({
                     if (requirement.completedDate){
                         icon = <i className="fa fa-check completed"></i>
                     }
-                    cell = <td key={`req_cell_${requirement.objectId}_${i}` } className="requirement" data-value={requirement.completedDate ? true : false}>
+                    cell =
+                    <td key={`req_cell_${requirement.objectId}_${i}` } 
+                        className="requirement"
+                        data-value={requirement.completedDate ? true : false}>
                         {icon}
                     </td>
                 }

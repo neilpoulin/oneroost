@@ -10,7 +10,7 @@ const initialState = Map({});
 
 export default function reducer(state=initialState, action){
     let templateId = action.templateId
-    if ( !templateId || actions.indexOf(action.type) === -1){
+    if (!templateId || actions.indexOf(action.type) === -1){
         return state;
     }
 

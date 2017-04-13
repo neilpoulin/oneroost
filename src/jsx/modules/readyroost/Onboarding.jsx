@@ -16,7 +16,7 @@ var fieldValues = {
     currentUser: ""
 }
 
-const Onboarding = withRouter( React.createClass({
+const Onboarding = withRouter(React.createClass({
     propTypes: {
         readyRoostUser: PropTypes.object.isRequired,
         currentUser: PropTypes.object,
@@ -36,12 +36,12 @@ const Onboarding = withRouter( React.createClass({
     },
     nextStep: function() {
         this.setState({
-            step : this.state.step + 1
+            step: this.state.step + 1
         })
     },
     previousStep: function() {
         this.setState({
-            step : this.state.step - 1
+            step: this.state.step - 1
         })
     },
     componentDidMount(){
@@ -51,7 +51,7 @@ const Onboarding = withRouter( React.createClass({
         this.saveValues({currentUser: nextProps.currentUser});
     },
     showStep(){
-        if ( this.state.loggedInSteps ){
+        if (this.state.loggedInSteps){
             return this.getLoggedInStep()
         }
         return this.getAnonymousStep()
@@ -67,25 +67,26 @@ const Onboarding = withRouter( React.createClass({
         // TODO: create a ready roost onboarding global state
         Parse.Cloud.run("createReadyRoost", {
             templateId: template.objectId,
-            roostName: fieldValues.problem
+            roostName: fieldValues.problem,            
+            industrySubCategory: fieldValues.subCategory,
         }).then(function(result){
             log.info("created ready roost, so happy", result);
             ReactGA.set({ userId: fieldValues.currentUser.objectId || fieldValues.currentUser.id });
             ReactGA.event({
-                  category: "ReadyRoost",
-                  action: "Created ReadyRoost"
-                });
+                category: "ReadyRoost",
+                action: "Created ReadyRoost"
+            });
             self.props.router.replace("/roosts/" + (result.roost.objectId || result.roost.id) + "/requirements");
         },
-        function(error){
-            log.error("can not create roost, already have one for this user", error);
-            self.setState({
-                error: {
-                    message: "You have already submitted an opportunity for to " + RoostUtil.getFullName( self.props.readyRoostUser ) + ".",
-                    link: error.message.link
-                }
+            function(error){
+                log.error("can not create roost, already have one for this user", error);
+                self.setState({
+                    error: {
+                        message: "You have already submitted an opportunity for to " + RoostUtil.getFullName(self.props.readyRoostUser) + ".",
+                        link: error.message.link
+                    }
+                })
             })
-        })
     },
     getLoggedInStep(){
         switch (this.state.step) {
@@ -111,27 +112,27 @@ const Onboarding = withRouter( React.createClass({
     getAnonymousStep(){
         switch (this.state.step) {
             case 1:
-            return <Introduction nextStep={this.nextStep}
+                return <Introduction nextStep={this.nextStep}
                 previousStep={this.previousStep}
                 readyRoostUser={this.props.readyRoostUser}
                 template={this.props.template}
                 />
             case 2:
-            return <OpportunityDetail nextStep={this.nextStep}
+                return <OpportunityDetail nextStep={this.nextStep}
                 previousStep={this.previousStep}
                 fieldValues={fieldValues}
                 readyRoostUser={this.props.readyRoostUser}
                 template={this.props.template}
                 saveValues={this.saveValues} />
             case 3:
-            return <Registration nextStep={this.nextStep}
+                return <Registration nextStep={this.nextStep}
                 previousStep={this.previousStep}
                 readyRoostUser={this.props.readyRoostUser}
                 saveValues={this.saveValues}
                 currentUser={this.props.currentUser}
                 company={fieldValues.company} />
             case 4:
-            return <Confirmation submit={this.submit}
+                return <Confirmation submit={this.submit}
                 previousStep={this.previousStep}
                 readyRoostUser={this.props.readyRoostUser}
                 tempalte={this.props.template}
@@ -142,16 +143,16 @@ const Onboarding = withRouter( React.createClass({
         }
     },
     getLabels(){
-        if ( this.props.currentUser ){
+        if (this.props.currentUser){
             return ["Welcome", "Submit"]
         }
         return ["Welcome", "Opportunity", "Login", "Submit"];
     },
     render () {
         var alert = null;
-        if ( this.state.error ){
+        if (this.state.error){
             let link = null
-            if ( this.state.error.link ){
+            if (this.state.error.link){
                 link = <Link className={"alert-link"} tag="a" to={this.state.error.link}>View the Opportunity</Link>
             }
             alert =
@@ -169,6 +170,6 @@ const Onboarding = withRouter( React.createClass({
         </div>
         return page
     }
-}) )
+}))
 
 export default Onboarding

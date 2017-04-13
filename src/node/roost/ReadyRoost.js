@@ -11,7 +11,7 @@ const STEPS_CONFIG_KEY = "readyRoostSteps";
 async function processReadyRoostRequest(currentUser, params, response){
     try{
         console.log("Setting up ready roost");
-        var {roostName, templateId} = params
+        var {roostName, templateId, industrySubCategory} = params
         console.log("Setting up ready roost for templateId = " + templateId + " and current User = " + currentUser.id)
 
         let templateQuery = new Parse.Query("Template")
@@ -42,11 +42,16 @@ async function processReadyRoostRequest(currentUser, params, response){
         else {
             console.log("did not max out roosts, creating new ready roost");
             console.log("creating roost")
+            const industry = template.get("industry")
+            const industryCategory = template.get("industryCategory")
             let roost = new Parse.Object("Deal", {
                 createdBy: currentUser,
                 readyRoostUser: profileUser,
                 template: template,
-                dealName: roostName,
+                dealName: roostName || `${industryCategory} | ${industrySubCategory}`,
+                industry,
+                industryCategory,
+                industrySubCategory,
                 profile: {"timeline": "2016-05-13T00:00:00-06:00"},
                 budget: {"low": 0, "high": 0}
             });

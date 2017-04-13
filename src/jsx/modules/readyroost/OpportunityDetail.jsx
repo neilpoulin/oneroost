@@ -2,6 +2,8 @@ import React, { PropTypes } from "react"
 import FormUtil, {Validation} from "./../util/FormUtil"
 import FormInputGroup from "FormInputGroup"
 import * as log from "LoggingUtil"
+import FormSelect from "FormSelectGroup"
+import {getSubCategoryOptions} from "TemplateUtil"
 
 const OpportunityDetail = React.createClass({
     propTypes: {
@@ -11,11 +13,13 @@ const OpportunityDetail = React.createClass({
         previousStep: PropTypes.func.isRequired,
         saveValues: PropTypes.func.isRequired,
         previousText: PropTypes.string,
-        nextText: PropTypes.string
+        nextText: PropTypes.string,
+        tempalte: PropTypes.object,
     },
     validations: {
         company: new Validation(FormUtil.notNullOrEmpty, "error", "Please enter your company name"),
-        problem: new Validation(FormUtil.notNullOrEmpty, "error", "Please briefly describe the problem you are trying to solve"),
+        subCategory: new Validation(FormUtil.notNullOrEmpty, "error", "Please choose a category"),
+        // problem: new Validation(FormUtil.notNullOrEmpty, "error", "Please briefly describe the problem you are trying to solve"),
     },
     getDefaultProps: function(){
         return {
@@ -27,25 +31,30 @@ const OpportunityDetail = React.createClass({
         return {
             company: this.props.fieldValues.company,
             problem: this.props.fieldValues.problem,
+            subCategory: this.props.fieldValues.subCategory,
             errors: {}
         }
     },
     nextStep(){
         var errors = FormUtil.getErrors(this.state, this.validations);
         log.info(errors);
-        if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
+        if (Object.keys(errors).length === 0 && errors.constructor === Object){
             this.setState({errors: {}});
             this.props.saveValues({
                 company: this.state.company,
-                problem: this.state.problem
+                subCategory: this.state.subCategory,
             });
             this.props.nextStep();
             return true;
         }
+        else {
+            log.info("failed validation");
+        }
         this.setState({errors: errors});
     },
     render () {
-        let {errors, company, problem} = this.state;
+        let {errors, company, subCategory} = this.state;
+        const {template} = this.props
         let page =
         <div>
             <div className="lead">
@@ -61,15 +70,16 @@ const OpportunityDetail = React.createClass({
                     onChange={val => this.setState({"company": val})}
                     />
 
-                <FormInputGroup
-                    fieldName="problem"
-                    label="Problem Summary"
+                <FormSelect
+                    fieldName="subCategory"
+                    label="Product / Service Type"
                     errors={errors}
-                    value={problem}
-                    required={true}
-                    maxLength={40}
-                    onChange={val => this.setState({"problem": val})}
+                    value={subCategory}
+                    requred={true}
+                    options={getSubCategoryOptions(template.industryCategory, template.industry)}
+                    onChange={val => this.setState({subCategory: val})}
                     />
+
             </div>
             <div className="actions">
                 <button className="btn btn-outline-secondary" onClick={this.props.previousStep}>Previous Step</button>

@@ -22,7 +22,9 @@ const AutosizeTextAreaFormGroup = React.createClass({
             value: "",
             minRows: 2,
             maxRows: 6,
-            onChange: (val) => {log.info("called default onChange", val)},
+            onChange: (val) => {
+                log.info("called default onChange", val)
+            },
             horizontal: false,
         }
     },
