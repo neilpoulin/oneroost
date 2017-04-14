@@ -20,7 +20,7 @@ const NextStepBanner = React.createClass({
         var activeSteps = [];
 
         nextSteps.forEach(function(step){
-            if ( step.completedDate == null ){
+            if (step.completedDate == null){
                 activeSteps.push(step)
             }
             else{
@@ -29,8 +29,7 @@ const NextStepBanner = React.createClass({
         });
 
         var addButton = null;
-        if ( activeSteps.length < 5 )
-        {
+        if (activeSteps.length < 5) {
             addButton = <div className="NextStepBannerItem AddStepContainer">
                 <AddNextStepButton stakeholders={stakeholders}
                     deal={deal}
@@ -39,8 +38,7 @@ const NextStepBanner = React.createClass({
         }
 
         var completedStepsItem = null
-        if ( completedSteps.length > 0 )
-        {
+        if (completedSteps.length > 0) {
             // TODO: dont think i need this... removed from the NavLink below
             // className={"NextStepBannerItem CompletedStepsContainer" + (this.state.active ? "active " : "")} >
             completedStepsItem =
@@ -54,12 +52,12 @@ const NextStepBanner = React.createClass({
         <div id="NextStepsBannerContainer" className="">
             {completedStepsItem}
             <div className="NextStepBannerItem NextStepsContainer">
-                {activeSteps.map(step => {
+                {activeSteps.map((step, i) => {
                     var item =
                     <NextStepItem
                         step={step}
                         deal={deal}
-                        key={"deal_" + deal.objectId + "step_" + step.objectId} >
+                        key={"deal_" + deal.objectId + "step_" + step.objectId + "_" + i} >
                     </NextStepItem>
                     return item;
                 })}

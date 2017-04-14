@@ -13,6 +13,7 @@ import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormGroup from "FormGroup"
 import {validations} from "nextsteps/NextStepValidations"
 import * as log from "LoggingUtil"
+import {formatDate} from "DateUtil"
 
 const NextStepDetailEdit = React.createClass({
     propTypes: {
@@ -40,7 +41,7 @@ const NextStepDetailEdit = React.createClass({
 
         var errors = FormUtil.getErrors(this.state, validations)
         log.info(errors);
-        if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
+        if (Object.keys(errors).length === 0 && errors.constructor === Object){
             // let step = this.props.step;
             let message = RoostUtil.getFullName(this.state.user) + " updated the details of Next Step: " + this.state.title
             this.props.updateStep({
@@ -106,7 +107,7 @@ const NextStepDetailEdit = React.createClass({
                 fieldName="dueDate"
                 >
                 <div className="form-control-static">
-                    {RoostUtil.formatDate(this.state.dueDate)}
+                    {formatDate(this.state.dueDate)}
                     <DateTakeoverButton onChange={this.handleDateChange}
                         buttonText="edit"
                         buttonClass="link"

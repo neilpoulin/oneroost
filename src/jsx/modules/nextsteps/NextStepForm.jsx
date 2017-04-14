@@ -13,6 +13,7 @@ import {validations} from "nextsteps/NextStepValidations"
 import {Pointer} from "models/modelUtil"
 import {createNextStep} from "ducks/roost/nextSteps"
 import * as log from "LoggingUtil"
+import {formatDate} from "DateUtil"
 
 const NextStepForm = React.createClass({
     propTypes: {
@@ -35,7 +36,7 @@ const NextStepForm = React.createClass({
     doSubmit: function () {
         var errors = FormUtil.getErrors(this.state, validations)
         log.info(errors);
-        if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
+        if (Object.keys(errors).length === 0 && errors.constructor === Object){
             this.saveNextStep();
             return true;
         }
@@ -97,7 +98,7 @@ const NextStepForm = React.createClass({
                 fieldName="dueDate"
                 >
                 <div className="form-control-static">
-                    {RoostUtil.formatDate(this.state.dueDate)}
+                    {formatDate(this.state.dueDate)}
                     <DateTakeoverButton onChange={this.handleDateChange}
                         buttonText="edit"
                         buttonClass="link"
@@ -119,7 +120,6 @@ const NextStepForm = React.createClass({
         return form;
     }
 });
-
 
 const mapStateToProps = (state, ownProps) => {
     return {

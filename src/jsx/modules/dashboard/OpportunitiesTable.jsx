@@ -14,6 +14,7 @@ import _ from "lodash"
 import moment from "moment"
 import * as log from "LoggingUtil"
 import {convertArrayOfObjectsToCSV} from "DataUtil"
+import {formatDateShort} from "DateUtil"
 
 const RFP_TITLE = "RFP Title"
 
@@ -239,7 +240,7 @@ const mapStateToProps = (state, ownProps) => {
                 "budget (low)": "\"" + deal.budget.low + "\"",
                 "budget (high)": "\"" + deal.budget.high + "\"",
                 "problem statement": "\"" + deal.dealName + "\"",
-                "last activity": "\"" + RoostUtil.formatDateShort(deal.lastActiveAt || deal.updatedAt) + "\"",
+                "last activity": "\"" + formatDateShort(deal.lastActiveAt || deal.updatedAt) + "\"",
                 "last active user": "\"" + (deal.lastActiveUser ? RoostUtil.getFullName(deal.lastActiveUser) : "") + "\"",
                 "created": "\"" + deal.createdAt + "\"",
                 ...requirementData,

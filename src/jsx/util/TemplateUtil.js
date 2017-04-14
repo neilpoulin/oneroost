@@ -1,3 +1,5 @@
+import {fromJS, Map} from "immutable"
+
 const CATEGORIES = "categories"
 const SUB_CATEGORIES = "subCategories"
 
@@ -7,7 +9,7 @@ export const DISPLAY_TEXT = "displayText"
 // Marketing
 export const MARKETING = "MARKETING"
 // Marketing Categories
-export const MARKETING_ADS = "ADS"
+export const MARKETING_AD_TECH = "AD_TECH"
 export const MARKETING_AGENCIES = "AGENCIES"
 export const MARKETING_DATA = "DATA"
 export const MARKETING_DESIGN = "DESIGN"
@@ -73,12 +75,13 @@ export const CHANNEL_MANAGEMENT = "CHANNEL_MANAGEMENT"
 export const VIDEO_DELIVERY = "VIDEO_DELIVERY"
 export const OTHER = "OTHER"
 
-export const INDUSTRY_MARKETING = {
+export const INDUSTRY_MARKETING = fromJS({
     [DISPLAY_TEXT]: "Marketing",
+    [VALUE]: MARKETING,
     [CATEGORIES]: {
-        [MARKETING_ADS]: {
-            [VALUE]: MARKETING_ADS,
-            [DISPLAY_TEXT]: "Ads",
+        [MARKETING_AD_TECH]: {
+            [VALUE]: MARKETING_AD_TECH,
+            [DISPLAY_TEXT]: "Ad Tech",
             [SUB_CATEGORIES]: {
                 [AD_SERVERS]: {
                     [VALUE]: AD_SERVERS,
@@ -287,25 +290,31 @@ export const INDUSTRY_MARKETING = {
             }
         }
     }
-}
+})
 
-export const INDUSTRY_MAP = {
+export const INDUSTRY_MAP = fromJS({
     [MARKETING]: INDUSTRY_MARKETING
-}
+})
 
 export const getCategoryOptions = (industry=MARKETING) => {
-    const category = INDUSTRY_MAP[industry] || {}
-    return category[CATEGORIES] || {}
+    return INDUSTRY_MAP.getIn([industry, CATEGORIES])
 }
 
 export const getSubCategoryOptions = (category, industry=MARKETING) => {
-    return Object.values(getCategoryOptions()[category][SUB_CATEGORIES] || {})
+    return getCategoryOptions().getIn([category, SUB_CATEGORIES], Map({}))
+}
+
+export const getCategory = (category) => {
+    return INDUSTRY_MAP.get(category)
 }
 
 export const getCategoryDisplayName = (category) => {
-    let found = Object.values(INDUSTRY_MAP).find(industry => industry[VALUE] == category)
+    if (!category){
+        return null;
+    }
+    let found = INDUSTRY_MAP.find(industry => industry.get(VALUE) == category)
     if (found){
-        return found[DISPLAY_TEXT]
+        return found.get(DISPLAY_TEXT)
     }
     return null
 }

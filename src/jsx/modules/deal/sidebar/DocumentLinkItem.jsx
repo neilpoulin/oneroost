@@ -1,7 +1,7 @@
 import React, { PropTypes } from "react"
 import Parse from "parse"
-import moment from "moment"
 import * as RoostUtil from "RoostUtil"
+import {formatDate} from "DateUtil"
 
 const DocumentLinkItem = React.createClass({
     propTypes: {
@@ -25,17 +25,14 @@ const DocumentLinkItem = React.createClass({
         //todo: figure out how to handle GSheets, etc.
         return "fa-external-link";
     },
-    formatDate(date){
-        return moment(date).format("MMM D, YYYY");
-    },
     render () {
         var {doc} = this.props;
         let {externalLink, createdBy, createdAt, fileName} = doc;
         var link = externalLink
-        if ( link.indexOf("//") == -1 ){
+        if (link.indexOf("//") == -1){
             link = "http://" + link;
         }
-        else if ( link.indexOf("http") == -1){
+        else if (link.indexOf("http") == -1){
             link = "http:" + link;
         }
 
@@ -51,7 +48,7 @@ const DocumentLinkItem = React.createClass({
                         </div>
                         <div>
                             <span className="uploadedBy">{RoostUtil.getFullName(createdBy)}</span>
-                            <span className="createdAt">{this.formatDate(createdAt)}</span>
+                            <span className="createdAt">{formatDate(createdAt)}</span>
                         </div>
                     </div>
                 </a>

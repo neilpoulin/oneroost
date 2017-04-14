@@ -1,6 +1,6 @@
 import React, {PropTypes} from "react"
 import NavLink from "NavLink"
-import moment from "moment"
+import {formatDate} from "DateUtil"
 // import * as RoostUtil from "RoostUtil"
 
 const NextStepCompletedSidebar = React.createClass({
@@ -13,15 +13,10 @@ const NextStepCompletedSidebar = React.createClass({
             nextSteps: []
         }
     },
-    formatDate: function( date )
-    {
-        return moment(date).format("M/D/YY")
-    },
     render () {
-        let self = this;
         let {nextSteps, deal} = this.props;
         let dealId = deal.objectId
-        var completedSteps = nextSteps.filter(function( step ){
+        var completedSteps = nextSteps.filter(function(step){
             return step.completedDate != null;
         });
 
@@ -37,7 +32,7 @@ const NextStepCompletedSidebar = React.createClass({
                     key={"roost_" + dealId + "_step_" + stepId + "_completed"} >
                     <div className="nextStepTitle">{title}</div>
                     <div className="nextStepDueDate">
-                        Completed Date: {self.formatDate(completedDate)}
+                        Completed Date: {formatDate(completedDate)}
                     </div>
                 </NavLink>)
             })}

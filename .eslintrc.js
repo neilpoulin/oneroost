@@ -18,9 +18,11 @@ module.exports = {
         "node": true,
         "mongo": true,
         "es6": true,
+        "jest/globals": true
     },
     "plugins": [
-        "react"
+        "react",
+        "jest"
     ],
     "settings": {
         "react": {
@@ -101,5 +103,8 @@ module.exports = {
             "classes": "never"
         }],
         "key-spacing": ["error", { "beforeColon": false, "afterColon": true }],
+        "jest/no-disabled-tests": "warn",
+        "jest/no-focused-tests": "error",
+        "jest/no-identical-title": "error",
     }
 }

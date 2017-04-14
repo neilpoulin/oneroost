@@ -1,7 +1,7 @@
 import Parse from "parse";
 import React, {PropTypes} from "react";
 import NavLink from "NavLink";
-import moment from "moment"
+import {formatDate} from "DateUtil"
 
 const NextStepItem = React.createClass({
     propTypes: {
@@ -14,16 +14,12 @@ const NextStepItem = React.createClass({
             active: false
         };
     },
-    formatDate: function( date )
-    {
-        return moment(date).format("M/D/YY")
-    },
+
     render: function(){
         var dateLabel = "Due"
         let {step, deal} = this.props
         let {dueDate, completedDate, title} = step
-        if ( completedDate )
-        {
+        if (completedDate) {
             dateLabel = "Completed Date: ";
             dueDate = completedDate
         }
@@ -31,10 +27,10 @@ const NextStepItem = React.createClass({
         var stepItem =
 
         <NavLink tag="div" to={"/roosts/" + deal.objectId + "/steps/" + step.objectId }
-            className={"arrow-right NextStepItemContainer " + ( completedDate ? "complete " : "" ) + (this.state.active ? "active " : "")} >
+            className={"arrow-right NextStepItemContainer " + (completedDate ? "complete " : "") + (this.state.active ? "active " : "")} >
             <div className="nextStepTitle">{title}</div>
             <div className="nextStepDueDate">
-                {dateLabel} {this.formatDate(dueDate)}
+                {dateLabel} {formatDate(dueDate)}
             </div>
         </NavLink>
         return stepItem;

@@ -5,6 +5,7 @@ import Select from "react-select"
 import Stages from "Stages"
 import FormGroup from "FormGroup"
 import * as RoostUtil from "RoostUtil"
+import {formatDate, formatDurationAsDays} from "DateUtil"
 import * as log from "LoggingUtil"
 
 const TimelineForm = React.createClass({
@@ -46,16 +47,6 @@ const TimelineForm = React.createClass({
         this.props.updateDeal(data, message)
         this.showSuccess();
     },
-    formatDurationAsDays( past ){
-        var numDays = Math.floor( moment.duration( moment().diff(past)).asDays() );
-        var formatted = numDays + " days ago";
-
-        if ( numDays <= 1 ){
-            formatted = "today";
-        }
-
-        return formatted;
-    },
     showSuccess(){
         var self = this;
         self.setState({saveSuccess: true});
@@ -66,22 +57,18 @@ const TimelineForm = React.createClass({
     getFormattedAge(){
         var {deal} = this.props;
         var created = deal.createdAt;
-        return this.formatDurationAsDays( created );
-    },
-    formatDate( date ){
-        var formatted = moment(date).format("MMM D, YYYY");
-        return formatted;
+        return formatDurationAsDays(created);
     },
     getFormattedCreatedDate(){
         var {deal} = this.props;
         var created = deal.createdAt;
-        return this.formatDate(created);
+        return formatDate(created);
     },
     getStageValues(){
         var values = [];
         Stages.forEach(function (value, key, stages){
-            if ( value.visible ){
-                values.push( {
+            if (value.visible){
+                values.push({
                     value: key,
                     label: value.label
                 });
@@ -97,11 +84,11 @@ const TimelineForm = React.createClass({
         var stages = this.getStageValues();
         var created = this.getFormattedCreatedDate();
         var stageUpdated = deal.stageUpdatedAt || deal.createdAt;
-        var stageUpdatedFormatted = this.formatDate( stageUpdated );
-        var stageUpdatedAge = this.formatDurationAsDays( stageUpdated );
+        var stageUpdatedFormatted = formatDate(stageUpdated);
+        var stageUpdatedAge = this.formatDurationAsDays(stageUpdated);
         var saveMessage = null;
         var saveClass = null
-        if ( this.state.saveSuccess ){
+        if (this.state.saveSuccess){
             saveMessage = <div className="help-block">Success <i className="fa fa-check"></i></div>
             saveClass = "has-success";
         }

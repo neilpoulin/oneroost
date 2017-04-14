@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import NavLink from "NavLink";
-import * as RoostUtil from "RoostUtil"
+import {getBudgetString} from "CurrencyUtil"
 
 const DealProfile = React.createClass({
     propTypes: {
@@ -16,10 +16,6 @@ const DealProfile = React.createClass({
             requirements: [],
         }
     },
-    getBudgetString(){
-        var {deal} = this.props;
-        return RoostUtil.getBudgetString(deal)
-    },
     render () {
         const {deal, stakeholders, documents, requirements} = this.props;
         var widgetClassName = "widget"
@@ -27,7 +23,7 @@ const DealProfile = React.createClass({
         var iconSizeClassname = "fa-lg"
         const dealId = deal.objectId
         const {profile={}, dealName} = deal
-        var budget = this.getBudgetString()
+        var budget = getBudgetString(deal)
 
         let activeStakeholders = stakeholders.filter(s => s.active !== false);
         var stakeholderCount = activeStakeholders.length

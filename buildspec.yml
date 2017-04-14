@@ -20,6 +20,8 @@ phases:
       - npm install node-sass
       - echo Installing gulp...
       - npm install -g gulp
+      - echo installing jest...
+      - npm install -g jest
       - echo checking location of gulp and its version
       - which gulp && gulp -v
       - echo install sentry-cli

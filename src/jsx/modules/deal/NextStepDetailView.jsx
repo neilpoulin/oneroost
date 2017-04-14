@@ -1,6 +1,7 @@
 import React, { PropTypes } from "react"
 import moment from "moment";
 import NextStepActions from "NextStepActions"
+import {formatDateLong} from "DateUtil"
 
 const NextStepDetailView = React.createClass({
     propTypes: {
@@ -8,18 +9,15 @@ const NextStepDetailView = React.createClass({
         handleEdit: PropTypes.func.isRequired,
         updateStep: PropTypes.func.isRequired,
     },
-    formatDate(date){
-        return moment(date).format("dddd, MMM Do, YYYY");
-    },
+
     render () {
         var asignee = this.props.step.assignedUser;
         var username = "(none)";
 
-        if ( asignee != null )
-        {
+        if (asignee != null) {
             username = asignee.firstName + " " + asignee.lastName;
         }
-        var dueDate = this.formatDate( this.props.step.dueDate );
+        var dueDate = formatDateLong(this.props.step.dueDate);
 
         var form =
         <div className="NextStepSidebarForm">

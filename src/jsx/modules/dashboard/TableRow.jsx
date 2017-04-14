@@ -1,5 +1,10 @@
 import React, { PropTypes } from "react"
-import * as RoostUtil from "RoostUtil"
+import {
+    getRoostDisplayName
+} from "RoostUtil"
+
+import {formatDurationAsDays, formatDate} from "DateUtil"
+import {getBudgetString} from "CurrencyUtil"
 import NavLink from "NavLink"
 
 const TableRow = React.createClass({
@@ -28,7 +33,7 @@ const TableRow = React.createClass({
             nextSteps,
             archived,
             requirements,
-         } = opportunity
+        } = opportunity
 
         let sortedSteps = nextSteps.filter(step => {
             return step.completedDate == null && step.active !== false
@@ -39,14 +44,14 @@ const TableRow = React.createClass({
         if (sortedSteps.length > 0){
             let step = sortedSteps[0]
             nextStep =
-             <div>
-                    <div>
-                        {step.title}
-                    </div>
-                    <div>
-                        due {RoostUtil.formatDate(step.dueDate)}
-                    </div>
-             </div>
+            <div>
+                <div>
+                    {step.title}
+                </div>
+                <div>
+                    due {formatDate(step.dueDate)}
+                </div>
+            </div>
         }
 
         let templateCell = null
@@ -69,7 +74,7 @@ const TableRow = React.createClass({
                         icon = <i className="fa fa-check completed"></i>
                     }
                     cell =
-                    <td key={`req_cell_${requirement.objectId}_${i}` } 
+                    <td key={`req_cell_${requirement.objectId}_${i}` }
                         className="requirement"
                         data-value={requirement.completedDate ? true : false}>
                         {icon}
@@ -85,20 +90,20 @@ const TableRow = React.createClass({
                     <NavLink className="" to={"/roosts/" + deal.objectId}
                         tag="span"
                         activeClassName="active">
-                        {RoostUtil.getRoostDisplayName(deal, currentUser)}
+                        {getRoostDisplayName(deal, currentUser)}
                     </NavLink>
                 </td>
                 <td>
                     {deal.dealName}
                 </td>
                 <td>
-                    {RoostUtil.formatDate(deal.lastActiveAt || deal.updatedAt)}
+                    {formatDate(deal.lastActiveAt || deal.updatedAt)}
                 </td>
                 <td>
-                    {RoostUtil.formatDurationAsDays(deal.createdAt)}
+                    {formatDurationAsDays(deal.createdAt)}
                 </td>
                 <td>
-                    {RoostUtil.getBudgetString(deal, "--")}
+                    {getBudgetString(deal, "--")}
                 </td>
                 <td>
                     {nextStep}

@@ -1,6 +1,5 @@
 import Parse from "parse"
 import moment from "moment"
-import numeral from "numeral"
 import {Map, fromJS, Iterable} from "immutable"
 import {denormalize} from "normalizr"
 import * as User from "models/User"
@@ -86,58 +85,6 @@ export const getFullName = function(parseUser){
     return fullName.trim()
 }
 
-export const formatDate = function(dateString){
-    if (dateString != null && dateString != undefined) {
-        return moment(dateString).format("MMM D, YYYY");
-    }
-    return null;
-}
-
-export const formatDateShort = function(dateString){
-    if (dateString != null && dateString != undefined) {
-        return moment(dateString).format("YYYY-MM-DD");
-    }
-    return null;
-}
-
-export const formatMoney = function(amount, includeSymbol){
-    var format = "($0[.]0a)";
-    if (!includeSymbol) {
-        format = "(0[.]0a)"
-    }
-    return numeral(amount).format(format);
-}
-
-export const formatDurationAsDays = function(past){
-    var numDays = Math.floor(moment.duration(moment().diff(past)).asDays());
-    var formatted = numDays + " days ago";
-
-    if (numDays < 1){
-        formatted = "Today";
-    }
-    else if (numDays < 2){
-        formatted = "Yesterday";
-    }
-
-    return formatted;
-}
-
-export const isSameDate = function(nextDate, previousDate){
-    if (nextDate != null && !(nextDate instanceof Date)) {
-        nextDate = new Date(nextDate)
-    }
-    if (previousDate != null && !(previousDate instanceof Date)) {
-        previousDate = new Date(previousDate)
-    }
-    var dateToCheck = nextDate;
-    var actualDate = previousDate;
-    var isSameDay = actualDate != null
-    && dateToCheck.getDate() == actualDate.getDate()
-    && dateToCheck.getMonth() == actualDate.getMonth()
-    && dateToCheck.getFullYear() == actualDate.getFullYear();
-    return isSameDay;
-}
-
 export const isValidEmail = function(email){
     var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
@@ -200,7 +147,7 @@ export const getRoostDisplayName = function(deal, displayFor){
         return getRoostNameForParseUser(deal, displayFor, displayFor)
     }
 
-    let readyRoostUser = deal.readyRoostUser;    
+    let readyRoostUser = deal.readyRoostUser;
     displayFor = displayFor || getCurrentUser();
     let createdBy = deal.createdBy;
 
@@ -222,21 +169,4 @@ export const getRoostDisplayName = function(deal, displayFor){
         roostName = deal.dealName;
     }
     return roostName;
-}
-
-export const getBudgetString = (deal, notQuotedString="Not Quoted") => {
-    if (!deal){
-        return ""
-    }
-    var budget = deal.budget
-    if (!budget) {
-        return notQuotedString;
-    }
-    if (budget.low == budget.high) {
-        if (budget.low > 0) {
-            return this.formatMoney(budget.low, true);
-        }
-        return notQuotedString;
-    }
-    return formatMoney(budget.low, true) + " - " + formatMoney(budget.high, false);
 }

@@ -1,7 +1,7 @@
 import React, {PropTypes} from "react"
 import NavLink from "NavLink"
-import moment from "moment"
 import AddNextStepButton from "nextsteps/AddNextStepButton"
+import {formatDateShort} from "DateUtil"
 
 const AllStepsSidebar = React.createClass({
     propTypes: {
@@ -13,28 +13,21 @@ const AllStepsSidebar = React.createClass({
             nextSteps: [],
         }
     },
-    formatDate: function( date )
-    {
-        return moment(date).format("M/D/YY")
-    },
     render () {
         const {nextSteps, deal} = this.props;
-        const self = this;
 
-        var completedSteps = nextSteps.filter(function( step ){
+        var completedSteps = nextSteps.filter(function(step){
             return step.completedDate != null;
         });
 
-        var activeSteps = nextSteps.filter(function( step ){
+        var activeSteps = nextSteps.filter(function(step){
             return step.completedDate == null;
         });
 
         var dealId = deal.objectId;
 
-
         var addStepsBtn = null;
-        if ( activeSteps.length < 5 )
-        {
+        if (activeSteps.length < 5) {
             addStepsBtn = <AddNextStepButton deal={this.props.deal}
                 containerClass=""
                 btnClassName="btn-outline-primary btn-block"/>
@@ -52,7 +45,7 @@ const AllStepsSidebar = React.createClass({
                         className={ "NextStepSidebarItemContainer active" } >
                         <div className="nextStepTitle">{title}</div>
                         <div className="nextStepDueDate">
-                            Due Date: {self.formatDate(dueDate)}
+                            Due Date: {formatDateShort(dueDate)}
                         </div>
                     </NavLink>
                     return step;
@@ -72,7 +65,7 @@ const AllStepsSidebar = React.createClass({
                         className={ "NextStepSidebarItemContainer" } >
                         <div className="nextStepTitle">{step.title}</div>
                         <div className="nextStepDueDate">
-                            Completed Date: {self.formatDate(step.completedDate)}
+                            Completed Date: {formatDateShort(step.completedDate)}
                         </div>
                     </NavLink>
                     return step;

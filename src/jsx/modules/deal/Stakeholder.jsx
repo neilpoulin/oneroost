@@ -1,5 +1,6 @@
-import React, {PropTypes} from "react";
+import React, {PropTypes} from "react"
 import * as RoostUtil from "RoostUtil"
+import {formatDate} from "DateUtil"
 
 const Stakeholder = React.createClass({
     propTypes: {
@@ -16,8 +17,8 @@ const Stakeholder = React.createClass({
     },
     deleteStakeholder: function () {
         var {stakeholder} = this.props;
-        var confirm = window.confirm("Are you sure you want to remove this user?" );
-        if ( confirm ){
+        var confirm = window.confirm("Are you sure you want to remove this user?");
+        if (confirm){
             this.props.removeStakeholder(stakeholder)
         }
     },
@@ -29,14 +30,14 @@ const Stakeholder = React.createClass({
     render: function () {
         var {stakeholder, isEdit, deal} = this.props;
         var user = stakeholder.user
-        var fullName = RoostUtil.getFullName( user )
+        var fullName = RoostUtil.getFullName(user)
         var email = user.email || user.username
         var company = user.company
         // var roleClass = stakeholder.role.toLowerCase();
         var pendingText = null;
         var inactive = stakeholder.active === false;
         var removeButton = null
-        if ( isEdit ){
+        if (isEdit){
             removeButton =
             <button className="btn btn-outline-danger delete-button"
                 onClick={this.deleteStakeholder}>
@@ -49,17 +50,17 @@ const Stakeholder = React.createClass({
         // var label = null
         // label = <span className={"roleName label " + roleClass}>{stakeholder.role}</span>
 
-        if ( stakeholder.readyRoostApprover && !stakeholder.inviteAccepted && !deal.readyRoostSubmitted ){
+        if (stakeholder.readyRoostApprover && !stakeholder.inviteAccepted && !deal.readyRoostSubmitted){
             actionButton =
             <button onClick={this.submitRoost} className="btn btn-primary">
                 <i className="fa fa-check"></i> Submit Opportunity
             </button>;
         }
-        else if (stakeholder.readyRoostApprover && deal.readyRoostSubmitted && !stakeholder.inviteAccepted ){
-            pendingText = <span>Ready Roost submitted on {RoostUtil.formatDate(deal.readyRoostSubmitted)}</span>
+        else if (stakeholder.readyRoostApprover && deal.readyRoostSubmitted && !stakeholder.inviteAccepted){
+            pendingText = <span>Ready Roost submitted on {formatDate(deal.readyRoostSubmitted)}</span>
             actionButton = null;
         }
-        else if ( !stakeholder.inviteAccepted ){
+        else if (!stakeholder.inviteAccepted){
             pendingText = <span className="pending">(Invite Pending)</span>;
         }
 

@@ -26,6 +26,7 @@ import * as Document from "models/Document"
 import * as NextStep from "models/NextStep"
 import * as Requirement from "models/Requirement"
 import * as log from "LoggingUtil"
+import {sortDatesAscending} from "DateUtil"
 
 const Roost = withRouter(React.createClass({
     propTypes: {
@@ -211,6 +212,7 @@ const mapStateToProps = (state, ownProps) => {
             [NextStep.Schema],
         entities
         ).filter(step => step.active !== false)
+        .sort((a, b) => sortDatesAscending(a.dueDate, b.dueDate))
 
     let requirements = denormalize(
         roost.requirements.ids,

@@ -2301,11 +2301,11 @@ csso@~2.3.1:
     clap "^1.0.9"
     source-map "^0.5.3"
 
-cssom@0.3.1, cssom@0.3.x, "cssom@>= 0.3.0 < 0.4.0":
+cssom@0.3.1, "cssom@>= 0.3.0 < 0.4.0":
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/cssom/-/cssom-0.3.1.tgz#c9e37ef2490e64f6d1baa10fda852257082c25d3"
 
-"cssom@>= 0.3.2 < 0.4.0":
+cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/cssom/-/cssom-0.3.2.tgz#b8036170c79f07a90ff2f16e22284027a243848b"
 
@@ -2995,6 +2995,10 @@ escope@^3.6.0:
     es6-weak-map "^2.0.1"
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
+
+eslint-plugin-jest@^19.0.1:
+  version "19.0.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-19.0.1.tgz#42a420e90e81aa74e162c16166e43a31b890eece"
 
 eslint-plugin-react@^6.8.0:
   version "6.10.0"
@@ -4997,6 +5001,10 @@ jest-haste-map@^19.0.0:
     micromatch "^2.3.11"
     sane "~1.5.0"
     worker-farm "^1.3.1"
+
+jest-immutable-matchers@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/jest-immutable-matchers/-/jest-immutable-matchers-1.4.0.tgz#c4a6e31c06a489d2eade0ef3fe6f21f2876a084d"
 
 jest-jasmine2@^19.0.2:
   version "19.0.2"
@@ -8022,7 +8030,7 @@ regenerate@^1.2.1:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.3.2.tgz#d1941c67bad437e1be76433add5b385f95b19260"
 
-regenerator-runtime@^0.10.0:
+regenerator-runtime@^0.10.0, regenerator-runtime@^0.10.3:
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.10.3.tgz#8c4367a904b51ea62a908ac310bf99ff90a82a3e"
 

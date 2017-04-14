@@ -199,7 +199,7 @@ export const createNextStep = (nextStep) => {
         let step = NextStep.fromJS(nextStep)
         step.save().then(saved => {
             var message = RoostUtil.getFullName(Parse.User.current()) + " created Next Step: " + saved.get("title")
-            dispatch(addNextStepAction(saved))
+            // dispatch(addNextStepAction(saved))
             dispatch(createComment({
                 deal: saved.get("deal"),
                 message: message,
