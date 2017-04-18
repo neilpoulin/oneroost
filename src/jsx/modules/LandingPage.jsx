@@ -18,10 +18,13 @@ const LandingPage = withRouter(React.createClass({
         this.setState({email: value});
     },
     render () {
-        const {email, errors={}} = this.props
+        const {email} = this.props
         var page =
         <div className={"LandingPage"} >
             <section className="background-primary textured">
+                <div className="login">
+                    <Link to="/login">Login</Link>
+                </div>
                 <div className="container">
                     <div className="logoContainer">
                         <Logo/>
