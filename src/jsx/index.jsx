@@ -41,7 +41,7 @@ import PlansPage from "payment/PlansPage"
 import configureStore from "./store/configureStore"
 import { syncHistoryWithStore } from "react-router-redux"
 import BrandPage from "brand/BrandPage"
-import EmailValidationSuccessPage from 'EmailValidationSuccessPage'
+import EmailValidationSuccessPage from "EmailValidationSuccessPage"
 Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;
 Parse.serverURL = window.location.origin + "/parse";

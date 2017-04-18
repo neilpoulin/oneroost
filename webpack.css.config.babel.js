@@ -10,7 +10,7 @@ const indexFile = path.join("src", "scss", "index.scss")
 process.traceDeprecation = true
 
 module.exports = {
-    entry:{
+    entry: {
         styles: [
             // "bootstrap-loader",
             path.join(__dirname, indexFile)
@@ -62,17 +62,17 @@ module.exports = {
                     ]
                 })
             }],
-        },
-        plugins: [
+    },
+    plugins: [
             extractCss,
             new webpack.ProvidePlugin({
                 $: "jquery",
                 jQuery: "jquery",
                 Tether: "tether",
             }),
-        ],
-        resolve: {
-            extensions: [".scss", ".css"],
-            modules: ["scss", "node_modules"],
-        },
-    };
+    ],
+    resolve: {
+        extensions: [".scss", ".css"],
+        modules: ["scss", "node_modules"],
+    },
+};

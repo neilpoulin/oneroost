@@ -9,7 +9,7 @@ $white: #FFFFFF;
 $mainColor: $roostDarkGray;
 $globalBg: $white;
 $navbarHeight: 50px;
-
+$bodyPaddingTop: $navbarHeight;
 $activeBg: lighten($roostOrange, 40%);
 $activeColor: $roostOrange;
 $activeBorderColor: $roostOrange;

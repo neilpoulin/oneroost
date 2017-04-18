@@ -9,6 +9,14 @@
 .btn-outline-primary {
   @include button-outline-variant($btn-primary-bg);
 }
+
+.btn-outline-white {
+  @include button-outline-variant($white);
+  &:hover{
+      color: $roostOrange;
+  }
+}
+
 .btn-outline-default {
   @include button-outline-variant($btn-default-border);
 }

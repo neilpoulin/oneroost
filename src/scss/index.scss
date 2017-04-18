@@ -19,7 +19,7 @@ $fa-font-path: "~font-awesome/fonts";
 
 
 body {
-  padding-top: 50px;
+  padding-top: $bodyPaddingTop;
   background-color: $globalBg;
 }
 

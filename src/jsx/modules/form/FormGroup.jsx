@@ -36,7 +36,7 @@ const FormGroup = React.createClass({
 
         let form =
         <div className={`form-group ${FormUtil.getErrorClass(this.props.fieldName, this.props.errors)} ${formClass}`}>
-            <label className={`control-label ${requiredLabelClass} ${labelClass} label-${this.props.labelAlign}`}>{this.props.label}</label>
+            <label display-if={this.props.label} className={`control-label ${requiredLabelClass} ${labelClass} label-${this.props.labelAlign}`}>{this.props.label}</label>
             {children}
             {FormUtil.getErrorHelpMessage(this.props.fieldName, this.props.errors)}
         </div>
