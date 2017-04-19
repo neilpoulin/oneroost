@@ -1,8 +1,11 @@
 import {getCategoryOptions,
     MARKETING,
+    MARKETING_AGENCIES,
+    getIndustryDisplayName,
+    getIndustry,
+    getSubCategoryOptions,
     getCategoryDisplayName,
-    getCategory,
-    getSubCategoryOptions
+    getSubCategoryDisplayName,
 } from "./TemplateUtil"
 
 test("validate marketing options", () => {
@@ -24,14 +27,15 @@ test("validate marketing options", () => {
         })
 })
 
-test("get category", () => {
-    let marketing = getCategory("MARKETING")
+test("get industry", () => {
+    let marketing = getIndustry("MARKETING")
     expect(marketing).toBeTruthy()
+    expect(marketing.get("displayText")).toBe("Marketing")
 })
 
-test("get category display name", () => {
-    expect(getCategoryDisplayName(null)).toBeNull()
-    expect(getCategoryDisplayName(MARKETING)).toBe("Marketing")
+test("get industry display name", () => {
+    expect(getIndustryDisplayName(null)).toBeNull()
+    expect(getIndustryDisplayName(MARKETING)).toBe("Marketing")
 })
 
 test("get subCategory options", () => {
@@ -45,4 +49,14 @@ test("get subCategory options", () => {
         expect(opt.toJS()).toHaveProperty("value")
         expect(opt.toJS()).toHaveProperty("displayText")
     })
+})
+
+test("get category displayName", () => {
+    let displayName = getCategoryDisplayName(undefined, "AD_TECH")
+    expect(displayName).toBe("Ad Tech")
+})
+
+test("get sub category display name", () => {
+    let displayName = getSubCategoryDisplayName(undefined, MARKETING_AGENCIES, "MEDIA_PLANNING")
+    expect(displayName).toBe("Media Planning")
 })

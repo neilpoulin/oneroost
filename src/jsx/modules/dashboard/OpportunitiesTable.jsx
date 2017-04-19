@@ -25,7 +25,12 @@ const headers = [
         sortable: false,
     },
     {
-        label: "Problem Statement",
+        label: "Category",
+        clickable: false,
+        sortable: false,
+    },
+    {
+        label: "Sub-Category",
         clickable: false,
         sortable: false,
     },
@@ -195,7 +200,7 @@ const mapStateToProps = (state, ownProps) => {
         }
     }
 
-    if (query != null && query.trim()){
+    if (query != null && query.trim().length > 0){
         query = query.trim().replace(/ +(?= )/g, "");
         let patterns = query.split(" ").map(word => new RegExp(_.escapeRegExp(word), "i"))
 
@@ -220,7 +225,7 @@ const mapStateToProps = (state, ownProps) => {
     else {
         // Sort by activity date:
         allOpportunities = allOpportunities.sort((a, b) => {
-            return moment(b.deal.updatedAt).diff(moment(a.deal.updatedAt))
+            return moment(b.deal.lastActiveAt).diff(moment(a.deal.lastActiveAt))
         })
     }
 
@@ -244,13 +249,14 @@ const mapStateToProps = (state, ownProps) => {
                 "last active user": "\"" + (deal.lastActiveUser ? RoostUtil.getFullName(deal.lastActiveUser) : "") + "\"",
                 "created": "\"" + deal.createdAt + "\"",
                 ...requirementData,
-                "Template Name": opp.deal.template ? "\"" + opp.deal.template.title + "\"" : ""
+                "Template Name": deal.template ? "\"" + opp.deal.template.title + "\"" : "",
+                "Category": `"${deal.industryCategory}"`,
+                "Sub-Category": `"${deal.industrySubCategory}"`
             }
         })}
     }
-
+    //TODO: this doesn't work well if there is only 1 opportunity
     let data = convertArrayOfObjectsToCSV(args)
-
     return {
         opportunities: allOpportunities,
         userId,

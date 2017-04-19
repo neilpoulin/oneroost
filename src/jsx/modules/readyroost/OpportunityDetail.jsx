@@ -74,10 +74,10 @@ const OpportunityDetail = React.createClass({
                     fieldName="subCategory"
                     label="Product / Service Type"
                     errors={errors}
-                    value={subCategory}
+                    value={subCategory ? subCategory.value : null}
                     requred={true}
                     options={getSubCategoryOptions(template.industryCategory, template.industry).toList().toJS()}
-                    onChange={val => this.setState({subCategory: val})}
+                    onChange={selection => this.setState({subCategory: selection})}
                     />
 
             </div>

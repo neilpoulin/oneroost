@@ -300,19 +300,27 @@ export const getCategoryOptions = (industry=MARKETING) => {
     return INDUSTRY_MAP.getIn([industry, CATEGORIES])
 }
 
+export const getCategoryDisplayName = (industry=MARKETING, category) => {
+    return INDUSTRY_MAP.getIn([industry, CATEGORIES, category, DISPLAY_TEXT])
+}
+
+export const getSubCategoryDisplayName = (industry=MARKETING, category, subCategory) => {
+    return INDUSTRY_MAP.getIn([industry, CATEGORIES, category, SUB_CATEGORIES, subCategory, DISPLAY_TEXT])
+}
+
 export const getSubCategoryOptions = (category, industry=MARKETING) => {
     return getCategoryOptions().getIn([category, SUB_CATEGORIES], Map({}))
 }
 
-export const getCategory = (category) => {
-    return INDUSTRY_MAP.get(category)
+export const getIndustry = (input) => {
+    return INDUSTRY_MAP.get(input)
 }
 
-export const getCategoryDisplayName = (category) => {
-    if (!category){
+export const getIndustryDisplayName = (input) => {
+    if (!input){
         return null;
     }
-    let found = INDUSTRY_MAP.find(industry => industry.get(VALUE) == category)
+    let found = INDUSTRY_MAP.find(industry => industry.get(VALUE) == input)
     if (found){
         return found.get(DISPLAY_TEXT)
     }

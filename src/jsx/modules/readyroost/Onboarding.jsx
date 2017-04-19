@@ -67,8 +67,8 @@ const Onboarding = withRouter(React.createClass({
         // TODO: create a ready roost onboarding global state
         Parse.Cloud.run("createReadyRoost", {
             templateId: template.objectId,
-            roostName: fieldValues.problem,            
-            industrySubCategory: fieldValues.subCategory,
+            roostName: fieldValues.subCategory.label,
+            industrySubCategory: fieldValues.subCategory.value,
         }).then(function(result){
             log.info("created ready roost, so happy", result);
             ReactGA.set({ userId: fieldValues.currentUser.objectId || fieldValues.currentUser.id });

@@ -6,6 +6,7 @@ import {
 import {formatDurationAsDays, formatDate} from "DateUtil"
 import {getBudgetString} from "CurrencyUtil"
 import NavLink from "NavLink"
+import {getCategoryDisplayName, getSubCategoryDisplayName} from "TemplateUtil"
 
 const TableRow = React.createClass({
     propTypes: {
@@ -83,7 +84,7 @@ const TableRow = React.createClass({
                 return cell;
             })
         }
-
+        
         return (
             <tr className={archived? "archived" : ""}>
                 <td>
@@ -94,7 +95,10 @@ const TableRow = React.createClass({
                     </NavLink>
                 </td>
                 <td>
-                    {deal.dealName}
+                    {getCategoryDisplayName(deal.industry, deal.industryCategory)}
+                </td>
+                <td>
+                    {getSubCategoryDisplayName(deal.industry, deal.industryCategory, deal.industrySubCategory)}
                 </td>
                 <td>
                     {formatDate(deal.lastActiveAt || deal.updatedAt)}

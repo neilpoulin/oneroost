@@ -45,7 +45,7 @@ export const fromJS = (json) => {
     deal.createdBy = User.Pointer(deal.createdBy)
     deal.readyRoostUser = User.Pointer(deal.readyRoostUser)
     deal.template = Template.Pointer(deal.template)
-    deal.lastActiveUser = User.Pointer(deal.lastActiveUser)
+    deal.lastActiveUser = User.Pointer(deal.lastActiveUser)    
     return new Deal(deal)
 }
 
