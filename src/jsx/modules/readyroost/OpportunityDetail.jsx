@@ -18,7 +18,7 @@ const OpportunityDetail = React.createClass({
     },
     validations: {
         company: new Validation(FormUtil.notNullOrEmpty, "error", "Please enter your company name"),
-        subCategory: new Validation(FormUtil.notNullOrEmpty, "error", "Please choose a category"),
+        subCategory: new Validation(FormUtil.notNullOrEmpty, "error", "Please choose a product / service"),
         // problem: new Validation(FormUtil.notNullOrEmpty, "error", "Please briefly describe the problem you are trying to solve"),
     },
     getDefaultProps: function(){
@@ -76,7 +76,7 @@ const OpportunityDetail = React.createClass({
                     errors={errors}
                     value={subCategory}
                     requred={true}
-                    options={getSubCategoryOptions(template.industryCategory, template.industry)}
+                    options={getSubCategoryOptions(template.industryCategory, template.industry).toList().toJS()}
                     onChange={val => this.setState({subCategory: val})}
                     />
 

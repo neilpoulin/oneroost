@@ -86,8 +86,8 @@ const RoostNav = React.createClass({
                         {reportingLink}
                         {roostsLink}
                         {helpLink}
-                    </ul>
-                    {registerNav}
+                    </ul>                    
+                    {/*registerNav*/}
                     <ul className="nav navbar-nav navbar-right">
                         {adminLink}
                         {loginNav}

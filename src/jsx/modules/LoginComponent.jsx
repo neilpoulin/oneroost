@@ -241,17 +241,18 @@ const LoginComponent = React.createClass({
         var btnText = isLogin ? "Log In" : "Sign Up";
 
         let tabs = null;
-        if (this.props.showRegister){
-            tabs =
-            <ul className="nav nav-tabs nav-justified" >
-                <li role="presentation " className={"pointer " + (isLogin ? "" : "active")} >
-                    <a onClick={this.setIsRegister}>Sign Up</a>
-                </li>
-                <li role="presentation" className={"pointer " + (isLogin ? "active" : "")} >
-                    <a onClick={this.setIsLogin}>Login</a>
-                </li>
-            </ul>;
-        }
+        // Not allowing registration for now.
+        // if (this.props.showRegister){
+        //     tabs =
+        //     <ul className="nav nav-tabs nav-justified" >
+        //         <li role="presentation " className={"pointer " + (isLogin ? "" : "active")} >
+        //             <a onClick={this.setIsRegister}>Sign Up</a>
+        //         </li>
+        //         <li role="presentation" className={"pointer " + (isLogin ? "active" : "")} >
+        //             <a onClick={this.setIsLogin}>Login</a>
+        //         </li>
+        //     </ul>;
+        // }
 
         let alert = null;
         if (errors.alert) {

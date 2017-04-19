@@ -1,5 +1,6 @@
 import React, { PropTypes } from "react"
 import FormGroup from "FormGroup"
+import Select from "react-select"
 
 const FormSelectGroup = React.createClass({
     propTypes: {
@@ -23,10 +24,7 @@ const FormSelectGroup = React.createClass({
             options: [],
         }
     },
-    handleChange(e){
-        const el = e.target;
-        const value = el.value;
-
+    handleChange(value){
         let state = {};
         state[this.props.fieldName] = value;
         if (this.props.onChange){
@@ -45,11 +43,14 @@ const FormSelectGroup = React.createClass({
             value,
         } = this.props
 
-        let $select = <select onChange={this.handleChange} value={value}>
-            {options.map((opt, i) =>
-                <option key={`${opt.value}_${i}`} value={opt.value}>{opt.displayText}</option>
-            )}
-        </select>
+        let $select = <Select
+            onChange={this.handleChange}
+            value={value}
+            options={options.map(({value, displayText, label}) => ({
+                value,
+                label: label || displayText
+            }))}
+            />
 
         let form =
         <FormGroup

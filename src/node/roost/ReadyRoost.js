@@ -48,7 +48,7 @@ async function processReadyRoostRequest(currentUser, params, response){
                 createdBy: currentUser,
                 readyRoostUser: profileUser,
                 template: template,
-                dealName: roostName || `${industryCategory} | ${industrySubCategory}`,
+                dealName: roostName || `${industrySubCategory}`,
                 industry,
                 industryCategory,
                 industrySubCategory,

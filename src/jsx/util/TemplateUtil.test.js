@@ -40,4 +40,9 @@ test("get subCategory options", () => {
     expect(subCategories).toBeImmutableMap()
     expect(subCategories.size).toBeGreaterThan(0)
     expect(subCategories.getIn(["AD_NETWORKS", "displayText"])).toBe("Ad Networks")
+    let list = subCategories.toList()
+    list.forEach(opt => {
+        expect(opt.toJS()).toHaveProperty("value")
+        expect(opt.toJS()).toHaveProperty("displayText")
+    })
 })
