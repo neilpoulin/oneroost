@@ -12,26 +12,26 @@ Validation.prototype.isValid = function(value, data){
 }
 
 exports.isPointer = function(obj){
-    if ( !obj ){
+    if (!obj){
         return false
     }
     let objectId = obj;
-    if ( typeof obj == "object" ){
+    if (typeof obj == "object"){
         objectId = obj.objectId || obj.id
-    } else if ( typeof obj == "string" ){
+    }
+    else if (typeof obj == "string"){
         objectId = obj
     }
-    if ( !objectId ) return false
+    if (!objectId) return false
     return true;
 }
 
 exports.minimumLength = function(min){
     return function(value){
-        if ( value === null ){
+        if (value === null){
             return false
         }
-        if ( typeof value === "string" && value.length >= min )
-        {
+        if (typeof value === "string" && value.length >= min) {
             return true;
         }
         return false;
@@ -44,7 +44,6 @@ exports.matchesValue = function(input){
     }
 }
 
-
 exports.matchesField = function(fieldName){
     return function(value, data){
         return data[fieldName] === value;
@@ -52,15 +51,13 @@ exports.matchesField = function(fieldName){
 }
 
 function isNullOrEmpty(value){
-    if ( value === null ){
+    if (value === null){
         return true
     }
-    if ( typeof value === "string" && value.trim().length === 0 )
-    {
+    if (typeof value === "string" && value.trim().length === 0) {
         return true;
-    }    
-    else if (typeof value === "object" && Object.keys(value).length === 0)
-    {
+    }
+    else if (typeof value === "object" && Object.keys(value).length === 0) {
         return true;
     }
     return false;
@@ -83,10 +80,11 @@ exports.isValidHyperLink = function(input){
     "((\\d{1,3}\\.){3}\\d{1,3}))"+ // OR ip (v4) address
     "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*"+ // port and path
     "(\\?[;&a-z\\d%_.~+=-]*)?"+ // query string
-    "(\\#[-a-z\\d_]*)?$","i"); // fragment locater
+    "(\\#[-a-z\\d_]*)?$", "i"); // fragment locater
     if(!pattern.test(input)) {
         return false;
-    } else {
+    }
+    else {
         return true;
     }
 }
@@ -111,23 +109,20 @@ exports.notBefore = function(input){
     return date.isSameOrAfter(moment(), "day")
 }
 
-exports.hasErrors = function( errors ){
+exports.hasErrors = function(errors){
     return errors && errors.constructor === Object && Object.keys(errors).length > 0
 }
 
-exports.getErrors = function( data, validationMap )
-{
+exports.getErrors = function(data, validationMap){
     var errors = {};
     for (let field of Object.keys(validationMap)){
         var value = data[field];
         var validations = validationMap[field];
-        if ( !(validations.constructor === Array ))
-        {
+        if (!(validations.constructor === Array)) {
             validations = [validations];
         }
-        for ( let validation of validations ){
-            if (!validation.isValid(value, data))
-            {
+        for (let validation of validations){
+            if (!validation.isValid(value, data)) {
                 errors[field] = {
                     field: field,
                     level: validation.level,
@@ -137,7 +132,6 @@ exports.getErrors = function( data, validationMap )
                 break;
             }
         }
-
     }
     return errors;
 }
@@ -146,16 +140,14 @@ exports.Validation = Validation;
 
 exports.getErrorClass = function(field, errors){
     errors = errors || {};
-    if (errors[field] )
-    {
+    if (errors[field]) {
         return "has-" + errors[field].level
     }
     else return "";
 }
 exports.getErrorHelpMessage = function(field, errors){
     errors = errors || {};
-    if ( errors[field] )
-    {
+    if (errors[field]) {
         var error = errors[field];
         return <span key={"opportunitydetails_error_" + field} className="help-block">{error.message}</span>
     }

@@ -68,7 +68,6 @@ export default function reducer(state=initialState, action){
     return state;
 }
 
-
 // queries
 const fetchStakeholderById = (stakeholderId) => {
     var stakeholderQuery = new Parse.Query("Stakeholder");
@@ -144,18 +143,18 @@ const acceptInviteErrorAction = (stakeholderId, error) => {
 
 export const loadInvitationByStakeholderId = (stakeholderId, force=false) => (dispatch, getState) => {
     let {invitationsByStakeholder} = getState();
-    if ( invitationsByStakeholder.has(stakeholderId) && !force ){
+    if (invitationsByStakeholder.has(stakeholderId) && !force){
         return null
     }
     dispatch(invitationLoadRequestAction(stakeholderId))
 
     fetchStakeholderById(stakeholderId)
-    .then(stakeholder => {
-        dispatch(stakeholderLoadSuccessAction(stakeholder))
-    }).catch(error => {
-        log.error(error);
-        dispatch(stakeholderLoadError(stakeholderId, error))
-    })
+        .then(stakeholder => {
+            dispatch(stakeholderLoadSuccessAction(stakeholder))
+        }).catch(error => {
+            log.error(error);
+            dispatch(stakeholderLoadError(stakeholderId, error))
+        })
 }
 
 export const acceptInvite = (stakeholderJSON) => (dispatch, getState) => {
@@ -170,7 +169,7 @@ export const acceptInvite = (stakeholderJSON) => (dispatch, getState) => {
                 message: message,
                 author: null,
                 username: "OneRoost Bot",
-                navLink: {type:"participant"}
+                navLink: {type: "participant"}
             }))
 
             resolve(stakeholder)
@@ -188,7 +187,7 @@ export const submitInviteAccept = (stakeholder, password) => (dispatch, getState
     dispatch(acceptInviteRequest(stakeholder.objectId))
     return new Promise((resolve, reject) => {
         // TODO: don't nest these promises
-        if ( user.passwordChangeRequired && !isLoggedIn ){
+        if (user.passwordChangeRequired && !isLoggedIn){
             dispatch(createPassword(user, password, true)).then(() => {
                 dispatch(logInAsUser(userId, password)).then(() => {
                     dispatch(acceptInvite(stakeholder)).then(() => {

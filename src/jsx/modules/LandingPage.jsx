@@ -1,85 +1,147 @@
 import React, { PropTypes } from "react"
 import Logo from "Logo"
-import {Link} from "react-router"
-import { withRouter } from "react-router"
+import {connect} from "react-redux"
+import {Link, withRouter } from "react-router"
+import TermsOfServiceLink from "TermsOfServiceLink"
+import {joinWaitlist, setEmail} from "ducks/landingpage"
 
 const LandingPage = withRouter(React.createClass({
     PropTypes: {location: PropTypes.object.isRequired},
     componentDidMount(){
         document.title = "OneRoost"
     },
-    getInitialState(){
-        return {
-            email: ""
-        }
-    },
-    _submitEmail(e){
-        const value = e.value
-        this.setState({email: value});
-    },
     render () {
-        const {email} = this.props
+        const {
+            email,
+            heroTitle,
+            heroSubTitle,
+            ctaSubText,
+            ctaButtonText,
+            paragraphs,
+            isSaving,
+            isSuccess,
+            isError,
+            hasMore,
+            submitDisabled,
+            invalidEmail,
+            //actions
+            setEmail,
+            signUp,
+        } = this.props
+
         var page =
         <div className={"LandingPage"} >
             <section className="background-primary textured">
                 <div className="login">
-                    <Link to="/login">Login</Link>
+                    <Link to="/login">Log In</Link>
                 </div>
                 <div className="container">
                     <div className="logoContainer">
                         <Logo/>
                     </div>
 
-                    <div className="heroContainer">
-                        <h1>Send a link, Get pitched on your terms.</h1>
-                        <p className="tagline">blah blah blah balh </p>
+                    <div className="heroContainer" display-if={heroTitle}>
+                        <h1>{heroTitle}</h1>
+                        <p className="tagline" display-if={heroSubTitle}>{heroSubTitle}</p>
                     </div>
-                    <div className="emailContainer">
+                    <div className="emailContainer form-group" display-if={ctaButtonText}>
                         <input type="email"
-                            autoFocus={true}
                             value={email}
                             placeholder={"Email Address"}
+                            className={`${invalidEmail ? "has-error" : ""}`}
                             name="email"
                             autoComplete={"email"}
+                            onChange={({target}) => setEmail(target.value)}
                             >
                         </input>
-                        <button onClick={this._submitEmail}
-                            className="btn btn-outline-white"
-                            >Get on the list</button>
+                        <button onClick={signUp}
+                            className={`btn btn-outline-white ${submitDisabled ? "disabled": ""}`}
+                            disabled={submitDisabled}
+                            >{ctaButtonText}
+                        </button>
                     </div>
-                    <div className="actionSubTextContainer">
-                        test test blah blah
+                    <div display-if={ctaSubText} className={`actionSubTextContainer ${ isError ? "error" : ""} ${isSuccess ? "success" : ""}`}>
+                        {ctaSubText}
+                    </div>
+                </div>
+                <div className="hasMoreContainer" display-if={hasMore}>
+                    <div className="hasMore">
+                        <i className="fa fa-arrow-down fa-3x"></i>
                     </div>
                 </div>
             </section>
-            <section className="textInfo background-light">
-                <div className="info">
-                    <h3 className="title">Top of the funnel</h3>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            <section className="textInfo background-light" display-if={paragraphs && paragraphs.length > 0}>
+                {paragraphs.map(({title, content}, i) =>
+                <div className="info" key={`content_${i}`}>
+                    <h3 className="title">{title}</h3>
+                    <p className="content">
+                        {content}
                     </p>
                 </div>
-                <div className="info">
-                    <h3 className="title">Combine into one platform</h3>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                    </p>
-                </div>
-                <div className="info">
-                    <h3 className="title">Analyze outcomes</h3>
-                    <p>
-                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
-                    </p>
-                </div>
-            </section>
-            <footer className="background-primary">
-                <div className="container">
-                    &copy; 2017 OneRoost | <Link to="/terms">Terms and Conditions</Link>
-                </div>
-            </footer>
+            )}
+        </section>
+        <footer className="background-primary">
+            <div className="container">
+                &copy; 2017 OneRoost | <TermsOfServiceLink text="Terms of Service"/>
         </div>
+    </footer>
+</div>
         return page;
     }
 }))
 
-export default LandingPage
+const mapStateToProps = (state, ownProps) => {
+    const landingPage = state.landingpage.toJS()
+    let {
+        email,
+        heroTitle,
+        heroSubTitle,
+        ctaSubText,
+        ctaButtonText,
+        paragraphs,
+        isLoading,
+        isSaving,
+        error,
+        success,
+    } = landingPage
+
+    const isError = !!error
+    const isSuccess = !!success
+    if (error){
+        ctaSubText = error.message
+    }
+    else if (success){
+        ctaSubText = success.message
+    }
+    let submitDisabled = isSaving || !email
+    let invalidEmail = error && error.field == "email"
+    const hasMore = paragraphs && paragraphs.length > 0
+    return {
+        email,
+        heroTitle,
+        heroSubTitle,
+        ctaSubText,
+        ctaButtonText,
+        paragraphs,
+        isError,
+        isSuccess,
+        isSaving,
+        isLoading,
+        hasMore,
+        submitDisabled,
+        invalidEmail
+    }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        setEmail: (email) => {
+            dispatch(setEmail(email))
+        },
+        signUp: (email) => {
+            dispatch(joinWaitlist(email))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LandingPage)

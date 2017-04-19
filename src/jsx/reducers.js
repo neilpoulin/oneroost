@@ -13,6 +13,7 @@ import invitationsByStakeholder from "ducks/invitationsByStakeholder"
 import payment from "ducks/payment"
 import config from "ducks/config"
 import brandsByUrl from "ducks/brandsByUrl"
+import landingpage from "ducks/landingpage"
 
 const reducers = combineReducers({
     brandsByUrl,
@@ -20,6 +21,7 @@ const reducers = combineReducers({
     dashboard,
     entities,
     invitationsByStakeholder,
+    landingpage,
     notifications,
     opportunitiesByUser,
     payment,

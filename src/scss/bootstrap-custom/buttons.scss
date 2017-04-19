@@ -12,7 +12,7 @@
 
 .btn-outline-white {
   @include button-outline-variant($white);
-  &:hover{
+  &:hover, &:focus{
       color: $roostOrange;
   }
 }

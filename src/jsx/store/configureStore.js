@@ -6,7 +6,7 @@ import immutableParse from "middleware/immutable-parse"
 import {loadCurrentUser} from "ducks/user"
 import {loadConfig} from "ducks/config"
 import {getCurrentLogLevel, DEBUG} from "LoggingUtil"
-
+import {loadConfig as loadLandingPage} from "ducks/landingpage"
 const configureStore = preloadedState => {
     let middlewares = [thunkMiddleware, immutableParse]
     const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -16,6 +16,7 @@ const configureStore = preloadedState => {
     const store = createStore(reducers, composeEnhancers(applyMiddleware(...middlewares)));
     store.dispatch(loadCurrentUser())
     store.dispatch(loadConfig())
+    store.dispatch(loadLandingPage())
     return store
 }
 

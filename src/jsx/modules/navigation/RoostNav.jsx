@@ -34,13 +34,13 @@ const RoostNav = React.createClass({
         // let plansLink = <NavLink tag="li" to="/plans" className="">Pricing</NavLink>
         var roostsLink = null
         let reportingLink = null
-        if ( !isAdmin ){
+        if (!isAdmin){
             adminLink = null;
         }
         var rightNav = null;
         var loginNav = null;
         var registerNav = null;
-        if ( user ){
+        if (user){
             roostsLink = <NavLink to="/roosts">Opportunities</NavLink>
             reportingLink = <NavLink to="/reporting">Reporting</NavLink>
             rightNav =
@@ -55,11 +55,12 @@ const RoostNav = React.createClass({
                     <NavLink to="/logout">Logout</NavLink>
                 </ul>
             </li>
-        } else{
-            if ( this.props.showRegister ){
+        }
+        else{
+            if (this.props.showRegister){
                 registerNav = <Link to="/signup" className="btn btn-primary navbar-btn navbar-right">Sign Up</Link>
             }
-            if ( this.props.showLogin ){
+            if (this.props.showLogin){
                 loginNav = <NavLink to ="/login" >Log In</NavLink>
             }
         }
@@ -103,7 +104,7 @@ const RoostNav = React.createClass({
 const mapStateToProps = (state, ownProps) => {
     let user = state.user.get("userId");
     let entities = state.entities.toJS()
-    if ( user ){
+    if (user){
         user = denormalize(user, User.Schema, entities)
     }
     return {

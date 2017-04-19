@@ -6,7 +6,6 @@
     margin-top: -2 * $bodyPaddingTop;
     padding-top: $bodyPaddingTop;
     position: relative;
-
     .login{
         position: absolute;
         top: 2rem;
@@ -53,21 +52,47 @@
             border-radius: 15px;
             margin-right: 2rem;
             color: $roostDarkGray;
-            padding: .5rem 1rem .5rem 1rem;
+            padding: .5rem 2rem .5rem 2rem;
             width: 50rem;
+            font-size: 2rem;
+            &.has-error{
+                color: $state-danger-text;
+                border-color: $state-danger-text;
+            }
         }
         .btn{
             font-family: "Gotham Bold";
             font-size: 3rem;
             border-width: 2px;
             border-radius: 15px;
-            padding: 1rem 1.5rem .75rem 1.5rem
+            padding: 1rem 1.5rem .75rem 1.5rem;
+            .fa-spinner{
+                margin-left: 1rem;
+            }
         }
     }
 
     .actionSubTextContainer{
         font-size: 2.5rem;
+        &.success{
+            // color: $alert-success-text;
+        }
     }
+
+    .hasMoreContainer{
+        display: flex;
+        justify-content: center;
+        position: absolute;
+        bottom: 0;
+        padding-bottom: 10px;
+        width: 100%;
+        .hasMore{
+            display: flex;
+            flex-direction: column;
+            opacity: .2;
+        }
+    }
+
 
     .textInfo{
         text-align: left;
@@ -77,12 +102,15 @@
         .info{
             padding: 3.5rem 7rem 3.5rem 7rem;
             width: 50%;
-            text-align: justify;
             font-size: 2rem;
             .title{
                 font-family: "Gotham Bold";
                 color: #4A4A4A;
                 margin-top: 0px;
+            }
+            .content{
+                white-space: pre-line;
+                text-align: justify;
             }
         }
     }
@@ -107,6 +135,7 @@
         position: relative;
         overflow: hidden;
         z-index: 0;
+        max-height: 100vh;
         &:after{
             content: '';
             display: block;
@@ -140,8 +169,6 @@
 
 @media (max-width: $screen-sm-min) {
     .LandingPage{
-        font-size: 50%;
-
         .logoContainer{
             text-align: center;
             margin-top: 40px;
