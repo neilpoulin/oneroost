@@ -135,7 +135,8 @@
         position: relative;
         overflow: hidden;
         z-index: 0;
-        max-height: 100vh;
+        // max-height: 100vh;
+        //TODO: put somethign in to solve for the "raed more".. use fixed positioning ro something
         &:after{
             content: '';
             display: block;
