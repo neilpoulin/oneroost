@@ -56,7 +56,14 @@
 }
 
 @media (max-width: $screen-sm-min){
-    .navbar-collapse{
-        background-color: $navbar-default-bg;
+    .RoostNav{
+        &.transparent, &.font-hover-dark, &.font-hover-light{
+            .navbar-collapse{
+                background-color: $navbar-default-bg;
+                a:hover:not(.btn), .dropdown.open > a{
+                    color: $roostOrange;
+                }
+            }
+        }
     }
 }

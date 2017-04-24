@@ -1,6 +1,6 @@
 .LandingPage{
     // font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    $baseFontSize: 4rem;
+    $baseFontSize: 3rem;
     font-family: "Gotham Book";
     font-size: 16px;
     margin-top: -2 * $bodyPaddingTop;
@@ -17,7 +17,7 @@
 
     h1{
         font-family: "Gotham Bold";
-        font-size: 7rem;
+        font-size: 6rem;
         line-height: 8rem;
         margin-bottom: 5rem;
     }
@@ -29,7 +29,7 @@
     .logoContainer{
         text-align: center;
         margin-top: 0px;
-        margin-bottom: 110px;
+        margin-bottom: 100px;
         .logo{
             // color: #FFFFFF;
             font-weight: 200;
@@ -179,7 +179,7 @@
 @media (max-width: $screen-sm-min) {
     .LandingPage{
         .logoContainer{
-            text-align: center;            
+            text-align: center;
             margin-bottom: 50px;
         }
 
