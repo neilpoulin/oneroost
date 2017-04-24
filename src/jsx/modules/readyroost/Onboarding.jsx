@@ -13,7 +13,9 @@ import * as log from "LoggingUtil"
 var fieldValues = {
     problem: "",
     company: "",
-    currentUser: ""
+    currentUser: "",
+    category: "",
+    subCategory: "",
 }
 
 const Onboarding = withRouter(React.createClass({
@@ -22,6 +24,17 @@ const Onboarding = withRouter(React.createClass({
         currentUser: PropTypes.object,
         template: PropTypes.object.isRequired,
         createReadyRoost: PropTypes.func.isRequired,
+        department: PropTypes.shape({
+            displayText: PropTypes.string.isRequired,
+            categories: PropTypes.arrayOf(PropTypes.shape({
+                displayText: PropTypes.string.isRequired,
+                value: PropTypes.string.isRequired,
+                subCategories: PropTypes.arrayOf(PropTypes.shape({
+                    displayText: PropTypes.string.isRequired,
+                    value: PropTypes.string.isRequired,
+                })),
+            })).isRequired,
+        }).isRequired,
     },
     getInitialState(){
         return {
@@ -67,8 +80,9 @@ const Onboarding = withRouter(React.createClass({
         // TODO: create a ready roost onboarding global state
         Parse.Cloud.run("createReadyRoost", {
             templateId: template.objectId,
-            roostName: fieldValues.subCategory.label,
-            industrySubCategory: fieldValues.subCategory.value,
+            roostName: fieldValues.category.label,
+            departmentCategory: fieldValues.category.value,
+            departmentSubCategory: fieldValues.subCategory.value,
         }).then(function(result){
             log.info("created ready roost, so happy", result);
             ReactGA.set({ userId: fieldValues.currentUser.objectId || fieldValues.currentUser.id });
@@ -103,6 +117,7 @@ const Onboarding = withRouter(React.createClass({
                     fieldValues={fieldValues}
                     saveValues={this.saveValues}
                     template={this.props.template}
+                    department={this.props.department}
                     nextText={"Submit"} />
             default:
                 log.error("No step defined for LoggedInStep #" + this.state.step)
@@ -122,6 +137,7 @@ const Onboarding = withRouter(React.createClass({
                 previousStep={this.previousStep}
                 fieldValues={fieldValues}
                 readyRoostUser={this.props.readyRoostUser}
+                department={this.props.department}
                 template={this.props.template}
                 saveValues={this.saveValues} />
             case 3:

@@ -3,7 +3,6 @@ import FormUtil, {Validation} from "./../util/FormUtil"
 import FormInputGroup from "FormInputGroup"
 import * as log from "LoggingUtil"
 import FormSelect from "FormSelectGroup"
-import {getSubCategoryOptions} from "TemplateUtil"
 
 const OpportunityDetail = React.createClass({
     propTypes: {
@@ -14,11 +13,23 @@ const OpportunityDetail = React.createClass({
         saveValues: PropTypes.func.isRequired,
         previousText: PropTypes.string,
         nextText: PropTypes.string,
-        tempalte: PropTypes.object,
+
+        department: PropTypes.shape({
+            displayText: PropTypes.string.isRequired,
+            categories: PropTypes.arrayOf(PropTypes.shape({
+                displayText: PropTypes.string.isRequired,
+                value: PropTypes.string.isRequired,
+                subCategories: PropTypes.arrayOf(PropTypes.shape({
+                    displayText: PropTypes.string.isRequired,
+                    value: PropTypes.string.isRequired,
+                })),
+            })).isRequired,
+        }).isRequired
     },
     validations: {
         company: new Validation(FormUtil.notNullOrEmpty, "error", "Please enter your company name"),
-        subCategory: new Validation(FormUtil.notNullOrEmpty, "error", "Please choose a product / service"),
+        category: new Validation(FormUtil.notNullOrEmpty, "error", "Please choose a category"),
+        // subCategory: new Validation(FormUtil.notNullOrEmpty, "error", "Please choose a sub-category"),
         // problem: new Validation(FormUtil.notNullOrEmpty, "error", "Please briefly describe the problem you are trying to solve"),
     },
     getDefaultProps: function(){
@@ -31,6 +42,7 @@ const OpportunityDetail = React.createClass({
         return {
             company: this.props.fieldValues.company,
             problem: this.props.fieldValues.problem,
+            category: this.props.fieldValues.category,
             subCategory: this.props.fieldValues.subCategory,
             errors: {}
         }
@@ -42,6 +54,7 @@ const OpportunityDetail = React.createClass({
             this.setState({errors: {}});
             this.props.saveValues({
                 company: this.state.company,
+                category: this.state.category,
                 subCategory: this.state.subCategory,
             });
             this.props.nextStep();
@@ -51,10 +64,30 @@ const OpportunityDetail = React.createClass({
             log.info("failed validation");
         }
         this.setState({errors: errors});
-    },    
+    },
+    _handleCategoryChange(selection){
+        this.setState({
+            category: selection,
+            subCategory: null
+        })
+    },
     render () {
-        let {errors, company, subCategory} = this.state;
-        const {template} = this.props
+        let {errors, company, category, subCategory} = this.state;
+        const {department} = this.props
+        let categoryOptions = department ? department.categories : []
+        categoryOptions = categoryOptions.sort((cat1, cat2) => {
+            return cat1.displayText.toUpperCase().localeCompare(cat2.displayText.toUpperCase())
+        })
+        let subCategories = category ? categoryOptions.find(cat => {
+            return category.value === cat.value
+        }).subCategories : []
+
+        subCategories = subCategories.sort((subCat1, subCat2) => {
+            return subCat1.displayText.toUpperCase().localeCompare(subCat2.displayText.toUpperCase())
+        })
+
+        let subCategoriesEnabled = subCategories && subCategories.length > 0
+
         let page =
         <div>
             <div className="lead">
@@ -71,12 +104,23 @@ const OpportunityDetail = React.createClass({
                     />
 
                 <FormSelect
-                    fieldName="subCategory"
-                    label="Product / Service Type"
+                    fieldName="category"
+                    label="Category"
                     errors={errors}
-                    value={subCategory ? subCategory.value : null}
+                    value={category ? category.value : ""}
                     requred={true}
-                    options={getSubCategoryOptions(template.industryCategory, template.industry).toList().toJS()}
+                    options={categoryOptions}
+                    onChange={this._handleCategoryChange}
+                    />
+
+                <FormSelect
+                    fieldName="subCategory"
+                    display-if={subCategoriesEnabled}
+                    label="Sub-Category"
+                    errors={errors}
+                    value={subCategory ? subCategory.value : ""}
+                    requred={true}
+                    options={subCategories}
                     onChange={selection => this.setState({subCategory: selection})}
                     />
 

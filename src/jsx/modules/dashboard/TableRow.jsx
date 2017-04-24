@@ -6,7 +6,6 @@ import {
 import {formatDurationAsDays, formatDate} from "DateUtil"
 import {getBudgetString} from "CurrencyUtil"
 import NavLink from "NavLink"
-import {getCategoryDisplayName, getSubCategoryDisplayName} from "TemplateUtil"
 
 const TableRow = React.createClass({
     propTypes: {
@@ -19,7 +18,56 @@ const TableRow = React.createClass({
         }).isRequired,
         currentUser: PropTypes.object.isRequired,
         showRequirements: PropTypes.bool,
-        requirementHeadings: PropTypes.arrayOf(PropTypes.object).isRequired
+        requirementHeadings: PropTypes.arrayOf(PropTypes.object).isRequired,
+        departmentMap: PropTypes.object.isRequired,
+    },
+    _getDepartmentDisplayName(){
+        const {opportunity: {deal}, departmentMap} = this.props;
+        if (!deal || !departmentMap){
+            return ""
+        }
+        const {department} = deal;
+        if (!department){
+            return ""
+        }
+        return departmentMap.getIn([department, "displayText"])
+    },
+    _getCategoryDisplayName(){
+        const {opportunity: {deal}, departmentMap} = this.props;
+        if (!deal || !departmentMap){
+            return ""
+        }
+        const {department, departmentCategory} = deal;
+        if (!department){
+            return ""
+        }
+        const categories = departmentMap.getIn([department, "categories"], [])
+        const category = categories.find(cat => {
+            return cat.get("value") === departmentCategory
+        });
+        return category ? category.get("displayText") : ""
+    },
+    _getSubCategoryDisplayName(){
+        const {opportunity: {deal}, departmentMap} = this.props;
+        if (!deal || !departmentMap){
+            return ""
+        }
+
+        const {department, departmentCategory, departmentSubCategory} = deal;
+        if (!department || !departmentCategory){
+            return ""
+        }
+        const categories = departmentMap.getIn([department, "categories"], [])
+        const category = categories.find(cat => {
+            return cat.get("value") === departmentCategory
+        });
+        if (category){
+            const subCategory = category.get("subCategories").find(subCat => {
+                return subCat.get("value") === departmentSubCategory
+            })
+            return subCategory ? subCategory.get("displayText") : ""
+        }
+        return ""
     },
     render () {
         const {currentUser,
@@ -84,7 +132,7 @@ const TableRow = React.createClass({
                 return cell;
             })
         }
-        
+
         return (
             <tr className={archived? "archived" : ""}>
                 <td>
@@ -95,10 +143,13 @@ const TableRow = React.createClass({
                     </NavLink>
                 </td>
                 <td>
-                    {getCategoryDisplayName(deal.industry, deal.industryCategory)}
+                    {this._getDepartmentDisplayName()}
                 </td>
                 <td>
-                    {getSubCategoryDisplayName(deal.industry, deal.industryCategory, deal.industrySubCategory)}
+                    {this._getCategoryDisplayName()}
+                </td>
+                <td>
+                    {this._getSubCategoryDisplayName()}
                 </td>
                 <td>
                     {formatDate(deal.lastActiveAt || deal.updatedAt)}

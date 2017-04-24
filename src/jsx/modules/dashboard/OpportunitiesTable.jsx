@@ -25,6 +25,11 @@ const headers = [
         sortable: false,
     },
     {
+        label: "Department",
+        clickable: false,
+        sortable: false,
+    },
+    {
         label: "Category",
         clickable: false,
         sortable: false,
@@ -98,7 +103,7 @@ const OpportunitiesTable = React.createClass({
         nextProps.exportCsvData(nextProps.csvData)
     },
     render () {
-        const {opportunities, currentUser, headings, requirementHeadings, showRequirements, isLoading} = this.props
+        const {opportunities, currentUser, headings, requirementHeadings, showRequirements, isLoading, departmentMap} = this.props
         if (isLoading){
             return null
         }
@@ -107,7 +112,11 @@ const OpportunitiesTable = React.createClass({
                 <TableHeader columns={headings} />
                 <tbody>
                     {opportunities.map((opp, i) => {
-                        return <TableRow opportunity={opp} key={"opportunities_table_row_" + i} currentUser={currentUser} showRequirements={showRequirements} requirementHeadings={requirementHeadings} />
+                        return <TableRow opportunity={opp}
+                            key={"opportunities_table_row_" + i}
+                            currentUser={currentUser} showRequirements={showRequirements}
+                            requirementHeadings={requirementHeadings}
+                            departmentMap={departmentMap} />
                     })}
                 </tbody>
             </table>
@@ -122,7 +131,7 @@ const mapStateToProps = (state, ownProps) => {
     let myOpportunities = state.opportunitiesByUser.get(userId)
     let dashboard = state.dashboard.toJS()
     let {selectedTemplateId} = dashboard
-
+    let departmentMap = state.config.get("departmentMap")
     let deals = []
     let archivedDeals = []
     let query = dashboard.searchTerm
@@ -250,8 +259,8 @@ const mapStateToProps = (state, ownProps) => {
                 "created": "\"" + deal.createdAt + "\"",
                 ...requirementData,
                 "Template Name": deal.template ? "\"" + opp.deal.template.title + "\"" : "",
-                "Category": `"${deal.industryCategory}"`,
-                "Sub-Category": `"${deal.industrySubCategory}"`
+                "Category": `"${deal.departmentCategory}"`,
+                "Sub-Category": `"${deal.departmentSubCategory}"`
             }
         })}
     }
@@ -265,7 +274,8 @@ const mapStateToProps = (state, ownProps) => {
         requirementHeadings,
         showRequirements,
         csvData: data,
-        isLoading: isLoading || !currentUser
+        isLoading: isLoading || !currentUser,
+        departmentMap,
     }
 }
 

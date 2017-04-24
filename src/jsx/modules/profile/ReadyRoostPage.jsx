@@ -12,7 +12,6 @@ import * as RoostUtil from "RoostUtil"
 import {denormalize} from "normalizr"
 import * as Template from "models/Template"
 import * as log from "LoggingUtil"
-import * as TemplateUtil from "TemplateUtil"
 // import {createReadyRoost} from "ducks/roost/roost"
 
 const ReadyRoostPage = React.createClass({
@@ -23,6 +22,17 @@ const ReadyRoostPage = React.createClass({
         template: PropTypes.object,
         currentUser: PropTypes.object,
         isLoading: PropTypes.bool,
+        department: PropTypes.shape({
+            displayText: PropTypes.string.isRequired,
+            categories: PropTypes.arrayOf(PropTypes.shape({
+                displayText: PropTypes.string.isRequired,
+                value: PropTypes.string.isRequired,
+                subCategories: PropTypes.arrayOf(PropTypes.shape({
+                    displayText: PropTypes.string.isRequired,
+                    value: PropTypes.string.isRequired,
+                })),
+            })).isRequired,
+        })
     },
     getInitialState(){
         return {
@@ -89,7 +99,7 @@ const ReadyRoostPage = React.createClass({
         }
     },
     render () {
-        let {currentUser, template, isLoading, createReadyRoost, error} = this.props;
+        let {currentUser, template, isLoading, createReadyRoost, error, department} = this.props;
 
         if (isLoading){
             return <LoadingTakeover messsage={"Loading Profile"}/>
@@ -109,6 +119,7 @@ const ReadyRoostPage = React.createClass({
                     currentUser={currentUser}
                     template={template}
                     createReadyRoost={createReadyRoost}
+                    department={department}
                     />
             </div>
         </div>
@@ -121,30 +132,32 @@ const mapStateToProps = (state, ownProps) => {
     const templates = state.templates.toJS()
     const templateId = ownProps.params.templateId
     const currentUser = RoostUtil.getCurrentUser(state)
+    const departmentMap = state.config.get("departmentMap")
     let templateState = templates[templateId]
     let isLoading = true
     let template = null
+    let department = null
     let error = null
-    if (templateState){
+    if (templateState && departmentMap){
         isLoading = templateState.isLoading;
         error = templateState.error;
         if (templateState.hasLoaded && !templateState.error){
             const entities = state.entities.toJS()
             template = denormalize(templateId, Template.Schema, entities)
+            department = departmentMap.get(template.department).toJS()
         }
     }
     return {
         isLoading,
         template,
         error,
-        currentUser
+        currentUser,
+        department,
     }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const templateId = ownProps.params.templateId
-
-    console.log(JSON.stringify(TemplateUtil.getIndustry("MARKETING").toJS()))
 
     return {
         loadData: () => {
