@@ -30,7 +30,7 @@ const LandingPage = withRouter(React.createClass({
         } = this.props
 
         const $footer = <div className="container">
-            &copy; 2017 OneRoost | <TermsOfServiceLink text="Terms of Service"/>
+            &copy; 2017 OneRoost | <Link to="/oneroost">{"Contact Us"}</Link> | <TermsOfServiceLink text="Terms of Service"/>
         </div>
 
         var page =
