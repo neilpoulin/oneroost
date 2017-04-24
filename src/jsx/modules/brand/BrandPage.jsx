@@ -44,7 +44,7 @@ const BrandPage = React.createClass({
                 </div>
 
                 <div className="intro lead">
-                    <b>Marketing Vendor Categories:</b> Begin proposal process by clicking into a category
+                    <b>Vendors </b>| Begin proposal process by selecting the department most relevant to your offering
                 </div>
                 <div className="departments">
                     {templates.map((template, i) => {
