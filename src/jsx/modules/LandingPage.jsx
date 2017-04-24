@@ -4,6 +4,7 @@ import {connect} from "react-redux"
 import {Link, withRouter } from "react-router"
 import TermsOfServiceLink from "TermsOfServiceLink"
 import {joinWaitlist, setEmail} from "ducks/landingpage"
+import RoostNav, {TRANSPARENT_STYLE, LIGHT_FONT_STYLE, DARK_FONT_HOVER_STYLE} from "RoostNav"
 
 const LandingPage = withRouter(React.createClass({
     PropTypes: {location: PropTypes.object.isRequired},
@@ -31,9 +32,13 @@ const LandingPage = withRouter(React.createClass({
         var page =
         <div className={"LandingPage"} >
             <section className="background-primary textured">
-                <div className="login">
-                    <Link to="/login">Log In</Link>
-                </div>
+                <RoostNav
+                    loginOnly={true}
+                    backgroundStyle={TRANSPARENT_STYLE}
+                    fontStyle={LIGHT_FONT_STYLE}
+                    fontHoverStyle={DARK_FONT_HOVER_STYLE}
+                    regButtonType={"outline-white"}
+                    />
                 <div className="container">
                     <div className="logoContainer">
                         <Logo/>

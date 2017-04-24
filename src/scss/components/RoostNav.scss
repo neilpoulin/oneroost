@@ -1,5 +1,23 @@
 @import "logo";
 .RoostNav{
+    &.transparent{
+        background-color: transparent;
+        color: white;
+        border-bottom-color: transparent;
+        .dropdown.open, .dropdown.open > a{
+            background-color: transparent;
+        }
+    }
+
+    &.font-light{
+        color: $white;
+        &.font-hover-dark{
+            a:hover:not(.btn), .dropdown.open > a{
+                color: $roostDarkGray;
+            }
+        }
+    }
+
     .navbar-brand{
         &:not(.roost-title){
             @extend .logo-font;

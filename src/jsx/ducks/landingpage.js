@@ -75,16 +75,18 @@ export const loadConfig = () => (dispatch, getState) => {
     dispatch({
         type: LOAD_CONFIG_REQUEST
     })
-
     dispatch(getConfigValue("landingPage", Map({})))
-        .then(landingPage => {
+        .then(landingPage => {    
             dispatch({
                 type: LOAD_CONFIG_SUCCESS,
                 payload: landingPage,
             })
         }).catch(error => {
             log.error(error)
-            dispatch()
+            dispatch({
+                type: LOAD_CONFIG_ERROR,
+                error: error,
+            })
         })
 }
 

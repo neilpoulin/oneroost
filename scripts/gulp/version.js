@@ -56,3 +56,5 @@ gulp.task("version:node", function(){
             .pipe(gulp.dest(paths.src_node))
     });
 })
+
+gulp.task("version", ["version:node", "version:bundle", "version:src"])

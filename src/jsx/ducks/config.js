@@ -1,7 +1,7 @@
 import {Map} from "immutable"
 import Parse from "parse"
 import * as log from "LoggingUtil"
-import {timeout} from "PromiseUtil"
+import {timeout, DEFAULT_TIMEOUT_MS} from "PromiseUtil"
 export const GET_CONFIG_REQUEST = "oneroost/config/GET_CONFIG_REQUEST"
 export const GET_CONFIG_SUCCESS = "oneroost/config/GET_CONFIG_SUCCESS"
 
@@ -12,6 +12,7 @@ const initialState = Map({
     lastFetched: null,
     faqs: [],
     paymentEnabled: false,
+    showRegister: false,
     landingPage: Map({})
 })
 
@@ -22,7 +23,7 @@ export default function reducer(state=initialState, action){
             break;
         case GET_CONFIG_SUCCESS:
             state = state.set("isLoading", false)
-            state = state.set("lastFetched", new Date())
+            state = state.set("lastFetched", new Date())            
             state = state.merge(action.payload)
             break;
         default:
@@ -67,8 +68,10 @@ const getConfig = () => (dispatch, getState) => {
 
 export const getConfigValue = (configKey, defaultValue) => (dispatch, getState) => {
     return new Promise((resolve) => {
-        timeout(dispatch(getConfig()), 1000).then(config => {
+        timeout(dispatch(getConfig()), DEFAULT_TIMEOUT_MS).then(config => {
             resolve(config.get(configKey, defaultValue))
-        }).catch(log.error)
+        }).catch(error => {
+            log.error("Failed to get the configuration in the timeout period", error)
+        })
     })
 }
