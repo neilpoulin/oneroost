@@ -1,0 +1,524 @@
+{
+    "WILD_CARD": {
+        "displayText": "Wild Card",
+        "value": "WILD_CARD",
+        "categories": [
+            {
+                "displayText": "Other",
+                "value": "OTHER",
+                "subCategories": []
+            }
+        ]
+    },
+    "COLLABORATION_AND_PRODUCTIVITY": {
+        "displayText": "Collaboration & Productivity",
+        "value": "COLLABORATION_AND_PRODUCTIVITY",
+        "categories": [
+            {
+                "displayText": "Collaboration",
+                "value": "COLLABORATION",
+                "subCategories": []
+            },
+            {
+                "displayText": "Productivity",
+                "value": "PRODUCTIVITY",
+                "subCategories": []
+            },
+            {
+                "displayText": "Telecommunication",
+                "value": "TELECOMMUNICATION",
+                "subCategories": []
+            }
+        ]
+    },
+    "CUSTOMER_SUPPORT": {
+        "displayText": "Customer Support",
+        "value": "CUUSTOMER_SUPPORT",
+        "categories": [
+            {
+                "displayText": "Customer Engagement",
+                "value": "CUSTOMER_ENGAGEMENT",
+                "subCategories": []
+            },
+            {
+                "displayText": "Customer Satisfaction",
+                "value": "CUSTOMER_SATISFACTION",
+                "subCategories": []
+            },
+            {
+                "displayText": "Live Chat",
+                "value": "LIVE_CHAT",
+                "subCategories": []
+            },
+            {
+                "displayText": "Complain Management",
+                "value": "COMPLAINT_MANAGEMENT",
+                "subCategories": []
+            },
+            {
+                "displayText": "Customer Loyalty",
+                "value": "CUSTOMER_LOYALTY",
+                "subCategories": []
+            },
+            {
+                "displayText": "Contact Management",
+                "value": "CONTACT_MANAGEMENT",
+                "subCategories": []
+            }
+        ]
+    },
+    "HUMAN_RESOURCES": {
+        "displayText": "Human Resources",
+        "value": "HUMAN_RESOURCES",
+        "categories": [
+            {
+                "displayText": "Recruiting",
+                "value": "RECRUITING",
+                "subCategories": []
+            },
+            {
+                "displayText": "Pre-Employment",
+                "value": "PRE_EMPLOYMENT",
+                "subCategories": []
+            },
+            {
+                "displayText": "Onboarding",
+                "value": "ONBOARDING",
+                "subCategories": []
+            },
+            {
+                "displayText": "Employee Management",
+                "value": "EMPLOYEE_MANAGEMENT",
+                "subCategories": []
+            },
+            {
+                "displayText": "Benefits",
+                "value": "BENEFITS",
+                "subCategories": []
+            }
+        ]
+    },
+    "IT": {
+        "displayText": "IT",
+        "value": "IT",
+        "categories": [
+            {
+                "displayText": "IT Infrastructure",
+                "value": "IT_INFRASTRUCTURE",
+                "subCategories": []
+            },
+            {
+                "displayText": "IT Security",
+                "value": "IT_SECURITY",
+                "subCategories": []
+            },
+            {
+                "displayText": "IT Management",
+                "value": "IT_MANAGEMENT",
+                "subCategories": []
+            },
+            {
+                "displayText": "Hosting",
+                "value": "HOSTING",
+                "subCategories": []
+            }
+        ]
+    },
+    "ENGINEERING_AND_PRODUCT": {
+        "displayText": "Engineering & Product",
+        "value": "ENGINEERING_AND_PRODUCT",
+        "categories": [
+            {
+                "displayText": "Product Management",
+                "value": "PRODUCT_MANAGEMENT",
+                "subCategories": [
+                    {
+                        "value": "ROADMAP_MANAGEMENT",
+                        "displayText": "Roadmap Management"
+                    },
+                    {
+                        "displayText": "Usability Testing",
+                        "value": "USABILITY_TESTING"
+                    }
+                ]
+            },
+            {
+                "displayText": "API Management",
+                "value": "API_MANAGEMENT",
+                "subCategories": []
+            },
+            {
+                "displayText": "Application Development",
+                "value": "APPLICATION_DEVELOPMENT",
+                "subCategories": []
+            },
+            {
+                "displayText": "Performance Reporting",
+                "value": "PERFORMANCE_REPORTING",
+                "subCategories": []
+            },
+            {
+                "displayText": "Continuous Delivery",
+                "value": "CONTINUOUS_DELIVERY",
+                "subCategories": []
+            }
+        ]
+    },
+    "FINANCE": {
+        "displayText": "Finance",
+        "value": "FINANCE",
+        "categories": [
+            {
+                "value": "PAYROLL",
+                "displayText": "Payroll",
+                "subCategories": []
+            },
+            {
+                "displayText": "Billing",
+                "value": "BILLING",
+                "subCategories": []
+            },
+            {
+                "displayText": "Enterprise Asset Management",
+                "value": "ENTERPRISE_ASSET_MANAGEMENT",
+                "subCategories": []
+            },
+            {
+                "displayText": "Insurance",
+                "value": "INSURANCE",
+                "subCategories": []
+            },
+            {
+                "displayText": "Travel & Expenses",
+                "value": "TRAVEL_AND_EXPENSES",
+                "subCategories": []
+            },
+            {
+                "displayText": "Procurement",
+                "value": "PROCUREMENT",
+                "subCategories": [{
+                    "displayText": "Purchasing",
+                    "value": "PURCHASING"
+                },
+                {
+                    "displayText": "Vendor Management",
+                    "value": "VENDOR_MANAGEMENT"
+                    }]
+                }
+            ]
+        },
+        "SALES": {
+            "displayText": "Sales",
+            "value": "SALES",
+            "categories": [
+                {
+                    "value": "CONTRACTS",
+                    "displayText": "Contracts",
+                    "subCategories": [
+                        {
+                            "value": "E_SIGNATURES",
+                            "displayText": "E-Signatures"
+                        },
+                        {
+                            "value": "CONTRACT_LIFECYCLE_MANAGEMENT",
+                            "displayText": "Contract Lifecycle Management"
+                        },
+                        {
+                            "value": "QUOTE_MANAGEMENT",
+                            "displayText": "Quote Management"
+                        }
+                    ]
+                },
+                {
+                    "value": "CRM",
+                    "displayText": "CRM",
+                    "subCategories": [
+                        {
+                            "value": "STAGE_MANAGEMENT",
+                            "displayText": "Stage Management"
+                        },
+                        {
+                            "value": "SALES_ACCELERATION",
+                            "displayText": "Sales Acceleration"
+                        }
+                    ]
+                },
+                {
+                    "value": "LEAD_GENERATION",
+                    "displayText": "Lead Generation",
+                    "subCategories": [
+                        {
+                            "value": "LEAD_SCORING",
+                            "displayText": "Lead Scoring"
+                        },
+                        {
+                            "value": "LEAD_SOURCING",
+                            "displayText": "Lead Sourcing"
+                        }
+                    ]
+                },
+                {
+                    "value": "SALES_ANALYTICS",
+                    "displayText": "Sales Analytics",
+                    "subCategories": [
+                        {
+                            "value": "FORECASTING",
+                            "displayText": "Forecasting"
+                        },
+                        {
+                            "value": "REP_REPORTING",
+                            "displayText": "Rep Reporting"
+                        }
+                    ]
+                },
+                {
+                    "value": "SALES_INTELLIGENCE",
+                    "displayText": "Sales Intelligence",
+                    "subCategories": [
+                        {
+                            "value": "COMPETITIVE_DATA",
+                            "displayText": "Competetive Data"
+                        },
+                        {
+                            "value": "QUALIFICATION_DATA",
+                            "displayText": "Qualification Data"
+                        },
+                        {
+                            "value": "Prospect Engagement Data",
+                            "displayText": ""
+                        }
+                    ]
+                },
+                {
+                    "value": "SALES_ENABLEMENT",
+                    "displayText": "Sales Enablement",
+                    "subCategories": [
+                        {
+                            "value": "ASSET_MANAGEMENT",
+                            "displayText": "Asset Management"
+                        },
+                        {
+                            "value": "PRESENTATION_DELIVERY",
+                            "displayText": "Presentation Delivery"
+                        }
+                    ]
+                }
+            ]
+        },
+        "MARKETING": {
+            "displayText":"Marketing",
+            "value":"MARKETING",
+            "categories":[
+                {
+                    "value":"OFFLINE",
+                    "displayText":"Offline",
+                    "subCategories":[
+                        {
+                            "value":"PRINTING",
+                            "displayText":"Printing"
+                        },
+                        {
+                            "value":"EXPERIMENTAL",
+                            "displayText":"Experimental"
+                        },
+                        {
+                            "value":"OUTDOOR_ADVERTISING",
+                            "displayText":"Outdoor Advertising"
+                        },
+                        {
+                            "value":"GUERILLA_MARKETING",
+                            "displayText":"Guerilla Marketing"
+                        }
+                    ]
+                },
+                {
+                    "value":"AGENCIES",
+                    "displayText":"Agencis",
+                    "subCategories":[
+                        {
+                            "value":"MEDIA_PLANNING",
+                            "displayText":"Media Planning"
+                        },
+                        {
+                            "value":"ADVERTISING",
+                            "displayText":"Advertising"
+                        },
+                        {
+                            "value":"PUBLIC_RELATIONS",
+                            "displayText":"Public Relations"
+                        },
+                        {
+                            "value":"SEARCH",
+                            "displayText":"Search"
+                        },
+                        {
+                            "value":"RESEARCH",
+                            "displayText":"Research"
+                        }
+                    ]
+                },
+                {
+                    "value":"WILD_CARD",
+                    "displayText":"Wild Card",
+                    "subCategories":[
+                        {
+                            "value":"PROMOTION_PLANNING",
+                            "displayText":"Promotion Planning"
+                        },
+                        {
+                            "value":"TRADE_MANAGEMENT",
+                            "displayText":"Trade Management"
+                        },
+                        {
+                            "value":"CHANNEL_MANAGEMENT",
+                            "displayText":"Channel Management"
+                        },
+                        {
+                            "value":"VIDEO_DELIVERY",
+                            "displayText":"Video Delivery"
+                        },
+                        {
+                            "value":"OTHER",
+                            "displayText":"Other"
+                        }
+                    ]
+                },
+                {
+                    "value":"SEARCH",
+                    "displayText":"Search",
+                    "subCategories":[
+                        {
+                            "value":"SEO",
+                            "displayText":"SEO"
+                        },
+                        {
+                            "value":"SEM",
+                            "displayText":"SEM"
+                        },
+                        {
+                            "value":"SEARCH_ANALYTICS",
+                            "displayText":"Search Analytics"
+                        }
+                    ]
+                },
+                {
+                    "value":"DATA",
+                    "displayText":"Data",
+                    "subCategories":[
+                        {
+                            "value":"DATA_MANAGEMENT_PLATFORMS",
+                            "displayText":"Data Management Platforms"
+                        },
+                        {
+                            "value":"DATA_SUPPLIER_PLATFORMS",
+                            "displayText":"Data Supplier Platforms"
+                        },
+                        {
+                            "value":"CONSUMER_INSIGHTS",
+                            "displayText":"Consumer Insights"
+                        },
+                        {
+                            "value":"PREDICTIVE_PLATFORMS",
+                            "displayText":"Predictive Platforms"
+                        },
+                        {
+                            "value":"CRM",
+                            "displayText":"CRM"
+                        }
+                    ]
+                },
+                {
+                    "value":"SOCIAL",
+                    "displayText":"Social",
+                    "subCategories":[
+                        {
+                            "value":"SOCIAL_MARKETING_MANAGEMENT",
+                            "displayText":"Social Marketing Management"
+                        },
+                        {
+                            "value":"UGC_MANAGEMENT",
+                            "displayText":"UGC Management"
+                        },
+                        {
+                            "value":"ADVOCATE_PLATFORMS",
+                            "displayText":"Advocate Platforms"
+                        },
+                        {
+                            "value":"AFFILLIATE_PROGRAMS",
+                            "displayText":"Affilliate Programs"
+                        },
+                        {
+                            "value":"PUBLISHER_TOOLS",
+                            "displayText":"Publisher Tools"
+                        }
+                    ]
+                },
+                {
+                    "value":"AD_TECH",
+                    "displayText":"Ad Tech",
+                    "subCategories":[
+                        {
+                            "value":"AD_SERVERS",
+                            "displayText":"Ad Serveres"
+                        },
+                        {
+                            "value":"AD_NETWORKS",
+                            "displayText":"Ad Networks"
+                        },
+                        {
+                            "value":"EXCHANGES",
+                            "displayText":"Exchanges"
+                        },
+                        {
+                            "value":"RETARGETING",
+                            "displayText":"Retargeting"
+                        },
+                        {
+                            "value":"MEASUREMENT",
+                            "displayText":"Measurement"
+                        }
+                    ]
+                },
+                {
+                    "value":"EMAIL",
+                    "displayText":"Email",
+                    "subCategories":[
+                        {
+                            "value":"EMAIL_SERVICE_PROVIDERS",
+                            "displayText":"Email Service Providers"
+                        },
+                        {
+                            "value":"EMAIL_OPTIMIZATION",
+                            "displayText":"Email Optimization"
+                        },
+                        {
+                            "value":"OUTBOUND_MANAGEMENT",
+                            "displayText":"Outbound Management"
+                        },
+                        {
+                            "value":"INBOUND_MANAGEMENT",
+                            "displayText":"Inbound Managemtn"
+                        }
+                    ]
+                },
+                {
+                    "value":"DESIGN",
+                    "displayText":"Design",
+                    "subCategories":[
+                        {
+                            "value":"CREATION_TOOLS",
+                            "displayText":"Creation Tools"
+                        },
+                        {
+                            "value":"DESIGN_TOOLS",
+                            "displayText":"Design Tools"
+                        },
+                        {
+                            "value":"PROTOTYPING_TOOLS",
+                            "displayText":"Prototyping Tools"
+                        }
+                    ]
+                }
+            ]
+        }
+    }

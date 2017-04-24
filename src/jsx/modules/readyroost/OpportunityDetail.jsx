@@ -51,7 +51,7 @@ const OpportunityDetail = React.createClass({
             log.info("failed validation");
         }
         this.setState({errors: errors});
-    },
+    },    
     render () {
         let {errors, company, subCategory} = this.state;
         const {template} = this.props

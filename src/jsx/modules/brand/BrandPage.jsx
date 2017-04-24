@@ -19,7 +19,7 @@ const BrandPage = React.createClass({
         document.title = this.props.companyName ? this.props.companyName + " | OneRoost" : "Opportunities | OneRoost";
     },
     render () {
-        const {isLoading, logoUrl, templates, pageTitle, error} = this.props;
+        const {isLoading, logoUrl, templates, pageTitle, error, departmentMap} = this.props;
         if (error){
             return <FourOhFourPage/>
         }
@@ -46,9 +46,10 @@ const BrandPage = React.createClass({
                 <div className="intro lead">
                     <b>Marketing Vendor Categories:</b> Begin proposal process by clicking into a category
                 </div>
-                <div className="categories">
+                <div className="departments">
                     {templates.map((template, i) => {
-                        return <TemplateLink key={`brand_template_${i}`} template={template} />
+                        let department = departmentMap[template["department"]]
+                        return <TemplateLink key={`brand_template_${i}`} department={department} templateId={template["templateId"]} />
                     })}
                 </div>
                 <footer>
@@ -63,16 +64,24 @@ const BrandPage = React.createClass({
 const mapStateToProps = (state, ownProps) => {
     const {params} = ownProps;
     const vanityUrl = params.vanityUrl
+
+    const departmentMap = state.config.get("departmentMap")
+    .sort((d1, d2) => {
+        return d1.get("displayText").toUpperCase() - d2.get("displayText").toUpperCase()
+    })
+    .toJS();
+
     const {brandsByUrl} = state;
     const brand = brandsByUrl.get(vanityUrl, initialState).toJS()
     return {
         vanityUrl,
-        isLoading: brand.isLoading,
+        isLoading: brand.isLoading || state.config.get("isLoading"),
         logoUrl: brand.logoUrl,
         error: brand.error,
         templates: brand.templates,
         companyName: brand.companyName,
         pageTitle: brand.pageTitle,
+        departmentMap,
     }
 }
 

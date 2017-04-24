@@ -12,6 +12,7 @@ import * as RoostUtil from "RoostUtil"
 import {denormalize} from "normalizr"
 import * as Template from "models/Template"
 import * as log from "LoggingUtil"
+import * as TemplateUtil from "TemplateUtil"
 // import {createReadyRoost} from "ducks/roost/roost"
 
 const ReadyRoostPage = React.createClass({
@@ -40,7 +41,7 @@ const ReadyRoostPage = React.createClass({
         this.props.loadData()
     },
     componentWillUpdate(nextProps, nextState){
-        if ( this.props.params.userId !== nextProps.params.userId ){
+        if (this.props.params.userId !== nextProps.params.userId){
             let userId = nextProps.params.userId;
             this.fetchData(userId);
         }
@@ -49,8 +50,8 @@ const ReadyRoostPage = React.createClass({
         log.info("login success");
 
         ReactGA.event({
-          category: "ReadyRoost",
-          action: "Log in"
+            category: "ReadyRoost",
+            action: "Log in"
         });
         this.setState({currentUser: Parse.User.current()});
     },
@@ -69,19 +70,18 @@ const ReadyRoostPage = React.createClass({
             log.info("created ready roost, so happy", result);
             ReactGA.set({ userId: self.state.currentUser.objectId });
             ReactGA.event({
-                  category: "ReadyRoost",
-                  action: "Created ReadyRoost"
-                });
+                category: "ReadyRoost",
+                action: "Created ReadyRoost"
+            });
             self.props.router.replace("/roosts/" + createdRoost.objectId);
         },
-        function(error){
-            log.error("can not create roost, already have one for this user", error);
-            self.setState({error: {message: "You have already created a Roost for this user."}})
-        })
+            function(error){
+                log.error("can not create roost, already have one for this user", error);
+                self.setState({error: {message: "You have already created a Roost for this user."}})
+            })
     },
     handleNameChange(val){
-        if( this.state.roostName != null && this.state.roostName.length > 1 && this.state.currentUser)
-        {
+        if(this.state.roostName != null && this.state.roostName.length > 1 && this.state.currentUser) {
             this.setState({canSubmit: true})
         }
         else {
@@ -91,11 +91,10 @@ const ReadyRoostPage = React.createClass({
     render () {
         let {currentUser, template, isLoading, createReadyRoost, error} = this.props;
 
-        if ( isLoading ){
+        if (isLoading){
             return <LoadingTakeover messsage={"Loading Profile"}/>
         }
-        if( !template || error )
-        {
+        if(!template || error) {
             return <FourOhFourPage/>
         }
 
@@ -126,7 +125,7 @@ const mapStateToProps = (state, ownProps) => {
     let isLoading = true
     let template = null
     let error = null
-    if ( templateState ){
+    if (templateState){
         isLoading = templateState.isLoading;
         error = templateState.error;
         if (templateState.hasLoaded && !templateState.error){
@@ -144,6 +143,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const templateId = ownProps.params.templateId
+
+    console.log(JSON.stringify(TemplateUtil.getIndustry("MARKETING").toJS()))
+
     return {
         loadData: () => {
             dispatch(loadTemplate(templateId))

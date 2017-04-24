@@ -13,7 +13,8 @@ const initialState = Map({
     faqs: [],
     paymentEnabled: false,
     showRegister: false,
-    landingPage: Map({})
+    landingPage: Map({}),
+    departmentMap: Map({}),
 })
 
 export default function reducer(state=initialState, action){
@@ -23,7 +24,7 @@ export default function reducer(state=initialState, action){
             break;
         case GET_CONFIG_SUCCESS:
             state = state.set("isLoading", false)
-            state = state.set("lastFetched", new Date())            
+            state = state.set("lastFetched", new Date())
             state = state.merge(action.payload)
             break;
         default:

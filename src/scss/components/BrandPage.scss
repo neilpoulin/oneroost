@@ -43,11 +43,11 @@
     }
 
 
-    .categories{
+    .departments{
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        .category{
+        .department{
             width: 32%;
             margin-bottom: 2%;
             min-height: 15rem;
@@ -84,8 +84,8 @@
 
 @media (max-width: $screen-md-min) {
     .BrandPage{
-        .categories{
-            .category{
+        .departments{
+            .department{
                 width: 49%;
             }
         }
@@ -107,8 +107,8 @@
 
 @media (max-width: $screen-sm-min) {
     .BrandPage{
-        .categories{
-            .category{
+        .departments{
+            .department{
                 width: 100%;
             }
         }
