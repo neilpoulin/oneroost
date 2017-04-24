@@ -29,6 +29,10 @@ const LandingPage = withRouter(React.createClass({
             signUp,
         } = this.props
 
+        const $footer = <div className="container">
+            &copy; 2017 OneRoost | <TermsOfServiceLink text="Terms of Service"/>
+        </div>
+
         var page =
         <div className={"LandingPage"} >
             <section className="background-primary textured">
@@ -38,6 +42,7 @@ const LandingPage = withRouter(React.createClass({
                     fontStyle={LIGHT_FONT_STYLE}
                     fontHoverStyle={DARK_FONT_HOVER_STYLE}
                     regButtonType={"outline-white"}
+                    fixed={false}
                     />
                 <div className="container">
                     <div className="logoContainer">
@@ -68,11 +73,14 @@ const LandingPage = withRouter(React.createClass({
                         {ctaSubText}
                     </div>
                 </div>
-                <div className="hasMoreContainer" display-if={hasMore}>
+                <div className="hasMoreContainer" display-if={hasMore && false}>
                     <div className="hasMore">
                         <i className="fa fa-arrow-down fa-3x"></i>
                     </div>
                 </div>
+                <footer display-if={!hasMore} className="">
+                    {$footer}
+                </footer>
             </section>
             <section className="textInfo background-light" display-if={paragraphs && paragraphs.length > 0}>
                 {paragraphs.map(({title, content}, i) =>
@@ -84,10 +92,8 @@ const LandingPage = withRouter(React.createClass({
                 </div>
             )}
         </section>
-        <footer className="background-primary">
-            <div className="container">
-                &copy; 2017 OneRoost | <TermsOfServiceLink text="Terms of Service"/>
-        </div>
+        <footer className="background-primary" display-if={hasMore}>
+            {$footer}
     </footer>
 </div>
         return page;

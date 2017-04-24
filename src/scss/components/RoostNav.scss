@@ -54,3 +54,9 @@
         }
     }
 }
+
+@media (max-width: $screen-sm-min){
+    .navbar-collapse{
+        background-color: $navbar-default-bg;
+    }
+}
