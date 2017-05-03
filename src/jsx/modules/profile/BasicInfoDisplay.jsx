@@ -17,20 +17,23 @@ const BasicInfoDisplay = React.createClass({
     },
     render () {
         const {user} = this.props
-        const {email, company, jobTitle} = user
+        const {email, company, jobTitle, account, seat} = user
         var info =
         <div>
             <div className="title action">
                 <h2>Basic Info</h2><span className="link" onClick={this.props.doEdit}>Edit</span>
             </div>
             <div className="row">
-
+                <FormGroupStatic
+                    value={user.objectId}
+                    label="User ID"
+                    horizontal={true}
+                    />
                 <FormGroupStatic
                     value={RoostUtil.getFullName(user)}
                     label="Name"
                     horizontal={true}
                     />
-
 
                 <FormGroupStatic
                     value={email}
@@ -48,7 +51,16 @@ const BasicInfoDisplay = React.createClass({
                     label="Job Title"
                     horizontal={true}
                     />
-
+                <FormGroupStatic
+                    value={`${account.name} (${account.objectId})`}
+                    label="Account"
+                    horizontal={true}
+                    />
+                <FormGroupStatic display-if={seat}
+                    value={`${seat.accessType} (${seat.objectId} )`}
+                    label="Seat"
+                    horizontal={true}
+                    />
             </div>
         </div>
 

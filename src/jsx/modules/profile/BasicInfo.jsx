@@ -19,7 +19,7 @@ const BasicInfo = React.createClass({
         this.setState({isEdit: false});
     },
     render () {
-        if ( this.state.isEdit ){
+        if (this.state.isEdit){
             return <BasicInfoForm user={this.props.user} doCancel={this.doDisplay} afterSave={this.doDisplay} saveUser={this.props.saveUser}/>
         }
         return <BasicInfoDisplay user={this.props.user} doEdit={this.doEdit}/>

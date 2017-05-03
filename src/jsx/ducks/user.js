@@ -5,13 +5,17 @@ import * as RoostUtil from "RoostUtil"
 import {normalize} from "normalizr"
 import * as User from "models/User"
 import * as Account from "models/Account"
+import * as AccountSeat from "models/AccountSeat"
 import Raven from "raven-js"
 import * as log from "LoggingUtil"
 import {LOADED_ENTITIES} from "ducks/entities"
+const NO_ACCOUNT = "NO_ACCOUNT"
 
 export const UPDATE_USER = "oneroost/user/UPADATE_USER"
 export const LOGIN_SUCCESS = "oneroost/user/LOGIN_SUCCESS"
 export const LOGOUT = "oneroost/user/LOGOUT"
+export const SET_ACCOUNT = "oneroost/user/SET_ACCOUNT"
+export const SET_PERMISSIONS = "oneroost/user/SET_PERMISSIONS"
 
 const initialState = Map({
     isLoading: false,
@@ -23,6 +27,8 @@ const initialState = Map({
     isLoggedIn: false,
     roostTemplates: Map({}),
     plan: null,
+    accountSeatId: null,
+    accessType: null,
 });
 
 export default function reducer(state=initialState, action){
@@ -32,6 +38,7 @@ export default function reducer(state=initialState, action){
             state = state.set("userId", user.get("objectId"))
             state = state.set("admin", user.get("admin"))
             state = state.set("email", user.get("email"))
+            state = state.set("accountId", user.getIn(["account", "objectId"]))
             break;
         case LOGIN_SUCCESS:
             var user = action.payload
@@ -43,6 +50,18 @@ export default function reducer(state=initialState, action){
             state = state.set("email", user.get("email"))
             state = state.set("accountId", user.getIn(["account", "objectId"], null))
             break;
+        case SET_ACCOUNT:
+            var payload = action.payload || Map({})
+            state = state.set("accountId", payload.getIn(["account", "objectId"]))
+            state = state.set("accountSeatId", payload.getIn(["accountSeat", "objectId"]))
+            state = state.set("accessType", payload.getIn(["accountSeat", "accessType"]))
+            break;
+        case SET_PERMISSIONS:
+            var seat = action.payload;
+            state = state.set("accountId", seat.getIn(["account", "objectId"]))
+            state = state.set("accountSeatId", seat.get("objectId"))
+            state = state.set("accessType", seat.get("accessType", "NONE"))
+            break;
         case LOGOUT:
             state = initialState
             state = state.set("hasLoaded", true)
@@ -51,6 +70,16 @@ export default function reducer(state=initialState, action){
             break;
     }
     return state;
+}
+
+// Queries
+export const getAccountSeatForUser = (user) => {
+    let query = new Parse.Query(AccountSeat.className)
+    query.include("createdBy")
+    query.include("modifiedBy")
+    query.include("account")
+    query.equalTo("user", User.Pointer(user))
+    return query.find()
 }
 
 export const loginSuccessAction = (user) => {
@@ -113,32 +142,79 @@ export const saveUser = (updates) => (dispatch, getState) => {
         .catch(log.error)
 }
 
+export const fetchUserPermissions = () => (dispatch, getState) => {
+    const {user} = getState()
+    const userId = user.get("userId", null)
+    if (!userId){
+        return null
+    }
+
+    getAccountSeatForUser(userId).then(results => {
+        const seat = results[0]
+        if(seat){
+            log.info("fetched user's account seat", results)
+            let entities = normalize(RoostUtil.toJSON(seat), AccountSeat.Schema).entities
+            dispatch({
+                type: SET_PERMISSIONS,
+                payload: seat,
+                entities,
+            })
+        }
+    }).catch(error => {
+        log.error("Failed to get user's account seat", error)
+    })
+}
+
 export const refreshCachedUserData = () => (dispatch) => {
     Parse.User.current().fetch().then(updated => {
         dispatch(updateUserAction(updated))
     })
 }
 
+export const setAccount = (account, accountSeat) => (dispatch, getState) => {
+    dispatch({
+        type: SET_ACCOUNT,
+        payload: {
+            account,
+            accountSeat,
+        }
+    })
+}
+
 export const connectToAccount = () => (dispatch, getState) => {
     const {user} = getState()
+    const email = user.get("email")
+    const userId = user.get("userId")
     if (user.get("accountId")){
+        log.info("User already has an account. Exititng")
         return null;
     }
     Parse.Cloud.run("addUserToAccount", {
-        email: user.get("email"),
-        userId: user.get("userId"),
-    }).then(({account, message, user}) => {
+        email,
+        userId,
+    }).then(({account, accountSeat, message, user}) => {
         log.info("success!", message)
         let userEntities = normalize(RoostUtil.toJSON(user), User.Schema).entities
         let accountEntities = normalize(RoostUtil.toJSON(account), Account.Schema).entities
-        let entities = Object.assign({}, userEntities, accountEntities)
+        let accountSeatEntities = normalize(RoostUtil.toJSON(accountSeat), AccountSeat.Schema).entities
+        let entities = Object.assign({}, userEntities, accountEntities, accountSeatEntities)
         dispatch({
             type: LOADED_ENTITIES,
             entities
         })
+        dispatch(setAccount(account))
         dispatch(refreshCachedUserData())
     }).catch(error => {
-        log.error("error", error)
+        switch (error.code) {
+            case NO_ACCOUNT:
+                log.info("no account exists for this user", email)
+                dispatch({
+                    type: NO_ACCOUNT,
+                })
+                break;
+            default:
+                log.error("Unknown error occurred when adding user to account", error)
+        }
     })
 }
 
