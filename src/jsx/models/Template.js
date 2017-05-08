@@ -2,6 +2,7 @@ import Parse from "parse";
 import { schema } from "normalizr"
 import {copyJSON} from "RoostUtil"
 import * as User from "models/User"
+import * as Account from "models/Account"
 import {processStrategy, idAttribute} from "models/modelUtil"
 
 export const className = "Template"
@@ -19,6 +20,8 @@ export const fromJS = (json) => {
     let template = copyJSON(json)
     template.createdBy = User.Pointer(template.createdBy)
     template.modifiedBy = User.Pointer(template.modifiedBy)
+    template.ownedBy = User.Pointer(template.ownedBy)
+    template.account = Account.Pointer(template.account)
     return new Template(template)
 }
 

@@ -11,7 +11,6 @@ import FormGroup from "FormGroup"
 import {createDocument} from "ducks/roost/documents"
 import * as log from "LoggingUtil"
 
-
 const re = /(?:\.([^.]+))?$/;
 
 const DocumentUploadForm = React.createClass({
@@ -38,7 +37,7 @@ const DocumentUploadForm = React.createClass({
         var self = this;
         var errors = this.getValidations();
         log.info(errors);
-        if ( Object.keys(errors).length === 0 && errors.constructor === Object ){
+        if (Object.keys(errors).length === 0 && errors.constructor === Object){
             this.saveDocument();
             return true;
         }
@@ -66,7 +65,7 @@ const DocumentUploadForm = React.createClass({
                 fileName: fileName,
                 dealId: deal.objectId,
                 type: file.type
-            }).then(function( result ) {
+            }).then(function(result) {
                 log.info("recieved presignedurl", result);
                 self.doUpload(file, result);
 
@@ -76,7 +75,6 @@ const DocumentUploadForm = React.createClass({
                 });
             });
         });
-
     },
     onDragEnter(){
         this.setState({dragover: true})
@@ -90,29 +88,30 @@ const DocumentUploadForm = React.createClass({
         formData.append("file", file);
         self.setState({uploading: true, percent: 0});
         request.put(s3info.url)
-        .set("Content-Type", file.type)
-        .send(file)
-        .on("progress", function(e) {
-            log.info("Percentage done: ", numeral( e.percent).format("0,0"));
-            self.setState({uploading: true, percent: e.percent});
-        })
-        .end(function(err, response){
-            if ( err ){
-                log.error("something went wrong uploading the file", err);
-                self.setState({uploadSuccess: false});
-            } else{
-                log.info("file uploaded successfully", response);
-                s3info.type = file.type;
-                s3info.size = file.size;
-                self.setState({type: file.type,
-                    size: file.size,
-                    uploadSuccess: true,
-                    uploading: false});
-            }
-        });
+            .set("Content-Type", file.type)
+            .send(file)
+            .on("progress", function(e) {
+                log.info("Percentage done: ", numeral(e.percent).format("0,0"));
+                self.setState({uploading: true, percent: e.percent});
+            })
+            .end(function(err, response){
+                if (err){
+                    log.error("something went wrong uploading the file", err);
+                    self.setState({uploadSuccess: false});
+                }
+                else{
+                    log.info("file uploaded successfully", response);
+                    s3info.type = file.type;
+                    s3info.size = file.size;
+                    self.setState({type: file.type,
+                        size: file.size,
+                        uploadSuccess: true,
+                        uploading: false});
+                }
+            });
     },
     getValidations(){
-        if ( this.state.isFileUpload ){
+        if (this.state.isFileUpload){
             return FormUtil.getErrors(this.state, fileValidation);
         }
         return FormUtil.getErrors(this.state, linkValidation);
@@ -136,7 +135,7 @@ const DocumentUploadForm = React.createClass({
             placeholder=""
             required={true} />
 
-        if ( this.state.isFileUpload ){
+        if (this.state.isFileUpload){
             formAction =
             <FormGroup
                 fieldName="uploadSuccess"
@@ -153,11 +152,11 @@ const DocumentUploadForm = React.createClass({
             </FormGroup>
 
             var progressLabel = numeral(this.state.percent).format("0,0") + "%";
-            if ( this.state.uploadSuccess ){
+            if (this.state.uploadSuccess){
                 progressLabel = "Upload Completed"
             }
 
-            if ( this.state.uploading || this.state.uploadSuccess ){
+            if (this.state.uploading || this.state.uploadSuccess){
                 progress =
                 <div className="upload-info">
                     <div className="progress">
@@ -170,7 +169,6 @@ const DocumentUploadForm = React.createClass({
                         </div>
                     </div>
                 </div>
-
             }
         }
 

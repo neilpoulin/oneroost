@@ -43,8 +43,8 @@ import { syncHistoryWithStore } from "react-router-redux"
 import BrandPage from "brand/BrandPage"
 import EmailValidationSuccessPage from "EmailValidationSuccessPage"
 import SettingsPage from "SettingsPage"
-import UserSettings from "settings/UserSettings"
-import CompanySettings from "settings/CompanySettings"
+import UserSettings from "settings/UserSettingsPage"
+import CompanySettings from "settings/CompanySettingsPage"
 
 Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;

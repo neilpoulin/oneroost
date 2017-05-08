@@ -1,9 +1,9 @@
 import React, { PropTypes } from "react"
 import {connect} from "react-redux"
 import * as RoostUtil from "RoostUtil"
-import BasicInfo from "profile/BasicInfo"
+import UserSettingsDisplay from "UserSettingsDisplay"
+import UserSettingsForm from "UserSettingsForm"
 import {saveUser, fetchUserPermissions} from "ducks/user"
-import {loadTemplates} from "ducks/userTemplates"
 
 const UserSettings = React.createClass({
     propTypes: {
@@ -11,16 +11,26 @@ const UserSettings = React.createClass({
         saveUser: PropTypes.func.isRequired,
         isLoading: PropTypes.bool.isRequired,
     },
+    getInitialState(){
+        return{
+            isEdit: false
+        }
+    },
+    doEdit(){
+        this.setState({isEdit: true});
+    },
+    doDisplay(){
+        this.setState({isEdit: false});
+    },
     render () {
         const {user, saveUser, isLoading} = this.props
         if (isLoading){
             return <div><i className="fa fa-spinner fa-spin fa-2x"></i> Loading</div>
         }
-        return (
-            <div>
-                <BasicInfo user={user} saveUser={saveUser}/>
-            </div>
-        )
+        if (this.state.isEdit){
+            return <UserSettingsForm user={user} doCancel={() => this.setState({isEdit: false})} afterSave={this.doDisplay} saveUser={saveUser}/>
+        }
+        return <UserSettingsDisplay user={user} doEdit={() => this.setState({isEdit: true})}/>
     }
 })
 
@@ -38,7 +48,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         saveUser: (changes) => dispatch(saveUser(changes)),
         loadData: (userId) => {
-            dispatch(loadTemplates(userId))
             dispatch(fetchUserPermissions())
         }
     }

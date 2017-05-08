@@ -1,5 +1,5 @@
 import React, { PropTypes } from "react"
-import {profileValidation} from "profile/ProfileValidations"
+import {profileValidation} from "ProfileValidations"
 import FormUtil from "FormUtil"
 import FormInputGroup from "FormInputGroup"
 import * as log from "LoggingUtil"

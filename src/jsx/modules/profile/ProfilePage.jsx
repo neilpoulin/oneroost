@@ -1,7 +1,6 @@
 import React, {PropTypes} from "react"
 import {connect} from "react-redux"
 import * as RoostUtil from "RoostUtil"
-import BasicInfo from "profile/BasicInfo"
 import RoostNav from "RoostNav"
 import {saveUser, fetchUserPermissions} from "ducks/user"
 import {loadTemplates} from "ducks/userTemplates"
@@ -23,7 +22,7 @@ const ProfilePage = React.createClass({
         return this.props.user;
     },
     componentDidMount(){
-        document.title= "My Account | OneRost";
+        document.title= "My Account | OneRoost";
         let userId = this.props.user.objectId
         this.props.loadData(userId)
     },
@@ -34,9 +33,6 @@ const ProfilePage = React.createClass({
             <RoostNav showHome={true}/>
             <div className="container col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
                 <h1 className="pageTitle">Account Settings</h1>
-                <div className="section">
-                    <BasicInfo user={this.getCurrentUser()} saveUser={this.props.saveUser}/>
-                </div>
                 <div className="section">
                     <h2>RFP Templates</h2>
                     <div>

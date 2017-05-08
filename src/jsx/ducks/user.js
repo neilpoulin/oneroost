@@ -73,6 +73,7 @@ export default function reducer(state=initialState, action){
             state = state.set("accountSeatId", seat.get("objectId"))
             state = state.set("roles", seat.get("roles", []))
             state = state.set("seatError", null)
+            state = state.set("isLoading", false)
             break;
         case LOGOUT:
             state = initialState
@@ -157,7 +158,8 @@ export const saveUser = (updates) => (dispatch, getState) => {
 export const fetchUserPermissions = () => (dispatch, getState) => {
     const {user} = getState()
     const userId = user.get("userId", null)
-    if (!userId){
+    const accountSeatId = user.get("accountSeatId")
+    if (!userId || accountSeatId){
         return null
     }
     dispatch({

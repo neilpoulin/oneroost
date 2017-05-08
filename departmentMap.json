@@ -33,7 +33,7 @@
     },
     "CUSTOMER_SUPPORT": {
         "displayText": "Customer Support",
-        "value": "CUUSTOMER_SUPPORT",
+        "value": "CUSTOMER_SUPPORT",
         "categories": [
             {
                 "displayText": "Customer Engagement",

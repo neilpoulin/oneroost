@@ -7,6 +7,37 @@
     }
 }
 
+.CompanySettingsPage{
+    .departmentContainer{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        .DepartmentCard{
+            border: $borderThick;
+            width: 32%;
+            min-height: 4rem;
+            margin-bottom: 2%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            .title{
+                display: block;
+                text-align: center;
+                padding: 5px;
+                font-size: 1.1em;
+                border-bottom: $borderThin;
+                margin-bottom: 5px;
+                background-color: $roostDarkGray;
+                color: $white;
+            }
+            .details, .actions{
+                padding: 1rem;
+            }
+
+        }
+    }
+}
+
 .BasicInfoDisplay{
     .fieldContainer{
         display: flex;

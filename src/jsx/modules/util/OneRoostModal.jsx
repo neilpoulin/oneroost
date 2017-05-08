@@ -29,7 +29,7 @@ const OneRoostModal = React.createClass({
         this.clearForm();
     },
     clearForm: function(){
-        this.getForm().setState( this.getForm().getInitialState() );
+        this.getForm().setState(this.getForm().getInitialState());
     },
     submit: function(){
         let form = this.getForm()
@@ -37,8 +37,7 @@ const OneRoostModal = React.createClass({
         var success = submit();
         //check if the save was successful and we should close the form
         log.info("submitting form resulted in ", success);
-        if ( typeof success === "boolean" )
-        {
+        if (typeof success === "boolean") {
             return success;
         }
         else{
@@ -57,7 +56,7 @@ const OneRoostModal = React.createClass({
         });
     },
     saveAndClose: function(){
-        if ( this.submit() ){
+        if (this.submit()){
             this.closeModal();
         }
     },

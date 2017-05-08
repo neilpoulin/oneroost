@@ -8,14 +8,16 @@ import subscriptions from "ducks/subscriptions"
 import notifications from "ducks/notification"
 import dashboard from "ducks/dashboard"
 import templatesByUser from "ducks/templatesByUser"
-import templates from "ducks/templates"
 import invitationsByStakeholder from "ducks/invitationsByStakeholder"
 import payment from "ducks/payment"
 import config from "ducks/config"
 import brandsByUrl from "ducks/brandsByUrl"
 import landingpage from "ducks/landingpage"
+import accountSettings from "ducks/accountSettings"
+import templates from "ducks/templates"
 
 const reducers = combineReducers({
+    accountSettings,
     brandsByUrl,
     config,
     dashboard,
