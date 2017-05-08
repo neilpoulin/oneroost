@@ -1,25 +1,25 @@
-import {fromJS, Map, Set} from "immutable"
+import {fromJS, Map, Set, List} from "immutable"
 import {getConfigValue} from "ducks/config"
 import * as log from "LoggingUtil"
 import Parse from "parse"
 import * as Account from "models/Account"
 import * as Template from "models/Template"
 import {normalize} from "normalizr"
-import {SAVE_TEMPLATE_SUCCESS} from "ducks/templates"
+import {SAVE_TEMPLATE_SUCCESS} from "ducks/template"
 
 const DEPARTMENT_MAP_KEY = "departmentMap"
 export const LOAD_SETTINGS_REQUEST = "oneroost/accountSettings/LOAD_SETTINGS_REQUEST"
 export const LOAD_SETTINGS_SUCCESS = "oneroost/accountSettings/LOAD_SETTINGS_SUCCESS"
 export const LOAD_SETTINGS_ERROR = "oneroost/accountSettings/LOAD_SETTINGS_ERROR"
 export const SET_ACCOUNT_ID = "oneroost/accountSettings/SET_ACCOUNT_ID"
-const initialState = fromJS({
-    templateIds: Set([]),
-    archivedTemplateIds: Set([]),
+const initialState = Map({
+    templateIds: Set(),
+    archivedTemplateIds: Set(),
     isLoading: false,
     accountId: null,
-    seatIds: [],
-    userIds: [],
-    departmentMap: {}
+    seatIds: List([]),
+    userIds: List([]),
+    departmentMap: Map({})
 });
 
 export default function reducer(state=initialState, action){
@@ -30,9 +30,9 @@ export default function reducer(state=initialState, action){
             break
         case LOAD_SETTINGS_SUCCESS:
             state = state.set("isLoading", false)
-            state = state.set("departmentMap", payload.get("departmentMap", {}))
-            state = state.set("templateIds", payload.get("templateIds", []))
-            state = state.set("archivedTemplateIds", payload.get("archivedTemplateIds", []))
+            state = state.set("departmentMap", payload.get("departmentMap", Map()))
+            state = state.set("templateIds", payload.get("templateIds", Set()).toSet())
+            state = state.set("archivedTemplateIds", payload.get("archivedTemplateIds", Set()).toSet())
             state = state.set("error", null)
             break;
         case LOAD_SETTINGS_ERROR:
@@ -47,10 +47,10 @@ export default function reducer(state=initialState, action){
             debugger;
             var templateId = template.get("objectId")
             if (template.get("active")){
-                state = state.updateIn(["templateIds"], set => set.add(templateId))
+                state = state.updateIn(["templateIds"], list => list.toSet().add(templateId))
             }
             else {
-                state = state.updateIn(["archivedTemplateIds"], set => set.add(templateId))
+                state = state.updateIn(["archivedTemplateIds"], list => list.toSet().add(templateId))
             }
             break;
         default:
@@ -78,15 +78,15 @@ const findTemplates = (accountId) => {
 const handleTemplateResponse = (allTemplates) => {
     let templateIdsByStatus = allTemplates.reduce((templateMap, template) => {
         if(template.get("active")){
-            templateMap = templateMap.updateIn(["templateIds"], arr => arr.push(template.id || template.objectId))
+            templateMap = templateMap.updateIn(["templateIds"], set => set.add(template.id || template.objectId))
         }
         else {
-            templateMap = templateMap.updateIn(["archivedTemplateIds"], arr => arr.push(template.id || template.objectId))
+            templateMap = templateMap.updateIn(["archivedTemplateIds"], arr => arr.add(template.id || template.objectId))
         }
         return templateMap;
     }, fromJS({
-        templateIds: [],
-        archivedTemplateIds: []
+        templateIds: Set(),
+        archivedTemplateIds: Set()
     }))
     return templateIdsByStatus.toJS()
 }
