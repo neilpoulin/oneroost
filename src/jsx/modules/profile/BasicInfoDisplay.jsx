@@ -17,50 +17,50 @@ const BasicInfoDisplay = React.createClass({
     },
     render () {
         const {user} = this.props
-        const {email, company, jobTitle, account, seat} = user
+        const {email, company, jobTitle, account, accountSeat} = user
         var info =
-        <div>
-            <div className="title action">
-                <h2>Basic Info</h2><span className="link" onClick={this.props.doEdit}>Edit</span>
-            </div>
-            <div className="row">
+        <div className="BasicInfoDisplay">
+            <div className="fieldContainer">
                 <FormGroupStatic
                     value={user.objectId}
                     label="User ID"
-                    horizontal={true}
+
                     />
                 <FormGroupStatic
                     value={RoostUtil.getFullName(user)}
                     label="Name"
-                    horizontal={true}
+
                     />
 
                 <FormGroupStatic
                     value={email}
                     label="Email"
-                    horizontal={true}
+
                     />
 
                 <FormGroupStatic
                     value={company}
                     label="Company"
-                    horizontal={true}
+
                     />
                 <FormGroupStatic
                     value={jobTitle}
                     label="Job Title"
-                    horizontal={true}
+
                     />
                 <FormGroupStatic
                     value={`${account.name} (${account.objectId})`}
                     label="Account"
-                    horizontal={true}
+
                     />
-                <FormGroupStatic display-if={seat}
-                    value={`${seat.accessType} (${seat.objectId} )`}
-                    label="Seat"
-                    horizontal={true}
+                <FormGroupStatic display-if={accountSeat}
+                    value={`${accountSeat.roles.join(", ")} (${accountSeat.objectId} )`}
+                    label="Seat Roles"
+
                     />
+            </div>
+            <div>
+                <span className="btn btn-outline-primary editButton" onClick={this.props.doEdit}>Edit</span>
             </div>
         </div>
 

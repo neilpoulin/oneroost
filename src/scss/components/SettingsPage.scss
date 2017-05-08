@@ -1,0 +1,31 @@
+.SettingsPage{
+    padding-top: 20px;
+    .contents{
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+}
+
+.BasicInfoDisplay{
+    .fieldContainer{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        > .form-group{
+            width: 50%;
+            min-width: 20rem;
+        }
+    }
+    .editButton{
+        min-width: 20rem;
+    }
+}
+
+@media (max-width: $screen-sm-min) {
+    .BasicInfoDisplay{
+        .editButton{
+            width: 100%;
+        }
+    }
+}

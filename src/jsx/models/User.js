@@ -9,7 +9,7 @@ export const Schema = new schema.Entity("users", {
         idAttribute: idAttribute,
         processStrategy: processStrategy
     }),
-    accountSeat: new schema.Entity("accountSeat", {}, {
+    accountSeat: new schema.Entity("accountSeats", {}, {
         idAttribute: idAttribute,
         processStrategy: processStrategy
     }),

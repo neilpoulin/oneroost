@@ -15,6 +15,9 @@ export const UPDATE_USER = "oneroost/user/UPADATE_USER"
 export const LOGIN_SUCCESS = "oneroost/user/LOGIN_SUCCESS"
 export const LOGOUT = "oneroost/user/LOGOUT"
 export const SET_ACCOUNT = "oneroost/user/SET_ACCOUNT"
+export const LOAD_PERMISSIONS_REQUEST = "oneroost/user/LOAD_PERMISSIONS_REQUEST"
+export const LOAD_PERMISSIONS_SUCCESS = "oneroost/user/LOAD_PERMISSIONS_SUCCESS"
+export const LOAD_PERMISSIONS_ERROR = "oneroost/user/LOAD_PERMISSIONS_ERROR"
 export const SET_PERMISSIONS = "oneroost/user/SET_PERMISSIONS"
 
 const initialState = Map({
@@ -28,7 +31,8 @@ const initialState = Map({
     roostTemplates: Map({}),
     plan: null,
     accountSeatId: null,
-    accessType: null,
+    roles: [],
+    seatError: null,
 });
 
 export default function reducer(state=initialState, action){
@@ -54,13 +58,21 @@ export default function reducer(state=initialState, action){
             var payload = action.payload || Map({})
             state = state.set("accountId", payload.getIn(["account", "objectId"]))
             state = state.set("accountSeatId", payload.getIn(["accountSeat", "objectId"]))
-            state = state.set("accessType", payload.getIn(["accountSeat", "accessType"]))
+            state = state.set("roles", payload.getIn(["accountSeat", "roles"], []))
             break;
-        case SET_PERMISSIONS:
+        case LOAD_PERMISSIONS_ERROR:
+            state = state.set("isLoading", false)
+            state = state.set("seatError", action.error)
+            break;
+        case LOAD_PERMISSIONS_REQUEST:
+            state = state.set("isLoading", true)
+            break
+        case LOAD_PERMISSIONS_SUCCESS:
             var seat = action.payload;
             state = state.set("accountId", seat.getIn(["account", "objectId"]))
             state = state.set("accountSeatId", seat.get("objectId"))
-            state = state.set("accessType", seat.get("accessType", "NONE"))
+            state = state.set("roles", seat.get("roles", []))
+            state = state.set("seatError", null)
             break;
         case LOGOUT:
             state = initialState
@@ -148,20 +160,27 @@ export const fetchUserPermissions = () => (dispatch, getState) => {
     if (!userId){
         return null
     }
+    dispatch({
+        type: LOAD_PERMISSIONS_REQUEST
+    });
 
     getAccountSeatForUser(userId).then(results => {
         const seat = results[0]
         if(seat){
-            log.info("fetched user's account seat", results)
+            log.info("fetched user's account seat", results.map(RoostUtil.toJSON))
             let entities = normalize(RoostUtil.toJSON(seat), AccountSeat.Schema).entities
             dispatch({
-                type: SET_PERMISSIONS,
+                type: LOAD_PERMISSIONS_SUCCESS,
                 payload: seat,
                 entities,
             })
         }
     }).catch(error => {
         log.error("Failed to get user's account seat", error)
+        dispatch({
+            type: LOAD_PERMISSIONS_ERROR,
+            error: error,
+        })
     })
 }
 

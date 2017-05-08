@@ -5,14 +5,20 @@ import Raven from "raven"
 var Parse = ParseCloud.Parse;
 Parse.serverURL = envUtil.serverURL;
 
-const createDefaultSeat = async (user, account) => {
+const ROLES = {
+    USER: "USER",
+    PARTICIPANT: "PARTICIPANT",
+    ADMIN: "ADMIN",
+    OWNER: "OWNER"
+}
+
+const createSeat = async (user, account, roles) => {
     try{
         let AccountSeat = Parse.Object.extend("AccountSeat")
         let seat = new AccountSeat({
             user,
             account,
-            accessType: "DEFAULT",
-            admin: true,
+            roles: roles,
             active: true,
         })
         return seat.save()
@@ -32,7 +38,7 @@ const createAccount = async (user, domain) => {
             createdBy: user,
         })
         account = await account.save()
-        await createDefaultSeat(user, account)
+        await createSeat(user, account, [ROLES.OWNER])
         return account
     }
     catch(e){
@@ -131,7 +137,7 @@ const initialize = () => {
                 console.log("added user to seat")
             }
             else {
-                userSeat = await createDefaultSeat(user, account)
+                userSeat = await createSeat(user, account, [ROLES.USER])
             }
 
             user.set({

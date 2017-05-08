@@ -42,6 +42,10 @@ import configureStore from "./store/configureStore"
 import { syncHistoryWithStore } from "react-router-redux"
 import BrandPage from "brand/BrandPage"
 import EmailValidationSuccessPage from "EmailValidationSuccessPage"
+import SettingsPage from "SettingsPage"
+import UserSettings from "settings/UserSettings"
+import CompanySettings from "settings/CompanySettings"
+
 Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;
 Parse.serverURL = window.location.origin + "/parse";
@@ -124,8 +128,10 @@ render(
                 <Route path="/signup" component={RegisterPage} onEnter={requireAnonymous}></Route>
                 <Route path="/logout" component={Landing} onEnter={doLogout}></Route>
                 <Redirect from="/deals" to="/roosts" />
-                <Route path="/account" component={ProfilePage} onEnter={requireAuthOrParam}>
-
+                <Redirect from="/settings" to="/settings/account" />
+                <Route path="/settings" component={SettingsPage} onEnter={requireAuthOrParam}>
+                    <Route path="account" component={UserSettings}/>
+                    <Route path="company" component={CompanySettings}/>
                 </Route>
                 <Route path="/proposals/:templateId" component={ReadyRoostPage}/>
                 <Route path="/help" component={HelpPage}/>
