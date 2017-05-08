@@ -1,9 +1,10 @@
-import {fromJS, Map, Set, List} from "immutable"
+import {fromJS, Map, Set} from "immutable"
 import {getConfigValue} from "ducks/config"
 import * as log from "LoggingUtil"
 import Parse from "parse"
 import * as Account from "models/Account"
 import * as Template from "models/Template"
+import * as User from "models/User"
 import {normalize} from "normalizr"
 import {SAVE_TEMPLATE_SUCCESS} from "ducks/template"
 
@@ -17,8 +18,8 @@ const initialState = Map({
     archivedTemplateIds: Set(),
     isLoading: false,
     accountId: null,
-    seatIds: List([]),
-    userIds: List([]),
+    seatIds: Set([]),
+    userIds: Set([]),
     departmentMap: Map({})
 });
 
@@ -33,6 +34,7 @@ export default function reducer(state=initialState, action){
             state = state.set("departmentMap", payload.get("departmentMap", Map()))
             state = state.set("templateIds", payload.get("templateIds", Set()).toSet())
             state = state.set("archivedTemplateIds", payload.get("archivedTemplateIds", Set()).toSet())
+            state = state.set("userIds", payload.get("userIds", Set()))
             state = state.set("error", null)
             break;
         case LOAD_SETTINGS_ERROR:
@@ -74,6 +76,14 @@ const findTemplates = (accountId) => {
     return query.find()
 }
 
+const findUsers = (accountId) => {
+    let query = new Parse.Query(User.className)
+    query.include("account")
+    query.include("seat")
+    query.equalTo("account", Account.Pointer(accountId))
+    return query.find()
+}
+
 const handleTemplateResponse = (allTemplates) => {
     let templateIdsByStatus = allTemplates.reduce((templateMap, template) => {
         if(template.get("active")){
@@ -107,16 +117,19 @@ export const loadSettings = () => (dispatch, getState) => {
         dispatch(getConfigValue(DEPARTMENT_MAP_KEY, Map())),
         fetchAccount(accountId),
         findTemplates(accountId),
+        findUsers(accountId),
     ]
-    Promise.all(promises).then(([departmentMap, account, allTemplates]) => {
+    Promise.all(promises).then(([departmentMap, account, allTemplates, users]) => {
         let entities = Map({})
         entities = entities.merge(normalize(account.toJSON(), Account.Schema).entities)
         entities = entities.merge(normalize(allTemplates.map(template => template.toJSON()), [Template.Schema]).entities)
+        entities = entities.merge(normalize(users.map(user => user.toJSON()), [User.Schema]).entities)
         dispatch({
             type: LOAD_SETTINGS_SUCCESS,
             payload: {
                 departmentMap,
-                ...handleTemplateResponse(allTemplates)
+                ...handleTemplateResponse(allTemplates),
+                userIds: users.map(user => user.id),
             },
             entities,
         })
