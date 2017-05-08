@@ -1,5 +1,6 @@
 import React, { PropTypes } from "react"
 import {Link} from "react-router"
+import CreateTemplateButton from "account/CreateTemplateButton"
 
 const DepartmentCard = React.createClass({
     propTypes: {
@@ -25,7 +26,7 @@ const DepartmentCard = React.createClass({
     },
     render () {
         const {department} = this.props
-        const {displayText, template} = department
+        const {displayText, template, value} = department
         const {objectId: templateId, title} = template || {}
         return (
             <div className="DepartmentCard">
@@ -35,8 +36,10 @@ const DepartmentCard = React.createClass({
                         {`View ${title}`}
                     </Link>
                 </div>
-                <div className="actions">
-                    <button className="btn btn-outline-primary btn-block">{`${template ? "Edit" : "Add"}`} Template</button>
+                <div className="actions" display-if={!template}>
+                    <CreateTemplateButton department={value}
+                        btnClassName="btn-outline-primary btn-block"
+                        btnText={"Add Template"}/>
                 </div>
             </div>
         )

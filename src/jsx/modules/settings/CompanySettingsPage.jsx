@@ -25,7 +25,7 @@ const CompanySettingsPage = React.createClass({
             <div className="CompanySettingsPage">
                 <h1><span display-if={account}>{account.accountName} </span>Company Settings</h1>
                 <div display-if={userRoles}>
-                    User Roles: {userRoles.join(", ")}
+                    {`User Role${userRoles.length > 1 ? "s" : ""}:`} {userRoles.join(", ")}
                 </div>
                 <div>
                     <CreateTemplateButton/>

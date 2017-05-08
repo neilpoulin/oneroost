@@ -8,6 +8,12 @@ import TemplateValidation from "account/TemplateValidation"
 import {getErrors, hasErrors} from "FormUtil"
 
 const CreateTemplateForm = React.createClass({
+    propTypes: {
+        department: PropTypes.string,
+    },
+    getDefaultProps(){
+        department: ""
+    },
     getInitialState(){
         return {
             title: "",
@@ -16,7 +22,7 @@ const CreateTemplateForm = React.createClass({
             account: "",
             createdBy: "",
             ownedBy: "",
-            department: "",
+            department: this.props.department,
             errors: {},
         }
     },

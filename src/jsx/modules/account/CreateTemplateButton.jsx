@@ -5,23 +5,29 @@ import CreateTemplateForm from "account/CreateTemplateForm"
 const CreateTemplateButton = React.createClass({
     propTypes: {
         btnClassName: PropTypes.string,
+        department: PropTypes.string,
+        btnText: PropTypes.string,
     },
     getDefaultProps(){
         return {
-            btnClassName: "btn-outline-primary"
+            btnClassName: "btn-outline-primary",
+            btnText: "Create a Template",
+            department: ""
         }
     },
     render () {
-        const {btnClassName} = this.props
+        const {btnClassName, department, btnText} = this.props
 
         return (
-            <ModalButton buttonText="Create a Template"
+            <ModalButton buttonText={btnText}
                 buttonIcon="plus"
                 containerClass="CreateTemplateButton"
                 buttonClass={btnClassName}
                 modalTitle="Create a Template"
                 >
-                <CreateTemplateForm ref="addTemplateForm"/>
+                <CreateTemplateForm ref="addTemplateForm"
+                    department={department}
+                    />
             </ModalButton>
         )
     }

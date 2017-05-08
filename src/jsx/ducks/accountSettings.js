@@ -44,7 +44,6 @@ export default function reducer(state=initialState, action){
             break;
         case SAVE_TEMPLATE_SUCCESS:
             var template = action.payload;
-            debugger;
             var templateId = template.get("objectId")
             if (template.get("active")){
                 state = state.updateIn(["templateIds"], list => list.toSet().add(templateId))

@@ -4,8 +4,8 @@ import SidebarNav from "SidebarNav"
 
 const navLinks = [
     {
-        path: "/settings/account",
-        displayText: "Account"
+        path: "/settings/profile",
+        displayText: "My Profile"
     },
     {
         path: "/settings/company",

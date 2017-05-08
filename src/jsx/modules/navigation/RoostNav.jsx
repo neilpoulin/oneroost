@@ -83,7 +83,7 @@ const RoostNav = React.createClass({
                                 <i className="fa fa-user"></i> {user.firstName + " " + user.lastName} <span className="caret"></span>
                             </a>
                             <ul className="dropdown-menu">
-                                <NavLink to="/settings/account">My Account</NavLink>
+                                <NavLink to="/settings/profile">My Account</NavLink>
                                 <NavLink to="/settings/company">Company Settings</NavLink>
                                 <li role="separator" className="divider"></li>
                                 <NavLink to="/logout">Logout</NavLink>

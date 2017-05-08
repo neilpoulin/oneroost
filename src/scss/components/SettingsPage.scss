@@ -59,4 +59,16 @@
             width: 100%;
         }
     }
+
+    .CompanySettingsPage{
+        .departmentContainer{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            .DepartmentCard{
+                width: 100%;
+            }
+        }
+    }
+
 }

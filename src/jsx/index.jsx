@@ -128,9 +128,9 @@ render(
                 <Route path="/signup" component={RegisterPage} onEnter={requireAnonymous}></Route>
                 <Route path="/logout" component={Landing} onEnter={doLogout}></Route>
                 <Redirect from="/deals" to="/roosts" />
-                <Redirect from="/settings" to="/settings/account" />
+                <Redirect from="/settings" to="/settings/profile" />
                 <Route path="/settings" component={SettingsPage} onEnter={requireAuthOrParam}>
-                    <Route path="account" component={UserSettings}/>
+                    <Route path="profile" component={UserSettings}/>
                     <Route path="company" component={CompanySettings}/>
                 </Route>
                 <Route path="/proposals/:templateId" component={ReadyRoostPage}/>
