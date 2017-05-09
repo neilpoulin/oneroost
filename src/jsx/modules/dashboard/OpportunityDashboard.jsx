@@ -11,10 +11,12 @@ import LoadingIndicator from "LoadingIndicator"
 import SearchInput from "SearchInput"
 import * as RoostUtil from "RoostUtil"
 import {loadTemplates} from "ducks/userTemplates"
+import {fetchUserPermissions} from "ducks/user"
 import * as Template from "models/Template"
 import * as Deal from "models/Deal"
 import {denormalize} from "normalizr"
 import DashboardPaywall from "DashboardPaywall"
+import {loadSettings} from "ducks/accountSettings"
 
 const OpportunityDashboard = React.createClass({
     propTypes: {
@@ -47,6 +49,7 @@ const OpportunityDashboard = React.createClass({
             setExportCsvData,
             hasAccess,
             setTemplateId,
+            departmentMap,
             } = this.props
         let contents = null
         if (!hasAccess){
@@ -88,7 +91,7 @@ const OpportunityDashboard = React.createClass({
             }} value={selectedTemplateId || ""}>
                 <option value="">-- Show All --</option>
                 {templates.map((template, i) => {
-                    return <option key={"template_selector_" + template.objectId + "_" + i} value={template.objectId} >{template.title}</option>
+                    return <option key={"template_selector_" + template.objectId + "_" + i} value={template.objectId} >{departmentMap[template.department].displayText}</option>
                 })}
             </select>
         }
@@ -120,7 +123,8 @@ const OpportunityDashboard = React.createClass({
 const mapStateToProps = (state, ownProps) => {
     let dashboard = state.dashboard.toJS()
     let currentUser = RoostUtil.getCurrentUser(state)
-    const templatesByUser = state.templatesByUser.toJS()
+    const accountState = state.accountSettings.toJS()
+    const {departmentMap} = accountState
     const payment = state.payment.toJS()
     const config = state.config.toJS()
 
@@ -131,12 +135,12 @@ const mapStateToProps = (state, ownProps) => {
     let userId = currentUser.objectId
     let myOpportunities = state.opportunitiesByUser.get(userId)
     const entities = state.entities.toJS()
-    let isLoading = true
+    let isLoading = accountState.isLoading
     let showTable = false
     let hasArchivedDeals = false
     let templates = []
 
-    if (myOpportunities){
+    if (myOpportunities && !accountState.isLoading){
         myOpportunities = myOpportunities.toJS()
         isLoading = myOpportunities.isLoading
         showTable = myOpportunities.deals.length > 0 || myOpportunities.archivedDeals.length > 0
@@ -153,21 +157,22 @@ const mapStateToProps = (state, ownProps) => {
         })
     }
 
-    const myTemplates = templatesByUser[userId]
     let templatesLoading = false;
 
     let archivedTemplates = []
     let selectedTemplateId = dashboard.selectedTemplateId
-    if (myTemplates){
-        templatesLoading = myTemplates.isLoading;
-        let myTemplateIds = myTemplates.templateIds.filter(id => {
+    if (!accountState.isLoading){
+        let myTemplateIds = accountState.templateIds.filter(id => {
             return !templates.find(t => {
                 return t.objectId === id
             })
         })
         templates = templates.concat(denormalize(myTemplateIds, [Template.Schema], entities))
+        templates.sort((t1, t2) => {
+            return t1.department.localeCompare(t2.department)
+        })
 
-        archivedTemplates = denormalize(myTemplates.archivedTemplateIds, [Template.Schema], entities)
+        archivedTemplates = denormalize(accountState.archivedTemplateIds, [Template.Schema], entities)
     }
 
     return {
@@ -183,6 +188,7 @@ const mapStateToProps = (state, ownProps) => {
         archivedTemplates,
         csvData: dashboard.csvData,
         hasAccess,
+        departmentMap,
     }
 }
 
@@ -191,6 +197,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const userId = currentUser.id
     return {
         loadData: () => {
+            dispatch(loadSettings())
+            dispatch(fetchUserPermissions())
             dispatch(loadOpportunities(userId))
             dispatch(subscribeOpportunities(userId))
             dispatch(loadTemplates(userId))
