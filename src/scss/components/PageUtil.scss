@@ -37,3 +37,9 @@
         }
     }
 }
+
+@media (min-width: $screen-md-min) {
+    .content{
+        padding-right: 20rem;
+    }
+}

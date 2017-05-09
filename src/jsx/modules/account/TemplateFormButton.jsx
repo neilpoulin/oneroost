@@ -1,36 +1,40 @@
 import React, { PropTypes } from "react"
 import ModalButton from "ModalButton"
-import CreateTemplateForm from "account/CreateTemplateForm"
+import TemplateForm from "account/TemplateForm"
 
-const CreateTemplateButton = React.createClass({
+const TemplateFormButton = React.createClass({
     propTypes: {
         btnClassName: PropTypes.string,
         department: PropTypes.string,
+        buttonIcon: PropTypes.string,
         btnText: PropTypes.string,
+        templateId: PropTypes.string,
     },
     getDefaultProps(){
         return {
             btnClassName: "btn-outline-primary",
             btnText: "Create a Template",
-            department: ""
+            department: "",
+            buttonIcon: "plus"
         }
     },
     render () {
-        const {btnClassName, department, btnText} = this.props
+        const {btnClassName, department, btnText, buttonIcon, templateId} = this.props
 
         return (
             <ModalButton buttonText={btnText}
-                buttonIcon="plus"
+                buttonIcon={buttonIcon}
                 containerClass="CreateTemplateButton"
                 buttonClass={btnClassName}
                 modalTitle="Create a Template"
                 >
-                <CreateTemplateForm ref="addTemplateForm"
+                <TemplateForm ref="addTemplateForm"
                     department={department}
+                    templateId={templateId}
                     />
             </ModalButton>
         )
     }
 })
 
-export default CreateTemplateButton
+export default TemplateFormButton

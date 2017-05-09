@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import {Link} from "react-router"
-import CreateTemplateButton from "account/CreateTemplateButton"
+import TemplateFormButton from "account/TemplateFormButton"
 
 const DepartmentCard = React.createClass({
     propTypes: {
@@ -27,17 +27,33 @@ const DepartmentCard = React.createClass({
     render () {
         const {department} = this.props
         const {displayText, template, value} = department
-        const {objectId: templateId, title} = template || {}
+        const {objectId: templateId} = template || {}
         return (
             <div className="DepartmentCard">
                 <div className="title">{displayText}</div>
                 <div className="details">
-                    <Link display-if={template} className="link" to={`/proposals/${templateId}`}>
-                        {`View ${title}`}
-                    </Link>
+                    <div className="field" display-if={template}>
+                        <label>Share Link:</label>
+                        <div className="shareLink">
+                            <Link className="link" to={`/proposals/${templateId}`}>
+                                {`${window.location.origin}/proposals/${templateId}`}
+                            </Link>
+                        </div>
+                    </div>
                 </div>
-                <div className="actions" display-if={!template}>
-                    <CreateTemplateButton department={value}
+                <div className="actions">
+                    <TemplateFormButton
+                        display-if={template}
+                        templateId={templateId}
+                        department={value}
+                        buttonIcon={""}
+                        btnClassName="btn-block btn-outline-secondary"
+                        btnText={"Edit Template"}/>
+
+                    <TemplateFormButton
+                        display-if={!template}
+                        department={value}
+                        buttonIcon={"plus"}
                         btnClassName="btn-outline-primary btn-block"
                         btnText={"Add Template"}/>
                 </div>

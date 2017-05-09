@@ -14,6 +14,7 @@ const AutosizeTextAreaFormGroup = React.createClass({
         minRows: PropTypes.number,
         maxRows: PropTypes.number,
         horizontal: PropTypes.bool,
+        placeholder: PropTypes.string,
     },
     getDefaultProps(){
         return {
@@ -37,18 +38,29 @@ const AutosizeTextAreaFormGroup = React.createClass({
         this.props.onChange(value);
     },
     render () {
+        const {
+            label,
+            errors,
+            fieldName,
+            horizontal,
+            placeholder,
+            maxRows,
+            minRows,
+            value,
+        } = this.props
         let form =
         <FormGroup
-            label={this.props.label}
-            errors={this.props.errors}
-            fieldName={this.props.fieldName}
-            horizontal={this.props.horizontal}>
+            label={label}
+            errors={errors}
+            fieldName={fieldName}
+            horizontal={horizontal}>
             <AutosizeTextarea
                 className="form-control"
-                maxRows={this.props.maxRows}
-                minRows={this.props.minRows}
+                maxRows={maxRows}
+                minRows={minRows}
                 onChange={this.handleChange}
-                value={this.props.value}
+                placeholder={placeholder}
+                value={value}
                 >
             </AutosizeTextarea>
         </FormGroup>

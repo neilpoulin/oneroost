@@ -16,6 +16,7 @@ const FormSelectGroup = React.createClass({
         name: PropTypes.string,
         autoFocus: PropTypes.bool,
         onChange: PropTypes.func,
+        placeholder: PropTypes.string,
     },
     getDefaultProps(){
         return {
@@ -41,11 +42,13 @@ const FormSelectGroup = React.createClass({
             children,
             options,
             value,
+            placeholder,
         } = this.props
 
         let $select = <Select
             onChange={this.handleChange}
             value={value}
+            placeholder={placeholder}
             options={options.map(({value, displayText, label}) => ({
                 value,
                 label: label || displayText
