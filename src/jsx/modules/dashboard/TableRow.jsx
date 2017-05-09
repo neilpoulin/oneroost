@@ -103,13 +103,6 @@ const TableRow = React.createClass({
             </div>
         }
 
-        let templateCell = null
-        if (!showRequirements){
-            templateCell = <td>
-                {deal.template ? deal.template.title : ""}
-            </td>
-        }
-
         let requirementCells = []
         if (showRequirements && requirementHeadings && requirementHeadings.length > 0){
             requirementCells = requirementHeadings.map((heading, i) => {
@@ -163,7 +156,6 @@ const TableRow = React.createClass({
                 <td>
                     {nextStep}
                 </td>
-                {templateCell}
                 {requirementCells.map((req) => {
                     return req
                 })}

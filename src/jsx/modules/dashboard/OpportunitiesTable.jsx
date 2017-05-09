@@ -58,12 +58,7 @@ const headers = [
         label: "Next Step",
         clickable: false,
         sortable: false,
-    },
-    {
-        label: RFP_TITLE,
-        clickable: false,
-        sortable: false,
-    },
+    },    
 ]
 
 const OpportunitiesTable = React.createClass({
