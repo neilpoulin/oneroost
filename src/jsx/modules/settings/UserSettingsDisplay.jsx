@@ -20,12 +20,7 @@ const BasicInfoDisplay = React.createClass({
         const {email, company, jobTitle, account, accountSeat} = user
         var info =
         <div className="BasicInfoDisplay">
-            <div className="fieldContainer">
-                <FormGroupStatic
-                    value={user.objectId}
-                    label="User ID"
-
-                    />
+            <div className="fieldContainer">                
                 <FormGroupStatic
                     value={RoostUtil.getFullName(user)}
                     label="Name"
@@ -49,13 +44,8 @@ const BasicInfoDisplay = React.createClass({
 
                     />
                 <FormGroupStatic
-                    value={`${account.accountName} (${account.objectId})`}
+                    value={`${account.accountName}`}
                     label="Account"
-
-                    />
-                <FormGroupStatic display-if={accountSeat}
-                    value={`${accountSeat.roles.join(", ")} (${accountSeat.objectId} )`}
-                    label="Seat Roles"
 
                     />
             </div>
