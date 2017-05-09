@@ -49,7 +49,7 @@ const BasicInfoDisplay = React.createClass({
 
                     />
                 <FormGroupStatic
-                    value={`${account.name} (${account.objectId})`}
+                    value={`${account.accountName} (${account.objectId})`}
                     label="Account"
 
                     />
