@@ -325,7 +325,7 @@ const LoginComponent = React.createClass({
                 <button className="btn btn-primary btn-block"
                     id="loginSubmitBtn"
                     type="submit">
-                    {btnText} <SpinnerIcon visible={this.state.loading}/>
+                    {btnText} <SpinnerIcon display-if={this.state.loading}/>
                 </button>
             </div>
         }
