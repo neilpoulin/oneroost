@@ -11,6 +11,7 @@ const Template = Parse.Object.extend(className)
 export const Schema = new schema.Entity("templates", {
     createdBy: User.Schema,
     modifiedBy: User.Schema,
+    ownedBy: User.Schema,
 }, {
     idAttribute,
     processStrategy
@@ -50,7 +51,7 @@ export const defaultRequirements = [
         }
     },
     {
-        "title": "Add Investment Range", 
+        "title": "Add Investment Range",
         "description": "In the \"Investment\" section, please submit the desired investment amount needed to utilize your offering.  Feel free to include pricing details, such as CPM or per month in the Product/Service field",
         "navLink": {
             "text": "Investment Required",

@@ -23,7 +23,7 @@ const TemplateForm = React.createClass({
         accountId: PropTypes.string,
         templateId: PropTypes.string,
         template: PropTypes.shape({
-            objectId: PropTypes.string.isRequired,
+            objectId: PropTypes.string,
             title: PropTypes.string,
             description: PropTypes.string,
             createdBy: PropTypes.shape({
