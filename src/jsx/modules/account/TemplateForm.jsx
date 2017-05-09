@@ -277,7 +277,7 @@ const mapStateToProps = (state, ownProps) => {
         return u1.compareName.toUpperCase().localeCompare(u2.compareName.toUpperCase())
     })
 
-    let template = null
+    let template = {requirements: Template.defaultRequirements}
     if (templateId){
         template = denormalize(templateId, Template.Schema, entities)
     }
