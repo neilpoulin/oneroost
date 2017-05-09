@@ -11,7 +11,7 @@ const STEPS_CONFIG_KEY = "readyRoostSteps";
 async function processReadyRoostRequest(currentUser, params, response){
     try{
         console.log("Setting up ready roost");
-        var {roostName, templateId, departmentCategory, departmentSubCategory} = params
+        var {roostName, templateId, departmentCategory, departmentSubCategory, departmentSubCategoryOther} = params
         console.log("Setting up ready roost for templateId = " + templateId + " and current User = " + currentUser.id)
 
         let templateQuery = new Parse.Query("Template")
@@ -51,6 +51,7 @@ async function processReadyRoostRequest(currentUser, params, response){
                 department,
                 departmentCategory,
                 departmentSubCategory,
+                departmentSubCategoryOther,
                 profile: {"timeline": "2016-05-13T00:00:00-06:00"},
                 budget: {"low": 0, "high": 0}
             });

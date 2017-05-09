@@ -140,7 +140,7 @@ const TemplateForm = React.createClass({
         const {departments, users} = this.props
         const {
             description,
-            requirementsDisplay,
+            // requirementsDisplay,
             department,
             ownedBy,
             errors,

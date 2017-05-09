@@ -9,22 +9,24 @@ const TemplateFormButton = React.createClass({
         buttonIcon: PropTypes.string,
         btnText: PropTypes.string,
         templateId: PropTypes.string,
+        containerClassName: PropTypes.string,
     },
     getDefaultProps(){
         return {
             btnClassName: "btn-outline-primary",
             btnText: "Create a Template",
             department: "",
-            buttonIcon: "plus"
+            buttonIcon: "plus",
+            containerClassName: ""
         }
     },
     render () {
-        const {btnClassName, department, btnText, buttonIcon, templateId} = this.props
+        const {btnClassName, department, btnText, buttonIcon, templateId, containerClassName} = this.props
 
         return (
             <ModalButton buttonText={btnText}
                 buttonIcon={buttonIcon}
-                containerClass="CreateTemplateButton"
+                containerClass={`CreateTemplateButton ${containerClassName}`}
                 buttonClass={btnClassName}
                 modalTitle="Create a Template"
                 >

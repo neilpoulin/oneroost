@@ -34,7 +34,7 @@
                 .requirement-index{
                     margin-left: 0px;
                     margin-right: 1rem;
-                    font-weight: bold;                                       
+                    font-weight: bold;
                 }
             }
 
@@ -76,7 +76,7 @@
             margin-bottom: 2%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start;
             .title{
                 display: block;
                 text-align: center;
@@ -90,11 +90,21 @@
             .details, .actions{
                 padding: 1rem;
             }
+            .actions.center{
+                display: flex;
+                flex-basis: 100%;
+                .action{
+                    width: 100%;
+                    align-self: center;
+                }
+            }
             .details{
                 display: flex;
                 align-items: flex-start;
+                flex-basis: 100%;
                 .field{
                     overflow: hidden;
+                    margin-bottom: 1rem;
                     .shareLink{
                         overflow: scroll;
                     }
