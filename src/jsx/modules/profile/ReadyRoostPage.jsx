@@ -108,7 +108,7 @@ const ReadyRoostPage = React.createClass({
             return <FourOhFourPage/>
         }
 
-        var readyRoostUser = template.createdBy;
+        var readyRoostUser = template.ownedBy;
 
         var page =
         <div className="ReadyRoostPage">

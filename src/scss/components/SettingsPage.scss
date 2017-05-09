@@ -133,25 +133,6 @@
     }
 }
 
-@media (max-width: $screen-xs-max) {
-    .BasicInfoDisplay{
-        .editButton{
-            width: 100%;
-        }
-    }
-
-    .CompanySettingsPage{
-        .departmentContainer{
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            .DepartmentCard{
-                width: 100%;
-            }
-        }
-    }
-
-}
 
 @media (max-width: $screen-lg-min) {
     .BasicInfoDisplay{
@@ -167,6 +148,26 @@
             justify-content: space-between;
             .DepartmentCard{
                 width: 49%;
+            }
+        }
+    }
+
+}
+
+@media (max-width: $screen-xs-max) {
+    .BasicInfoDisplay{
+        .editButton{
+            width: 100%;
+        }
+    }
+
+    .CompanySettingsPage{
+        .departmentContainer{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            .DepartmentCard{
+                width: 100%;
             }
         }
     }

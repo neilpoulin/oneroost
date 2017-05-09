@@ -31,7 +31,7 @@ const Introduction = React.createClass({
                     {template.description}
                 </p>
                 <p className="">
-                    You’re here because <b>{RoostUtil.getFullName(readyRoostUser)}</b> at <b>{readyRoostUser.company}</b> is using OneRoost to review business opportunities! With OneRoost, you will be able to present your offering in a simple and straightforward manner, accelerating the decision process.
+                    You’re here because <b>{RoostUtil.getFullName(readyRoostUser)}</b> at <b>{template.account.accountName}</b> is using OneRoost to review business opportunities! With OneRoost, you will be able to present your offering in a simple and straightforward manner, accelerating the decision process.
                 </p>
                 {requirementsInfo}
             </div>

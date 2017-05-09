@@ -3,7 +3,7 @@ import {connect} from "react-redux"
 import * as RoostUtil from "RoostUtil"
 import UserSettingsDisplay from "UserSettingsDisplay"
 import UserSettingsForm from "UserSettingsForm"
-import {saveUser, fetchUserPermissions} from "ducks/user"
+import {saveUser, fetchUserPermissions, refreshCachedUserData} from "ducks/user"
 
 const UserSettings = React.createClass({
     propTypes: {
@@ -49,6 +49,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         saveUser: (changes) => dispatch(saveUser(changes)),
         loadData: (userId) => {
             dispatch(fetchUserPermissions())
+            dispatch(refreshCachedUserData())
         }
     }
 }

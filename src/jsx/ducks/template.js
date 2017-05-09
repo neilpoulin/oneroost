@@ -57,6 +57,8 @@ const getTemplateById = (templateId) => {
     let query = new Parse.Query(Template.className)
     query.include("createdBy")
     query.include("modifiedBy")
+    query.include("ownedBy")
+    query.include("account")
     return query.get(templateId)
 }
 

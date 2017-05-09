@@ -115,6 +115,7 @@ export const loadCurrentUser = () => (dispatch, getState) => {
     if (!currentUser){
         return null;
     }
+    dispatch(refreshCachedUserData())
     dispatch(loginSuccessAction(currentUser))
 }
 
@@ -186,7 +187,7 @@ export const fetchUserPermissions = () => (dispatch, getState) => {
     })
 }
 
-export const refreshCachedUserData = () => (dispatch) => {
+export const refreshCachedUserData = () => (dispatch) => {    
     Parse.User.current().fetch().then(updated => {
         dispatch(updateUserAction(updated))
     })
