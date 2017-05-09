@@ -1,4 +1,4 @@
-import {Map} from "immutable"
+import {fromJS, Map} from "immutable"
 import Parse from "parse"
 import * as log from "LoggingUtil"
 import {timeout, DEFAULT_TIMEOUT_MS} from "PromiseUtil"
@@ -7,14 +7,14 @@ export const GET_CONFIG_SUCCESS = "oneroost/config/GET_CONFIG_SUCCESS"
 
 const configRefreshInterval = .5 * 60 * 60 * 1000; // refresh every half hour
 
-const initialState = Map({
+const initialState = fromJS({
     isLoading: false,
     lastFetched: null,
     faqs: [],
     paymentEnabled: false,
     showRegister: false,
-    landingPage: Map({}),
-    departmentMap: Map({}),
+    landingPage: {},
+    departmentMap: {},
 })
 
 export default function reducer(state=initialState, action){

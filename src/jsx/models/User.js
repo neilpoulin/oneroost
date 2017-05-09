@@ -9,6 +9,10 @@ export const Schema = new schema.Entity("users", {
         idAttribute: idAttribute,
         processStrategy: processStrategy
     }),
+    accountSeat: new schema.Entity("accountSeats", {}, {
+        idAttribute: idAttribute,
+        processStrategy: processStrategy
+    }),
 }, {
     idAttribute: idAttribute,
     processStrategy: processStrategy
@@ -20,7 +24,7 @@ export const Pointer = (arg) => {
     }
     let userId = arg;
     if (typeof arg == "object"){
-        userId = arg.objectId || arg.id
+        userId = arg.objectId || arg.id || arg.userId
     }
     else if (typeof arg == "string"){
         userId = arg

@@ -5,6 +5,48 @@ import Raven from "raven"
 var Parse = ParseCloud.Parse;
 Parse.serverURL = envUtil.serverURL;
 
+const ROLES = {
+    USER: "USER",
+    PARTICIPANT: "PARTICIPANT",
+    ADMIN: "ADMIN",
+    OWNER: "OWNER"
+}
+
+const createSeat = async (user, account, roles) => {
+    try{
+        let AccountSeat = Parse.Object.extend("AccountSeat")
+        let seat = new AccountSeat({
+            user,
+            account,
+            roles: roles,
+            active: true,
+        })
+        return seat.save()
+    }
+    catch (e){
+        console.error("Failed to create an AccountSeat", e)
+        Raven.captureException(e)
+    }
+}
+
+const createAccount = async (user, domain) => {
+    try{
+        let Account = Parse.Object.extend("Account")
+        let account = new Account({
+            emailDomain: domain.toLowerCase(),
+            accountName: user.get("company"),
+            createdBy: user,
+        })
+        account = await account.save()
+        await createSeat(user, account, [ROLES.OWNER])
+        return account
+    }
+    catch(e){
+        console.error("Failed to create a new account", e)
+        Raven.captureException(e)
+    }
+}
+
 const initialize = () => {
     console.log("Initializing Subscriptions")
 
@@ -63,26 +105,50 @@ const initialize = () => {
                     message: "User must be logged in with a verified email as the user that is being associated."
                 })
             }
-            const userDomain = email.split("@")[1]
+            const userDomain = email.toLowerCase().split("@")[1]
             console.log("UserDomain = ", userDomain)
             let query = new Parse.Query("Account")
             query.equalTo("emailDomain", userDomain)
             let account = await query.first()
-            console.log("found account", account)
-
-            // TODO: just create an acount if not found?
+            console.log("Fetched an account... resulting in ", account)
             if (!account){
-                return response.error({
-                    success: false,
-                    message: "No account found for domain"
-                })
+                console.log("No account found for domain " + userDomain + "...creating new one")
+                account = await createAccount(user, userDomain)
+                if (!account){
+                    return response.error({
+                        success: false,
+                        message: "No account found for domain",
+                        code: "NO_ACCOUNT"
+                    })
+                }
+            }
+            console.log("Account ", account.toJSON())
+            // find account seats
+            let seatQuery = new Parse.Query("AccountSeat")
+            seatQuery.equalTo("account", account)
+            seatQuery.equalTo("active", true)
+            seatQuery.doesNotExist("user")
+            let userSeat = null
+            let availableSeat = await seatQuery.first()
+            if (availableSeat){
+                console.log("adding user to seat: ", availableSeat)
+                availableSeat.set("user", user)
+                userSeat = await availableSeat.save(null, {useMasterKey: true})
+                console.log("added user to seat")
+            }
+            else {
+                userSeat = await createSeat(user, account, [ROLES.USER])
             }
 
-            user.set({account})
+            user.set({
+                account,
+                accountSeat: userSeat
+            })
             let savedUser = await user.save(null, {useMasterKey: true})
             return response.success({
                 success: true,
                 account,
+                accountSeat: userSeat,
                 user: savedUser,
                 message: `Added user to account ${account.get("name")}`
             })

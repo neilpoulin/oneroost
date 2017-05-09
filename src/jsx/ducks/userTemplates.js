@@ -29,8 +29,8 @@ export default function reducer(state=initialState, action){
         case LOAD_TEMPLATES_SUCCESS:
             state = state.set("isLoading", false)
             state = state.set("hasLoaded", true)
-            var activeIds = action.payload.filter(template => template.get("active") !== false ).map(template => template.get("objectId") || template.id)
-            var archivedIds = action.payload.filter(template => template.get("active") === false ).map(template => template.get("objectId") || template.id)
+            var activeIds = action.payload.filter(template => template.get("active") !== false).map(template => template.get("objectId") || template.id)
+            var archivedIds = action.payload.filter(template => template.get("active") === false).map(template => template.get("objectId") || template.id)
             state = state.set("templateIds", Set(activeIds))
             state = state.set("archivedDeals", Set(archivedIds))
             break;
@@ -53,9 +53,9 @@ const templatesByUserQuery = (userId) => {
 }
 
 // Action creators
-export const loadTemplates = (userId, force=false) => (dispatch, getState) =>{
+export const loadTemplates = (userId, force=false) => (dispatch, getState) => {
     let {templatesByUser} = getState();
-    if ( templatesByUser.has(userId) && templatesByUser.get(userId).get("hasLoaded") && !force ){
+    if (templatesByUser.has(userId) && templatesByUser.get(userId).get("hasLoaded") && !force){
         log.warn("not loading templates as they are already loaded.")
         return null
     }
@@ -87,5 +87,4 @@ export const loadTemplates = (userId, force=false) => (dispatch, getState) =>{
             }
         })
     });
-
 }

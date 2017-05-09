@@ -26,11 +26,13 @@ const OpportunityDetail = React.createClass({
             })).isRequired,
         }).isRequired
     },
-    validations: {
-        company: new Validation(FormUtil.notNullOrEmpty, "error", "Please enter your company name"),
-        category: new Validation(FormUtil.notNullOrEmpty, "error", "Please choose a category"),
+    getValidations(){
+        return {
+            company: new Validation(FormUtil.notNullOrEmpty, "error", "Please enter your company name"),
+            category: new Validation(FormUtil.notNullOrEmpty, "error", "Please choose a category"),
         // subCategory: new Validation(FormUtil.notNullOrEmpty, "error", "Please choose a sub-category"),
         // problem: new Validation(FormUtil.notNullOrEmpty, "error", "Please briefly describe the problem you are trying to solve"),
+        }
     },
     getDefaultProps: function(){
         return {
@@ -44,11 +46,16 @@ const OpportunityDetail = React.createClass({
             problem: this.props.fieldValues.problem,
             category: this.props.fieldValues.category,
             subCategory: this.props.fieldValues.subCategory,
+            subCategoryOther: this.props.fieldValues.subCategoryOther,
             errors: {}
         }
     },
     nextStep(){
-        var errors = FormUtil.getErrors(this.state, this.validations);
+        let validations = this.getValidations()
+        if (this.state.subCategory && this.state.subCategory.value === "OTHER"){
+            validations.subCategoryOther = new Validation(FormUtil.notNullOrEmpty, "error", "Please enter a value")
+        }
+        var errors = FormUtil.getErrors(this.state, validations);
         log.info(errors);
         if (Object.keys(errors).length === 0 && errors.constructor === Object){
             this.setState({errors: {}});
@@ -56,6 +63,7 @@ const OpportunityDetail = React.createClass({
                 company: this.state.company,
                 category: this.state.category,
                 subCategory: this.state.subCategory,
+                subCategoryOther: this.state.subCategoryOther,
             });
             this.props.nextStep();
             return true;
@@ -72,7 +80,7 @@ const OpportunityDetail = React.createClass({
         })
     },
     render () {
-        let {errors, company, category, subCategory} = this.state;
+        let {errors, company, category, subCategory, subCategoryOther} = this.state;
         const {department} = this.props
         let categoryOptions = department ? department.categories : []
         categoryOptions = categoryOptions.sort((cat1, cat2) => {
@@ -90,9 +98,6 @@ const OpportunityDetail = React.createClass({
 
         let page =
         <div>
-            <div className="lead">
-                The most successful business offerings solve a major pain point for a company. Describe what problem your offering is solving for {this.props.readyRoostUser.comapny} below.
-            </div>
             <div>
                 <FormInputGroup
                     fieldName="company"
@@ -122,6 +127,17 @@ const OpportunityDetail = React.createClass({
                     requred={true}
                     options={subCategories}
                     onChange={selection => this.setState({subCategory: selection})}
+                    />
+
+                <FormInputGroup
+                    fieldName="subCategoryOther"
+                    display-if={subCategory && subCategory.value === "OTHER"}
+                    label={null}
+                    errors={errors}
+                    value={subCategoryOther || ""}
+                    required={true}
+                    placeholder={"Please write in a sub-category"}
+                    onChange={value => this.setState({subCategoryOther: value})}
                     />
 
             </div>

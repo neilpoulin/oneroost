@@ -3,7 +3,6 @@ import StakeholderValidation from "StakeholderValidation"
 import FormUtil from "FormUtil"
 import FormInputGroup from "FormInputGroup"
 
-
 export default React.createClass({
     propTypes: {
         deal: PropTypes.object.isRequired,
@@ -21,11 +20,11 @@ export default React.createClass({
         };
     },
     clear: function(){
-        this.setState( this.getInitialState() );
+        this.setState(this.getInitialState());
     },
     doSubmit(){
         var errors = FormUtil.getErrors(this.state, StakeholderValidation);
-        if ( !FormUtil.hasErrors(errors) ){
+        if (!FormUtil.hasErrors(errors)){
             this.saveStakeholder();
             this.setState({errors: {}});
             return true;

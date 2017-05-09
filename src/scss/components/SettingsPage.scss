@@ -1,0 +1,171 @@
+.SettingsPage{
+    padding-top: 20px;
+    .contents{
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+}
+
+.CreateTemplateForm{
+    $formControlHeight: 36px;
+    .form-control{
+        height: $formControlHeight;
+    }
+    .requirements{
+        padding-left: 0px;
+        margin-left: 0px;
+        list-style: none;
+        .requirement{
+            padding: 1rem;
+            border: $borderThick;
+            &:not(:last-child){
+                margin-bottom: 3rem;
+            }
+
+            .header{
+                display: flex;
+                align-items: flex-end;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+                .btn{
+                    margin-right: 1rem;
+                }
+                .requirement-index{
+                    margin-left: 0px;
+                    margin-right: 1rem;
+                    font-weight: bold;
+                }
+            }
+
+            .ctaAction, .action{
+                color: $roostOrange;
+                height: $formControlHeight;
+                align-self: center;
+                &:not(:last-child){
+                    margin-right: 1rem;
+                }
+                &:hover{
+                    cursor: pointer;
+                    color: darken($roostOrange, 20%)
+                }
+
+            }
+            .ctaContainer{
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+                > .form-group{
+                    flex-grow: 1;
+                    margin-right: 1.5rem;
+                }
+            }
+        }
+    }
+}
+
+.CompanySettingsPage{
+    .departmentContainer{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        .DepartmentCard{
+            border: $borderThick;
+            width: 32%;
+            min-height: 4rem;
+            margin-bottom: 2%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            .title{
+                display: block;
+                text-align: center;
+                padding: 5px;
+                font-size: 1.1em;
+                border-bottom: $borderThin;
+                margin-bottom: 5px;
+                background-color: $roostDarkGray;
+                color: $white;
+            }
+            .details, .actions{
+                padding: 1rem;
+            }
+            .actions.center{
+                display: flex;
+                flex-basis: 100%;
+                .action{
+                    width: 100%;
+                    align-self: center;
+                }
+            }
+            .details{
+                display: flex;
+                align-items: flex-start;
+                flex-basis: 100%;
+                .field{
+                    overflow: hidden;
+                    margin-bottom: 1rem;
+                    .shareLink{
+                        overflow: scroll;
+                    }
+                }
+
+            }
+        }
+    }
+}
+
+.BasicInfoDisplay{
+    .fieldContainer{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        > .form-group{
+            width: 50%;
+            min-width: 20rem;
+        }
+    }
+    .editButton{
+        min-width: 20rem;
+    }
+}
+
+@media (max-width: $screen-xs-max) {
+    .BasicInfoDisplay{
+        .editButton{
+            width: 100%;
+        }
+    }
+
+    .CompanySettingsPage{
+        .departmentContainer{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            .DepartmentCard{
+                width: 100%;
+            }
+        }
+    }
+
+}
+
+@media (max-width: $screen-lg-min) {
+    .BasicInfoDisplay{
+        .editButton{
+            width: 100%;
+        }
+    }
+
+    .CompanySettingsPage{
+        .departmentContainer{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            .DepartmentCard{
+                width: 49%;
+            }
+        }
+    }
+
+}

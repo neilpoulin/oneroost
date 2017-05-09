@@ -8,6 +8,10 @@ export const LOAD_TEMPLATE_REQUEST = "oneroost/template/LOAD_TEMPLATE_REQUEST"
 export const LOAD_TEMPLATE_SUCCESS = "oneroost/template/LOAD_TEMPLATE_SUCCESS"
 export const LOAD_TEMPLATE_ERROR = "oneroost/template/LOAD_TEMPLATE_ERROR"
 
+export const SAVE_TEMPLATE_REQUEST = "oneroost/template/SAVE_TEMPLATE_REQUEST"
+export const SAVE_TEMPLATE_SUCCESS = "oneroost/template/SAVE_TEMPLATE_SUCCESS"
+export const SAVE_TEMPLATE_ERROR = "oneroost/template/SAVE_TEMPLATE_ERROR"
+
 export const initialState = Map({
     isLoading: false,
     hasLoaded: false,
@@ -29,6 +33,19 @@ export default function reducer(state=initialState, action){
             state = state.set("isLoading", false)
             state = state.set("error", action.error)
             break;
+        case SAVE_TEMPLATE_REQUEST:
+            state = state.set("isLoading", true)
+            break;
+        case SAVE_TEMPLATE_SUCCESS:
+            state = state.set("isLoading", false)
+            state = state.set("hasLoaded", true)
+            state = state.set("lastLoaded", new Date())
+            state = state.set("error", null)
+            break;
+        case SAVE_TEMPLATE_ERROR:
+            state = state.set("isLoading", false)
+            state = state.set("error", action.error)
+            break;
         default:
             break
     }
@@ -44,6 +61,38 @@ const getTemplateById = (templateId) => {
 }
 
 //Actions
+
+export const saveTemplate = (json) => (dispatch, getState) => {
+    let template = Template.fromJS(json)
+
+    if (json.objectId){
+        dispatch({
+            type: SAVE_TEMPLATE_REQUEST,
+            templateId: json.objectId
+        })
+    }
+
+    template.save().then(saved => {
+        let entities = normalize(saved.toJSON(), Template.Schema).entities || {}
+        dispatch({
+            type: SAVE_TEMPLATE_SUCCESS,
+            entities,
+            templateId: saved.id,
+            payload: saved.toJSON(),
+        })
+    }).catch(error => {
+        log.error("error saving template", error)
+        dispatch({
+            type: SAVE_TEMPLATE_ERROR,
+            error: {
+                error,
+                message: "Failed to save the template",
+                level: "ERROR"
+            },
+            templateId: json.objectId
+        })
+    })
+}
 
 export const loadTemplate = (templateId, force=false) => (dispatch, getState) => {
     let {templates} = getState();

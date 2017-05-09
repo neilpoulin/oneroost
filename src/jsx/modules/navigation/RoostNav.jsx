@@ -67,10 +67,10 @@ const RoostNav = React.createClass({
                 </div>
 
                 <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul className="nav navbar-nav" display-if={!loginOnly}>
+                    <ul className="nav navbar-nav" >
                         <NavLink to="/reporting" display-if={user} >Reporting</NavLink>
                         <NavLink to="/roosts" display-if={user}>Opportunities</NavLink>
-                        <NavLink tag="li" to="/help" className="">Help</NavLink>
+                        <NavLink tag="li" to="/help" display-if={!loginOnly} className="">Help</NavLink>
                     </ul>
                     <Link to="/signup" className={`btn btn-${regButtonType} navbar-btn navbar-right`} display-if={showRegister && !user && registrationEnabled}>Sign Up</Link>
 
@@ -83,7 +83,8 @@ const RoostNav = React.createClass({
                                 <i className="fa fa-user"></i> {user.firstName + " " + user.lastName} <span className="caret"></span>
                             </a>
                             <ul className="dropdown-menu">
-                                <NavLink to="/account">Settings</NavLink>
+                                <NavLink to="/settings/profile">My Account</NavLink>
+                                <NavLink to="/settings/company">Company Settings</NavLink>
                                 <li role="separator" className="divider"></li>
                                 <NavLink to="/logout">Logout</NavLink>
                             </ul>

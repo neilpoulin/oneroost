@@ -1,28 +1,19 @@
-import React from "react"
+import React, {PropTypes} from "react"
 
 export default React.createClass({
-    getInitialState: function(){
-        return {
-            isVisible: this.props.visible,
-            isSpinning: true
-        }
+    propTypes: {
+        message: PropTypes.string,
+        size: PropTypes.string,
     },
-    getDefaultProps(){
-        return {
-            visible: false
-        }
-    },
-    doShow: function(){
-        this.setState({"isVisible": true});
-        return this.render();
-    },
-    doHide: function(){
-        this.setState({"isVisible": false});
-        return this.render();
-      },
     render: function(){
+        const {size, message} = this.props
+        const sizeClass = size ? `fa-${size}` : ""
+
         return (
-            <i className={"fa fa-spinner " + (this.state.isSpinning ? "fa-spin " : "") + (this.props.visible ? "" : "hidden ")}></i>
+            <div>
+                <i className={`fa fa-spinner fa-spin ${sizeClass}`}/>
+                <span display-if={message}>{message}</span>
+            </div>
         );
     }
 });

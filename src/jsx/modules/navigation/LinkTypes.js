@@ -12,6 +12,33 @@ export const TIMELINE_TYPE = "timeline"
 export const DOCUMENT_TYPE = "document"
 export const REQUIREMENT_TYPE = "requirement"
 
+export const LINK_TYPE_OPTIONS = [
+    {
+        displayText: "Participant",
+        value: PARTICIPANT_TYPE
+    },
+    {
+        displayText: "Next Step",
+        value: STEP_TYPE
+    },
+    {
+        displayText: "Investment",
+        value: INVESTMENT_TYPE
+    },
+    {
+        displayText: "Timeline",
+        value: TIMELINE_TYPE
+    },
+    {
+        displayText: "Document",
+        value: DOCUMENT_TYPE
+    },
+    {
+        displayText: "Requirement",
+        value: REQUIREMENT_TYPE
+    }
+].sort((opt1, opt2) => opt1.displayText.toUpperCase().localeCompare(opt2.displayText.toUpperCase()))
+
 export const getSlugFromType = (type) => {
     let path = "/"
     if (!type) return path
@@ -43,7 +70,7 @@ export const getUrl = (navLink, dealId) => {
     const {type, id} = navLink
     let slug = getSlugFromType(type)
     let link = `/roosts/${dealId}/${slug}`
-    if ( id ){
+    if (id){
         link != `/${id}`
     }
     return link;

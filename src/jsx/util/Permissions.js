@@ -1,0 +1,6 @@
+// permissions
+export const VIEW_DASHBOARD = "VIEW_DASHBOARD"
+export const VIEW_BILLING = "VIEW_BILLING"
+export const EDIT_BILLING = "EDIT_BILLING"
+export const VIEW_TEMPLATES = "VIEW_TEMPALTES"
+export const EDIT_TEMPLATES = "EDIT_TEMPLATES"

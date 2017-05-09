@@ -16,6 +16,7 @@ var fieldValues = {
     currentUser: "",
     category: "",
     subCategory: "",
+    subCategoryOther: "",
 }
 
 const Onboarding = withRouter(React.createClass({
@@ -75,14 +76,16 @@ const Onboarding = withRouter(React.createClass({
     },
     createReadyRoost(){
         let self = this;
-        const {template} = this.props;
+        const {template, department} = this.props;
         this.props.createReadyRoost()
+        const departmentLabel = department.displayText
         // TODO: create a ready roost onboarding global state
         Parse.Cloud.run("createReadyRoost", {
             templateId: template.objectId,
-            roostName: fieldValues.category.label,
+            roostName: `${departmentLabel} | ${fieldValues.category.label}`,
             departmentCategory: fieldValues.category.value,
             departmentSubCategory: fieldValues.subCategory.value,
+            departmentSubCategoryOther: fieldValues.subCategoryOther,
         }).then(function(result){
             log.info("created ready roost, so happy", result);
             ReactGA.set({ userId: fieldValues.currentUser.objectId || fieldValues.currentUser.id });

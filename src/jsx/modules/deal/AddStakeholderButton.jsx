@@ -20,7 +20,6 @@ const AddStakeholderButton = React.createClass({
         this.refs.addStakeholderModal.openModal();
     },
     render: function(){
-
         var btn = <ModalButton
             buttonText="Invite "
             buttonIcon="plus"
@@ -34,7 +33,6 @@ const AddStakeholderButton = React.createClass({
                 deal={this.props.deal}
                 inviteUser={this.props.inviteUser} />
         </ModalButton>
-
 
         return btn;
     }

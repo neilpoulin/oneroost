@@ -3,8 +3,7 @@ var ParseCloud = require("parse-cloud-express");
 var Parse = ParseCloud.Parse;
 import Raven from "raven"
 Parse.serverURL = envUtil.serverURL;
-exports.initialize = function()
-{
+exports.initialize = function(){
     console.log("initializing stakeholder triggers");
     Parse.Cloud.define("addStakeholder", async function(request, response) {
         try{
@@ -13,8 +12,8 @@ exports.initialize = function()
             var dealId = request.params.dealId;
             var stakeholder = request.params.stakeholder;
             var currentUser = request.user;
-            if ( !currentUser ){
-                return response.error({error:"you must be logged in to perform this action"});
+            if (!currentUser){
+                return response.error({error: "you must be logged in to perform this action"});
             }
             console.log("request.stakeholder:", stakeholder);
             console.log("request.currentUser", currentUser);
@@ -28,14 +27,14 @@ exports.initialize = function()
             let deal = await dealQueryResult;
             console.log("found deal", deal.toJSON());
             let user = await userQueryResult;
-            if ( user != null){
-                console.log( "found user with email = " + user.get("email") );
+            if (user != null){
+                console.log("found user with email = " + user.get("email"));
 
                 let existingStakeholderQuery = new Parse.Query("Stakeholder");
                 existingStakeholderQuery.equalTo("deal", deal);
                 existingStakeholderQuery.equalTo("user", user);
                 let foundStakeholders = await existingStakeholderQuery.find({useMasterKey: true})
-                if ( foundStakeholders.length > 0 ){
+                if (foundStakeholders.length > 0){
                     response.error({error: "this user is already a stakeholder.", exists: true})
                 }
                 else {
@@ -43,8 +42,8 @@ exports.initialize = function()
                 }
             }
             else{
-                console.log( "no user found with email = " + stakeholder.email + " ... will create" );
-                let createdUser = await createStakeholderUser( stakeholder, deal, currentUser );
+                console.log("no user found with email = " + stakeholder.email + " ... will create");
+                let createdUser = await createStakeholderUser(stakeholder, deal, currentUser);
                 response.success({user: createdUser});
             }
         }
@@ -53,7 +52,6 @@ exports.initialize = function()
             response.error({error: "something went wrong", object: e });
             Raven.captureException(e)
         }
-
     });
 
     Parse.Cloud.define("getUserWithEmail", function(request, response){
@@ -62,10 +60,10 @@ exports.initialize = function()
             console.log("found user: ", user);
             return response.success({user: user});
         })
-        .catch(error => {
-            Raven.captureException(error)
-            response.error(error)
-        });
+            .catch(error => {
+                Raven.captureException(error)
+                response.error(error)
+            });
     });
 
     Parse.Cloud.define("saveNewPassword", function(request, response) {
@@ -75,8 +73,7 @@ exports.initialize = function()
         // var stakeholderId = request.params.stakeholderId;
         new Parse.Query(Parse.User).get(userId, {useMasterKey: true}).then(function(user){
             console.log("saveNewPassword: found user: " + userId);
-            if ( user.get("passwordChangeRequired") )
-            {
+            if (user.get("passwordChangeRequired")) {
                 //we can change the password
                 user.set("password", password);
                 user.set("passwordChangeRequired", false);
@@ -84,16 +81,17 @@ exports.initialize = function()
                 user.save(null, {useMasterKey: true}).then(user => {
                     console.log("successfully changed password");
                     response.success({message: "succesfully saved the user's password"})
-                }).catch(error => {
-                    Raven.captureException(error)
-                    response.error({message: "Failed to update the user's password", error: error})
-
-                });
+                })
+                    .catch(error => {
+                        Raven.captureException(error)
+                        response.error({message: "Failed to update the user's password", error: error})
+                    });
             }
-        }).catch(e => {
-            console.error(e)
-            Raven.captureException(e)
         })
+            .catch(e => {
+                console.error(e)
+                Raven.captureException(e)
+            })
     });
 
     Parse.Cloud.define("validateStakeholder", async function(request, response){
@@ -110,7 +108,7 @@ exports.initialize = function()
         try{
             let result = await stakeholderQuery.find();
             console.log("result", result);
-            if ( result.length > 0 ){
+            if (result.length > 0){
                 return response.success({
                     message: "User" + userId + " is a stakeholder for deal " + dealId,
                     authorized: true,
@@ -123,7 +121,8 @@ exports.initialize = function()
                     authorized: false
                 });
             }
-        } catch(error){
+        }
+        catch(error){
             console.error(error);
             Raven.captureException(error)
             return response.error({
@@ -134,29 +133,29 @@ exports.initialize = function()
     });
 }
 
-async function createStakeholderUser( stakeholder, deal, invitedBy ){
+async function createStakeholderUser(stakeholder, deal, invitedBy){
     return new Promise(function(resolve, reject){
-        console.log("creating new stakeholder user with email " + stakeholder.email + " for dealId = " + deal.id + ", invited by userId = " + invitedBy.id );
+        console.log("creating new stakeholder user with email " + stakeholder.email + " for dealId = " + deal.id + ", invited by userId = " + invitedBy.id);
         let user = new Parse.User();
-        user.set( "email", stakeholder.email );
-        user.set( "username", stakeholder.email );
-        user.set( "firstName", stakeholder.firstName );
-        user.set( "lastName", stakeholder.lastName );
-        user.set( "company", stakeholder.company );
-        user.set( "password", deal.id );
-        user.set( "sourceDeal", deal );
-        user.set( "invitedBy", invitedBy );
-        user.set( "passwordChangeRequired", true );
+        user.set("email", stakeholder.email);
+        user.set("username", stakeholder.email);
+        user.set("firstName", stakeholder.firstName);
+        user.set("lastName", stakeholder.lastName);
+        user.set("company", stakeholder.company);
+        user.set("password", deal.id);
+        user.set("sourceDeal", deal);
+        user.set("invitedBy", invitedBy);
+        user.set("passwordChangeRequired", true);
         user.setACL();
-        user.signUp( null, {
+        user.signUp(null, {
             success: function(created){
-                console.log( "successfully created a user to be added as a stakeholder." );
+                console.log("successfully created a user to be added as a stakeholder.");
                 resolve(created)
             },
-            error: function( created, error ){
-                console.error( "failed to create stakeholder user.", error );
+            error: function(created, error){
+                console.error("failed to create stakeholder user.", error);
                 Raven.captureException(error)
-                reject( {error: "failed to create stakeholder user."} );
+                reject({error: "failed to create stakeholder user."});
             }
         });
     });
