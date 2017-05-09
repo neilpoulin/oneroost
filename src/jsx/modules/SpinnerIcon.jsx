@@ -10,10 +10,10 @@ export default React.createClass({
         const sizeClass = size ? `fa-${size}` : ""
 
         return (
-            <div>
+            <span>
                 <i className={`fa fa-spinner fa-spin ${sizeClass}`}/>
                 <span display-if={message}>{message}</span>
-            </div>
+            </span>
         );
     }
 });
