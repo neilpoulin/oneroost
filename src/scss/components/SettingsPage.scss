@@ -102,6 +102,9 @@
                 display: flex;
                 align-items: flex-start;
                 flex-basis: 100%;
+                .templateInfo{
+                    overflow: hidden;
+                }
                 .field{
                     overflow: hidden;
                     margin-bottom: 1rem;
