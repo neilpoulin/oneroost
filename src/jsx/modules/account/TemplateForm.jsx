@@ -122,6 +122,20 @@ const TemplateForm = React.createClass({
         requirements.push({})
         this.setState({requirements})
     },
+    removeRequirement(index){
+        let requirements = this.state.requirements;
+        if (requirements.length > index){
+            requirements.splice(index, 1)
+            this.setState({requirements})
+        }
+    },
+    moveRequirement(index, change){
+        let requirements = this.state.requirements;
+        if (requirements.length > index){
+            requirements.splice(index + change, 0, requirements.splice(index, 1)[0]);
+            this.setState({requirements})
+        }
+    },
     render () {
         const {departments, users} = this.props
         const {
@@ -161,13 +175,23 @@ const TemplateForm = React.createClass({
                     onChange={value => this.setState({description: value})}
                     />
 
+                <label>Requirements</label>
                 <ul className="requirements" display-if={requirements}>
                     {requirements.map((req, i) => {
                         return (
                             <li className="requirement" key={`requirement_${i}`}>
-                                <label>Requirement {i + 1}</label>
+                                <div className="header">
+                                    <div>
+                                        <span className="requirement-index">{i + 1}</span>
+                                        <span className="btn btn-xs btn-outline-primary" display-if={i > 0} onClick={() => this.moveRequirement(i, -1)} >Move Up</span>
+                                        <span className="btn btn-xs btn-outline-primary" display-if={i < requirements.length - 1} onClick={() => this.moveRequirement(i, 1)} >Move Down</span>
+                                    </div>
+                                    <div>
+                                        <span className="action" onClick={() => this.removeRequirement(i)}><i className="fa fa-trash-o fa-lg"></i></span>
+                                    </div>
+                                </div>
                                 <FormInputGroup
-                                    label={null}
+                                    label={"Title"}
                                     type="text"
                                     placeholder="Title"
                                     value={req.title || ""}
@@ -176,7 +200,7 @@ const TemplateForm = React.createClass({
                                     onChange={(value) => this.handleRequirementChange(i, {title: value})}
                                     />
                                 <AutosizeTextArea
-                                    label={null}
+                                    label={"Description"}
                                     type="text"
                                     placeholder="Description"
                                     fieldName={`requirement_${i}_description`}
@@ -186,34 +210,39 @@ const TemplateForm = React.createClass({
                                     />
 
                                 <span display-if={!req.hasCta}
-                                    className="ctaAction"
+                                    className="btn btn-sm btn-outline-secondary"
                                     onClick={() => this.handleRequirementChange(i, {hasCta: true})}>
                                     Add CTA
                                 </span>
 
-                                <div className="ctaContainer" display-if={req.hasCta}>
-                                    <FormSelectGroup
-                                        label={null}
-                                        fieldName="cta"
-                                        value={req.ctaType}
-                                        errors={errors}
-                                        fieldName={`requirement_${i}_ctaType`}
-                                        options={LINK_TYPE_OPTIONS}
-                                        placeholder={"CTA Type..."}
-                                        onChange={(value) => this.handleRequirementChange(i, {ctaType: value.value})}
-                                        />
-                                    <FormInputGroup
-                                        label={null}
-                                        type="Call To Action Text"
-                                        placeholder="CTA Text"
-                                        fieldName={`requirement_${i}_ctaText`}
-                                        value={req.ctaText || ""}
-                                        errors={errors}
-                                        onChange={(value) => this.handleRequirementChange(i, {ctaText: value})}
-                                        />
-                                    <span className="ctaAction"
+                                <div display-if={req.hasCta}>
+                                    <div>
+                                        <label>Call to Action</label>
+                                    </div>
+                                    <div className="ctaContainer">
+                                        <FormSelectGroup
+                                            label={null}
+                                            fieldName="cta"
+                                            value={req.ctaType}
+                                            errors={errors}
+                                            fieldName={`requirement_${i}_ctaType`}
+                                            options={LINK_TYPE_OPTIONS}
+                                            placeholder={"CTA Type..."}
+                                            onChange={(value) => this.handleRequirementChange(i, {ctaType: value.value})}
+                                            />
+                                        <FormInputGroup
+                                            label={null}
+                                            type="Call To Action Text"
+                                            placeholder="CTA Text"
+                                            fieldName={`requirement_${i}_ctaText`}
+                                            value={req.ctaText || ""}
+                                            errors={errors}
+                                            onChange={(value) => this.handleRequirementChange(i, {ctaText: value})}
+                                            />
+                                        <span className="ctaAction"
                                             onClick={() => this.handleRequirementChange(i, {hasCta: false, ctaText: null, ctaType: null})}
                                             >remove</span>
+                                    </div>
                                 </div>
                             </li>
                         )

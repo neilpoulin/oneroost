@@ -18,14 +18,33 @@
         list-style: none;
         .requirement{
             padding: 1rem;
-            border: $borderThin;
-            &:not(:last-child){                
-                margin-bottom: 1rem;
+            border: $borderThick;
+            &:not(:last-child){
+                margin-bottom: 3rem;
             }
-            .ctaAction{
+
+            .header{
+                display: flex;
+                align-items: flex-end;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+                .btn{
+                    margin-right: 1rem;
+                }
+                .requirement-index{
+                    margin-left: 0px;
+                    margin-right: 1rem;
+                    font-weight: bold;                                       
+                }
+            }
+
+            .ctaAction, .action{
                 color: $roostOrange;
                 height: $formControlHeight;
                 align-self: center;
+                &:not(:last-child){
+                    margin-right: 1rem;
+                }
                 &:hover{
                     cursor: pointer;
                     color: darken($roostOrange, 20%)
@@ -35,6 +54,7 @@
             .ctaContainer{
                 display: flex;
                 justify-content: space-between;
+                margin-bottom: 1rem;
                 > .form-group{
                     flex-grow: 1;
                     margin-right: 1.5rem;
