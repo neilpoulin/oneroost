@@ -36,6 +36,24 @@ const DepartmentCard = React.createClass({
         return (
             <div className="DepartmentCard">
                 <div className="title">{displayText}</div>
+                <div className={`actions ${!template ? "center" : ""}`}>
+                    <TemplateFormButton
+                        display-if={template}
+                        templateId={templateId}
+                        department={value}
+                        buttonIcon={""}
+                        containerClassName={"action"}
+                        btnClassName="btn-block btn-outline-secondary"
+                        btnText={"Edit Template"}/>
+
+                    <TemplateFormButton
+                        display-if={!template}
+                        department={value}
+                        buttonIcon={"plus"}
+                        containerClassName={"action"}
+                        btnClassName="btn-outline-primary btn-block"
+                        btnText={"Add Template"}/>
+                </div>
                 <div className="details" display-if={template}>
                     <div className="templateInfo" >
                         <div className="field">
@@ -65,24 +83,6 @@ const DepartmentCard = React.createClass({
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className={`actions ${!template ? "center" : ""}`}>
-                    <TemplateFormButton
-                        display-if={template}
-                        templateId={templateId}
-                        department={value}
-                        buttonIcon={""}
-                        containerClassName={"action"}
-                        btnClassName="btn-block btn-outline-secondary"
-                        btnText={"Edit Template"}/>
-
-                    <TemplateFormButton
-                        display-if={!template}
-                        department={value}
-                        buttonIcon={"plus"}
-                        containerClassName={"action"}
-                        btnClassName="btn-outline-primary btn-block"
-                        btnText={"Add Template"}/>
                 </div>
             </div>
         )
