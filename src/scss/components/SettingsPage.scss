@@ -93,7 +93,6 @@
             }
             .actions.center{
                 display: flex;
-                // flex-basis: 100%;
                 .action{
                     width: 100%;
                     align-self: center;
@@ -102,7 +101,6 @@
             .details{
                 display: flex;
                 align-items: flex-start;
-                // flex-basis: 100%;
                 .templateInfo{
                     overflow: hidden;
                 }
