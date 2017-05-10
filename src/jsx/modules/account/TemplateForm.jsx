@@ -216,8 +216,11 @@ const TemplateForm = React.createClass({
                                 </span>
 
                                 <div display-if={req.hasCta}>
-                                    <div>
+                                    <div className="ctaHeader">
                                         <label>Call to Action</label>
+                                        <span className="ctaAction"
+                                            onClick={() => this.handleRequirementChange(i, {hasCta: false, ctaText: null, ctaType: null})}
+                                            >remove</span>
                                     </div>
                                     <div className="ctaContainer">
                                         <FormSelectGroup
@@ -239,9 +242,6 @@ const TemplateForm = React.createClass({
                                             errors={errors}
                                             onChange={(value) => this.handleRequirementChange(i, {ctaText: value})}
                                             />
-                                        <span className="ctaAction"
-                                            onClick={() => this.handleRequirementChange(i, {hasCta: false, ctaText: null, ctaType: null})}
-                                            >remove</span>
                                     </div>
                                 </div>
                             </li>
