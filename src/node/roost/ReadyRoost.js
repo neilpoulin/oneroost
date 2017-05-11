@@ -18,7 +18,7 @@ async function processReadyRoostRequest(currentUser, params, response){
         templateQuery.include("createdBy")
         let template = await templateQuery.get(templateId)
 
-        let profileUser = template.get("createdBy")
+        let profileUser = template.get("ownedBy")
 
         // Find roosts for this template by the current user
         var roostQuery = new Parse.Query("Deal");

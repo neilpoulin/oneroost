@@ -23,7 +23,7 @@ extractStyles: false
 # env:
 #   development:
 #     extractStyles: false
-#   production:
+#   production:app
 #     extractStyles: true
 
 

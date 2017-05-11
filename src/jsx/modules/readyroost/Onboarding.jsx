@@ -84,7 +84,7 @@ const Onboarding = withRouter(React.createClass({
             templateId: template.objectId,
             roostName: `${departmentLabel} | ${fieldValues.category.label}`,
             departmentCategory: fieldValues.category.value,
-            departmentSubCategory: fieldValues.subCategory.value,
+            departmentSubCategory: fieldValues.subCategory ? fieldValues.subCategory.value : null,
             departmentSubCategoryOther: fieldValues.subCategoryOther,
         }).then(function(result){
             log.info("created ready roost, so happy", result);
