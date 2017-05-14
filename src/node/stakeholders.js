@@ -106,8 +106,7 @@ exports.initialize = function(){
         stakeholderQuery.equalTo("user", request.user);
         stakeholderQuery.equalTo("deal", deal);
         try{
-            let result = await stakeholderQuery.find();
-            console.log("result", result);
+            let result = await stakeholderQuery.find();            
             if (result.length > 0){
                 return response.success({
                     message: "User" + userId + " is a stakeholder for deal " + dealId,

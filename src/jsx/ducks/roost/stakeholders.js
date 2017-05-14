@@ -122,6 +122,7 @@ export const inviteUser = (userInfo, deal) => (dispatch, getState) => {
             role: userInfo.role,
             invitedBy: currentUser,
             inviteAccepted: false,
+            active: true,
         }
         const message = RoostUtil.getFullName(currentUser) + " invited " + RoostUtil.getFullName(createdUser) + " to the opportunity.";
         dispatch(createStakeholder(stakeholderToCreate, message))

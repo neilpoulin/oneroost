@@ -8,6 +8,7 @@ exports.renderEmail = function(name, data){
 
 exports.getRecipientsFromStakeholders = function(stakeholders, excludedEmails){
     var recipients = [];
+    console.log("getRecipientsFromStakeholders: processing stakeholders ", stakeholders, "excluded emails: ", excludedEmails)
     excludedEmails = excludedEmails || [];
     if (!(excludedEmails instanceof Array)) {
         excludedEmails = [excludedEmails];
@@ -15,7 +16,7 @@ exports.getRecipientsFromStakeholders = function(stakeholders, excludedEmails){
     var stakeholderEmails = stakeholders.map(s => {
         return {"stakeholderId": s.id, "email": s.get("user").get("email")}
     });
-    console.log("processing " + stakeholders.length + " stakeholder emails. Excluding = " + excludedEmails + ":", stakeholderEmails);
+    console.log("processing " + stakeholders.length + " stakeholder emails. Excluding = " + excludedEmails, stakeholderEmails);
     for (var i = 0; i < stakeholders.length; i++) {
         var stakeholder = stakeholders[i];
         if (!stakeholder.get("inviteAccepted")) {
@@ -56,8 +57,10 @@ exports.getActualRecipientsForDeal = async function(deal, excludedEmails){
     var stakeholderQuery = new Parse.Query("Stakeholder");
     stakeholderQuery.include("user");
     stakeholderQuery.equalTo("active", true)
+    stakeholderQuery.equalTo("inviteAccepted", true)
     stakeholderQuery.equalTo("deal", deal);
     let stakeholders = await stakeholderQuery.find({useMasterKey: true});
+    console.log(`getActualRecipientsForDeal: found ${stakeholders.length} stakeholders, ${JSON.stringify(stakeholders.map(s => s.get("user").get("email")))}`)
     var recipients = this.getRecipientsFromStakeholders(stakeholders, excludedEmails);
     return recipients;
 }
