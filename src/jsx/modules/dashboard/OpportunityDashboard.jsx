@@ -95,7 +95,6 @@ const OpportunityDashboard = React.createClass({
                 })}
             </select>
         }
-
         return (
             <div className="OpportunityDashboard">
                 <RoostNav showHome={false}/>
