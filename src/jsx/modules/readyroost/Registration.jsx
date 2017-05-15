@@ -32,8 +32,8 @@ const Registration = React.createClass({
         log.info("login success");
 
         ReactGA.event({
-          category: "ReadyRoost",
-          action: "Log in"
+            category: "ReadyRoost",
+            action: "Log in"
         });
         // this.props.saveValues({currentUser: this.props.currentUser});
         this.props.nextStep();
@@ -46,13 +46,15 @@ const Registration = React.createClass({
         <LoginComponent
             success={this.loginSuccess}
             showCompany={false}
+            showRegister={true}
+            showTabs={true}
             company={this.props.company}
             showButton={false}
             ref="loginComponent"
             showTermsOfService={false} />
         let continueButton = <button className="btn btn-primary" onClick={this.doLogin}>{this.props.nextText}</button>
 
-        if ( this.props.currentUser ){
+        if (this.props.currentUser){
             loginComponent = <div className="lead">You've sussessfully logged in.</div>
             continueButton = <button className="btn btn-primary" onClick={this.props.nextStep}>{this.props.nextText}</button>
         }

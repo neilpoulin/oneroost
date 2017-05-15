@@ -234,7 +234,9 @@ function sendEmail(templateResults, data, to){
 }
 
 function buildHeaders(data){
-    var headers = [];
+    var headers = [
+        "Content-Transfer-Encoding": "7bit"
+    ];
 
     headers.push(getUnsubscribeHeader(data)) ;
     return headers.filter(function (header){

@@ -21,6 +21,7 @@ const LoginComponent = React.createClass({
         showRegister: PropTypes.bool,
         afterLoginPath: PropTypes.string,
         showTermsOfService: PropTypes.bool,
+        showTabs: PropTypes.bool,
     },
     getInitialState: function(){
         var username;
@@ -58,6 +59,7 @@ const LoginComponent = React.createClass({
             showCompany: true,
             afterLoginPath: "/roosts",
             showTermsOfService: true,
+            showTabs: false,
             success: function(user){
                 const { location, router, afterLoginPath} = this;
                 if (location && location.query.forward){
@@ -232,33 +234,32 @@ const LoginComponent = React.createClass({
             lastName,
             password,
             isLogin,
+            isLoggedIn
         } = this.state;
 
-        if (this.state.isLoggedIn) {
+        const {showTabs, showRegister, showCompany, showTermsOfService} = this.props;
+
+        if (isLoggedIn) {
             return false;
         }
 
         var btnText = isLogin ? "Log In" : "Sign Up";
 
-        let tabs = null;
-        // Not allowing registration for now.
-        // if (this.props.showRegister){
-        //     tabs =
-        //     <ul className="nav nav-tabs nav-justified" >
-        //         <li role="presentation " className={"pointer " + (isLogin ? "" : "active")} >
-        //             <a onClick={this.setIsRegister}>Sign Up</a>
-        //         </li>
-        //         <li role="presentation" className={"pointer " + (isLogin ? "active" : "")} >
-        //             <a onClick={this.setIsLogin}>Login</a>
-        //         </li>
-        //     </ul>;
-        // }
+        let tabs =
+            <ul className="nav nav-tabs nav-justified" display-if={showTabs && showRegister} >
+                <li role="presentation " className={"pointer " + (isLogin ? "" : "active")} >
+                    <a onClick={this.setIsRegister}>Sign Up</a>
+                </li>
+                <li role="presentation" className={"pointer " + (isLogin ? "active" : "")} >
+                    <a onClick={this.setIsLogin}>Login</a>
+                </li>
+            </ul>;
 
         let alert = null;
         if (errors.alert) {
             alert =
-            <div className={`errorMessage alert alert-${this.state.errors.alert.level}`}>
-                {this.state.errors.alert.message}
+            <div className={`errorMessage alert alert-${errors.alert.level}`}>
+                {errors.alert.message}
             </div>;
         }
 
@@ -268,7 +269,7 @@ const LoginComponent = React.createClass({
         let forgotLink = null;
         let nameInput = null;
         if (!isLogin){
-            if (this.props.showCompany){
+            if (showCompany){
                 companyInput =
                 <FormInputGroup
                     fieldName="company"
@@ -313,10 +314,7 @@ const LoginComponent = React.createClass({
             </div>
         }
 
-        let terms = null;
-        if (this.props.showTermsOfService){
-            terms = <TermsOfServiceDisclaimer/>
-        }
+        let terms = <TermsOfServiceDisclaimer display-if={showTermsOfService}/>;
 
         let actionButton = null;
         if (this.props.showButton){

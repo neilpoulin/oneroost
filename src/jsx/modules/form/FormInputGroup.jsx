@@ -62,7 +62,7 @@ const FormInputGroup = React.createClass({
         return null;
     },
     render () {
-        let input = <input id="nextStepTitle"
+        let input = <input
             type={this.props.type}
             className="form-control"
             value={this.props.value}

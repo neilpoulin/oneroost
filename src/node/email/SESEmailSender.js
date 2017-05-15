@@ -23,10 +23,10 @@ var Mail = function(){
 Mail.prototype.getFromAddress = function(){
     var addr = envUtil.getEmailFromName();
     addr += " <roost";
-    if ( this.messageId ){
+    if (this.messageId){
         addr += "+" + this.messageId;
     }
-    if ( !envUtil.isProd() ){
+    if (!envUtil.isProd()){
         addr += "@" + envUtil.getEnvName() + ".reply.oneroost.com>";
     }
     else{
@@ -36,15 +36,13 @@ Mail.prototype.getFromAddress = function(){
     return addr;
 }
 
-Mail.prototype.setRecipients = function( recipients )
-{
+Mail.prototype.setRecipients = function(recipients){
     this.recipients = recipients;
     return this;
 };
 
-Mail.prototype.addRecipient = function( name, email )
-{
-    this.recipients.push( {name: name, email: email} );
+Mail.prototype.addRecipient = function(name, email){
+    this.recipients.push({name: name, email: email});
     return this;
 }
 
@@ -63,7 +61,7 @@ Mail.prototype.getErrors = function(){
     };
 
     var fields = Object.keys(validations);
-    return fields.filter( function( field ){
+    return fields.filter(function(field){
         return !validations[field]
     });
 }
@@ -93,32 +91,34 @@ Mail.prototype.buildRawEmail = function(callback){
         // watchHtml: null,
         // icalEvent: null,
         headers: headers,
-        attachments: mail.attachments
+        attachments: mail.attachments,
+        encoding: "base64",
         // envelope: null
     }
     var raw = mailcomposer(opts)
     raw.build(function(err, buffer){
-        if ( err ){
+        if (err){
             console.error("Failed to generate email", err);
             Raven.captureException(err)
-        } else {
+        }
+        else {
             console.log("successfully built email, attempting to send it");
             callback(mail, buffer);
         }
     });
 }
 
-exports.sendEmail = function( mail )
-{
+exports.sendEmail = function(mail){
     console.log("sending email via SES");
-    if ( !(mail instanceof Mail) ) throw "The email message was not of type Mail";
+    if (!(mail instanceof Mail)) throw "The email message was not of type Mail";
 
-    if ( !mail.isValid() ) throw JSON.stringify( mail.getErrors() );
+    if (!mail.isValid()) throw JSON.stringify(mail.getErrors());
     var response = {message: "not set"};
     try {
         console.log("trying to build raw email");
-        mail.buildRawEmail( sendRawMail );
-    } catch (e) {
+        mail.buildRawEmail(sendRawMail);
+    }
+    catch (e) {
         console.log("failed to send", e);
         response.message = "failed to send";
         Raven.captureException(e)
@@ -126,7 +126,7 @@ exports.sendEmail = function( mail )
     }
 }
 
-function sendRawMail( mail, buffer ){
+function sendRawMail(mail, buffer){
     console.log("Retrieved raw mail");
     var params = {
         RawMessage: { /* required */
@@ -149,15 +149,15 @@ function sendRawMail( mail, buffer ){
     });
 }
 
-function formatAddresses( to ){
-    if ( !(to instanceof Array ) ){
+function formatAddresses(to){
+    if (!(to instanceof Array)){
         to = [to];
     }
 
     var addresses = [];
-    to.forEach( function( addr ){
-        addresses.push( (addr.name || addr.email) + " <" + addr.email + ">" );
-    } )
+    to.forEach(function(addr){
+        addresses.push((addr.name || addr.email) + " <" + addr.email + ">");
+    })
     return addresses;
 }
 
