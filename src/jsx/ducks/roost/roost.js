@@ -118,7 +118,7 @@ export const loadDeal = (dealId, force=false) => {
                 entities: normalized.entities || {}
             })
         }).catch(error => {
-            log.error(error);
+            log.error(error);            
             dispatch({
                 type: DEAL_LOAD_ERROR,
                 error: error,

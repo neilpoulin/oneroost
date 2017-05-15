@@ -95,6 +95,14 @@ export const getAccountSeatForUser = (user) => {
     return query.find()
 }
 
+export const fetchUserById = (userId) => {
+    let query = new Parse.Query(User.className)
+    query.include("account")
+    query.include("invitedBy")
+    query.include("accountSeat")
+    return query.get(userId)
+}
+
 export const loginSuccessAction = (user) => {
     Raven.setUserContext({
         email: user.email,
@@ -109,22 +117,6 @@ export const loginSuccessAction = (user) => {
 }
 
 // TODO: create a register new user method
-
-export const loadCurrentUser = () => (dispatch, getState) => {
-    let currentUser = RoostUtil.toJSON(Parse.User.current());
-    if (!currentUser){
-        return null;
-    }
-    dispatch(refreshCachedUserData())
-    dispatch(loginSuccessAction(currentUser))
-}
-
-export const userLoggedIn = (user) => (dispatch, getState) => {
-    if (!user){
-        return null
-    }
-    dispatch(loginSuccessAction(user))
-}
 
 export const userLogOut = () => (dispatch, getState) => {
     Parse.User.logOut()
@@ -187,9 +179,15 @@ export const fetchUserPermissions = () => (dispatch, getState) => {
     })
 }
 
-export const refreshCachedUserData = () => (dispatch) => {    
-    Parse.User.current().fetch().then(updated => {
-        dispatch(updateUserAction(updated))
+export const refreshCachedUserData = () => (dispatch) => {
+    let user = Parse.User.current()
+    if (!user){
+        return null
+    }
+    // calling .fetch() to have Parse refresh the internal cache
+    user.fetch()
+    fetchUserById(user.id).then(updated => {
+        dispatch(updateUserAction(updated.toJSON()))
     })
 }
 
@@ -252,6 +250,25 @@ export const logInAsUser = (userId, password) => (dispatch, getState) => {
             })
             .catch(reject);
     })
+}
+
+export const loadCurrentUser = () => (dispatch, getState) => {
+    let currentUser = RoostUtil.toJSON(Parse.User.current());
+    if (!currentUser){
+        return null;
+    }
+    // this needs to be synchronous
+    dispatch(loginSuccessAction(currentUser))
+    // update the rest of the details
+    dispatch(refreshCachedUserData())    
+}
+
+export const userLoggedIn = (user) => (dispatch, getState) => {
+    if (!user){
+        return null
+    }
+    dispatch(loginSuccessAction(user))
+    dispatch(refreshCachedUserData())
 }
 
 export const createPassword = (user, password, allowAnonymous=false) => (dispatch, getState) => {

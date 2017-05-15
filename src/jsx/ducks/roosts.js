@@ -10,7 +10,7 @@ const roosts = (state = initialState, action) => {
     if (roostActions.indexOf(action.type) === -1) {
         return state;
     }
-    // debugger;
+    
     let key = action.deal ? action.deal.id || action.deal.objectId : action.dealId
     let {payload} = action;
     if (payload && payload instanceof Parse.Object){

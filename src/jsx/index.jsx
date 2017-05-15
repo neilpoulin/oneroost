@@ -140,7 +140,7 @@ render(
                 <Route path="/reporting" component={OpportunityDashboard}/>
                 <Route path="/plans" component={PlansPage}/>
                 <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
-                    <IndexRoute component={UserHomePage}/>
+                    <IndexRoute component={Roost}/>
                     <Route path="unauthorized" component={Unauthorized}/>
                     <Redirect from=":dealId" to="/roosts/:dealId/messages" />
                     <Route path=":dealId" component={Roost}>

@@ -16,10 +16,10 @@ import {loadDeal} from "ducks/roost/roost"
 import {loadNextSteps, subscribeNextSteps} from "ducks/roost/nextSteps"
 import {loadDocuments} from "ducks/roost/documents"
 import {loadStakeholders} from "ducks/roost/stakeholders"
-import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
+import {loadOpportunities, subscribeOpportunities, getUserDealsByName} from "ducks/opportunities"
 import {loadRequirements, subscribeRequirements} from "ducks/roost/requirements"
 import {denormalize} from "normalizr"
-import {Map} from "immutable"
+import {Map, List} from "immutable"
 import * as Deal from "models/Deal"
 import * as Stakeholder from "models/Stakeholder"
 import * as Document from "models/Document"
@@ -31,7 +31,7 @@ import {sortDatesAscending} from "DateUtil"
 const Roost = withRouter(React.createClass({
     propTypes: {
         params: PropTypes.shape({
-            dealId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+            dealId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
         }),
         deal: PropTypes.object,
         dealLoading: PropTypes.bool
@@ -73,14 +73,28 @@ const Roost = withRouter(React.createClass({
         }
     },
     componentWillMount(){
-        let {dealId} = this.props.params;
-        this.getData(dealId);
+        let paramDealId = this.props.params.dealId;
+        let {dealId, dealLoading} = this.props
+        if (paramDealId){
+            this.getData(dealId);
+        }
+        else if (dealId){
+            this.props.router.replace(`/roosts/${dealId}`)
+        }
+        else {
+            this.props.loadOpportunities();
+        }
     },
     componentWillUpdate(nextProps, nextState) {
         let self = this;
         // let {params} = nextProps;
         // let {dealId=self.props.params.dealId} = params;
         var dealId = nextProps.params.dealId || this.props.params.dealId;
+        if (!dealId && nextProps.dealId){
+            this.props.router.replace(`/roosts/${nextProps.dealId}`)
+            return
+        }
+
         document.title = (nextProps.deal ? nextProps.deal.dealName : "Opportunities") + " | OneRoost"
         Parse.Cloud.run("validateStakeholder", {
             dealId: dealId
@@ -176,7 +190,8 @@ const Roost = withRouter(React.createClass({
 const mapStateToProps = (state, ownProps) => {
     const entities = state.entities.toJS()
     const roosts = state.roosts.toJS()
-    let dealId = ownProps.params.dealId
+    // TODO: get the first value as sorted by... something
+    let userId = state.user.get("userId")
     if (!entities || !entities.deals){
         log.info("entitites not loaded yet");
         return {};
@@ -184,13 +199,22 @@ const mapStateToProps = (state, ownProps) => {
     let deals = entities.deals;
     if(!deals){
         log.warn("failed to get deals key");
-        return {dealLoading: true};
+        return {
+            dealLoading: true,
+        };
+    }
+
+    let dealId = ownProps.params.dealId || ownProps.params.dealId
+    if (!dealId){
+        const sortedDeals = getUserDealsByName(state)
+        dealId = sortedDeals.first() ? sortedDeals.first().objectId : null
     }
     let deal = deals[dealId]
     let roost = roosts[dealId]
     if (!roost || !deal || roost.dealLoading){
         return {
             dealLoading: true,
+            dealId,
         }
     }
     deal = denormalize(dealId, Deal.Schema, entities)
@@ -222,6 +246,7 @@ const mapStateToProps = (state, ownProps) => {
 
     return Map({
         deal: deal,
+        dealId: dealId,
         stakeholders: stakeholders,
         documents: documents,
         nextSteps: nextSteps,
@@ -235,15 +260,20 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const userId = currentUser.id
     return {
         loadData: (dealId) => {
-            dispatch(loadDeal(dealId))
-            dispatch(loadNextSteps(dealId))
-            dispatch(loadDocuments(dealId))
-            dispatch(loadStakeholders(dealId))
+            if (dealId){
+                dispatch(loadDeal(dealId))
+                dispatch(loadNextSteps(dealId))
+                dispatch(loadDocuments(dealId))
+                dispatch(loadStakeholders(dealId))
+                dispatch(subscribeNextSteps(dealId))
+                dispatch(loadRequirements(dealId))
+                dispatch(subscribeRequirements(dealId))
+            }
             dispatch(loadOpportunities(userId))
             dispatch(subscribeOpportunities(userId))
-            dispatch(subscribeNextSteps(dealId))
-            dispatch(loadRequirements(dealId))
-            dispatch(subscribeRequirements(dealId))
+        },
+        loadOpportunities: () => {
+            dispatch(loadOpportunities(userId))
         }
     }
 }

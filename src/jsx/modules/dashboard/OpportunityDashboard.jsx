@@ -28,7 +28,7 @@ const OpportunityDashboard = React.createClass({
         templatesLoading: PropTypes.bool,
         archivedTemplates: PropTypes.arrayOf(PropTypes.object)
     },
-    componentDidMount(){
+    componentWillMount(){
         this.props.loadData()
         document.title = "Reporting | OneRoost"
     },
@@ -91,7 +91,8 @@ const OpportunityDashboard = React.createClass({
             }} value={selectedTemplateId || ""}>
                 <option value="">-- Show All --</option>
                 {templates.map((template, i) => {
-                    return <option key={"template_selector_" + template.objectId + "_" + i} value={template.objectId} >{departmentMap[template.department].displayText}</option>
+                    let departmentText = departmentMap[template.department] ? departmentMap[template.department].displayText : ""
+                    return <option key={"template_selector_" + template.objectId + "_" + i} value={template.objectId} >{departmentText}</option>
                 })}
             </select>
         }
@@ -134,7 +135,7 @@ const mapStateToProps = (state, ownProps) => {
     let userId = currentUser.objectId
     let myOpportunities = state.opportunitiesByUser.get(userId)
     const entities = state.entities.toJS()
-    let isLoading = accountState.isLoading
+    let isLoading = accountState.isLoading || !accountState.accountId
     let showTable = false
     let hasArchivedDeals = false
     let templates = []

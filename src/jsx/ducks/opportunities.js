@@ -1,8 +1,8 @@
 import Parse from "parse"
 import * as User from "models/User"
 import * as Deal from "models/Deal"
-import {normalize} from "normalizr"
-import {Map, Set} from "immutable"
+import {normalize, denormalize} from "normalizr"
+import {Map, Set, List} from "immutable"
 import * as RoostUtil from "RoostUtil"
 import {addSubscription, handler} from "ducks/subscriptions"
 import * as log from "LoggingUtil"
@@ -183,4 +183,20 @@ export const loadOpportunities = (userId, force=false) => (dispatch, getState) =
                 }
             })
         })
+}
+
+// Selectors
+/**
+* Returns List()
+*/
+export const getUserDealsByName = (state, fieldName) => {
+    let userId = state.user.get("userId")
+    if (!userId){
+        return List()
+    }
+    let entities = state.entities.toJS()
+    let myDealIds = state.opportunitiesByUser.getIn([userId, "deals"], List())
+    let myDeals = denormalize(myDealIds, [Deal.Schema], entities)
+    let user = denormalize(userId, User.Schema, entities)
+    return myDeals.sort((a, b) => RoostUtil.getRoostDisplayName(a, user).toUpperCase().localeCompare(RoostUtil.getRoostDisplayName(b, user).toUpperCase()));
 }
