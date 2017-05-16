@@ -32,7 +32,7 @@ const StakeholderSidebar = React.createClass({
         var {deal, stakeholders} = this.props;
         var isEdit = this.state.isEdit;
         var actionButton = <button className="btn btn-outline-secondary" onClick={this.toggleEditStakeholders}><i className="fa fa-minus"></i>&nbsp;Remove</button>
-        if ( isEdit ){
+        if (isEdit){
             actionButton = <button className="btn btn-secondary" onClick={this.toggleEditStakeholders}><i className="fa fa-check"></i>&nbsp;Done</button>
         }
 
@@ -45,7 +45,7 @@ const StakeholderSidebar = React.createClass({
         });
 
         let inactiveBlock = null;
-        if ( inactiveParticipants.length > 0 ){
+        if (inactiveParticipants.length > 0){
             inactiveBlock =
             <div className="inactive-participants">
                 <h4>Inactive Participants</h4>
@@ -88,7 +88,6 @@ const StakeholderSidebar = React.createClass({
     }
 });
 
-
 const mapStateToProps = (state, ownProps) => {
     return {
 
@@ -106,6 +105,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }
     }
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(StakeholderSidebar)

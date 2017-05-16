@@ -11,7 +11,7 @@ import DealPageBottom from "DealPageBottom"
 import AccountSidebar from "account/AccountSidebar"
 import RoostNav from "RoostNav"
 // import * as RoostUtil from "RoostUtil"
-
+import SubmitReadyRoostComponent from "readyroost/SubmitReadyRoostComponent"
 import {loadDeal} from "ducks/roost/roost"
 import {loadNextSteps, subscribeNextSteps} from "ducks/roost/nextSteps"
 import {loadDocuments} from "ducks/roost/documents"
@@ -19,7 +19,7 @@ import {loadStakeholders} from "ducks/roost/stakeholders"
 import {loadOpportunities, subscribeOpportunities, getUserDealsByName} from "ducks/opportunities"
 import {loadRequirements, subscribeRequirements} from "ducks/roost/requirements"
 import {denormalize} from "normalizr"
-import {Map, List} from "immutable"
+import {Map} from "immutable"
 import * as Deal from "models/Deal"
 import * as Stakeholder from "models/Stakeholder"
 import * as Document from "models/Document"
@@ -134,6 +134,7 @@ const Roost = withRouter(React.createClass({
     },
     render () {
         const {deal,
+            dealId,
             stakeholders,
             nextSteps,
             documents,
@@ -153,7 +154,7 @@ const Roost = withRouter(React.createClass({
                     <div>ERROR</div>
             )
         }
-
+        // <NextStepsBanner deal={deal} stakeholders={stakeholders} nextSteps={nextSteps} />
         var mobileClassesDealTop = "hidden-sm hidden-xs";
         var dealPage =
             <div className="RoostPage">
@@ -163,7 +164,8 @@ const Roost = withRouter(React.createClass({
                     <div className="Deal">
                         <div className="deal-top">
                             <div className={mobileClassesDealTop}>
-                                <NextStepsBanner deal={deal} stakeholders={stakeholders} nextSteps={nextSteps} />
+
+                                <SubmitReadyRoostComponent dealId={dealId}/>
                                 <DealProfile deal={deal} stakeholders={stakeholders} documents={documents} requirements={requirements}/>
                             </div>
                             <DealNavMobile deal={deal}></DealNavMobile>

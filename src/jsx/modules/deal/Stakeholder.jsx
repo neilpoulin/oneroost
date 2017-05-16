@@ -47,8 +47,6 @@ const Stakeholder = React.createClass({
 
         //other actions might be "remind of invite, etc"
         var actionButton = null
-        // var label = null
-        // label = <span className={"roleName label " + roleClass}>{stakeholder.role}</span>
 
         if (stakeholder.readyRoostApprover && !stakeholder.inviteAccepted && !deal.readyRoostSubmitted){
             actionButton =
