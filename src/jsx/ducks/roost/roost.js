@@ -118,7 +118,7 @@ export const loadDeal = (dealId, force=false) => {
                 entities: normalized.entities || {}
             })
         }).catch(error => {
-            log.error(error);            
+            log.error(error);
             dispatch({
                 type: DEAL_LOAD_ERROR,
                 error: error,
@@ -161,7 +161,16 @@ export const submitReadyRoost = (stakeholder, deal) => (dispatch, getState) => {
         alert("We have let " + RoostUtil.getFullName(stakeholder.user) + " know that the Roost is ready for them to review.")
 
         dispatch(updateDeal(deal, {readyRoostSubmitted: new Date()}, "The opportunity has been submitted"))
-
+        try{
+            let intercomMetadata = {
+                company_id: stakeholder.user.account.objectId,
+                template_id: deal.template.objectId
+            }
+            window.Intercom("trackEvent", "ready-roost-submitted", intercomMetadata);
+        }
+        catch(e){
+            log.error("failed to notify intercom of ready roost creation")
+        }
         ReactGA.set({ userId: Parse.User.current().objectId });
         ReactGA.event({
             category: "ReadyRoost",

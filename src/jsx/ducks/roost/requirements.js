@@ -72,7 +72,19 @@ export const updateRequirement = (requirement, changes, message) => (dispatch, g
     log.info("TODO: update requirement")
     requirement = Requirement.fromJS(requirement);
     requirement.set(changes);
-    requirement.save().then(saved => {}).catch(log.error)
+    requirement.save().then(saved => {
+        try{            
+            let intercomMetadata = {
+                completed: !!saved.get("completedDate"),
+                title: saved.get("title"),
+                deal_id: saved.get("deal").id
+            }
+            window.Intercom("trackEvent", "requirement-updated", intercomMetadata);
+        }
+        catch(e){
+            log.error("failed to notify intercom of ready roost creation")
+        }
+    }).catch(log.error)
 
     dispatch(requirmentUpdatedAction(requirement))
 

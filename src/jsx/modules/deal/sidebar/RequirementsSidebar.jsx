@@ -37,7 +37,6 @@ const RequirementsSidebar = React.createClass({
     }
 })
 
-
 const mapStateToProps = (state, ownProps) => {
     let entities = state.entities.toJS()
     // let deal = ownProps.deal;
