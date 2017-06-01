@@ -8,7 +8,10 @@ import * as Account from "models/Account"
 import * as AccountSeat from "models/AccountSeat"
 import Raven from "raven-js"
 import * as log from "LoggingUtil"
+import {getFullName} from "RoostUtil"
 import {LOADED_ENTITIES} from "ducks/entities"
+import moment from "moment"
+
 const NO_ACCOUNT = "NO_ACCOUNT"
 
 export const UPDATE_USER = "oneroost/user/UPADATE_USER"
@@ -108,6 +111,17 @@ export const loginSuccessAction = (user) => {
         email: user.email,
         id: user.objectId
     })
+    Parse.Cloud.run("getIntercomHMAC", {}).then(({hmac}) => {
+        window.Intercom("boot", {
+            app_id: OneRoost.Config.intercomAppId,
+            name: getFullName(user), // Full name
+            email: user.email, // Email address
+            user_id: user.objectId,
+            created_at: moment(user.createdAt).unix(), // Signup date as a Unix timestamp
+            user_hash: hmac,
+        });
+    })
+
     let entities = normalize(RoostUtil.toJSON(user), User.Schema).entities
     return {
         type: LOGIN_SUCCESS,
@@ -260,7 +274,7 @@ export const loadCurrentUser = () => (dispatch, getState) => {
     // this needs to be synchronous
     dispatch(loginSuccessAction(currentUser))
     // update the rest of the details
-    dispatch(refreshCachedUserData())    
+    dispatch(refreshCachedUserData())
 }
 
 export const userLoggedIn = (user) => (dispatch, getState) => {

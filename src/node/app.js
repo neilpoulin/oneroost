@@ -21,6 +21,7 @@ import AWSXRay from "aws-xray-sdk";
 import compression from "compression";
 import version from "./version.json";
 import Raven from "raven"
+import SecurityController from "./security/SecurityController";
 Raven.config("https://50020b1e8db94c39be96db010cdbba4f:0f4123892fd44bfd92b85a003645fdc3@sentry.io/128546", {
     environment: envUtil.getEnvName(),
     release: version.hash,
@@ -85,7 +86,7 @@ io.on("connection", function(socket){
 
 Triggers.initialize(io)
 TemplateUtil.initialize()
-
+SecurityController.initialize();
 app.use(AWSXRay.express.closeSegment());
 
 server.listen(port, function() {

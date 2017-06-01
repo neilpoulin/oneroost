@@ -57,6 +57,11 @@ store.subscribe(() => {
 
 })
 
+// Set up Intercom
+window.Intercom("boot", {
+    app_id: OneRoost.Config.intercomAppId || "te0db1m0"
+});
+
 function getGaOptions(){
     var gaOptions = {};
     let userId = store.getState().user.get("userId")
@@ -67,6 +72,7 @@ function getGaOptions(){
 function logPageView() {
     ReactGA.set({ page: window.location.pathname });
     ReactGA.pageview(window.location.pathname);
+    window.Intercom("update");
 }
 
 function requireAuthOrParam(nextState, replace){

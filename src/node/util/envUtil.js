@@ -17,20 +17,18 @@ var DOCUMENTS_PATH = "documents"
 var GA_TRACKING_ID = process.env.GA_TRACKING_ID || "UA-87950724-3"
 var STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || "SK_NOT_DEFINED"
 var STRIPE_PUBLISH_KEY = process.env.STRIPE_PUBLISH_KEY || "PK_NOT_DEFINED"
-
+var INTERCOM_APP_ID = process.env.INTERCOM_APP_ID || "te0db1m0"
+var INTERCOM_SECRET_KEY = process.env.INTERCOM_SECRET_KEY
 var PUBLIC_SERVER_URL = HOSTNAME + PARSE_MOUNT;
 
-if ( SERVER_URL.trim().indexOf("http:") != 0 )
-{
-    if ( SERVER_URL.indexOf("//") != 0 )
-    {
+if (SERVER_URL.trim().indexOf("http:") != 0){
+    if (SERVER_URL.indexOf("//") != 0) {
         SERVER_URL = "//" + SERVER_URL;
     }
     SERVER_URL = "http:" + SERVER_URL;
 }
 
-if ( SERVER_URL.indexOf("localhost") != -1 )
-{
+if (SERVER_URL.indexOf("localhost") != -1){
     SERVER_URL += ":" + PARSE_PORT;
 }
 SERVER_URL += PARSE_MOUNT;
@@ -48,6 +46,8 @@ console.log("node title: ", process.title);
 console.log("GA Tracking ID", GA_TRACKING_ID);
 console.log("STRIPE_SECRET_KEY: ", "******")
 console.log("STRIPE_PUBLISH_KEY: ", STRIPE_PUBLISH_KEY)
+console.log("INTERCOM_APP_ID: ", INTERCOM_SECRET_KEY)
+console.log("INTERCOM_SECRET_KEY: ", INTERCOM_SECRET_KEY ? "******" : "NOT SET")
 console.log("GIT_HASH", version.hash)
 console.log("GIT_TAG", version.version)
 
@@ -100,7 +100,7 @@ exports.isStage = function(){
 }
 
 exports.isProd = function(){
-    return ENV_NAME.toLowerCase().indexOf( "prod" ) != -1;
+    return ENV_NAME.toLowerCase().indexOf("prod") != -1;
 }
 
 exports.getDocumentsBucket = function(){
@@ -127,7 +127,7 @@ exports.getStripePublishKey = function(){
 }
 
 exports.getEmailFromName = function(){
-    if ( this.isDev()){
+    if (this.isDev()){
         return "Dev OneRoost"
     }
     else if (this.isStage()){
@@ -142,26 +142,33 @@ exports.getVersion = function(){
     return version;
 }
 
+exports.getIntercomAppId = function(){
+    return INTERCOM_APP_ID
+}
+
+exports.getIntercomSecretKey = function(){
+    return INTERCOM_SECRET_KEY
+}
+
 exports.getEnv = function(){
-    if ( appEnv == null )
-    {
+    if (appEnv == null) {
         var props = {
             "applicationId": APP_ID,
             "gaTrackingId": GA_TRACKING_ID,
             "emailTemplates": TemplateUtil.getTemplateNames(),
             "environment": ENV_NAME,
             "stripePublishKey": STRIPE_PUBLISH_KEY,
+            "intercomAppId": INTERCOM_APP_ID,
             "version": version,
         };
 
-        var json = JSON.stringify( props );
+        var json = JSON.stringify(props);
         props.json = {"env": json};
         appEnv = props;
     }
 
     return appEnv;
 }
-
 
 exports.getEmailVerifiedPageUrl = function(){
     return HOSTNAME + "/emailVerified"
