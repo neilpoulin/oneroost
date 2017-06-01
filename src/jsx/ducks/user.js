@@ -8,7 +8,7 @@ import * as Account from "models/Account"
 import * as AccountSeat from "models/AccountSeat"
 import Raven from "raven-js"
 import * as log from "LoggingUtil"
-import {getFullName} from "RoostUtil"
+import {getFullName, toJSON} from "RoostUtil"
 import {LOADED_ENTITIES} from "ducks/entities"
 import moment from "moment"
 
@@ -106,22 +106,46 @@ export const fetchUserById = (userId) => {
     return query.get(userId)
 }
 
+export const updateIntercomUser = (user) => {
+    user = toJSON(user)
+    try{
+        Parse.Cloud.run("getIntercomHMAC", {}).then(({hmac}) => {
+            let intercomUser = {
+                app_id: OneRoost.Config.intercomAppId,
+                name: getFullName(user), // Full name
+                email: user.email, // Email address
+                user_id: user.objectId,
+                created_at: moment(user.createdAt).unix(), // Signup date as a Unix timestamp
+                user_hash: hmac,
+            }
+
+            if (user.account){
+                let companies = []
+                companies.push({
+                    company_id: user.account.objectId,
+                    name: user.account.accountName
+                });
+                intercomUser.companies = companies;
+            }
+            try{
+                window.Intercom("boot", intercomUser);
+            }
+            catch (e){
+                log.warn("Failed to send user data to intercom")
+            }
+        })
+    }
+    catch(e){
+        log.error("Failed to send user info to intercom")
+    }
+}
+
 export const loginSuccessAction = (user) => {
     Raven.setUserContext({
         email: user.email,
         id: user.objectId
     })
-    Parse.Cloud.run("getIntercomHMAC", {}).then(({hmac}) => {
-        window.Intercom("boot", {
-            app_id: OneRoost.Config.intercomAppId,
-            name: getFullName(user), // Full name
-            email: user.email, // Email address
-            user_id: user.objectId,
-            created_at: moment(user.createdAt).unix(), // Signup date as a Unix timestamp
-            user_hash: hmac,
-        });
-    })
-
+    updateIntercomUser(user)
     let entities = normalize(RoostUtil.toJSON(user), User.Schema).entities
     return {
         type: LOGIN_SUCCESS,

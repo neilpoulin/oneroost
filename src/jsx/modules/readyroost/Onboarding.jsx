@@ -79,20 +79,38 @@ const Onboarding = withRouter(React.createClass({
         const {template, department} = this.props;
         this.props.createReadyRoost()
         const departmentLabel = department.displayText
+        const departmentCategory = fieldValues.category.value
+        const departmentSubCategory = fieldValues.subCategory ? fieldValues.subCategory.value : null
+        const departmentSubCategoryOther = fieldValues.subCategoryOther
         // TODO: create a ready roost onboarding global state
         Parse.Cloud.run("createReadyRoost", {
             templateId: template.objectId,
             roostName: `${departmentLabel} | ${fieldValues.category.label}`,
-            departmentCategory: fieldValues.category.value,
-            departmentSubCategory: fieldValues.subCategory ? fieldValues.subCategory.value : null,
-            departmentSubCategoryOther: fieldValues.subCategoryOther,
+            departmentCategory,
+            departmentSubCategory,
+            departmentSubCategoryOther,
         }).then(function(result){
             log.info("created ready roost, so happy", result);
-            ReactGA.set({ userId: fieldValues.currentUser.objectId || fieldValues.currentUser.id });
+            let userId = fieldValues.currentUser.objectId || fieldValues.currentUser.id
+            ReactGA.set({ userId: userId });
             ReactGA.event({
                 category: "ReadyRoost",
                 action: "Created ReadyRoost"
             });
+            try{
+                let intercomMetadata = {
+                    department: department.value,
+                    department_category: departmentCategory,
+                    department_subcategory: departmentSubCategory,
+                    department_subcategory_other: departmentSubCategoryOther,
+                    company_id: template.account.objectId,
+                    template_id: template.objectId
+                }
+                window.Intercom("trackEvent", "ready-roost-created", intercomMetadata);
+            }
+            catch(e){
+                log.warn("unable to send event to Intercom for Roost submitted.")
+            }
             self.props.router.replace("/roosts/" + (result.roost.objectId || result.roost.id) + "/requirements");
         },
             function(error){

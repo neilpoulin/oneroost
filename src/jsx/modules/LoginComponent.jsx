@@ -8,7 +8,7 @@ import ReactGA from "react-ga"
 import TermsOfServiceDisclaimer from "TermsOfServiceDisclaimer"
 import {loginValidation, registerValidation} from "RegistrationValidations"
 import {connect} from "react-redux"
-import {userLoggedIn} from "ducks/user"
+import {userLoggedIn, updateIntercomUser} from "ducks/user"
 import * as log from "LoggingUtil"
 
 const LoginComponent = React.createClass({
@@ -132,10 +132,12 @@ const LoginComponent = React.createClass({
             category: "User",
             action: "Registration"
         });
+        updateIntercomUser(user)
         return this.handleLoginSuccess(user);
     },
     handleLoginSuccess: function(user){
         this.props.userLoggedIn(user);
+        updateIntercomUser(user)
         this.props.success();
     },
     setIsRegister: function(e){

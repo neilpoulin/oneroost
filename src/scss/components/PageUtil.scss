@@ -16,18 +16,17 @@
                 }
             }
         }
-        .content{
+        > .content{
             flex: 1;
         }
     }
 }
 
-
 @media (max-width: $screen-sm-min) {
     .left-nav-page{
         .page-body{
             flex-wrap: wrap;
-            .content{
+            > .content{
                 flex-basis: 100%;
             }
             .left-nav{
@@ -39,7 +38,11 @@
 }
 
 @media (min-width: $screen-md-min) {
-    .content{
-        padding-right: 20rem;
+    .left-nav-page{
+        .page-body{
+            > .content{
+                padding-right: 20rem;
+            }
+        }
     }
 }
