@@ -71,7 +71,7 @@ export const getCurrentUser = function(state){
 export const getFullName = function(parseUser){
     var fullName = ""
     try{
-        if (parseUser instanceof Parse.User){
+        if (parseUser instanceof Parse.User || Iterable.isIterable(parseUser)){
             fullName = parseUser.get("firstName") + " " + parseUser.get("lastName")
         }
         else {

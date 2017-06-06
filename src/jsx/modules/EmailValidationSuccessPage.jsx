@@ -23,9 +23,16 @@ const EmailValidationSuccessPage = React.createClass({
                 <div className="container">
                     <h2>Success!</h2>
                     <p className="lead">
-                        Your email ({username}) has been successfully verified.
+                        Your email <span display-if={username}>({username})</span> has been successfully verified.
                     </p>
-                    <button display-if={!account} className="btn btn-outline-primary" onClick={() => addToAccount()}>Connect to {account ? account.accountName : "Account"}</button>
+                    <div display-if={!account} >
+                        <p className="lead">
+                            Now, you just need to create or join an account
+                        </p>
+                        <button className="btn btn-outline-primary" onClick={() => addToAccount()}>
+                             {account ? `Connect to ${account.accountName}` : "Create a new Account"}
+                        </button>
+                    </div>
                     <p className="lead" display-if={account}>
                         You are now a part of {account.accountName}!
                     </p>

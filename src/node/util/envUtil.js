@@ -171,5 +171,5 @@ exports.getEnv = function(){
 }
 
 exports.getEmailVerifiedPageUrl = function(){
-    return HOSTNAME + "/emailVerified"
+    return HOSTNAME + "/verify-email-success"
 }

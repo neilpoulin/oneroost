@@ -1,9 +1,9 @@
 {
-    "link": "http://dev.oneroost.com/emailVerified?username=neil@oneroost.com",
+    "link": "http://dev.oneroost.com/verify-email-success?username=neil@oneroost.com",
     "user": {
         "firstName": "Timothy",
         "lastName": "Scientist",
         "company": "NASA",
         "jobTitle":"Staff Scientist"
-    }    
+    }
 }
