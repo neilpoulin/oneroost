@@ -35,6 +35,8 @@ phases:
     commands:
       - echo Installing source Yarn dependencies...
       - yarn install
+      - echo "Look for loaders in node modules"
+      - ls node_modules | grep loader
     #   - echo log into sentry with auth token
     #   - sentry-cli info
   build:
