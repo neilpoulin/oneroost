@@ -78,7 +78,7 @@ const Roost = withRouter(React.createClass({
         let paramDealId = this.props.params.dealId;
         let {dealId, dealLoading} = this.props
         if (paramDealId){
-            this.getData(dealId);
+            this.getData(paramDealId);
         }
         else if (dealId){
             this.props.router.replace(`/roosts/${dealId}`)
