@@ -6,8 +6,8 @@ var baseDir = path.join(__dirname, "..", "..")
 
 module.exports.baseDir = baseDir
 
-module.exports.getWebpackConfig = (name="") => {
-    let configPath = path.join(baseDir, `webpack.${name}.config.babel.js`)
+module.exports.getWebpackConfig = (name="", babel=true) => {
+    let configPath = path.join(baseDir, `webpack.${name}.config${babel ? ".babel" : ""}.js`)
     console.log("Getting Webpack config for " + name + " = " + configPath);
     let config = require(configPath);
     return config;

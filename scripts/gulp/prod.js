@@ -7,7 +7,8 @@ var {paths} = require("./../../build-paths")
 var {getWebpackConfig} = require("./util")
 
 const bundle = (done, withStats=false) => {
-    let webpackConfig = getWebpackConfig("prod")
+    let webpackConfig = getWebpackConfig("prod", false)
+    console.log(JSON.stringify(webpackConfig, null, 2))
     webpack(webpackConfig).run((err, stats) => {
         if (err) {
             var error = new gutil.PluginError("bundle", err);
@@ -15,7 +16,7 @@ const bundle = (done, withStats=false) => {
             throw new gutil.PluginError({
                 plugin: "bundle",
                 message: "Failed to process webpack config successfully."
-            });            
+            });
         }
         else {
             gutil.log("[webpack:build-prod]", stats.toString({
