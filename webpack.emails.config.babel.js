@@ -6,7 +6,6 @@ process.traceDeprecation = true
 
 const outputDir = path.join("build", "node", "email", "template", "style")
 
-
 module.exports = {
     entry: [
         path.join(__dirname, "src", "node", "email", "template", "style", "webpack-entry.scss")
@@ -60,7 +59,7 @@ module.exports = {
         }),
     ],
     resolve: {
-        extensions: [".scss", ".css"],
+        extensions: [".scss", ".css", ".js", ".sass"],
         modules: ["scss", "node_modules"],
     },
 };
