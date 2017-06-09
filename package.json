@@ -121,7 +121,6 @@
         "gulp-git": "^2.0.1",
         "gulp-less": "^3.0.5",
         "gulp-minify": "0.0.14",
-        "gulp-node-inspector": "^0.1.0",
         "gulp-nodemon": "^2.0.6",
         "gulp-plumber": "^1.1.0",
         "gulp-sass": "^3.0.0",
