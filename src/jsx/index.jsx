@@ -23,12 +23,10 @@ import NextStepCompletedSidebar from "deal/sidebar/NextStepCompletedSidebar"
 import DocumentsSidebar from "deal/sidebar/DocumentsSidebar"
 import RequirementsSidebar from "deal/sidebar/RequirementsSidebar"
 import OpportunityDashboard from "OpportunityDashboard"
-import UserHomePage from "UserHomePage"
 import Unauthorized from "Unauthorized"
 import Invitation from "Invitation"
 import ReviewInvitation from "ReviewInvitation"
 import Unsubscribe from "Unsubscribe"
-import ProfilePage from "profile/ProfilePage"
 import ReadyRoostPage from "profile/ReadyRoostPage"
 import AdminHome from "admin/AdminHome"
 import UnauthorizedPage from "UnauthorizedPage"
@@ -45,6 +43,8 @@ import EmailValidationSuccessPage from "EmailValidationSuccessPage"
 import SettingsPage from "SettingsPage"
 import UserSettings from "settings/UserSettingsPage"
 import CompanySettings from "settings/CompanySettingsPage"
+import EmailValidationInstructionsPage from "EmailValidationInstructionsPage"
+import * as log from "LoggingUtil"
 
 Parse.initialize(OneRoost.Config.applicationId);
 // Parse.serverURL = OneRoost.Config.serverURL;
@@ -83,19 +83,23 @@ function requireAuthOrParam(nextState, replace){
             pathname: "/invitations/" + accept,
             state: { nextPathname: nextState.location.pathname }
         })
+        return false;
     }
     else if (!userId) {
         replace({
             pathname: "/login",
             state: { nextPathname: nextState.location.pathname }
         })
+        return false;
     }
     else if (!!accept){
         replace({
             pathname: nextState.location.pathname,
             state: { nextPathname: nextState.location.pathname }
         })
+        return true
     }
+    return false;
 }
 
 function requireAdmin(nextState, replace){
@@ -105,6 +109,45 @@ function requireAdmin(nextState, replace){
             pathname: "/unauthorized",
             state: { nextPathname: nextState.location.pathname || "/unauthorized" }
         });
+        return false;
+    }
+    return true;
+}
+
+function requireEmailVerified(nextState, replace){
+    let user = store.getState().user    
+    if(!user || !user.get("userId")){
+        replace({
+            pathname: "/login",
+            state: { nextPathname: nextState.location.pathname || "/verify-email"}
+        });
+        return false
+    }
+
+    let emailVerified = user.get("emailVerified")
+    if (!emailVerified){
+        replace({
+            pathname: "/verify-email",
+            state: { nextPathname: nextState.location.pathname || "/roosts"}
+        });
+        return false
+    }
+    return true;
+}
+
+function requireActivatedUser(nextState, replace){
+    let user = store.getState().user
+    let hasAccount = !!user.get("accountId")
+    if (!requireEmailVerified(nextState, replace)){
+        return false
+    }
+    else if (!hasAccount){
+        log.error("User has not been connected to an account, but has verified their email")
+        replace({
+            pathname: "/join-account",
+            state: { nextPathname: nextState.location.pathname }
+        });
+        return false
     }
 }
 
@@ -131,11 +174,13 @@ render(
                 <Route path="/login" component={LoginPage} onEnter={requireAnonymous}></Route>
                 <Redirect from="/beta/register" to="/signup" />
                 // <Route path="/beta/register" component={RegisterPage} onEnter={requireAnonymous}></Route>
-                <Route path="/signup" component={RegisterPage} onEnter={requireAnonymous}></Route>
+                <Route path="/signup" component={RegisterPage} onEnter={requireAnonymous}>
+                    <Route path="success" component={EmailValidationInstructionsPage} onEnter={requireAuthOrParam}/>
+                </Route>
                 <Route path="/logout" component={Landing} onEnter={doLogout}></Route>
                 <Redirect from="/deals" to="/roosts" />
                 <Redirect from="/settings" to="/settings/profile" />
-                <Route path="/settings" component={SettingsPage} onEnter={requireAuthOrParam}>
+                <Route path="/settings" component={SettingsPage} onEnter={requireActivatedUser}>
                     <Route path="profile" component={UserSettings}/>
                     <Route path="company" component={CompanySettings}/>
                 </Route>
@@ -143,9 +188,9 @@ render(
                 <Route path="/help" component={HelpPage}/>
                 <Route path="/terms" component={TermsOfServicePage}/>
                 <Route path="/privacy" component={PrivacyPage}/>
-                <Route path="/reporting" component={OpportunityDashboard}/>
+                <Route path="/reporting" component={OpportunityDashboard} onEnter={requireActivatedUser}/>
                 <Route path="/plans" component={PlansPage}/>
-                <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
+                <Route path="/roosts" component={DealDashboard} onEnter={requireActivatedUser}>
                     <IndexRoute component={Roost}/>
                     <Route path="unauthorized" component={Unauthorized}/>
                     <Redirect from=":dealId" to="/roosts/:dealId/messages" />
@@ -174,7 +219,9 @@ render(
                     <Route path="emails" component={EmailTemplates}/>
                 </Route>
                 <Route path="/unauthorized" component={UnauthorizedPage}></Route>
-                <Route path="/emailVerified" component={EmailValidationSuccessPage}></Route>
+                <Route path="/verify-email" component={EmailValidationInstructionsPage} onEnter={requireAuthOrParam}/>
+                <Route path="/verify-email-success" component={EmailValidationSuccessPage}></Route>
+                <Route path="/join-account" component={EmailValidationSuccessPage} onEnter={requireEmailVerified}></Route>
                 <Route path=":vanityUrl" component={BrandPage}></Route>
             </Route>
         </Router>

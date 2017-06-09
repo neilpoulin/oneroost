@@ -11,6 +11,7 @@ import * as log from "LoggingUtil"
 import {getFullName, toJSON} from "RoostUtil"
 import {LOADED_ENTITIES} from "ducks/entities"
 import moment from "moment"
+import request from "superagent"
 
 const NO_ACCOUNT = "NO_ACCOUNT"
 
@@ -22,12 +23,16 @@ export const LOAD_PERMISSIONS_REQUEST = "oneroost/user/LOAD_PERMISSIONS_REQUEST"
 export const LOAD_PERMISSIONS_SUCCESS = "oneroost/user/LOAD_PERMISSIONS_SUCCESS"
 export const LOAD_PERMISSIONS_ERROR = "oneroost/user/LOAD_PERMISSIONS_ERROR"
 export const SET_PERMISSIONS = "oneroost/user/SET_PERMISSIONS"
+export const SEND_EMAIL_VALIDATION_REQUEST = "oneroost/user/SEND_EMAIL_VALIDATION_REQUEST"
+export const SEND_EMAIL_VALIDATION_SUCCESS = "oneroost/user/SEND_EMAIL_VALIDATION_SUCCESS"
+export const SEND_EMAIL_VALIDATION_ERROR = "oneroost/user/SEND_EMAIL_VALIDATION_ERROR"
 
 const initialState = Map({
     isLoading: false,
     hasLoaded: false,
     userId: null,
     email: null,
+    username: null,
     admin: false,
     accountId: null,
     isLoggedIn: false,
@@ -36,6 +41,12 @@ const initialState = Map({
     accountSeatId: null,
     roles: [],
     seatError: null,
+    emailVerified: false,
+    firstName: null,
+    lastName: null,
+    sendingEmailValidation: false,
+    lastEmailValidationSent: null,
+    sendEmailValidationError: null,
 });
 
 export default function reducer(state=initialState, action){
@@ -44,8 +55,12 @@ export default function reducer(state=initialState, action){
             var user = action.payload
             state = state.set("userId", user.get("objectId"))
             state = state.set("admin", user.get("admin"))
-            state = state.set("email", user.get("email"))
+            state = state.set("email", user.get("email", user.get("username")))
+            state = state.set("username", user.get("username"))
             state = state.set("accountId", user.getIn(["account", "objectId"]))
+            state = state.set("emailVerified", !!user.get("emailVerified"))
+            state = state.set("firstName", user.get("firstName"))
+            state = state.set("lastName", user.get("lastName"))
             break;
         case LOGIN_SUCCESS:
             var user = action.payload
@@ -54,8 +69,11 @@ export default function reducer(state=initialState, action){
             state = state.set("emailVerified", !!user.get("emailVerified"))
             state = state.set("userId", user.get("objectId"))
             state = state.set("admin", user.get("admin") || false)
-            state = state.set("email", user.get("email"))
+            state = state.set("email", user.get("email", user.get("username")))
+            state = state.set("username", user.get("username"))
             state = state.set("accountId", user.getIn(["account", "objectId"], null))
+            state = state.set("firstName", user.get("firstName"))
+            state = state.set("lastName", user.get("lastName"))
             break;
         case SET_ACCOUNT:
             var payload = action.payload || Map({})
@@ -81,6 +99,18 @@ export default function reducer(state=initialState, action){
         case LOGOUT:
             state = initialState
             state = state.set("hasLoaded", true)
+            break;
+        case SEND_EMAIL_VALIDATION_REQUEST:
+            state = state.set("sendingEmailValidation", true)
+            state = state.set("lastEmailValidationSent", null)
+            break;
+        case SEND_EMAIL_VALIDATION_SUCCESS:
+            state = state.set("lastEmailValidationSent", new Date())
+            state = state.set("sendingEmailValidation", false)
+            break;
+        case SEND_EMAIL_VALIDATION_ERROR:
+            state = state.set("sendingEmailValidation", false)
+            state = state.set("sendEmailValidationError", action.error)
             break;
         default:
             break;
@@ -276,6 +306,14 @@ export const connectToAccount = () => (dispatch, getState) => {
     })
 }
 
+export const userLoggedIn = (user) => (dispatch, getState) => {
+    if (!user){
+        return null
+    }
+    dispatch(loginSuccessAction(user))
+    dispatch(refreshCachedUserData())
+}
+
 export const logInAsUser = (userId, password) => (dispatch, getState) => {
     return new Promise((resolve, reject) => {
         Parse.Cloud.run("getUserWithEmail", {userId: userId})
@@ -301,14 +339,6 @@ export const loadCurrentUser = () => (dispatch, getState) => {
     dispatch(refreshCachedUserData())
 }
 
-export const userLoggedIn = (user) => (dispatch, getState) => {
-    if (!user){
-        return null
-    }
-    dispatch(loginSuccessAction(user))
-    dispatch(refreshCachedUserData())
-}
-
 export const createPassword = (user, password, allowAnonymous=false) => (dispatch, getState) => {
     const state = getState()
     const userId = user.objectId;
@@ -324,4 +354,25 @@ export const createPassword = (user, password, allowAnonymous=false) => (dispatc
             userId: userId
         }))
     })
+}
+
+export const resendEmailVerification = () => (dispatch, getState) => {
+    const username = getState().user.get("username");
+    dispatch({type: SEND_EMAIL_VALIDATION_REQUEST})
+
+    request.post(`/parse/apps/${Parse.applicationId}/resend_verification_email`)
+        .send(`username=${username}`)
+        .end(function(e, response){
+            if (e){
+                log.error("Failed to resend the password reset email to " + username, e)
+                dispatch({
+                    type: SEND_EMAIL_VALIDATION_ERROR,
+                    error: {level: "ERROR", message: "Failed to send the email. Please try again.", error: e}
+                })
+            }
+            else {
+                log.info("successfully resent the email verification")
+                dispatch({type: SEND_EMAIL_VALIDATION_SUCCESS})
+            }
+        })
 }

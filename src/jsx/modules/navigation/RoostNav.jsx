@@ -59,10 +59,7 @@ const RoostNav = React.createClass({
                         <span className="icon-bar"></span>
                         <span className="icon-bar"></span>
                     </button>
-                    <Link to="/" display-if={!loginOnly} className={"navbar-brand account-link " + (this.props.showHome ? "visible-lg visible-md" : "") }><span className="title">OneRoost</span></Link>
-                    <NavLink display-if={showHome} tag="div" to="/roosts" className="hidden-lg hidden-md navbar-brand account-link">
-                        <i className="fa fa-home fa-lg"></i>
-                    </NavLink>
+                    <Link to="/" display-if={!loginOnly} className={"navbar-brand account-link " }><span className="title">OneRoost</span></Link>                    
                     <div display-if={mobileTitle} className="roost-title hidden-lg hidden-md navbar-brand">{mobileTitle}</div>
                 </div>
 

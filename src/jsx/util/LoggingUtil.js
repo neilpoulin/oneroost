@@ -22,69 +22,81 @@ window.setLogLevel = function(newLevel){
 window.getLogLevel = () => getLogLevel()
 
 function getLogLevel() {
-    let levelInput = localStorage["oneroost/debug"] || "ERROR"
-    let currentLevel = level
-    switch(levelInput.toUpperCase()){
-        case "WARN":
-            currentLevel = WARN
-            break;
-        case "ERROR":
-            currentLevel = ERROR
-            break;
-        case "INFO":
-            currentLevel = INFO
-            break
-        case "DEBUG":
-            currentLevel = DEBUG
-            break;
-        default:
-            currentLevel = ERROR
-            break;
+    try{
+        let levelInput = localStorage["oneroost/debug"] || "ERROR"
+        let currentLevel = level
+        switch(levelInput.toUpperCase()){
+            case "WARN":
+                currentLevel = WARN
+                break;
+            case "ERROR":
+                currentLevel = ERROR
+                break;
+            case "INFO":
+                currentLevel = INFO
+                break
+            case "DEBUG":
+                currentLevel = DEBUG
+                break;
+            default:
+                currentLevel = ERROR
+                break;
+        }
+        return currentLevel
     }
-    return currentLevel
+    catch(e){
+        return ERROR
+    }
 }
 
 export const getCurrentLogLevel = () => getLogLevel()
 
 export const debug = (msg, data) => {
-    if ( level <= DEBUG && console ){
+    if (level <= DEBUG && console){
         if (data){
             console.debug(msg, data)
-        } else {
+        }
+        else {
             console.debug(msg)
         }
-
     }
 }
 
 export const info = (msg, data) => {
-    if ( level <= INFO && console ){
-        if ( data ){
+    if (level <= INFO && console){
+        if (data){            
             console.log(msg, data)
-        }else {
+        }
+        else {
             console.log(msg)
         }
-
     }
 }
 
 export const warn = (msg, data) => {
-    if ( level <= WARN && console){
-        if ( data ){
+    if (level <= WARN && console){
+        if (data){
+            Raven.captureMessage(msg, data, {
+                level: "warning" // one of 'info', 'warning', or 'error'
+            });
             console.warn(msg, data)
-        } else {
+        }
+        else {
+            Raven.captureMessage(msg, {
+                level: "warning" // one of 'info', 'warning', or 'error'
+            });
             console.warn(msg)
         }
-
     }
 }
 
 export const error = (msg, data) => {
     Raven.captureException(arguments)
-    if ( level <= ERROR && console){
+    if (level <= ERROR && console){
         if (data){
             console.error(msg, data)
-        } else {
+        }
+        else {
             console.log(msg)
         }
     }

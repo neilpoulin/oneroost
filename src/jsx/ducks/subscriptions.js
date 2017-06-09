@@ -41,7 +41,7 @@ export default function reducer(state=initialState, action){
             const query = action.payload.get("query")
             const handlers = action.payload.get("handlers")
             log.debug(`adding subscription called for ${group}-${id}`, handlers)
-            if ( subscriptions.hasIn([group, id]) ){
+            if (subscriptions.hasIn([group, id])){
                 log.debug(`subscription already registered for ${group}-${id}`)
                 return null;
             }

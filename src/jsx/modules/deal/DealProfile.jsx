@@ -50,8 +50,8 @@ const DealProfile = React.createClass({
                     <div className="text-center">
                         <NavLink tag="div" to={"/roosts/" + dealId + "/budget" } className="widgetLink">
                             <div>
-                                <i className={"fa fa-money " + iconSizeClassname}></i>
-                                &nbsp; Investment
+                                <i className={"fa fa-info-circle " + iconSizeClassname}></i>
+                                &nbsp; Overview
                             </div>
                             <div>
                                 <span className="title">{budget}</span>
@@ -63,7 +63,7 @@ const DealProfile = React.createClass({
                     <div className={"text-center " + (profile.timeline ? "" : "invisible")}>
                         <NavLink tag="div" to={"/roosts/" + dealId + "/requirements" } className="widgetLink">
                             <div>
-                                <i className={"fa fa-list-alt " + iconSizeClassname}></i>
+                                <i className={"fa fa-list-ul " + iconSizeClassname}></i>
                                 &nbsp; Requirements
                             </div>
                             <div>

@@ -108,7 +108,8 @@ function getActualRecipients(original, config){
         var overrides = [];
         var overrideEmails = emailOverride.replace(/ /g, "").split(",");
         for (var i = 0; i < overrideEmails.length; i++) {
-            overrides.push({email: overrideEmails[i], name: original.name});
+            console.log("adding to email overrides for original email ", original)
+            overrides.push({email: overrideEmails[i], name: original});
         }
         return overrides;
     }
