@@ -152,7 +152,7 @@ gulp.task("build:node", ["clean:node", "transpile:node:clean", "email:styles:cle
 })
 
 gulp.task("node", ["build:node", "copy:node:build:sync"], function(){
-    gutil.log("built and copied all files = require( scratch to the cloud directory");
+    gutil.log("built and copied all files to the cloud directory");
 })
 
 gulp.task("start", ["clean:node", "node", "watch:node" ], function(){

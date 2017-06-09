@@ -42,6 +42,8 @@ phases:
       - gulp version
       - gulp install
       - echo source directory = $CODEBUILD_SRC_DIR
+      - echo printing all files in the public directory
+      - ls public/bundle
   post_build:
     commands:
       - echo Build completed on `date`
