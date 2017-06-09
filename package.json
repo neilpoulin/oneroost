@@ -60,7 +60,7 @@
         "aws-xray-sdk": "^1.0.5-beta",
         "babel-polyfill": "^6.16.0",
         "body-parser": "^1.15.0",
-        "bootstrap-sass": "^3.3.6",
+        "bootstrap-sass": "^3.3.7",
         "chokidar": "^1.6.1",
         "compression": "^1.6.2",
         "console-stamp": "^0.2.2",
