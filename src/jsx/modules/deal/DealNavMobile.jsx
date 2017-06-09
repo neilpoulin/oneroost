@@ -11,12 +11,12 @@ const DealNavMobile = React.createClass({
         var colSize = "col-xs-3";
         var mobileNav =
         <div className="conatiner-fluid text-center hidden-lg hidden-md DealNavMobile">
-            <NavLink tag="div" to={"/roosts/" + dealId + "/steps" } className={colSize}>
+            <NavLink tag="div" to={"/roosts/" + dealId + "/requirements" } className={colSize}>
                 <div>
-                    <i className="fa fa-map-signs fa-2x"></i>
+                    <i className="fa fa-list-ul fa-2x"></i>
                 </div>
                 <div className="title">
-                    Next&nbsp;Steps
+                    Requirements
                 </div>
             </NavLink>
             <NavLink tag="div" to={"/roosts/" + dealId + "/participants" } className={colSize}>
@@ -29,10 +29,10 @@ const DealNavMobile = React.createClass({
             </NavLink>
             <NavLink tag="div" to={"/roosts/" + dealId + "/budget" } className={colSize}>
                 <div>
-                    <i className="fa fa-money fa-2x"></i>
+                    <i className="fa fa-info-circle fa-2x"></i>
                 </div>
                 <div className="title">
-                    Investment
+                    Overview
                 </div>
             </NavLink>
             <NavLink tag="div" to={"/roosts/" + dealId + "/documents" } className={colSize}>
@@ -44,7 +44,6 @@ const DealNavMobile = React.createClass({
                 </div>
             </NavLink>
         </div>
-
 
         return mobileNav;
     }

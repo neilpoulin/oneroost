@@ -4,7 +4,6 @@ import { connect } from "react-redux"
 import Parse from "parse"
 Parse.serverURL = OneRoost.Config.parseSeverURL
 import LoadingTakeover from "LoadingTakeover"
-import NextStepsBanner from "nextsteps/NextStepsBanner"
 import DealProfile from "DealProfile"
 import DealNavMobile from "DealNavMobile"
 import DealPageBottom from "DealPageBottom"
@@ -19,7 +18,7 @@ import {loadStakeholders} from "ducks/roost/stakeholders"
 import {loadOpportunities, subscribeOpportunities, getUserDealsByName} from "ducks/opportunities"
 import {loadRequirements, subscribeRequirements} from "ducks/roost/requirements"
 import {denormalize} from "normalizr"
-import {Map} from "immutable"
+import {Map, List} from "immutable"
 import * as Deal from "models/Deal"
 import * as Stakeholder from "models/Stakeholder"
 import * as Document from "models/Document"
@@ -27,6 +26,9 @@ import * as NextStep from "models/NextStep"
 import * as Requirement from "models/Requirement"
 import * as log from "LoggingUtil"
 import {sortDatesAscending} from "DateUtil"
+import EmptyState from "EmptyState"
+
+const NO_ROOSTS = "NO_ROOSTS"
 
 const Roost = withRouter(React.createClass({
     propTypes: {
@@ -87,6 +89,9 @@ const Roost = withRouter(React.createClass({
     },
     componentWillUpdate(nextProps, nextState) {
         let self = this;
+        if (nextProps.error){
+            return;
+        }
         // let {params} = nextProps;
         // let {dealId=self.props.params.dealId} = params;
         var dealId = nextProps.params.dealId || this.props.params.dealId;
@@ -140,31 +145,25 @@ const Roost = withRouter(React.createClass({
             documents,
             dealLoading,
             requirements,
-            opportunities} = this.props;
+            opportunities,
+            error} = this.props;
 
-        if (dealLoading) {
-            var message = "Loading...";
-            return (
-                    <LoadingTakeover size="3x" message={message} />
-            );
-        }
-
-        if (!deal) {
-            return (
-                    <div>ERROR</div>
-            )
-        }
         // <NextStepsBanner deal={deal} stakeholders={stakeholders} nextSteps={nextSteps} />
         var mobileClassesDealTop = "hidden-sm hidden-xs";
         var dealPage =
             <div className="RoostPage">
-                <RoostNav mobileTitle={deal.dealName} showHome={true}/>
-                <div className="RoostBody">
+                <RoostNav mobileTitle={deal ? deal.dealName : null} showHome={true}/>
+                <LoadingTakeover size="3x" message={"Loading..."} display-if={dealLoading} />
+                <EmptyState display-if={error}
+                    className="container text-center"
+                    message="Oops, it looks like you don't have any opportunities yet."
+                    link={{text: "Go to My Settings", path: "/settings/company"}}
+                    />
+                <div className="RoostBody" display-if={!dealLoading && !error && deal}>
                     <AccountSidebar deals={opportunities.deals} archivedDeals={opportunities.archivedDeals}/>
                     <div className="Deal">
                         <div className="deal-top">
                             <div className={mobileClassesDealTop}>
-
                                 <SubmitReadyRoostComponent dealId={dealId}/>
                                 <DealProfile deal={deal} stakeholders={stakeholders} documents={documents} requirements={requirements}/>
                             </div>
@@ -194,6 +193,24 @@ const mapStateToProps = (state, ownProps) => {
     const roosts = state.roosts.toJS()
     // TODO: get the first value as sorted by... something
     let userId = state.user.get("userId")
+    let opportunitesLoaded = state.opportunitiesByUser.getIn([userId, "hasLoaded"], false)
+    if (opportunitesLoaded){
+        let deals = state.opportunitiesByUser.getIn([userId, "deals"], List())
+        if (deals.isEmpty()){
+            return {
+                error: {
+                    type: NO_ROOSTS
+                },
+                dealLoading: false,
+            }
+        }
+    }
+    else {
+        return {
+            dealLoading: true,
+        };
+    }
+
     if (!entities || !entities.deals){
         log.info("entitites not loaded yet");
         return {};
@@ -213,7 +230,8 @@ const mapStateToProps = (state, ownProps) => {
     }
     let deal = deals[dealId]
     let roost = roosts[dealId]
-    if (!roost || !deal || roost.dealLoading){
+    let error = null
+    if (!deal || !roost || roost && roost.dealLoading){
         return {
             dealLoading: true,
             dealId,
@@ -252,7 +270,8 @@ const mapStateToProps = (state, ownProps) => {
         stakeholders: stakeholders,
         documents: documents,
         nextSteps: nextSteps,
-        requirements: requirements
+        requirements: requirements,
+        error: error,
     }).toJS()
 }
 

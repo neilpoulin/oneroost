@@ -345,6 +345,7 @@ const LoginComponent = React.createClass({
                     autocompleteType={"email"}
                     name={"email"}
                     autoFocus={isLogin}
+                    placeholder="name@company.com"
                     onChange={(val="") => this.setState({"email": val.toLowerCase()})}
                     />
                 {companyInput}

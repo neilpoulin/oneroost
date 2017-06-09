@@ -22,7 +22,7 @@ const EmailValidationSuccessPage = React.createClass({
                         <span display-if={firstName}>{firstName}, </span>Please check your email and click the link to validate you address.
                     </p>
                     <div>
-                        <button className="btn btn-secondary-outline" onClick={resendEmail}>Resend Verification Email</button>
+                        <button className="btn btn-outline-secondary" onClick={resendEmail}>Resend Verification Email</button>
                         <p display-if={sendSuccessMessage}>{sendSuccessMessage}</p>
                     </div>
                 </div>
