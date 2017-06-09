@@ -6,6 +6,7 @@ require("console-stamp")(console, {
         metadata: "green"
     }
 });
+var path = require("path")
 import express from "express"
 import moment from "moment"
 import ejs from "ejs"
@@ -64,7 +65,9 @@ app.locals.formatTime = function(time) {
 if (process.env.NODE_ENV === "production") {
     console.log("****PRODUCTION - USING BUNDLED ASSETS****")
     app.use(compression({level: 9}));
-    app.use("/static", express.static(__dirname + "./../public"));
+    let bundlePath = path.join(__dirname, "../public")
+    console.log("setting up statif file mapping for ", bundlePath)
+    app.use("/static", express.static(bundlePath));
 }
 else {
     const devSetup = require("./dev");
