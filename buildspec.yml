@@ -13,6 +13,7 @@ phases:
       - printenv
     #   - echo putting CODEBUILD_BUILD_ID=$CODEBUILD_BUILD_ID into file
     #   - echo "export const build_id = \"$CODEBUILD_BUILD_ID\"" > codebuild_build.js
+      - echo "NODE_ENV = $NODE_ENV"
       - echo putting pipeline info into file
       - aws codepipeline --region us-east-1 get-pipeline-state --name $PIPELINE --output json > pipeline.json
       - echo Installing Yarn...
@@ -31,7 +32,7 @@ phases:
   pre_build:
     commands:
       - echo Installing source Yarn dependencies...
-      - yarn install
+      - yarn install --production=false
     #   - echo log into sentry with auth token
     #   - sentry-cli info
   build:

@@ -1,5 +1,3 @@
-/*global OneRoost*/
-/*global document*/
 import { render } from "react-dom"
 import Parse from "parse"
 import React from "react"
@@ -115,7 +113,7 @@ function requireAdmin(nextState, replace){
 }
 
 function requireEmailVerified(nextState, replace){
-    let user = store.getState().user    
+    let user = store.getState().user
     if(!user || !user.get("userId")){
         replace({
             pathname: "/login",
