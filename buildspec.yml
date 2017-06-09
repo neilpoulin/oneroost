@@ -41,7 +41,8 @@ phases:
       - echo Build started on `date`
       - echo starting the gulp build process
       - gulp version
-      - gulp install
+    #   NOTE: WILL NEED TO UPDATE THIS TO INCLUDE THE EMAILS (i.e. gulp install)
+      - gulp bundle
       - echo source directory = $CODEBUILD_SRC_DIR
       - echo printing all files in the public directory
       - ls public/bundle

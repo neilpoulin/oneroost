@@ -76,7 +76,7 @@ const Roost = withRouter(React.createClass({
     },
     componentWillMount(){
         let paramDealId = this.props.params.dealId;
-        let {dealId, dealLoading} = this.props
+        let {dealId} = this.props
         if (paramDealId){
             this.getData(paramDealId);
         }
