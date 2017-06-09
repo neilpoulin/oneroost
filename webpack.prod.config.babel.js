@@ -36,8 +36,7 @@ module.exports = {
                 // include: [path.join(__dirname, paths.src_jsx)],
                 use: {
                     loader: "babel-loader",
-                    options: {
-                        cacheDirectory: true,
+                    options: {                        
                         presets: [
                             "react",
                             "es2015"

@@ -12,9 +12,10 @@ const bundle = (done, withStats=false) => {
         if (err) {
             var error = new gutil.PluginError("bundle", err);
             gutil.log(gutil.colors.red(error));
-            if (done) {
-                done();
-            }
+            throw new gutil.PluginError({
+                plugin: "bundle",
+                message: "Failed to process webpack config successfully."
+            });            
         }
         else {
             gutil.log("[webpack:build-prod]", stats.toString({
