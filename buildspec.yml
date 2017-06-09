@@ -18,7 +18,7 @@ phases:
       - aws codepipeline --region us-east-1 get-pipeline-state --name $PIPELINE --output json > pipeline.json
       - echo Installing Yarn...
       - npm install -g yarn
-      - npm install node-sass
+      - npm install -g node-sass
       - echo Installing gulp...
       - npm install -g gulp
       - echo installing jest...
@@ -32,7 +32,7 @@ phases:
   pre_build:
     commands:
       - echo Installing source Yarn dependencies...
-      - yarn
+      - yarn install
     #   - echo log into sentry with auth token
     #   - sentry-cli info
   build:
@@ -47,6 +47,7 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
+      - ls public public/bundle
 artifacts:
   files:
     - .ebextensions/**/*
