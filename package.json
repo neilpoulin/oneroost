@@ -11,7 +11,8 @@
         "debug": "node debug main.js",
         "start": "node main.js oneroost-npm",
         "stop": "pkill --signal SIGINT oneroost-npm",
-        "server": "gulp bundle & gulp start:prod"
+        "server": "gulp bundle & gulp start:prod",
+        "webpack": "webpack --config webpack.prod.config.js --progress"
     },
     "jest": {
         "moduleFileExtensions": [
@@ -68,6 +69,7 @@
         "email-templates": "^2.6.0",
         "express": "^4.15.3",
         "font-awesome": "^4.5.0",
+        "global": "^4.3.2",
         "handlebars": "^4.0.10",
         "mailcomposer": "^4.0.2",
         "mandrill-api": "^1.0.45",
@@ -78,7 +80,7 @@
         "parse-dashboard": "^1.0.27",
         "parse-server": "^2.4.2",
         "promise": "^7.1.1",
-        "raven": "^1.1.1",
+        "raven": "^2.0.2",
         "react-addons-css-transition-group": "^15.5.2",
         "react-router-dom": "^4.1.1",
         "sass-material-colors": "0.0.5",

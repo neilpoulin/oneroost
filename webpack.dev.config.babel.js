@@ -105,7 +105,7 @@ module.exports = {
 
     ],
     resolve: {
-        extensions: [".js", ".jsx", ".json", ".scss", ".css"],
+        extensions: [".js", ".jsx", ".json", ".scss", ".css", ".sass"],
         modules: ["jsx", "modules", "ducks", "util", "admin", "brand", "settings", "payment", "deal", "form", "modules/dashboard", "navigation", "node_modules", "models", "actions", "reducers", "store", "middleware", "version"],
     },
 };

@@ -33,8 +33,8 @@ Raven.config("https://50020b1e8db94c39be96db010cdbba4f:0f4123892fd44bfd92b85a003
     }
 }).install();
 
-AWSXRay.config([AWSXRay.plugins.EC2]);
-AWSXRay.config([AWSXRay.plugins.ElasticBeanstalk]);
+AWSXRay.config([AWSXRay.plugins.EC2Plugin]);
+AWSXRay.config([AWSXRay.plugins.ElasticBeanstalkPlugin]);
 
 var app = express();
 var server = http.Server(app);

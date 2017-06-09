@@ -36,7 +36,7 @@ module.exports = {
                 // include: [path.join(__dirname, paths.src_jsx)],
                 use: {
                     loader: "babel-loader",
-                    options: {                        
+                    options: {
                         presets: [
                             "react",
                             "es2015"
@@ -86,7 +86,7 @@ module.exports = {
         new OptimizeCssAssetsPlugin()
     ],
     resolve: {
-        extensions: [".js", ".jsx", ".json", ".scss", ".css"],
+        extensions: [".js", ".jsx", ".json", ".scss", ".css", ".sass"],
         modules: ["jsx", "modules", "ducks", "util", "admin", "brand", "settings", "payment", "deal", "form", "modules/dashboard", "navigation", "node_modules", "models", "actions", "reducers", "store", "middleware", "email", "template", "version"],
     },
 };

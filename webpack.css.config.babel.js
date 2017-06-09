@@ -72,7 +72,7 @@ module.exports = {
             }),
     ],
     resolve: {
-        extensions: [".scss", ".css"],
+        extensions: [".scss", ".css", ".sass", ".js"],
         modules: ["scss", "node_modules"],
     },
 };
