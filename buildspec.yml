@@ -25,6 +25,8 @@ phases:
       - which gulp && gulp -v
       - yarn global add webpack
       - yarn add babel-preset-react
+      - yarn add babel-preset-es2015
+      - yarn add babel-preset-stage-3
       - webpack -v
       - echo installing jest...
       - yarn global add jest
