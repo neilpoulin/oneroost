@@ -21,13 +21,13 @@ phases:
       - npm install -g yarn
       - npm install -g node-sass
       - echo Installing gulp...
-      - yarn add -g gulp
+      - yarn global add gulp
       - which gulp && gulp -v
-      - yarn add -g webpack
+      - yarn global add webpack
       - yarn add babel-preset-react
       - webpack -v
       - echo installing jest...
-      - yarn add -g jest
+      - yarn global add jest
       - pwd
     #   - echo install sentry-cli
     #   - curl -sL https://sentry.io/get-cli/ | bash
