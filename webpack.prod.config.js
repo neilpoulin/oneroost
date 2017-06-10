@@ -88,8 +88,8 @@ module.exports = {
     ],
     resolve: {
         extensions: [".js", ".jsx", ".json", ".scss", ".css", ".sass"],
-        modules: ["node_modules",
-                  "jsx",
+        modules: [path.join(__dirname, "node_modules"),
+                  path.join(__dirname, "src", "jsx"),
                   "modules",
                   "ducks",
                   "util",
