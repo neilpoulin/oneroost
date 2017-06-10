@@ -38,7 +38,7 @@ const bundle = (done, withStats=false) => {
     })
 }
 
-gulp.task("bundle", ["set-prod-node-env", "version:bundle"], function(done){
+gulp.task("bundle", [/*"set-prod-node-env",*/ "version:bundle"], function(done){
     bundle(done, false)
 })
 

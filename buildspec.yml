@@ -34,10 +34,10 @@ phases:
   pre_build:
     commands:
       - echo Installing source Yarn dependencies...
-      - yarn install
+      - yarn install --production=false
       - echo "Look for loaders in node modules"
-      - ls node_modules | grep loader
-      - ls node_modules | grep preset
+      - ls node_modules
+      - ls node_modules
     #   - echo log into sentry with auth token
     #   - sentry-cli info
   build:
