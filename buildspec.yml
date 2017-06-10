@@ -28,6 +28,7 @@ phases:
       - which gulp && gulp -v
       - npm install -g webpack
       - webpack -v
+      - pwd
     #   - echo install sentry-cli
     #   - curl -sL https://sentry.io/get-cli/ | bash
     #   - echo checking sentry installed correctly at
@@ -36,7 +37,6 @@ phases:
     commands:
       - echo Installing source Yarn dependencies...
       - yarn install --production=false
-      - echo "Look for loaders in node modules"
     #   - echo log into sentry with auth token
     #   - sentry-cli info
   build:
@@ -47,7 +47,6 @@ phases:
     #   NOTE: WILL NEED TO UPDATE THIS TO INCLUDE THE EMAILS (i.e. gulp install)
     #   - gulp bundle
       - npm run webpack
-      - echo source directory = $CODEBUILD_SRC_DIR
       - echo printing all files in the public directory
       - ls public/bundle
   post_build:
