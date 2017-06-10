@@ -23,6 +23,7 @@ module.exports = {
         filename: "[name].js",
         // publicPath: "http://dev.oneroost.com/static/bundle",
     },
+
     devtool: "source-map",
     module: {
         rules: [
@@ -33,17 +34,15 @@ module.exports = {
             {
                 test: /\.js[x]?$/,
                 exclude: /(node_modules|bower_components|cloud|build)/,
-                // include: [path.join(__dirname, paths.src_jsx)],                
-                use: {
-                    loader: "babel-loader",
-                    options: {
-                        presets: [
-                            "react",
-                            "es2015",
-                            "stage-3"
-                        ],
-                        plugins: ["syntax-async-functions", "transform-async-to-generator", "jsx-display-if"]
-                    }
+                include: [path.join(__dirname, "src")],
+                loader: "babel-loader",
+                options: {
+                    presets: [
+                        "react",
+                        "es2015",
+                        "stage-3"
+                    ],
+                    plugins: ["syntax-async-functions", "transform-async-to-generator", "jsx-display-if"]
                 }
             },
             {
@@ -102,5 +101,6 @@ module.exports = {
                   "email",
                   "template",
                   "version"]
-    }
+    },
+    context: __dirname
 };
