@@ -33,7 +33,7 @@ module.exports = {
             // },
             {
                 test: /\.js[x]?$/,
-                exclude: /(node_modules|bower_components|cloud|build)/,
+                exclude: /(node_modules)/,
                 // include: [path.join(__dirname, "src")],
                 loader: "babel-loader",
                 options: {
