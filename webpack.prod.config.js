@@ -33,19 +33,18 @@ module.exports = {
             {
                 test: /\.js[x]?$/,
                 exclude: /(node_modules|bower_components|cloud|build)/,
-                // include: [path.join(__dirname, paths.src_jsx)],
-                loader: "babel-loader",
-
-                    // loader: "babel-loader",
-                options: {
-                    presets: [
+                // include: [path.join(__dirname, paths.src_jsx)],                
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        presets: [
                             "react",
                             "es2015",
                             "stage-3"
-                    ],
-                    plugins: ["syntax-async-functions", "transform-async-to-generator", "jsx-display-if"]
+                        ],
+                        plugins: ["syntax-async-functions", "transform-async-to-generator", "jsx-display-if"]
+                    }
                 }
-                
             },
             {
                 test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
