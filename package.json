@@ -48,11 +48,11 @@
         ]
     },
     "babel": {
-+        "presets": [
-+            "es2015",
-+            "react"
-+        ]
-+    },
+        "presets": [
+            "es2015",
+            "react"
+        ]
+    },
     "browserify-shim": {
         "bootstrap": {
             "depends": [
