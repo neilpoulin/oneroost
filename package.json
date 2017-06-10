@@ -43,6 +43,12 @@
     "browser": {
         "bootstrap": "./node_modules/bootstrap/dist/js/bootstrap.js"
     },
+    "babel": {
+        "presets": [
+            "es2015",
+            "react"
+        ]
+    },
     "browserify": {
         "transform": [
             "browserify-shim"

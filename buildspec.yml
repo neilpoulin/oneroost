@@ -24,6 +24,7 @@ phases:
       - npm install -g gulp
       - echo installing jest...
       - npm install -g jest
+      - yarn install -g babel
       - echo checking location of gulp and its version
       - which gulp && gulp -v
       - npm install -g webpack
@@ -48,11 +49,10 @@ phases:
     #   - gulp bundle
       - npm run webpack-test
       - echo printing all files in the public directory
-      - ls public/bundle
   post_build:
     commands:
       - echo Build completed on `date`
-      - ls public public/bundle
+      - ls public public/bundle/test
 artifacts:
   files:
     - .ebextensions/**/*
