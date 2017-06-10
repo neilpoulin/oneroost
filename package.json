@@ -47,6 +47,12 @@
             "browserify-shim"
         ]
     },
+    "babel": {
++        "presets": [
++            "es2015",
++            "react"
++        ]
++    },
     "browserify-shim": {
         "bootstrap": {
             "depends": [
