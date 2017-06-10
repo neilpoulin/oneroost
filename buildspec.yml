@@ -24,8 +24,7 @@ phases:
       - npm install -g gulp
       - echo installing jest...
       - npm install -g jest
-      - yarn install -g babel
-      - yarn install -g babel-preset-react
+      - yarn install babel-preset-react
       - echo checking location of gulp and its version
       - which gulp && gulp -v
       - npm install -g webpack
