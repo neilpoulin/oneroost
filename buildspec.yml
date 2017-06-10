@@ -21,14 +21,13 @@ phases:
       - npm install -g yarn
       - npm install -g node-sass
       - echo Installing gulp...
-      - npm install -g gulp
-      - echo installing jest...
-      - npm install -g jest
-      - yarn add babel-preset-react
-      - echo checking location of gulp and its version
+      - yarn add -g gulp
       - which gulp && gulp -v
-      - npm install -g webpack
+      - yarn add -g webpack
+      - yarn add babel-preset-react
       - webpack -v
+      - echo installing jest...
+      - yarn add -g jest
       - pwd
     #   - echo install sentry-cli
     #   - curl -sL https://sentry.io/get-cli/ | bash
@@ -52,7 +51,7 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - ls public public/bundle/test
+      - ls public public/test
 artifacts:
   files:
     - .ebextensions/**/*
