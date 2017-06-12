@@ -27,10 +27,10 @@ module.exports = {
     // devtool: "source-map",
     module: {
         rules: [
-            // {
-            //     test: /\.json$/,
-            //     use: "json-loader"
-            // },
+            {
+                test: /\.json$/,
+                use: "json-loader"
+            },
             {
                 test: /\.js[x]?$/,
                 exclude: /(node_modules)/,
