@@ -13,7 +13,7 @@
         "stop": "pkill --signal SIGINT oneroost-npm",
         "server": "gulp bundle & gulp start:prod",
         "webpack": "webpack --config webpack.prod.config.js --progress",
-        "webpack-test": "webpack --config webpack.test.js --progress"
+        "webpack-test": "webpack --config webpack.test.config.js --progress"
     },
     "jest": {
         "moduleFileExtensions": [
