@@ -47,9 +47,7 @@ phases:
       - echo Build started on `date`
       - echo starting the gulp build process
       - gulp version
-    #   NOTE: WILL NEED TO UPDATE THIS TO INCLUDE THE EMAILS (i.e. gulp install)
-    #   - gulp bundle
-      - npm run webpack
+      - gulp install
       - echo printing all files in the public directory
   post_build:
     commands:
