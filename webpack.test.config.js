@@ -1,11 +1,11 @@
 const webpack = require("webpack")
 require("babel-polyfill")
 const path = require("path")
-// const ExtractTextPlugin = require("extract-text-webpack-plugin");
-// const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-// const extractCss = new ExtractTextPlugin({
-//     filename: "styles.css", allChunks: false
-// });
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const extractCss = new ExtractTextPlugin({
+    filename: "styles.css", allChunks: false
+});
 
 process.traceDeprecation = true
 
@@ -75,16 +75,16 @@ module.exports = {
         ],
     },
     plugins: [
-        // extractCss,
-        // new webpack.ProvidePlugin({
-        //     $: "jquery",
-        //     jQuery: "jquery",
-        //     Tether: "tether",
-        // }),
-        // new webpack.NoEmitOnErrorsPlugin(),
-        // new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("production")}}),
-        // new webpack.optimize.UglifyJsPlugin({sourceMap: true}),
-        // new OptimizeCssAssetsPlugin()
+        extractCss,
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery",
+            Tether: "tether",
+        }),
+        new webpack.NoEmitOnErrorsPlugin(),
+        new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("production")}}),
+        new webpack.optimize.UglifyJsPlugin({sourceMap: true}),
+        new OptimizeCssAssetsPlugin()
     ],
     resolve: {
         extensions: [".js", ".jsx"],
