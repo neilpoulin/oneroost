@@ -87,7 +87,7 @@ module.exports = {
         new OptimizeCssAssetsPlugin()
     ],
     resolve: {
-        extensions: [".js", ".jsx", ".json"],
+        extensions: [".js", ".jsx", ".json", ".scss", ".sass"],
         modules: ["jsx", "modules", "ducks", "util", "admin", "brand", "settings", "payment", "deal",
                   "form",
                   "modules/dashboard",

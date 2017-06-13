@@ -40,9 +40,9 @@ module.exports = {
                     presets: [
                         "react",
                         "es2015",
-                        "stage-3"
+                        // "stage-3"
                     ],
-                    plugins: ["syntax-async-functions", "transform-async-to-generator", "jsx-display-if"]
+                    // plugins: ["syntax-async-functions", "transform-async-to-generator", "jsx-display-if"]
                 }
             },
             {
