@@ -45,6 +45,7 @@ node_modules
 /public/out/
 /public/css/
 /public/bundle/
+/public/test/
 
 db/data/*
 build/
