@@ -15,7 +15,7 @@ module.exports = {
         scripts: [
             "babel-polyfill",
             path.join(__dirname, "src", "jsx", "index.jsx"),
-            // path.join(__dirname, "src", "scss", "index.scss")
+            path.join(__dirname, "src", "scss", "index.scss")
         ]
     },
     output: {
@@ -45,33 +45,33 @@ module.exports = {
                     // plugins: ["syntax-async-functions", "transform-async-to-generator", "jsx-display-if"]
                 }
             },
-            // {
-            //     test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-            //     loader: "file-loader?name=fonts/[name].[ext]"
-            // },
-            // {
-            //     test: /\.scss$/,
-            //     loader: ExtractTextPlugin.extract({
-            //         fallback: "style-loader",
-            //         use: [
-            //             {
-            //                 loader: "css-loader",
-            //                 options: {sourceMap: true}
-            //             },
-            //             {
-            //                 loader: "sass-loader",
-            //                 options: {sourceMap: true, }
-            //             },
-            //             {
-            //                 loader: "sass-resources-loader",
-            //                 options: {
-            //                     resources: "./src/scss/sass-resources.scss",
-            //                     sourceMap: true,
-            //                 }
-            //             }
-            //         ]
-            //     })
-            // }
+            {
+                test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+                loader: "file-loader?name=fonts/[name].[ext]"
+            },
+            {
+                test: /\.scss$/,
+                loader: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: [
+                        {
+                            loader: "css-loader",
+                            options: {sourceMap: true}
+                        },
+                        {
+                            loader: "sass-loader",
+                            options: {sourceMap: true, }
+                        },
+                        {
+                            loader: "sass-resources-loader",
+                            options: {
+                                resources: "./src/scss/sass-resources.scss",
+                                sourceMap: true,
+                            }
+                        }
+                    ]
+                })
+            }
         ],
     },
     plugins: [

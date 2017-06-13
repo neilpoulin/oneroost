@@ -50,7 +50,7 @@ module.exports = {
                 loader: "file-loader?name=fonts/[name].[ext]"
             },
             {
-                test: /\.scss$/,
+                test: /\.(scss|sass)$/,
                 loader: ExtractTextPlugin.extract({
                     fallback: "style-loader",
                     use: [
