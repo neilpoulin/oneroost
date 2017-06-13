@@ -14,7 +14,7 @@ module.exports = {
         // style: [path.join(__dirname, "src", "scss", "index.scss")],
         scripts: [
             "babel-polyfill",
-            path.join(__dirname, "test.jsx"),
+            path.join(__dirname, "src", "jsx", "index.jsx"),
             // path.join(__dirname, "src", "scss", "index.scss")
         ]
     },
@@ -87,8 +87,20 @@ module.exports = {
         new OptimizeCssAssetsPlugin()
     ],
     resolve: {
-        extensions: [".js", ".jsx"],
-        modules: ["node_modules"]
+        extensions: [".js", ".jsx", ".json"],
+        modules: ["jsx", "modules", "ducks", "util", "admin", "brand", "settings", "payment", "deal",
+                  "form",
+                  "modules/dashboard",
+                  "navigation",
+                  "node_modules",
+                  "models",
+                  "actions",
+                  "reducers",
+                  "store",
+                  "middleware",
+                  "email",
+                  "template",
+                  "version"]
     },
     context: __dirname
 };
