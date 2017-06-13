@@ -24,7 +24,7 @@ module.exports = {
         // publicPath: "http://dev.oneroost.com/static/bundle",
     },
 
-    // devtool: "source-map",
+    devtool: "source-map",
     module: {
         rules: [
             {
