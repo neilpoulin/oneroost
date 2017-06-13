@@ -48,7 +48,7 @@ const NextStepForm = React.createClass({
             createdBy: this.state.createdBy,
             title: this.state.title,
             description: this.state.description,
-            dueDate: this.state.dueDate.toDate(),
+            dueDate: this.state.dueDate,
             assignedUser: this.state.assignedUser,
             deal: this.props.deal,
             completedDate: this.state.completedDate ? new Date(this.state.completedDate) : null,
@@ -103,7 +103,7 @@ const NextStepForm = React.createClass({
                         buttonText="edit"
                         buttonClass="link"
                         buttonType="span"
-                        selectedDate={this.state.dueDate.toDate()}/>
+                        selectedDate={this.state.dueDate && this.state.dueDate.toDate ? this.state.dueDate.toDate() : null}/>
                 </div>
             </FormGroup>
 

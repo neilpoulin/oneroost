@@ -33,7 +33,7 @@ const DateTakeoverButton = React.createClass({
             calendarHeight: this.getCalendarHeight(),
         }
     },
-    afterSelect( val ){
+    afterSelect(val){
         this.setState({selectedValue: val});
     },
     doSave(){
@@ -63,10 +63,10 @@ const DateTakeoverButton = React.createClass({
         let offset = 290;
         switch (this.getOrientation()) {
             case "landscape":
-            offset = 200
-            break;
+                offset = 200
+                break;
             default:
-            break;
+                break;
         }
 
         let height = window.innerHeight - offset;
@@ -92,7 +92,7 @@ const DateTakeoverButton = React.createClass({
             >
             <InfiniteCalendar
                 key={"date_picker_takeover"}
-                selectedDate={this.props.selectedDate}
+                selected={this.props.selectedDate}
                 minDate={new Date()}
                 keyboardSupport={true}
                 className="dateTakeover"
@@ -100,7 +100,7 @@ const DateTakeoverButton = React.createClass({
                 height={this.state.calendarHeight}
                 layout={this.state.orientation}
                 shouldHeaderAnimate={true}
-                afterSelect={this.afterSelect}
+                onSelect={this.afterSelect}
                 />
         </TakeoverButton>
         return button;

@@ -14,8 +14,16 @@ window.getVersion = function(){
 }
 
 window.setLogLevel = function(newLevel){
-    localStorage["oneroost/debug"] = newLevel
-    level = getLogLevel()
+    try{
+        if (localStorage){
+            localStorage["oneroost/debug"] = newLevel
+            level = getLogLevel()
+            return level
+        }
+    }
+    catch (e){
+        // do nothing.. that's ok.
+    }
     return level
 }
 
@@ -23,6 +31,7 @@ window.getLogLevel = () => getLogLevel()
 
 function getLogLevel() {
     try{
+        if (!localStorage) return ERROR
         let levelInput = localStorage["oneroost/debug"] || "ERROR"
         let currentLevel = level
         switch(levelInput.toUpperCase()){
@@ -64,7 +73,7 @@ export const debug = (msg, data) => {
 
 export const info = (msg, data) => {
     if (level <= INFO && console){
-        if (data){            
+        if (data){
             console.log(msg, data)
         }
         else {

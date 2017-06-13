@@ -57,6 +57,9 @@ function isNullOrEmpty(value){
     if (typeof value === "string" && value.trim().length === 0) {
         return true;
     }
+    else if (typeof value === "object" && value !== null){
+        return false;
+    }
     else if (typeof value === "object" && Object.keys(value).length === 0) {
         return true;
     }

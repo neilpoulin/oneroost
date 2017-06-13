@@ -231,7 +231,7 @@ const TemplateForm = React.createClass({
                                             fieldName={`requirement_${i}_ctaType`}
                                             options={LINK_TYPE_OPTIONS}
                                             placeholder={"CTA Type..."}
-                                            onChange={(value) => this.handleRequirementChange(i, {ctaType: value.value})}
+                                            onChange={(value) => this.handleRequirementChange(i, {ctaType: value ? value.value : null})}
                                             />
                                         <FormInputGroup
                                             label={null}

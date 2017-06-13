@@ -56,9 +56,11 @@ store.subscribe(() => {
 })
 
 // Set up Intercom
-window.Intercom("boot", {
-    app_id: OneRoost.Config.intercomAppId || "te0db1m0"
-});
+if (window.Intercom){
+    window.Intercom("boot", {
+        app_id: OneRoost.Config.intercomAppId || "te0db1m0"
+    });    
+}
 
 function getGaOptions(){
     var gaOptions = {};

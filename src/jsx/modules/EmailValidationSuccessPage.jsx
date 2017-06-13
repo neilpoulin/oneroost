@@ -3,6 +3,7 @@ import RoostNav from "RoostNav"
 import {connect} from "react-redux"
 import * as Account from "models/Account"
 import {refreshCachedUserData, connectToAccount} from "ducks/user"
+import {Link} from "react-router"
 import {denormalize} from "normalizr"
 
 const EmailValidationSuccessPage = React.createClass({
@@ -33,9 +34,15 @@ const EmailValidationSuccessPage = React.createClass({
                              {account ? `Connect to ${account.accountName}` : "Create a new Account"}
                         </button>
                     </div>
-                    <p className="lead" display-if={account}>
-                        You are now a part of {account.accountName}!
-                    </p>
+                    <div display-if={account}>
+                        <p className="lead">
+                            You are now a part of {account.accountName}!
+                        </p>
+                        <div>
+                             <Link to="/roosts" className="btn btn-primary">Continue to my opportunities</Link>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         )
