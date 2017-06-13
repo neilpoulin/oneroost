@@ -9,8 +9,8 @@ var PARSE_MOUNT = process.env.PARSE_MOUNT || "/parse";
 var PARSE_PORT = process.env.PARSE_PORT || 8081;
 var AWS_ID = process.env.AWS_ID || "AKIAIJI2VKVQPR4V4JYA";
 var AWS_SECRET_ID = process.env.AWS_SECRET_ID || "HYS3LqjQV/0Ej6COtVAow7M0xhe6GV3h7fWPkR9K";
-var SERVER_URL = process.env.PARSE_SERVER_URL || "http://localhost"
-var HOSTNAME = process.env.HOSTNAME || "http://dev.oneroost.com"
+var SERVER_URL = process.env.PARSE_SERVER_URL || "https://localhost"
+var HOSTNAME = process.env.HOSTNAME || "https://dev.oneroost.com"
 var ENV_NAME = process.env.ENV_NAME || "dev"
 var DOCUMENTS_S3_BUCKET = "oneroost-documents";
 var DOCUMENTS_PATH = "documents"
@@ -21,11 +21,11 @@ var INTERCOM_APP_ID = process.env.INTERCOM_APP_ID || "lkx95sfl"
 var INTERCOM_SECRET_KEY = process.env.INTERCOM_SECRET_KEY
 var PUBLIC_SERVER_URL = HOSTNAME + PARSE_MOUNT;
 
-if (SERVER_URL.trim().indexOf("http:") != 0){
+if (SERVER_URL.trim().indexOf("https:") != 0){
     if (SERVER_URL.indexOf("//") != 0) {
         SERVER_URL = "//" + SERVER_URL;
     }
-    SERVER_URL = "http:" + SERVER_URL;
+    SERVER_URL = "https:" + SERVER_URL;
 }
 
 if (SERVER_URL.indexOf("localhost") != -1){

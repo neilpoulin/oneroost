@@ -38,7 +38,7 @@
     "bugs": {
         "url": "https://github.com/Neilpoulin/nextsteps/issues"
     },
-    "homepage": "http://www.oneroost.com",
+    "homepage": "https://www.oneroost.com",
     "browser": {
         "bootstrap": "./node_modules/bootstrap/dist/js/bootstrap.js"
     },
