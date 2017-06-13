@@ -33,16 +33,16 @@ module.exports = {
             },
             {
                 test: /\.js[x]?$/,
-                exclude: /(node_modules|bower_components|cloud|build)/,
-                include: [path.join(__dirname, "src")],
+                exclude: /(node_modules)/,
+                // include: [path.join(__dirname, "src")],
                 loader: "babel-loader",
                 options: {
                     presets: [
                         "react",
-                        "es2015",
-                        "stage-3"
+                        "es2015"
+                        // "stage-3"
                     ],
-                    plugins: ["syntax-async-functions", "transform-async-to-generator", "jsx-display-if"]
+                    // plugins: ["syntax-async-functions", "transform-async-to-generator", "jsx-display-if"]
                 }
             },
             {
@@ -50,7 +50,7 @@ module.exports = {
                 loader: "file-loader?name=fonts/[name].[ext]"
             },
             {
-                test: /\.(scss|sass|css)$/,
+                test: /\.scss$/,
                 loader: ExtractTextPlugin.extract({
                     fallback: "style-loader",
                     use: [
@@ -87,20 +87,12 @@ module.exports = {
         new OptimizeCssAssetsPlugin()
     ],
     resolve: {
-        extensions: [".js", ".jsx", ".json", ".scss", ".css", ".sass"],
-        modules: ["node_modules",
-                  "jsx",
-                  "modules",
-                  "ducks",
-                  "util",
-                  "admin",
-                  "brand",
-                  "settings",
-                  "payment",
-                  "deal",
+        extensions: [".js", ".jsx", ".json", ".scss", ".sass"],
+        modules: ["jsx", "modules", "ducks", "util", "admin", "brand", "settings", "payment", "deal",
                   "form",
                   "modules/dashboard",
                   "navigation",
+                  "node_modules",
                   "models",
                   "actions",
                   "reducers",
