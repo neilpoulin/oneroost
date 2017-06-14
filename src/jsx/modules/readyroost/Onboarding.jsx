@@ -49,14 +49,26 @@ const Onboarding = withRouter(React.createClass({
         fieldValues = Object.assign({}, fieldValues, data)
     },
     nextStep: function() {
+        let nextStepNumber = this.state.step + 1
         this.setState({
-            step: this.state.step + 1
+            step: nextStepNumber
         })
+        ReactGA.event({
+            category: "ReadyRoost",
+            action: "Go to Next Step",
+            label: `Step ${nextStepNumber}`
+        });
     },
     previousStep: function() {
+        let nextStepNumber = this.state.step - 1
         this.setState({
-            step: this.state.step - 1
+            step: nextStepNumber
         })
+        ReactGA.event({
+            category: "ReadyRoost",
+            action: "Go to Previous Step",
+            label: `Step ${nextStepNumber}`
+        });
     },
     componentDidMount(){
         this.saveValues({currentUser: this.props.currentUser});

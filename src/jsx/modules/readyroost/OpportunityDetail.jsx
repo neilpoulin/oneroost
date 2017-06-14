@@ -3,6 +3,7 @@ import FormUtil, {Validation} from "./../util/FormUtil"
 import FormInputGroup from "FormInputGroup"
 import * as log from "LoggingUtil"
 import FormSelect from "FormSelectGroup"
+import ReactGA from "react-ga"
 
 const OpportunityDetail = React.createClass({
     propTypes: {
@@ -78,6 +79,27 @@ const OpportunityDetail = React.createClass({
             category: selection,
             subCategory: null
         })
+        ReactGA.event({
+            category: "ReadyRoost",
+            action: "Category Set",
+            label: selection
+        });
+    },
+    _handleSubCategoryChange(selection){
+        this.setState({subCategory: selection})
+        ReactGA.event({
+            category: "ReadyRoost",
+            action: "SubCategory Set",
+            label: selection
+        });
+    },
+    _handleSubCategoryOtherChange(value){
+        this.setState({subCategoryOther: value})
+        ReactGA.event({
+            category: "ReadyRoost",
+            action: "SubCategoryOther Set",
+            label: value
+        });
     },
     render () {
         let {errors, company, category, subCategory, subCategoryOther} = this.state;
@@ -126,7 +148,7 @@ const OpportunityDetail = React.createClass({
                     value={subCategory ? subCategory.value : ""}
                     requred={true}
                     options={subCategories}
-                    onChange={selection => this.setState({subCategory: selection})}
+                    onChange={this._handleSubCategoryChange}
                     />
 
                 <FormInputGroup
@@ -137,7 +159,7 @@ const OpportunityDetail = React.createClass({
                     value={subCategoryOther || ""}
                     required={true}
                     placeholder={"Please write in a sub-category"}
-                    onChange={value => this.setState({subCategoryOther: value})}
+                    onChange={this._handleSubCategoryOtherChange}
                     />
 
             </div>

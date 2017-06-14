@@ -4,6 +4,7 @@ import {getConfigValue} from "ducks/config"
 import * as log from "LoggingUtil"
 import * as Waitlist from "models/Waitlist"
 import {isValidEmail} from "util/FormUtil"
+import ReactGA from "react-ga"
 
 const LOAD_CONFIG_REQUEST = "oneroost/landingpage/LOAD_CONFIG_REQUEST"
 const LOAD_CONFIG_SUCCESS = "oneroost/landingpage/LOAD_CONFIG_SUCCESS"
@@ -76,7 +77,7 @@ export const loadConfig = () => (dispatch, getState) => {
         type: LOAD_CONFIG_REQUEST
     })
     dispatch(getConfigValue("landingPage", Map({})))
-        .then(landingPage => {    
+        .then(landingPage => {
             dispatch({
                 type: LOAD_CONFIG_SUCCESS,
                 payload: landingPage,
@@ -139,6 +140,10 @@ export const createWaitlistEntry = (email) => (dispatch, getState) => {
                     message: "Successfully joined the waitlist!"
                 }
             })
+            ReactGA.event({
+                category: "Waitlist",
+                action: "Sign Up"
+            });
         }).catch(error => {
             dispatch({
                 type: JOIN_WAITLIST_ERROR,
