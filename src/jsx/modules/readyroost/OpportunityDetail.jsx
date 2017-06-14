@@ -82,7 +82,7 @@ const OpportunityDetail = React.createClass({
         ReactGA.event({
             category: "ReadyRoost",
             action: "Category Set",
-            label: selection
+            label: selection.value
         });
     },
     _handleSubCategoryChange(selection){
@@ -90,7 +90,7 @@ const OpportunityDetail = React.createClass({
         ReactGA.event({
             category: "ReadyRoost",
             action: "SubCategory Set",
-            label: selection
+            label: selection.value
         });
     },
     _handleSubCategoryOtherChange(value){
