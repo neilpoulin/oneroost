@@ -106,7 +106,7 @@ exports.initialize = function(){
         stakeholderQuery.equalTo("user", request.user);
         stakeholderQuery.equalTo("deal", deal);
         try{
-            let result = await stakeholderQuery.find();            
+            let result = await stakeholderQuery.find();
             if (result.length > 0){
                 return response.success({
                     message: "User" + userId + " is a stakeholder for deal " + dealId,
@@ -126,6 +126,7 @@ exports.initialize = function(){
             Raven.captureException(error)
             return response.error({
                 message: "something went wrong looking up the stakeholder",
+                error,
                 authorized: false
             });
         }

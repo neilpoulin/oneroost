@@ -17,6 +17,15 @@
             }
         }
     }
+    &.font-dark{
+        color: $roostDarkGray;
+        &.navbar-default .navbar-nav > li > a{
+            color: $roostDarkGray;
+            &:hover:not(.btn){
+                color: $roostOrange;
+            }
+        }
+    }
 
     .navbar-brand{
         &:not(.roost-title){

@@ -5,6 +5,7 @@ import LoadingTakeover from "LoadingTakeover"
 import TemplateLink from "TemplateLink"
 import {Link} from "react-router"
 import FourOhFourPage from "FourOhFourPage"
+import RoostNav, {TRANSPARENT_STYLE, DARK_FONT_STYLE} from "RoostNav"
 
 const BrandPage = React.createClass({
     propTypes: {
@@ -37,25 +38,27 @@ const BrandPage = React.createClass({
         }
 
         return (
-            <div className="BrandPage container">
-                <div className="header">
-                    {$logo}
-                    {$title}
-                </div>
+            <div>
+                <RoostNav backgroundStyle={TRANSPARENT_STYLE} loginOnly={true} fontStyle={DARK_FONT_STYLE}/>
+                <div className="BrandPage container">
+                    <div className="header">
+                        {$logo}
+                        {$title}
+                    </div>
 
-                <div className="intro lead">
-                    <b>Vendors </b>| Begin proposal process by selecting the department most relevant to your offering
+                    <div className="intro lead">
+                        <b>Vendors </b>| Begin proposal process by selecting the department most relevant to your offering
+                    </div>
+                    <div className="departments">
+                        {templates.map((template, i) => {
+                            let department = departmentMap[template["department"]]
+                            return <TemplateLink key={`brand_template_${i}`} department={department} templateId={template["templateId"]} />
+                        })}
+                    </div>
+                    <footer>
+                        <Link to={"/"} className="roostLink">Powered By <span className="logo">OneRoost</span></Link>
+                    </footer>
                 </div>
-                <div className="departments">
-                    {templates.map((template, i) => {
-                        let department = departmentMap[template["department"]]
-                        return <TemplateLink key={`brand_template_${i}`} department={department} templateId={template["templateId"]} />
-                    })}
-                </div>
-                <footer>
-                    <Link to={"/"} className="roostLink">Powered By <span className="logo">OneRoost</span></Link>
-                </footer>
-
             </div>
         )
     }

@@ -23,7 +23,7 @@ const RoostNav = React.createClass({
         loginOnly: PropTypes.bool,
         registrationEnabled: PropTypes.bool,
         backgroundStyle: PropTypes.oneOf([DEFAULT_STYLE, TRANSPARENT_STYLE]),
-        fontStyle: PropTypes.oneOf([LIGHT_FONT_STYLE, LIGHT_FONT_STYLE]),
+        fontStyle: PropTypes.oneOf([LIGHT_FONT_STYLE, DARK_FONT_STYLE]),
         fontHoverStyle: PropTypes.oneOf([DEFAULT_FONT_HOVER_STYLE, DARK_FONT_HOVER_STYLE]),
         regButtonType: PropTypes.string,
         fixed: PropTypes.bool,
@@ -59,7 +59,7 @@ const RoostNav = React.createClass({
                         <span className="icon-bar"></span>
                         <span className="icon-bar"></span>
                     </button>
-                    <Link to="/" display-if={!loginOnly} className={"navbar-brand account-link " }><span className="title">OneRoost</span></Link>                    
+                    <Link to="/" display-if={!loginOnly} className={"navbar-brand account-link " }><span className="title">OneRoost</span></Link>
                     <div display-if={mobileTitle} className="roost-title hidden-lg hidden-md navbar-brand">{mobileTitle}</div>
                 </div>
 
