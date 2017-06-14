@@ -1,5 +1,6 @@
 .BrandPage{
-    &.container{        
+    margin-top: -1 * $bodyPaddingTop;
+    .container{
         padding-top: 1rem;
         padding-bottom: 15rem;
     }

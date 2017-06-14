@@ -38,9 +38,9 @@ const BrandPage = React.createClass({
         }
 
         return (
-            <div>
-                <RoostNav backgroundStyle={TRANSPARENT_STYLE} loginOnly={true} fontStyle={DARK_FONT_STYLE}/>
-                <div className="BrandPage container">
+            <div className="BrandPage">
+                <RoostNav backgroundStyle={TRANSPARENT_STYLE} loginOnly={true} fontStyle={DARK_FONT_STYLE} fixed={false}/>
+                <div className="container">
                     <div className="header">
                         {$logo}
                         {$title}
