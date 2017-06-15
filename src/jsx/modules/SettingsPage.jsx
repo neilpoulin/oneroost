@@ -10,6 +10,10 @@ const navLinks = [
     {
         path: "/settings/company",
         displayText: "Company"
+    },
+    {
+        path: "/settings/brand-page",
+        displayText: "Brand Page"
     }
 ]
 

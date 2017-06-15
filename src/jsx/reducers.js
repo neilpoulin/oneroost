@@ -15,9 +15,11 @@ import brandsByUrl from "ducks/brandsByUrl"
 import landingpage from "ducks/landingpage"
 import accountSettings from "ducks/accountSettings"
 import templates from "ducks/templates"
+import brandSettings from "ducks/brandSettingsAdmin"
 
 const reducers = combineReducers({
     accountSettings,
+    brandSettings,
     brandsByUrl,
     config,
     dashboard,
@@ -33,6 +35,7 @@ const reducers = combineReducers({
     templates,
     templatesByUser,
     user,
+
 });
 
 export default reducers;
