@@ -1,8 +1,9 @@
 import {fromJS} from "immutable"
 import * as brandPageSettings from "ducks/brandPageSettings"
 import {getActions} from "DuckUtil"
+import {normalize} from "normalizr"
 import Parse from "parse"
-import BrandPage from "models/BrandPage"
+import * as BrandPage from "models/BrandPage"
 import * as Account from "models/Account"
 import {getCurrentAccountId} from "ducks/user"
 import {LOAD_PAGE_SUCCESS} from "ducks/brandPageSettings"
@@ -18,6 +19,7 @@ export const LOAD_BRAND_PAGES_ERROR = "oneroost/brandPageSettings/LOAD_BRAND_PAG
 const initialState = fromJS({
     isLoading: false,
     hasLoaded: false,
+    brandPageIds: [],
     brandPageSettingsById: {}
 })
 
@@ -64,10 +66,13 @@ export const loadPages = () => (dispatch, getState) => {
     })
     fetchBrandPagesForAccount(accountId).then(results => {
         let pages = results.map(result => result.toJSON())
+        let entities = normalize(pages, [BrandPage.Schema]).entities
         dispatch({
             type: LOAD_BRAND_PAGES_SUCCESS,
-            payload: pages
+            payload: pages,
+            entities,
         })
+
         pages.forEach(page => dispatch({
             type: LOAD_PAGE_SUCCESS,
             payload: page,

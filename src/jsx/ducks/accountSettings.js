@@ -17,6 +17,7 @@ const initialState = Map({
     templateIds: Set(),
     archivedTemplateIds: Set(),
     isLoading: false,
+    hasLoaded: false,
     accountId: null,
     seatIds: Set([]),
     userIds: Set([]),
@@ -36,6 +37,7 @@ export default function reducer(state=initialState, action){
             state = state.set("archivedTemplateIds", payload.get("archivedTemplateIds", Set()).toSet())
             state = state.set("userIds", payload.get("userIds", Set()))
             state = state.set("error", null)
+            state = state.set("hasLoaded", true)
             break;
         case LOAD_SETTINGS_ERROR:
             state = state.set("isLoading", false)
@@ -101,9 +103,6 @@ const handleTemplateResponse = (allTemplates) => {
 }
 
 export const loadSettings = () => (dispatch, getState) => {
-    dispatch({
-        type: LOAD_SETTINGS_REQUEST
-    })
     const state = getState()
     const accountId = state.user.get("accountId")
 
@@ -111,6 +110,13 @@ export const loadSettings = () => (dispatch, getState) => {
         log.warn("No account ID was found for the current user")
         return null
     }
+    if(state.accountSettings.get("isLoading") || state.accountSettings.get("hasLoaded")){
+        log.info("not re-loading account settings")
+        return null
+    }
+    dispatch({
+        type: LOAD_SETTINGS_REQUEST
+    })
     dispatch({type: SET_ACCOUNT_ID, payload: {accountId}})
 
     let promises = [

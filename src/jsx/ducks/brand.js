@@ -50,7 +50,7 @@ export default function reducer(state=initialState, action){
     return state;
 }
 // Queries
-const getBrandPageByUrl = (vanityUrl) => {
+export const getBrandPageByUrl = (vanityUrl) => {
     let query = new Parse.Query(BrandPage.className)
     query.equalTo("vanityUrl", vanityUrl)
     return query.first()
