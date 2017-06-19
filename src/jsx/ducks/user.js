@@ -170,6 +170,20 @@ export const updateIntercomUser = (user) => {
     }
 }
 
+const getUserState = (state) => {
+    return state ? state.user : Map()
+}
+
+//selectors
+export const getCurrentUser = (state) => {
+    return getUserState(state)
+}
+
+export const getCurrentAccountId = (state) => {
+    return getCurrentUser(state).get("accountId")
+}
+
+// Action creators
 export const loginSuccessAction = (user) => {
     Raven.setUserContext({
         email: user.email,

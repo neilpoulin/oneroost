@@ -7,7 +7,6 @@ import * as Account from "models/Account"
 import * as Template from "models/Template"
 import {loadSettings} from "ducks/accountSettings"
 import DepartmentCard from "DepartmentCard"
-import TemplateFormButton from "account/TemplateFormButton"
 
 const CompanySettingsPage = React.createClass({
     propTypes: {
@@ -26,7 +25,7 @@ const CompanySettingsPage = React.createClass({
                 <h1><span display-if={account}>{account.accountName} </span>Company Settings</h1>
                 <div display-if={userRoles}>
                     {`User Role${userRoles.length > 1 ? "s" : ""}:`} {userRoles.join(", ")}
-                </div>                
+                </div>
                 <div>
                     <h2>Departments</h2>
                     <div className="departmentContainer">

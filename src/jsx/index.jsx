@@ -41,6 +41,7 @@ import EmailValidationSuccessPage from "EmailValidationSuccessPage"
 import SettingsPage from "SettingsPage"
 import UserSettings from "settings/UserSettingsPage"
 import CompanySettings from "settings/CompanySettingsPage"
+import BrandPageSettings from "settings/BrandPageSettings"
 import EmailValidationInstructionsPage from "EmailValidationInstructionsPage"
 import * as log from "LoggingUtil"
 
@@ -59,7 +60,7 @@ store.subscribe(() => {
 if (window.Intercom){
     window.Intercom("boot", {
         app_id: OneRoost.Config.intercomAppId || "te0db1m0"
-    });    
+    });
 }
 
 function getGaOptions(){
@@ -183,6 +184,7 @@ render(
                 <Route path="/settings" component={SettingsPage} onEnter={requireActivatedUser}>
                     <Route path="profile" component={UserSettings}/>
                     <Route path="company" component={CompanySettings}/>
+                    <Route path="brand-page" component={BrandPageSettings}/>
                 </Route>
                 <Route path="/proposals/:templateId" component={ReadyRoostPage}/>
                 <Route path="/help" component={HelpPage}/>

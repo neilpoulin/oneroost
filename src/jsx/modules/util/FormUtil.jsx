@@ -50,6 +50,12 @@ exports.matchesField = function(fieldName){
     }
 }
 
+exports.matchesPattern = function(pattern){
+    return function(value, data){
+        return value.match(pattern)
+    }
+}
+
 function isNullOrEmpty(value){
     if (value === null){
         return true
