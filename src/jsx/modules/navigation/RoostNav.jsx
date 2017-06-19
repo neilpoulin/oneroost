@@ -82,6 +82,7 @@ const RoostNav = React.createClass({
                             <ul className="dropdown-menu">
                                 <NavLink to="/settings/profile">My Account</NavLink>
                                 <NavLink to="/settings/company">Company Settings</NavLink>
+                                <NavLink to="/settings/brand-page">Brand Page Settings</NavLink>
                                 <li role="separator" className="divider"></li>
                                 <NavLink to="/logout">Logout</NavLink>
                             </ul>
