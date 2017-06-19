@@ -35,7 +35,7 @@ const BrandPageForm = React.createClass({
         vanityUrl: new Validation(matchesPattern(/^[a-zA-Z0-9-_]+$/), "error", "The URL can only contain letters, numbers, and dashes"),
     },
     _doSave(){
-        const {vanityUrl, templateIds, description, descriptionLabel, pageTitle} = this.state
+        const {vanityUrl, templateIds, description, descriptionLabel, pageTitle, logoUrl} = this.state
         const {objectId} = this.props.brand
         this.props.saveBrandPage({
             vanityUrl,
@@ -44,6 +44,7 @@ const BrandPageForm = React.createClass({
             descriptionLabel,
             objectId,
             pageTitle,
+            logoUrl,
         })
         this.setState({saveSuccess: true})
         window.setTimeout(() => this.setState({saveSuccess: false}), 3000)
