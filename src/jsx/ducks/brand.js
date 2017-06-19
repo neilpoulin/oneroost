@@ -14,12 +14,15 @@ export const initialState = Map({
     lastLoaded: null,
     brandPageId: null,
     companyName: null,
+    description: null,
+    descriptionLabel: null,
     logoUrl: null,
     pageTitle: null,
     showOneRoostLink: true,
     showRoostNav: false,
     error: null,
-    templates: []
+    templates: [],
+    templateIds: [],
 })
 
 export default function reducer(state=initialState, action){
@@ -37,8 +40,11 @@ export default function reducer(state=initialState, action){
             state = state.set("brandPageId", payload.objectId)
             state = state.set("showOneRoostLink", !!payload.showOneRoostLink)
             state = state.set("showRoostNav", !!payload.showRoostNav)
-            state = state.set("templates", payload.templates);
-            state = state.set("companyName", payload.companyName);
+            state = state.set("templates", payload.templates)
+            state = state.set("companyName", payload.companyName)
+            state = state.set("templateIds", payload.templateIds || [])
+            state = state.set("description", payload.description)
+            state = state.set("descriptionLabel", payload.descriptionLabel)
             break;
         case LOAD_PAGE_ERROR:
             state = state.set("error", action.error)
@@ -52,6 +58,7 @@ export default function reducer(state=initialState, action){
 // Queries
 export const getBrandPageByUrl = (vanityUrl) => {
     let query = new Parse.Query(BrandPage.className)
+    query.include("templateIds")
     query.equalTo("vanityUrl", vanityUrl)
     return query.first()
 }

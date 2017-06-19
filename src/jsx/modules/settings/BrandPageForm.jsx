@@ -3,6 +3,7 @@ import FormInputGroup from "FormInputGroup"
 import FormSelectGroup from "FormSelectGroup"
 import {isUrlAvailable, saveBrandPage} from "ducks/brandPageSettings"
 import {matchesPattern, Validation, getErrors, hasErrors} from "FormUtil"
+import * as Template from "models/Template"
 import {connect} from "react-redux"
 
 const BrandPageForm = React.createClass({
@@ -17,25 +18,31 @@ const BrandPageForm = React.createClass({
         })
     },
     getInitialState(){
-        const {vanityUrl, logoUrl, templateIds=[]} = this.props.brand
+        const {vanityUrl, logoUrl, templateIds=[], description, descriptionLabel, pageTitle} = this.props.brand
         return {
             errors: {},
             vanityUrl,
             logoUrl,
             templateIds,
             saveSuccess: false,
+            description,
+            descriptionLabel,
+            pageTitle,
         }
     },
     _validations: {
         vanityUrl: new Validation(matchesPattern(/^[a-zA-Z0-9-_]+$/), "error", "The URL can only contain letters, numbers, and dashes"),
     },
     _doSave(){
-        const {vanityUrl, templateIds} = this.state
+        const {vanityUrl, templateIds, description, descriptionLabel, pageTitle} = this.state
         const {objectId} = this.props.brand
         this.props.saveBrandPage({
             vanityUrl,
             templateIds,
-            objectId
+            description,
+            descriptionLabel,
+            objectId,
+            pageTitle,
         })
         this.setState({saveSuccess: true})
         window.setTimeout(() => this.setState({saveSuccess: false}), 3000)
@@ -70,7 +77,7 @@ const BrandPageForm = React.createClass({
     _handleTemplateChange(i, selection){
         let {templateIds=[]} = this.state
         if (selection){
-            templateIds.splice(i, 1, selection.value)
+            templateIds.splice(i, 1, Template.Pointer(selection.value))
         }
         else {
             templateIds.splice(i, 1)
@@ -81,18 +88,18 @@ const BrandPageForm = React.createClass({
     },
     _handleNewTemplate({value}){
         const {templateIds=[]} = this.state
-        templateIds.push(value)
+        templateIds.push(Template.Pointer(value))
         this.setState({
             templateIds
         })
     },
     _filterTemplateOptions(includeId){
         const {templateOptions} = this.props
-        let {templateIds} = this.state
+        let templateIds = this.state.templateIds.map(template => template.objectId)
         return templateOptions.filter(({value}) => templateIds.indexOf(value) === -1 || value === includeId)
     },
     render () {
-        const {errors, vanityUrl, logoUrl, templateIds, saveSuccess} = this.state
+        const {errors, vanityUrl, logoUrl, templateIds, saveSuccess, description, descriptionLabel, pageTitle} = this.state
         let nextOpts = this._filterTemplateOptions(null)
         return (
             <div className="BrandPageForm">
@@ -105,29 +112,51 @@ const BrandPageForm = React.createClass({
                     onChange={(val) => this.setState({vanityUrl: val ? val.trim().toLowerCase() : ""})}
                     />
                 <FormInputGroup
+                    value={pageTitle}
+                    label="Page Title (Optional)"
+                    errors={errors}
+                    fieldName="pageTitle"
+                    onChange={(val) => this.setState({pageTitle: val})}
+                    />
+                <FormInputGroup
                     value={logoUrl}
                     label="Logo URL"
                     errors={errors}
                     fieldName={"logoUrl"}
+                    onChange={(val) => this.setState({logoUrl: val})}
                     />
                 <div className="logo-preview" display-if={logoUrl}>
                     <img src={logoUrl}/>
                 </div>
+                <FormInputGroup
+                    value={description}
+                    label="Description"
+                    errors={errors}
+                    fieldName={"description"}
+                    onChange={(val) => this.setState({description: val})}
+                    />
+                <FormInputGroup
+                    value={descriptionLabel}
+                    label="Description Label"
+                    errors={errors}
+                    fieldName={"descriptionLabel"}
+                    onChange={(val) => this.setState({descriptionLabel: val})}
+                    />
 
                 <label>Templates</label>
-                {templateIds.map((templateId, i) =>
+                {templateIds.map((template, i) =>
                     <FormSelectGroup
                         errors={errors}
-                        value={templateId}
-                        options={this._filterTemplateOptions(templateId)}
+                        value={template.objectId}
+                        options={this._filterTemplateOptions(template.objectId)}
                         fieldName={`template_${i + 1}`}
                         key={`template_${i + 1}`}
-                        onChange={(templateId) => this._handleTemplateChange(i, templateId)}
+                        onChange={(value) => this._handleTemplateChange(i, value)}
                         />
                 )}
 
                 <FormSelectGroup
-                    display-if={nextOpts}
+                    display-if={nextOpts && nextOpts.length > 0}
                     errors={errors}
                     value={""}
                     options={nextOpts}
