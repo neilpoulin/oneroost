@@ -5,12 +5,13 @@ import {isUrlAvailable, saveBrandPage} from "ducks/brandPageSettings"
 import {matchesPattern, Validation, getErrors, hasErrors} from "FormUtil"
 import * as Template from "models/Template"
 import {connect} from "react-redux"
+import {Link} from "react-router"
 
 const BrandPageForm = React.createClass({
     propTypes: {
         brand: PropTypes.shape({
             vanityUrl: PropTypes.string,
-            templateIds: PropTypes.arrayOf(PropTypes.string)
+            templateIds: PropTypes.arrayOf(PropTypes.object)
         }),
         templatesOptions: PropTypes.shape({
             value: PropTypes.string.isRequired,
@@ -99,6 +100,7 @@ const BrandPageForm = React.createClass({
         return templateOptions.filter(({value}) => templateIds.indexOf(value) === -1 || value === includeId)
     },
     render () {
+        const {templateOptions} = this.props
         const {errors, vanityUrl, logoUrl, templateIds, saveSuccess, description, descriptionLabel, pageTitle} = this.state
         let nextOpts = this._filterTemplateOptions(null)
         return (
@@ -142,33 +144,39 @@ const BrandPageForm = React.createClass({
                     fieldName={"descriptionLabel"}
                     onChange={(val) => this.setState({descriptionLabel: val})}
                     />
+                <div display-if={templateOptions.length > 0}>
+                    <label>Templates</label>
+                    {templateIds.map((template, i) =>
+                        <FormSelectGroup
+                            errors={errors}
+                            value={template.objectId}
+                            options={this._filterTemplateOptions(template.objectId)}
+                            fieldName={`template_${i + 1}`}
+                            key={`template_${i + 1}`}
+                            onChange={(value) => this._handleTemplateChange(i, value)}
+                            />
+                    )}
 
-                <label>Templates</label>
-                {templateIds.map((template, i) =>
                     <FormSelectGroup
+                        display-if={nextOpts && nextOpts.length > 0}
                         errors={errors}
-                        value={template.objectId}
-                        options={this._filterTemplateOptions(template.objectId)}
-                        fieldName={`template_${i + 1}`}
-                        key={`template_${i + 1}`}
-                        onChange={(value) => this._handleTemplateChange(i, value)}
+                        value={""}
+                        options={nextOpts}
+                        fieldName={"template_new"}
+                        onChange={this._handleNewTemplate}
                         />
-                )}
-
-                <FormSelectGroup
-                    display-if={nextOpts && nextOpts.length > 0}
-                    errors={errors}
-                    value={""}
-                    options={nextOpts}
-                    fieldName={"template_new"}
-                    onChange={this._handleNewTemplate}
-                    />
-
-                <button className="btn btn-outline-primary" onClick={this._submit}>Save</button>
-                <div className="success" display-if={saveSuccess}>
-                    Successfully Saved
                 </div>
+                <div display-if={templateOptions.length === 0}>
+                    <label>Templates</label>
+                    <p>You do not have any templates configured. Please to to <Link to="settings/company">Company Settings</Link> to configure some.</p>
                 </div>
+                <div>
+                    <button className="btn btn-outline-primary" onClick={this._submit}>Save</button>
+                    <div className="success" display-if={saveSuccess}>
+                        Successfully Saved
+                    </div>
+                </div>
+            </div>
         )
     }
 })

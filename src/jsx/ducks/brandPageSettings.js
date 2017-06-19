@@ -9,7 +9,7 @@ export const SAVE_BRAND_ERROR = "oneroost/brandPageSettings/SAVE_BRAND_ERROR"
 
 export const LOAD_PAGE_SUCCESS = "oneroost/brandPageSettings/LOAD_PAGE_SUCCESS"
 
-const initialState = fromJS({
+export const initialState = fromJS({
     isLoading: false,
     hasLoaded: false,
     errors: {},

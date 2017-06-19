@@ -1,6 +1,6 @@
 import React, { PropTypes } from "react"
 import {connect} from "react-redux"
-import {loadPages} from "ducks/brandSettingsAdmin"
+import {loadPages, createPage} from "ducks/brandSettingsAdmin"
 import {denormalize} from "normalizr"
 import * as BrandPage from "models/BrandPage"
 import * as Template from "models/Template"
@@ -11,19 +11,23 @@ import {Set} from "immutable"
 const BrandPageSettings = React.createClass({
     propTypes: {
         loadPages: PropTypes.func.isRequired,
+        createPage: PropTypes.func.isRequired,
     },
     componentWillMount(){
         const {loadPages} = this.props
         loadPages()
     },
     render () {
-        const {isLoading, brands, templateOptions} = this.props
+        const {isLoading, brands, templateOptions, createPage} = this.props
         return (
             <div className="BrandPageSettings">
                 <h2>Brand Page Settings</h2>
                 <div display-if={isLoading}>Loading....</div>
-                <div display-if={!isLoading && brands}>
+                <div display-if={!isLoading && brands.length > 0}>
                     {brands.map((brand, i) => <BrandPageForm key={`brand_${i}`} brand={brand} templateOptions={templateOptions}/>)}
+                </div>
+                <div display-if={!isLoading && brands.length === 0}>
+                    <button className="btn btn-primary" onClick={createPage}>Create a brand page</button>
                 </div>
             </div>
 
@@ -59,6 +63,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loadPages: () => {
             dispatch(loadPages())
             dispatch(loadSettings())
+        },
+        createPage: () => {
+            dispatch(createPage())
         }
     }
 }

@@ -42,7 +42,7 @@ const mapStateToProps = (state, ownProps) => {
     const entities = state.entities.toJS()
     const userState = state.user.toJS()
     const {isLoading, accountId, templateIds} = accountState
-    let departmentMap = state.accountSettings.get("departmentMap")
+    let departmentMap = state.accountSettings.get("departmentMap", {})
     if (accountState.isLoading || userState.isLoading){
         return {isLoading}
     }
