@@ -62,7 +62,7 @@ const mapStateToProps = (state, ownProps) => {
         isLoading,
         account,
         templates,
-        departments,
+        departments: departments || [],
         userRoles: userState.roles
     }
 }

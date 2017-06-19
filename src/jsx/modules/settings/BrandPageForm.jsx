@@ -19,7 +19,7 @@ const BrandPageForm = React.createClass({
         })
     },
     getInitialState(){
-        const {vanityUrl, logoUrl, templateIds=[], description, descriptionLabel, pageTitle} = this.props.brand
+        const {vanityUrl="", logoUrl="", templateIds=[], description="", descriptionLabel="", pageTitle=""} = this.props.brand
         return {
             errors: {},
             vanityUrl,
