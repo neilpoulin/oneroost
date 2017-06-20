@@ -4,7 +4,7 @@
         background-color: transparent;
         color: white;
         border-color: transparent;
-        .dropdown.open, .dropdown.open > a{
+        .dropdown.open, .dropdown.open > a, .navbar-collapse{
             background-color: transparent;
         }
     }
@@ -66,10 +66,32 @@
 
 @media (max-width: $screen-sm-min){
     .RoostNav{
-        &.transparent, &.font-hover-dark, &.font-hover-light{
+        &.transparent{
             .navbar-collapse{
-                background-color: $navbar-default-bg;
-                a:hover:not(.btn), .dropdown.open > a{
+                background-color: transparent;
+                a:hover:not(.btn), .dropdown.open > a, a:not(.btn){
+                    color: $roostOrange;
+                }
+            }
+        }
+
+        &.font-light{
+            .navbar-collapse{
+                .dropdown.open > a, a:not(.btn){
+                    color: white;
+                }
+            }
+        }
+        &.font-dark{
+            .navbar-collapse{
+                .dropdown.open > a, a:not(.btn){
+                    color: $roostDarkGray;
+                }
+            }
+        }
+        &.font-hover-dark, &.font-hover-light{
+            .navbar-collapse{
+                a:hover:not(.btn){
                     color: $roostOrange;
                 }
             }
