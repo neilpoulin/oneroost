@@ -1,14 +1,12 @@
 let selectedPermission
-var defaultIconUrl = "/static/images/logo/OneRoostLogo.png";
+var defaultIconUrl = "/static/images/apple/oneroost_logo_square_114.png";
 import { browserHistory } from "react-router"
 
-function getPermission()
-{
-    if ( selectedPermission ){
+function getPermission(){
+    if (selectedPermission){
         return selectedPermission
     }
-    if ( window.Notification )
-    {
+    if (window.Notification) {
         selectedPermission = Notification.permission
     }
     else {
@@ -17,11 +15,9 @@ function getPermission()
     return selectedPermission
 }
 
-function checkPermissions()
-{
+function checkPermissions(){
     let canSend = false;
-    if ( window.Notification )
-    {
+    if (window.Notification) {
         switch (getPermission()) {
             case "granted":
                 canSend = true;
@@ -39,31 +35,25 @@ function checkPermissions()
     return canSend;
 }
 
-
-exports.requestPermission = function()
-{
-    if ( window.Notification )
-    {
+exports.requestPermission = function(){
+    if (window.Notification) {
         Notification.requestPermission().then(checkPermissions);
     }
 }
 
-exports.sendNotification = function( opts )
-{
-    if ( document.hasFocus() )
-    {
+exports.sendNotification = function(opts){
+    if (document.hasFocus()) {
         return;
     }
 
-    if ( checkPermissions() )
-    {
-        var notification = new Notification( opts.title, {
+    if (checkPermissions()) {
+        var notification = new Notification(opts.title, {
             tag: opts.tag,
             body: opts.body,
             iconUrl: opts.icon || defaultIconUrl,
             icon: opts.icon || defaultIconUrl,
             requireInteraction: true
-        } );
+        });
         notification.onclick = function(){
             notification.close()
             window.focus()
