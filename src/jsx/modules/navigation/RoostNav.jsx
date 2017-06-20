@@ -66,8 +66,7 @@ const RoostNav = React.createClass({
                 <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul className="nav navbar-nav" >
                         <NavLink to="/reporting" display-if={user} >Reporting</NavLink>
-                        <NavLink to="/roosts" display-if={user}>Opportunities</NavLink>
-                        <NavLink tag="li" to="/help" display-if={!loginOnly} className="">Help</NavLink>
+                        <NavLink to="/roosts" display-if={user}>Opportunities</NavLink>                        
                     </ul>
                     <Link to="/signup" className={`btn btn-${regButtonType} navbar-btn navbar-right`} display-if={showRegister && !user && registrationEnabled}>Sign Up</Link>
 
