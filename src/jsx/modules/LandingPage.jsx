@@ -56,7 +56,7 @@ const LandingPage = withRouter(React.createClass({
                     <div className="emailContainer form-group" display-if={ctaButtonText}>
                         <input type="email"
                             value={email}
-                            placeholder={"Email Address"}
+                            placeholder={"name@company.com"}
                             className={`${invalidEmail ? "has-error" : ""}`}
                             name="email"
                             autoComplete={"email"}
