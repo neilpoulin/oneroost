@@ -20,6 +20,7 @@ var paths = {
         root: "./src",
         webpackModules: "./src/jsx",
         jsEntry: "./src/jsx/index.jsx",
+        chromeEntry: "./src/chrome/index.js",
         frontend: ["./src/jsx/**/*.jsx", "./src/jsx/**/*.js"],
         node: ["./src/node/**/*.js"],
         nodetemplates: ["./src/node/**/*.hbs", "./src/node/**/*.scss", "./src/node/**/*.json" ],

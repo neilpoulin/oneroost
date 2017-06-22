@@ -3,3 +3,4 @@ require("./version");
 require("./server");
 require("./prod");
 require("./db");
+require("./chrome");

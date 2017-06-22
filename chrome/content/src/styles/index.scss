@@ -1,0 +1,8 @@
+$bootstrap-sass-asset-helper: true;
+@import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+@import "./sass-resources";
+@import "./../../../../src/scss/bootstrap-custom/custom";
+.subject{
+    font-weight: bold;
+    color: $roostOrange;
+}

@@ -1,0 +1,38 @@
+{
+    "name": "OneRoost Dev",
+    "description": "Sample OneRoost Extension",
+    "version": "0.1",
+    "background": {
+        "scripts": [
+            "event.js"
+        ],
+        "persistent": true
+    },
+    "browser_action": {
+        "default_title": "OneRoost Example",
+        "default_popup": "popup.html",
+        "default_icon": {
+            "30": "images/logo30x30.png"
+        }
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://mail.google.com/*",
+                "https://inbox.google.com/*"
+            ],
+            "css": [],
+            "js": ["lib/inboxsdk.js", "content.js"],
+            "css": ["content.css"],
+            "run_at": "document_end"
+        }
+    ],
+    "permissions": [
+        "https://mail.google.com/",
+        "https://inbox.google.com/",
+        "https://stage.oneroost.com/*",
+        "https://www.oneroost.com/*",
+        "https://dev.oneroost.com/*"
+    ],
+    "manifest_version": 2
+}

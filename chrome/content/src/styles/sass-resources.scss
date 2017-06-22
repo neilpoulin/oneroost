@@ -1,0 +1,5 @@
+// Make variables and mixins available when using CSS modules.
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/_variables";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/_mixins";
+@import "./../../../../src/scss/variables";
+@import "./../../../../src/scss/mixins";
