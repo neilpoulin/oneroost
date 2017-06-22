@@ -81,7 +81,10 @@ const BrandPageForm = React.createClass({
         return false;
     },
     _delete(){
-        this.props.deletePage()
+        let confirm = window.confirm(`Are you sure you want to delete ${this.props.brand.vanityUrl || "(new page)"}?`)
+        if (confirm){        
+            this.props.deletePage()
+        }
     },
     _handleTemplateChange(i, selection){
         let {templateIds=[]} = this.state
