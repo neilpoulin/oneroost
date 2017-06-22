@@ -83,30 +83,36 @@ export const info = (msg, data) => {
 }
 
 export const warn = (msg, data) => {
+    if (Raven && data){
+        Raven.captureMessage(msg, data, {
+            level: "warning" // one of 'info', 'warning', or 'error'
+        });
+    }
+    else if (Raven){
+        Raven.captureMessage(msg, {
+            level: "warning" // one of 'info', 'warning', or 'error'
+        });
+    }
     if (level <= WARN && console){
-        if (data){
-            Raven.captureMessage(msg, data, {
-                level: "warning" // one of 'info', 'warning', or 'error'
-            });
+        if (msg && data){
             console.warn(msg, data)
         }
-        else {
-            Raven.captureMessage(msg, {
-                level: "warning" // one of 'info', 'warning', or 'error'
-            });
+        else{
             console.warn(msg)
         }
     }
 }
 
 export const error = (msg, data) => {
-    Raven.captureException(arguments)
+    if (Raven){
+        Raven.captureException(arguments)
+    }
     if (level <= ERROR && console){
         if (data){
             console.error(msg, data)
         }
         else {
-            console.log(msg)
+            console.error(msg)
         }
     }
 }

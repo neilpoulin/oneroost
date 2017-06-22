@@ -134,8 +134,8 @@ const BrandPageForm = React.createClass({
                     fieldName={"logoUrl"}
                     onChange={(val) => this.setState({logoUrl: val})}
                     />
-                <div className="logo-preview" display-if={logoUrl}>                    
-                    <Image src={logoUrl}/>
+                <div className="logo-preview" display-if={logoUrl}>
+                    <Image src={logoUrl} useErrorImage={true}/>
                 </div>
                 <FormInputGroup
                     value={description}
