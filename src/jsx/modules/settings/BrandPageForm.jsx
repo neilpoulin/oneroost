@@ -1,7 +1,8 @@
 import React, { PropTypes } from "react"
 import FormInputGroup from "FormInputGroup"
 import FormSelectGroup from "FormSelectGroup"
-import {isUrlAvailable, saveBrandPage} from "ducks/brandPageSettings"
+import {isUrlAvailable, saveBrandPage, deletePage} from "ducks/brandPageSettings"
+import {togglePageOpen} from "ducks/brandSettingsAdmin"
 import {matchesPattern, Validation, getErrors, hasErrors} from "FormUtil"
 import * as Template from "models/Template"
 import {connect} from "react-redux"
@@ -22,7 +23,6 @@ const BrandPageForm = React.createClass({
     },
     getInitialState(){
         const {vanityUrl="", logoUrl="", templateIds=[], description="", descriptionLabel="", pageTitle=""} = this.props.brand
-        const {collapse=true} = this.props
         return {
             errors: {},
             vanityUrl,
@@ -32,7 +32,6 @@ const BrandPageForm = React.createClass({
             description,
             descriptionLabel,
             pageTitle,
-            collapse,
         }
     },
     _validations: {
@@ -81,6 +80,9 @@ const BrandPageForm = React.createClass({
         this.setState({errors: errors});
         return false;
     },
+    _delete(){
+        this.props.deletePage()
+    },
     _handleTemplateChange(i, selection){
         let {templateIds=[]} = this.state
         if (selection){
@@ -106,24 +108,22 @@ const BrandPageForm = React.createClass({
         return templateOptions.filter(({value}) => templateIds.indexOf(value) === -1 || value === includeId)
     },
     _toggleCollapse(){
-        this.setState({
-            collapse: !this.state.collapse
-        })
+        this.props.toggleCollapse()
     },
     render () {
-        const {templateOptions, brand} = this.props
-        const {errors, vanityUrl, logoUrl, templateIds, saveSuccess, description, descriptionLabel, pageTitle, collapse} = this.state
+        const {templateOptions, brand, isOpen} = this.props
+        const {errors, vanityUrl, logoUrl, templateIds, saveSuccess, description, descriptionLabel, pageTitle} = this.state
         let nextOpts = this._filterTemplateOptions(null)
         return (
             <div className="BrandPageForm">
                 <div>
                     <span onClick={this._toggleCollapse} className="collapse-button">
-                        <i className={`fa fa-fw fa-caret-${collapse ? "right" : "down"}`}></i> {brand.vanityUrl}
+                        <i className={`fa fa-fw fa-caret-${isOpen ? "down" : "right"}`}></i> {brand.vanityUrl || "(new page)"}
                     </span>
-                    <Link to={`/${brand.vanityUrl}`} target="_blank" onClick={this._toggleCollapse}>View Page <i className="fa fa-external-link"></i></Link>
+                    <Link display-if={brand.vanityUrl} to={`/${brand.vanityUrl}`} target="_blank" onClick={this._toggleCollapse}>View Page <i className="fa fa-external-link"></i></Link>
                 </div>
 
-                <Collapse isOpened={!collapse}>
+                <Collapse isOpened={isOpen}>
                     <div className="collapse-content">
                         <FormInputGroup
                             value={vanityUrl}
@@ -195,19 +195,36 @@ const BrandPageForm = React.createClass({
                             <label>Templates</label>
                             <p>You do not have any templates configured. Please to to <Link to="settings/company">Company Settings</Link> to configure some.</p>
                         </div>
-                        <div>
-                            <button className="btn btn-outline-primary" onClick={this._submit}>Save</button>
-                            <div className="success" display-if={saveSuccess}>
-                                Successfully Saved
+                        <div className="actions">
+                            <div className="delete-action">
+                                <button className="btn btn-outline-danger" onClick={this._delete}><i className="fa fa-trash-o"></i> Delete</button>
+                            </div>
+                            <div className="save-action">
+                                <button className="btn btn-success" onClick={this._submit}><i className="fa fa-check"></i> Save</button>
+                                <div className="success" display-if={saveSuccess}>
+                                    Successfully Saved
+                                </div>
                             </div>
                         </div>
-                        </div>
+                    </div>
                 </Collapse>
             </div>
         )
     }
 })
 
-export default connect(null, {
-    saveBrandPage
-})(BrandPageForm)
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const {brand} = ownProps
+    const brandPageId = brand.objectId
+    return {
+        saveBrandPage: (object) => dispatch(saveBrandPage(object)),
+        deletePage: () => {
+            dispatch(deletePage(brandPageId))
+        },
+        toggleCollapse: () => {
+            dispatch(togglePageOpen(brandPageId))
+        }
+    }
+}
+
+export default connect(null, mapDispatchToProps)(BrandPageForm)

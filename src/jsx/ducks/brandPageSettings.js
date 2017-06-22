@@ -9,6 +9,10 @@ export const SAVE_BRAND_ERROR = "oneroost/brandPageSettings/SAVE_BRAND_ERROR"
 
 export const LOAD_PAGE_SUCCESS = "oneroost/brandPageSettings/LOAD_PAGE_SUCCESS"
 
+export const DELETE_PAGE_REQUEST = "oneroost/brandPageSettings/DELETE_PAGE_REQUEST"
+export const DELETE_PAGE_SUCCESS = "oneroost/brandPageSettings/DELETE_PAGE_SUCCESS"
+export const DELETE_PAGE_ERROR = "oneroost/brandPageSettings/DELETE_PAGE_ERROR"
+
 export const initialState = fromJS({
     isLoading: false,
     hasLoaded: false,
@@ -43,6 +47,25 @@ export const isUrlAvailable = (vanityUrl) => {
     return getBrandPageByUrl(vanityUrl)
         .then(results => results ? results.length > 0 : true)
         .catch(err => false)
+}
+
+export const deletePage = (pageId) => (dispatch, getState) => {
+    dispatch({
+        type: DELETE_PAGE_REQUEST,
+        brandPageId: pageId
+    })
+    let page = BrandPage.Pointer(pageId)
+    page.destroy().then(response => {
+        dispatch({
+            type: DELETE_PAGE_SUCCESS,
+            brandPageId: pageId
+        })
+    }).catch(error => {
+        dispatch({
+            type: DELETE_PAGE_ERROR,
+            brandPageId: pageId,
+        })
+    })
 }
 
 export const saveBrandPage = (changes) => (dispatch, getState) => {

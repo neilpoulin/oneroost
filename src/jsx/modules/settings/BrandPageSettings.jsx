@@ -18,21 +18,25 @@ const BrandPageSettings = React.createClass({
         loadPages()
     },
     render () {
-        const {isLoading, brands, templateOptions, createPage} = this.props
+        const {isLoading, brands, templateOptions, createPage, openPageIds} = this.props
         return (
             <div className="BrandPageSettings">
                 <h2>Brand Page Settings</h2>
                 <div display-if={isLoading}>Loading....</div>
                 <div display-if={!isLoading}>
                     <div display-if={brands.length > 0}>
-                        {brands.map((brand, i) => <BrandPageForm key={`brand_${i}`} brand={brand} templateOptions={templateOptions} collapse={brands.length > 1}/>)}
+                        {brands.map((brand, i) => <BrandPageForm key={`brand_${i}`}
+                            brand={brand}
+                            templateOptions={templateOptions}
+                            isOpen={openPageIds.indexOf(brand.objectId) !== -1}/>
+                        )}
                     </div>
                     <div display-if={brands.length === 0}>
                         <p className="lead">Oops, it looks like you have not created a cumpany brand page yet. Click the button below to get started.</p>
                         <button className="btn btn-primary" onClick={createPage}>Create a brand page</button>
                     </div>
                     <div display-if={brands.length > 0}>
-                        <button className="btn btn-primary" onClick={createPage}>Create another page</button>
+                        <button className="btn btn-primary" onClick={createPage}><i className="fa fa-plus"></i> Create another page</button>
                     </div>
                 </div>
             </div>
@@ -57,10 +61,12 @@ const mapStateToProps = (state, ownProps) => {
     const brands = denormalize(brandIds, [BrandPage.Schema], entities)
     const templates = denormalize(accountSettings.get("templateIds", Set()).toJS(), [Template.Schema], entities)
     const templateOptions = templates.map(({objectId, title}) => ({value: objectId, displayText: title})).sort((opt1, opt2) => opt1.displayText.localeCompare(opt2.displayText))
+    const openPageIds = brandSettingsAdmin.get("openPageIds").toJS()
     return {
         isLoading: false,
         brands,
         templateOptions,
+        openPageIds
     }
 }
 
