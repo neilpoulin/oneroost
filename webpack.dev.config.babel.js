@@ -47,7 +47,8 @@ module.exports = {
                             cacheDirectory: true,
                             presets: [
                                 "react",
-                                "es2015"
+                                "es2015",
+                                "stage-0"
                             ]
                         }
                     },
@@ -106,6 +107,6 @@ module.exports = {
     ],
     resolve: {
         extensions: [".js", ".jsx", ".json", ".scss", ".css", ".sass"],
-        modules: ["jsx", "modules", "ducks", "util", "admin", "brand", "settings", "payment", "deal", "form", "modules/dashboard", "navigation", "node_modules", "models", "actions", "reducers", "store", "middleware", "version"],
+        modules: ["jsx", "modules", "ducks", "util", "admin", "brand", "settings", "payment", "deal", "atom", "form", "modules/dashboard", "navigation", "node_modules", "models", "actions", "reducers", "store", "middleware", "version"],
     },
 };

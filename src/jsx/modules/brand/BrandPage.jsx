@@ -7,6 +7,7 @@ import {Link} from "react-router"
 import FourOhFourPage from "FourOhFourPage"
 import {denormalize} from "normalizr"
 import * as BrandPageModel from "models/BrandPage"
+import Image from "Image"
 import RoostNav, {TRANSPARENT_STYLE, DARK_FONT_STYLE} from "RoostNav"
 
 const BrandPage = React.createClass({
@@ -30,22 +31,14 @@ const BrandPage = React.createClass({
         if (isLoading){
             return <LoadingTakeover/>
         }
-        let $title = null
-        if (pageTitle){
-            $title = <span className="title">{pageTitle}</span>
-        }
-        let $logo = null
-        if (logoUrl){
-            $logo = <img src={logoUrl} className="brandLogo"></img>
-        }
 
         return (
             <div className="BrandPage">
                 <RoostNav backgroundStyle={TRANSPARENT_STYLE} loginOnly={true} fontStyle={DARK_FONT_STYLE} fixed={false}/>
                 <div className="container">
                     <div className="header">
-                        {$logo}
-                        {$title}
+                        <Image display-if={logoUrl} src={logoUrl} useErrorImage={false} className="brandLogo"/>
+                        <span display-if={pageTitle} className="title">{pageTitle}</span>
                     </div>
 
                     <div className="intro lead" display-if={description}>

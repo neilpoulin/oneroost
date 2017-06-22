@@ -22,6 +22,8 @@ const FormInputGroup = React.createClass({
         autocompleteType: PropTypes.string,
         name: PropTypes.string,
         autoFocus: PropTypes.bool,
+        description: PropTypes.string,
+        descriptionPosition: PropTypes.string,
     },
     getDefaultProps(){
         return {
@@ -92,6 +94,8 @@ const FormInputGroup = React.createClass({
             fieldName={this.props.fieldName}
             required={this.props.required}
             horizontal={this.props.horizontal}
+            description={this.props.description}
+            descriptionPosition={this.props.descriptionPosition}
             >
             {input}
             {this.props.children}
