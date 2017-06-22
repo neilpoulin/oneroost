@@ -23,11 +23,17 @@ const BrandPageSettings = React.createClass({
             <div className="BrandPageSettings">
                 <h2>Brand Page Settings</h2>
                 <div display-if={isLoading}>Loading....</div>
-                <div display-if={!isLoading && brands.length > 0}>
-                    {brands.map((brand, i) => <BrandPageForm key={`brand_${i}`} brand={brand} templateOptions={templateOptions}/>)}
-                </div>
-                <div display-if={!isLoading && brands.length === 0}>
-                    <button className="btn btn-primary" onClick={createPage}>Create a brand page</button>
+                <div display-if={!isLoading}>
+                    <div display-if={brands.length > 0}>
+                        {brands.map((brand, i) => <BrandPageForm key={`brand_${i}`} brand={brand} templateOptions={templateOptions}/>)}
+                    </div>
+                    <div display-if={brands.length === 0}>
+                        <p className="lead">Oops, it looks like you have not created a cumpany brand page yet. Click the button below to get started.</p>
+                        <button className="btn btn-primary" onClick={createPage}>Create a brand page</button>
+                    </div>
+                    <div display-if={brands.length > 0}>
+                        <button className="btn btn-primary" onClick={createPage}>Create another page</button>
+                    </div>
                 </div>
             </div>
 

@@ -6,6 +6,7 @@ import {matchesPattern, Validation, getErrors, hasErrors} from "FormUtil"
 import * as Template from "models/Template"
 import {connect} from "react-redux"
 import {Link} from "react-router"
+import Image from "Image"
 
 const BrandPageForm = React.createClass({
     propTypes: {
@@ -113,6 +114,9 @@ const BrandPageForm = React.createClass({
                     fieldName="vanityUrl"
                     pattern={/^[a-zA-Z0-9-_]+$/}
                     onChange={(val) => this.setState({vanityUrl: val ? val.trim().toLowerCase() : ""})}
+                    addonBefore="www.oneroost.com/"
+                    description="This is the public-facing URL that you can share with prospective partners"
+                    descriptionPosition="bottom"
                     />
                 <FormInputGroup
                     value={pageTitle}
@@ -120,6 +124,8 @@ const BrandPageForm = React.createClass({
                     errors={errors}
                     fieldName="pageTitle"
                     onChange={(val) => this.setState({pageTitle: val})}
+                    description="An Optional title to show at the top of the page"
+                    descriptionPosition="top"
                     />
                 <FormInputGroup
                     value={logoUrl}
@@ -128,8 +134,8 @@ const BrandPageForm = React.createClass({
                     fieldName={"logoUrl"}
                     onChange={(val) => this.setState({logoUrl: val})}
                     />
-                <div className="logo-preview" display-if={logoUrl}>
-                    <img src={logoUrl}/>
+                <div className="logo-preview" display-if={logoUrl}>                    
+                    <Image src={logoUrl}/>
                 </div>
                 <FormInputGroup
                     value={description}
