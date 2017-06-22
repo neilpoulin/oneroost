@@ -6,17 +6,18 @@ class ImageError extends React.Component {
     }
 
     render () {
-        const {useErrorImage, backupImageUrl} = this.props
+        const {useErrorImage, backupImageUrl, className} = this.props
         if (!useErrorImage){
             return null
         }
-        return <Image display-if={backupImageUrl} src={backupImageUrl} useErrorImage={false}/>
+        return <Image display-if={backupImageUrl} src={backupImageUrl} useErrorImage={false} className={className}/>
     }
 }
 
 ImageError.propTypes = {
     useErrorImage: PropTypes.bool,
     backupImageUrl: PropTypes.string,
+    className: PropTypes.string,
 }
 
 ImageError.defaultProps = {

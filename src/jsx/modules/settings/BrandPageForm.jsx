@@ -102,11 +102,12 @@ const BrandPageForm = React.createClass({
         return templateOptions.filter(({value}) => templateIds.indexOf(value) === -1 || value === includeId)
     },
     render () {
-        const {templateOptions} = this.props
+        const {templateOptions, brand} = this.props
         const {errors, vanityUrl, logoUrl, templateIds, saveSuccess, description, descriptionLabel, pageTitle} = this.state
         let nextOpts = this._filterTemplateOptions(null)
         return (
             <div className="BrandPageForm">
+                <h2><Link to={`/${brand.vanityUrl}`} target="_blank">{brand.vanityUrl}</Link></h2>
                 <FormInputGroup
                     value={vanityUrl}
                     label="Page URL"

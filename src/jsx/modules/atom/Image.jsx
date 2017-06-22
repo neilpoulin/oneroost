@@ -16,12 +16,12 @@ class Image extends React.Component {
         this.props.onError();
     }
     render () {
-        const {src, useErrorImage, backupImageUrl} = this.props
+        const {src, useErrorImage, backupImageUrl, className} = this.props
         const {errored} = this.state
         if (errored){
-            return <ImageError useErrorImage={useErrorImage} backupImageUrl={backupImageUrl}/>
+            return <ImageError useErrorImage={useErrorImage} backupImageUrl={backupImageUrl} className={className}/>
         }
-        return <img src={src} onError={() => this._onError()}/>
+        return <img src={src} onError={() => this._onError()} className={className}/>
     }
 }
 
@@ -30,6 +30,7 @@ Image.propTypes = {
     onError: PropTypes.func,
     useErrorImage: PropTypes.bool,
     backupImageUrl: PropTypes.string,
+    className: PropTypes.string,
 }
 
 Image.defaultProps = {
