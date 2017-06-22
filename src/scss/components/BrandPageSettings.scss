@@ -9,10 +9,20 @@
             max-height: 10rem;
         }
     }
-    margin-bottom: 8rem;
+    margin-bottom: 3rem;
+    .collapse-button{
+        &:hover{
+            cursor: pointer;
+        }
+        font-size: 3rem;
+        margin-right: 3rem;
+    }
 
-    &:not(:first-child){
-        border-top: $borderThick;
-        padding-top: 8rem;
+    border-bottom: $borderThick;
+    padding-bottom: 3rem;
+    .collapse-content{
+        padding-left: 4rem;
+        padding-right: 2rem;
+        padding-top: 1rem;
     }
 }

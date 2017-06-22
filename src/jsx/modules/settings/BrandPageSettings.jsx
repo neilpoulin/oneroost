@@ -25,7 +25,7 @@ const BrandPageSettings = React.createClass({
                 <div display-if={isLoading}>Loading....</div>
                 <div display-if={!isLoading}>
                     <div display-if={brands.length > 0}>
-                        {brands.map((brand, i) => <BrandPageForm key={`brand_${i}`} brand={brand} templateOptions={templateOptions}/>)}
+                        {brands.map((brand, i) => <BrandPageForm key={`brand_${i}`} brand={brand} templateOptions={templateOptions} collapse={brands.length > 1}/>)}
                     </div>
                     <div display-if={brands.length === 0}>
                         <p className="lead">Oops, it looks like you have not created a cumpany brand page yet. Click the button below to get started.</p>
