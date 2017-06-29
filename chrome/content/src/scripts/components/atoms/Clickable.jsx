@@ -12,18 +12,23 @@ class Clickable extends Component{
     }
 
     render () {
-        const {text} = this.props
+        const {text, className} = this.props
         return (
-            <button className="btn btn-outline-primary"
+            <button className={`btn ${className}`}
                 onClick={this._handleClick}
                 >{text}</button>
         )
     }
 }
 
+Clickable.defaultProps = {
+    className: "btn-outline-primary"
+}
+
 Clickable.propTypes = {
     text: PropTypes.string,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    className: PropTypes.string,
 }
 
 export default Clickable

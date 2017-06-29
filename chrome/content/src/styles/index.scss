@@ -1,8 +1,36 @@
 $bootstrap-sass-asset-helper: true;
-@import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+// @import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
 @import "./sass-resources";
-@import "./../../../../src/scss/bootstrap-custom/custom";
-.subject{
-    font-weight: bold;
-    color: $roostOrange;
+@import "./bootstrap-custom/custom";
+
+html, body{
+    // font-size: 100%;
+}
+.ThreadViewApp{
+    background-color: yellow;
+    .ThreadView{
+        height: 100%;
+        background: lightblue;
+        .subject{
+            font-weight: bold;
+            color: $roostOrange;
+        }
+        .message-body{
+            white-space: pre-line;
+        }
+    }
+}
+
+.form-group{
+    display: flex;
+    flex-direction: column;
+    input.form-control{
+        padding: 0 12;
+        width: auto;
+    }
+}
+
+#popup_app{
+    width: 300px;
+    min-height: 10rem;
 }

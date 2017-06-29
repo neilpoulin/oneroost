@@ -1,5 +1,6 @@
 const webpack = require("webpack")
 const path = require("path")
+var ProgressBarPlugin = require("progress-bar-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin")
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin")
 const extractCss = new ExtractTextPlugin({
@@ -7,20 +8,22 @@ const extractCss = new ExtractTextPlugin({
 })
 
 module.exports = {
-    entry: [
-        path.join(__dirname, "src", "scripts", "index.js"),
-        path.join(__dirname, "src", "styles", "index.scss"),
-    ],
+    entry: {
+        content: [path.join(__dirname, "src", "scripts", "content_index.js"), path.join(__dirname, "src", "styles", "index.scss")],
+        "content-test": path.join(__dirname, "src", "scripts", "test_index.js"),
+        event: path.join(__dirname, "src", "scripts", "event_index.js"),
+        popup: path.join(__dirname, "src", "scripts", "popup_index.js"),
+    },
 
     output: {
-        filename: "content.js",
+        filename: "[name].js",
         path: path.join(__dirname, "../", "build"),
         publicPath: "/"
     },
 
     resolve: {
         extensions: [".js", ".jsx", ".scss", ".json"],
-        modules: [ "components/app", "view", "atoms", "node_modules" ]
+        modules: ["scripts", "store", "ducks", "components", "components/app", "components/view", "atoms", "node_modules" ]
     },
     devtool: "source-map",
     module: {
@@ -37,6 +40,10 @@ module.exports = {
             {
                 test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
                 loader: "file-loader?name=fonts/[name].[ext]"
+            },
+            {
+                test: /\.json$/,
+                use: "json-loader"
             },
             {
                 test: /\.scss$/,
@@ -65,6 +72,7 @@ module.exports = {
     },
     plugins: [
         extractCss,
+        new ProgressBarPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("production")}}),
         new OptimizeCssAssetsPlugin()

@@ -1,41 +1,58 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types"
 import {connect} from "react-redux"
-import Clickable from "Clickable"
+import {getFullName} from "ducks/user"
 
 class ThreadView extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            count: 0
-        };
     }
 
     render() {
-        const {count, addCount, subject} = this.props
+        const {subject, sender, body, isLoggedIn, fullName} = this.props
         return (
-            <div>
+            <div className="ThreadView">
+                <div display-if={isLoggedIn}>
+                    <h3>Welcome, {fullName}</h3>
+                </div>
                 <div className="subject">{subject}</div>
-                <div>Count: {count}</div>
-                <Clickable text="Click Me" onClick={addCount}/>
+                <div display-if={sender}>
+                    From: {sender.name} ({sender.emailAddress})
+                </div>
+                <div display-if={body}>
+                    <h4>Body</h4>
+                    <p className="message-body">{body}</p>
+                </div>
             </div>
         );
     }
 }
 
 ThreadView.propTypes = {
-    subject: PropTypes.string
+    subject: PropTypes.string,
+    body: PropTypes.string,
+    sender: PropTypes.shape({
+        emailAddress: PropTypes.string,
+        name: PropTypes.string
+    })
 }
 
 const mapStateToProps = (state) => {
+    const thread = state.thread
+    const {userId, isLoggedIn} = state.user;
     return {
-        count: state.count,
+        subject: thread.subject,
+        body: thread.body,
+        sender: thread.sender,
+        userId,
+        isLoggedIn,
+        fullName: getFullName(state)
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addCount: () => dispatch({type: "ADD_COUNT"})
+        
     }
 }
 

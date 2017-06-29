@@ -33,6 +33,8 @@ module.exports = {
     "globals": {
         // "OneRoost": true,
         "InboxSDK": true,
+        "chrome": true,
+        "gapi": true,
     },
     "rules": {
         "strict": [2, "never"],

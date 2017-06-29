@@ -1,20 +1,14 @@
 import React from "react";
 import {render} from "react-dom";
 import {Provider} from "react-redux";
-import {Store} from "react-chrome-redux";
 import ThreadView from "ThreadView";
 
 const anchor = document.createElement("div");
+anchor.className = "ThreadViewApp"
 
-const proxyStore = new Store({
-    state: {},
-    portName: "oneroost"
-});
-
-export default ({subject}) => {
-    render(
-        <Provider store={proxyStore}>
-            <ThreadView subject={subject}/>
+export default ({store}) => {
+    render(<Provider store={store} className="">
+            <ThreadView/>
         </Provider>,
         anchor)
 

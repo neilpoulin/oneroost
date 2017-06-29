@@ -5,69 +5,58 @@ import rimraf from "rimraf";
 
 const plugins = loadPlugins();
 
-import popupWebpackConfig from "./popup/webpack.config";
-import eventWebpackConfig from "./event/webpack.config";
 import contentWebpackConfig from "./content/webpack.config";
 
-gulp.task("popup-js", ["clean"], (cb) => {
-    webpack(popupWebpackConfig, (err, stats) => {
-        if(err) throw new plugins.util.PluginError("webpack", err);
+function chromeWebpack(config, cb){
+    webpack(config, (err, stats) => {
+        if(err) {
+            plugins.util.log("[webpack: ERROR]", plugins.util.colors.red(err));
+            throw new plugins.util.PluginError("webpack", err);
+        }
 
-        plugins.util.log("[webpack]", stats.toString());
-
-        cb();
-    });
-});
-
-gulp.task("event-js", ["clean"], (cb) => {
-    webpack(eventWebpackConfig, (err, stats) => {
-        if(err) throw new plugins.util.PluginError("webpack", err);
-
-        plugins.util.log("[webpack]", stats.toString());
+        plugins.util.log("[webpack]", plugins.util.colors.yellow(stats.toString()));
 
         cb();
     });
+}
+
+gulp.task("chrome:content-js", ["chrome:clean"], (cb) => {
+    chromeWebpack(contentWebpackConfig, cb)
 });
 
-gulp.task("content-js", ["clean"], (cb) => {
-    webpack(contentWebpackConfig, (err, stats) => {
-        if(err) throw new plugins.util.PluginError("webpack", err);
-
-        plugins.util.log("[webpack]", stats.toString());
-
-        cb();
-    });
-});
-
-gulp.task("popup-html", ["clean"], () => {
-    return gulp.src("popup/src/index.html")
+gulp.task("chrome:popup-html", ["chrome:clean"], () => {
+    return gulp.src("content/src/popup.html")
         .pipe(plugins.rename("popup.html"))
         .pipe(gulp.dest("./build"))
 });
 
-gulp.task("copy-manifest", ["clean"], () => {
+gulp.task("chrome:content-test-html", ["chrome:clean"], () => {
+    return gulp.src("content/test/test.html")
+        .pipe(plugins.rename("content-test.html"))
+        .pipe(gulp.dest("./build"))
+});
+
+gulp.task("chrome:copy-manifest", ["chrome:clean"], () => {
     return gulp.src("manifest.json")
         .pipe(gulp.dest("./build"));
 });
 
-gulp.task("copy-images", ["clean"], () => {
+gulp.task("chrome:copy-images", ["chrome:clean"], () => {
     return gulp.src("images/**/*").pipe(gulp.dest("./build/images"));
 })
 
-gulp.task("copy-lib", ["clean"], () => {
+gulp.task("chrome:copy-lib", ["chrome:clean"], () => {
     return gulp.src("lib/**/*").pipe(gulp.dest("./build/lib"));
 })
 
-gulp.task("clean", (cb) => {
+gulp.task("chrome:clean", (cb) => {
     rimraf("./build", cb);
 });
 
-gulp.task("build", ["copy-images", "copy-lib", "copy-manifest", "popup-js", "popup-html", "event-js", "content-js"]);
+gulp.task("chrome", ["chrome:copy-images", "chrome:copy-lib", "chrome:copy-manifest", "chrome:popup-html", "chrome:content-js", "chrome:content-test-html"]);
 
-gulp.task("watch", ["default"], () => {
-    gulp.watch("popup/**/*", ["build"]);
-    gulp.watch("content/**/*", ["build"]);
-    gulp.watch("event/**/*", ["build"]);
+gulp.task("chrome:watch", ["chrome"], () => {
+    // gulp.watch("popup/**/*", ["chrome"]);
+    gulp.watch("content/**/*", ["chrome"]);
+    // gulp.watch("event/**/*", ["chrome"]);
 });
-
-gulp.task("default", ["build"]);
