@@ -28,9 +28,7 @@ Promise.all([loadSDK, storeReady]).then(function([sdk, isReady]){
         const subject = threadView.getSubject()
         dispatch({type: RESET_THREAD})
         dispatch({type: SET_SUBJECT, payload: subject})
-        var app = ThreadViewApp({
-            store: store
-        })
+        var app = ThreadViewApp
         threadView.addSidebarContentPanel({
             el: app,
             title: "Thread Info",

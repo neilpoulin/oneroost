@@ -4,14 +4,10 @@ import {render} from "react-dom";
 import {connect} from "react-redux"
 import {LOAD_PAGES_ALIAS} from "actions/brandPages"
 
-const composeText = "Thanks for reaching out."
-+ "I'm excited to hear what more about your product/service."
-+ "Please provide an overview of your offering by going to http://www.oneroost.com/"
-
-function buildHtmlLink(vanityUrl){
+function buildHtmlLink(vanityUrl, toName){
     let $el = document.createElement("div")
     let jsx = <div>
-            Thanks for reaching out. I{"'"}m excited to hear what more about your product/service.
+            Thanks for reaching out{`${toName ? `, ${toName}` : ""}`}. I{"'"}m excited to hear what more about your product/service.
             Please provide an overview of your offering by going to <a href={`https://www.oneroost.com/${vanityUrl}`}>{"my page"}</a>
         </div>
     render(jsx, $el)
@@ -22,15 +18,16 @@ class RedirectDropdownView extends React.Component {
         this.props.loadPages()
     }
     render () {
-        const {composeView, isLoading, pages} = this.props
+        const {isLoading, pages, insertLink, toName} = this.props
         return <div className="RedirectDropdownView">
             <div display-if={isLoading}>
                 Loading....
             </div>
             <div display-if={!isLoading}>
+                <span>Brand Page Urls</span>
                 <ul className="vanityUrls">
                     {pages.map((page, i) => {
-                        return <li key={`page_${i}`} onClick={() => composeView.insertHTMLIntoBodyAtCursor(buildHtmlLink(page.vanityUrl))}>/{page.vanityUrl}</li>
+                        return <li key={`page_${i}`} onClick={() => insertLink(page.vanityUrl, toName)}>/{page.vanityUrl}</li>
                     })}
                 </ul>
             </div>
@@ -39,7 +36,9 @@ class RedirectDropdownView extends React.Component {
 }
 
 RedirectDropdownView.propTypes = {
-    composeView: PropTypes.object.isRequired
+    composeView: PropTypes.object.isRequired,
+    insertLink: PropTypes.func.isRequired,
+    loadPages: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -49,10 +48,21 @@ const mapStateToProps = (state, ownProps) => {
             isLoading: true
         }
     }
+    const {composeView} = ownProps
+    let to = null;
+    try{
+        let recipients = composeView.getToRecipients()
+        if(recipients.length > 0){
+            to = recipients[0]
+        }
+    }
+    catch(e){}
+
     return {
         isLoading: brandPages.isLoading,
         pages: brandPages.pages,
-
+        toName: to ? to.name : null,
+        toEmail: to ? to.emailAddress : null,
     }
 }
 
@@ -62,6 +72,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch({
                 type: LOAD_PAGES_ALIAS
             })
+        },
+        insertLink: (vanityUrl, toName) => {
+            console.log("TODO: Adding filter")
+            ownProps.composeView.insertHTMLIntoBodyAtCursor(buildHtmlLink(vanityUrl, toName))
         }
     }
 }
