@@ -1,9 +1,9 @@
 import {Store} from "react-chrome-redux"
 import ThreadViewApp from "ThreadViewApp"
-import {SET_SUBJECT, SET_BODY, SET_SENDER, SET_ROOST_ID, RESET_THREAD} from "ducks/thread"
+import {SET_SUBJECT, SET_BODY, SET_SENDER, SET_ROOST_ID, RESET_THREAD} from "actions/thread"
+import {composeViewHandler} from "RedirectButtonController"
 
 const iconUrl = "https://www.oneroost.com/favicon.ico"
-const oneroostRouteId = "OneRoost-Route"
 
 const store = new Store({
     portName: "oneroost"
@@ -22,19 +22,7 @@ Promise.all([loadSDK, storeReady]).then(function([sdk, isReady]){
     // let oneroostRoute = sdk.Router.createLink(oneroostRouteId, {})
     // console.log("oneroostRoute", oneroostRoute)
     // the SDK has been loaded, now do something with it!
-    sdk.Compose.registerComposeViewHandler(function(composeView){
-        // a compose view has come into existence, do something with it!
-        composeView.addButton({
-            title: "OneRoost !",
-            iconUrl,
-            onClick: function(event) {
-                event.composeView.insertTextIntoBodyAtCursor("Thanks for reaching out."
-                + "I'm excited to hear what more about your product/service."
-                + "Please provide an overview of your offering by going to http://www.oneroost.com/oneroost");
-                sdk.Router.goto(oneroostRouteId)
-            },
-        });
-    });
+    sdk.Compose.registerComposeViewHandler(composeViewHandler);
 
     sdk.Conversations.registerThreadViewHandler(function(threadView){
         const subject = threadView.getSubject()

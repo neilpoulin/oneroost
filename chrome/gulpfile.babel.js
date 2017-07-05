@@ -6,6 +6,7 @@ import rimraf from "rimraf";
 const plugins = loadPlugins();
 
 import contentWebpackConfig from "./content/webpack.config";
+import backgroundWebpackConfig from "./background/webpack.config";
 
 function chromeWebpack(config, cb){
     webpack(config, (err, stats) => {
@@ -20,8 +21,18 @@ function chromeWebpack(config, cb){
     });
 }
 
+gulp.task("chrome:background-js", ["chrome:clean"], (cb) => {
+    chromeWebpack(backgroundWebpackConfig, cb)
+});
+
 gulp.task("chrome:content-js", ["chrome:clean"], (cb) => {
     chromeWebpack(contentWebpackConfig, cb)
+});
+
+gulp.task("chrome:background-html", ["chrome:clean"], () => {
+    return gulp.src("background/src/background.html")
+        .pipe(plugins.rename("background.html"))
+        .pipe(gulp.dest("./build"))
 });
 
 gulp.task("chrome:popup-html", ["chrome:clean"], () => {
@@ -30,14 +41,13 @@ gulp.task("chrome:popup-html", ["chrome:clean"], () => {
         .pipe(gulp.dest("./build"))
 });
 
-gulp.task("chrome:content-test-html", ["chrome:clean"], () => {
-    return gulp.src("content/test/test.html")
-        .pipe(plugins.rename("content-test.html"))
-        .pipe(gulp.dest("./build"))
-});
-
 gulp.task("chrome:copy-manifest", ["chrome:clean"], () => {
     return gulp.src("manifest.json")
+        .pipe(gulp.dest("./build"));
+});
+
+gulp.task("chrome:copy-oauth-html", ["chrome:clean"], () => {
+    return gulp.src("chrome_ex_oauth.html")
         .pipe(gulp.dest("./build"));
 });
 
@@ -53,10 +63,17 @@ gulp.task("chrome:clean", (cb) => {
     rimraf("./build", cb);
 });
 
-gulp.task("chrome", ["chrome:copy-images", "chrome:copy-lib", "chrome:copy-manifest", "chrome:popup-html", "chrome:content-js", "chrome:content-test-html"]);
+gulp.task("chrome", ["chrome:copy-images",
+                     "chrome:copy-lib",
+                     "chrome:copy-oauth-html",
+                     "chrome:copy-manifest",
+                     "chrome:popup-html",
+                     "chrome:background-html",
+                     "chrome:content-js",
+                     "chrome:background-js"]);
 
 gulp.task("chrome:watch", ["chrome"], () => {
-    // gulp.watch("popup/**/*", ["chrome"]);
     gulp.watch("content/**/*", ["chrome"]);
-    // gulp.watch("event/**/*", ["chrome"]);
+    gulp.watch("manifest.json", ["chrome"]);
+    gulp.watch("lib/**/*", ["chrome"]);
 });

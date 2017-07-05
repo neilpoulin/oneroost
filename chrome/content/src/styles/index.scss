@@ -2,7 +2,7 @@ $bootstrap-sass-asset-helper: true;
 // @import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
 @import "./sass-resources";
 @import "./bootstrap-custom/custom";
-
+@import "./google";
 html, body{
     // font-size: 100%;
 }

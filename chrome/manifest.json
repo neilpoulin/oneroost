@@ -3,9 +3,7 @@
     "description": "Sample OneRoost Extension",
     "version": "0.1",
     "background": {
-        "scripts": [
-            "event.js"
-        ],
+        "page": "background.html",
         "persistent": true
     },
     "icons": {
@@ -36,10 +34,18 @@
         "https://stage.oneroost.com/*",
         "https://www.oneroost.com/*",
         "https://dev.oneroost.com/*",
-        "identity"
+        "https://www.google.com/accounts/OAuthGetRequestToken",
+        "https://www.google.com/accounts/OAuthAuthorizeToken",
+        "https://www.google.com/accounts/OAuthGetAccessToken",
+        "https://docs.google.com/feeds/*",
+        "https://accounts.google.com/o/oauth2/token",
+        "identity",
+        "tabs"
     ],
     "web_accessible_resources": [
-        "images/*.png"
+        "images/*.png",
+        "lib/*.js",
+        "*.html"
     ],
     "manifest_version": 2,
     "content_security_policy": "script-src https://*.google.com 'unsafe-eval'; object-src 'self'",
@@ -47,7 +53,7 @@
         "client_id": "298915058255-8mq6ebtrh8e78en6k4kq5p2i8em42s9d.apps.googleusercontent.com",
         "scopes": [
             "https://www.googleapis.com/auth/gmail.modify",
-             "openid", "email", "profile"
+            "openid", "email", "profile"
         ]
     },
     "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5TPxBMexUUVSn0uUYX2p7/qUmANKdFteXWQdE+MHbTuYCILYTy3qFtMEENEKDQ8oN7n+EQPQpiMTz7/76TZGQHDASxA0shmZvfhTRJ+BcIqr7yrhJSsLvhWGDgT24jf2ubbLTX2GJQHMOsMdsgW14Gb/npFZg5LmheR47rWcpE5WyUq2Vm5ItMGXoWnSTWOjbWWpkz/m5j9cJccbbGOfAsohCLIlaVJ92vPUTALUhK+N/+9kN1xpZrIQ9m5TdN0Z6VvM/eVJe+41+1qDE91/T+lAwFwNTDXkVodVimUM/JnOLPH8Esh7bDHWmSbpvUYGFCYM2hOGVYOq1cMzyRXwZwIDAQAB"

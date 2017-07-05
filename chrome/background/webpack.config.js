@@ -1,6 +1,6 @@
 const webpack = require("webpack")
 const path = require("path")
-const ProgressBarPlugin = require("progress-bar-webpack-plugin");
+var ProgressBarPlugin = require("progress-bar-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin")
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin")
 const extractCss = new ExtractTextPlugin({
@@ -9,11 +9,7 @@ const extractCss = new ExtractTextPlugin({
 
 module.exports = {
     entry: {
-        content: [
-            path.join(__dirname, "src", "scripts", "content_index.js"),
-            path.join(__dirname, "src", "styles", "index.scss")
-        ],
-        popup: path.join(__dirname, "src", "scripts", "popup_index.js"),
+        background: path.join(__dirname, "src", "scripts", "background_index.js"),
     },
 
     output: {
@@ -24,7 +20,7 @@ module.exports = {
 
     resolve: {
         extensions: [".js", ".jsx", ".scss", ".json"],
-        modules: ["scripts", "store", "ducks", "../proxy/src/scripts", "components", "components/app", "components/view", "selectors", "atoms", "node_modules", "actions", "controllers" ]
+        modules: ["scripts", "../proxy/src/scripts", "store", "ducks", "components", "components/app", "components/view", "atoms", "node_modules", "actions", "controllers" ]
     },
     devtool: "source-map",
     module: {

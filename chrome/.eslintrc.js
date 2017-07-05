@@ -35,6 +35,7 @@ module.exports = {
         "InboxSDK": true,
         "chrome": true,
         "gapi": true,
+        "ChromeExOAuth": true,
     },
     "rules": {
         "strict": [2, "never"],

@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types"
 import {connect} from "react-redux"
-import {getFullName} from "ducks/user"
+import {getFullName} from "selectors/user"
 
 class ThreadView extends Component {
     constructor(props) {
@@ -52,7 +52,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        
+
     }
 }
 

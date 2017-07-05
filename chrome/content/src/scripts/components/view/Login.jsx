@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import Clickable from "Clickable"
-import {logInAlias} from "ducks/user"
+import {LOG_IN_ALIAS} from "actions/user"
 import {connect} from "react-redux"
 import FormInputGroup from "FormInputGroup"
 class Login extends React.Component {
@@ -39,7 +39,11 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         logIn: ({email, password}) => {
-            dispatch(logInAlias({email, password}))
+            dispatch({
+                type: LOG_IN_ALIAS,
+                email,
+                password
+            })
         }
     }
 }
