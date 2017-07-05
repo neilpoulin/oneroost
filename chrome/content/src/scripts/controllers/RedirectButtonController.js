@@ -1,9 +1,6 @@
 import {fromElement} from "RedirectDropdownApp"
 
 const iconUrl = "https://www.oneroost.com/favicon.ico"
-const composeText = "Thanks for reaching out."
-+ "I'm excited to hear what more about your product/service."
-+ "Please provide an overview of your offering by going to http://www.oneroost.com/oneroost"
 
 export function composeViewHandler(composeView){
     // a compose view has come into existence, do something with it!

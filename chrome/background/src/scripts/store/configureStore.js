@@ -4,13 +4,14 @@ import {alias} from "react-chrome-redux";
 import logger from "./middleware/logger"
 import reducers from "./../ducks"
 import {aliases as userAliases} from "./../ducks/user"
+import {aliases as brandPagesAliases} from "./../ducks/brandPages"
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const aliases = {
-    ...userAliases
+    ...userAliases,
+    ...brandPagesAliases,
 }
 let middlewares = [alias(aliases), thunkMiddleware, logger]
 
 const store = createStore(reducers, composeEnhancers(applyMiddleware(...middlewares)));
-
 export default store;

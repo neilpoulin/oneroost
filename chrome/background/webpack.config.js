@@ -20,7 +20,7 @@ module.exports = {
 
     resolve: {
         extensions: [".js", ".jsx", ".scss", ".json"],
-        modules: ["scripts", "../proxy/src/scripts", "store", "ducks", "components", "components/app", "components/view", "atoms", "node_modules", "actions", "controllers" ]
+        modules: ["scripts", "../proxy/src/scripts", "store", "ducks", "components", "model", "components/app", "components/view", "atoms", "node_modules", "actions", "controllers" ]
     },
     devtool: "source-map",
     module: {

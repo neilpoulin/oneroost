@@ -11,16 +11,13 @@ var manifest = chrome.runtime.getManifest();
 
 var scopes = encodeURIComponent(manifest.oauth2.scopes.join(" "));
 
-window.gapi_onload = () => {
-    gapi.load("client:auth2", initClient);
-}
 function getLastToken() {
     return token;
 }
 
-function initClient() {
+export function loadUserFromCache() {
     console.log("Client finished loading", gapi)
-    oauth2(false)
+    return oauth2(false)
 }
 
 export function handleSignInClick(event) {

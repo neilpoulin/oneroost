@@ -74,6 +74,7 @@ gulp.task("chrome", ["chrome:copy-images",
 
 gulp.task("chrome:watch", ["chrome"], () => {
     gulp.watch("content/**/*", ["chrome"]);
+    gulp.watch("background/**/*", ["chrome"]);
     gulp.watch("manifest.json", ["chrome"]);
     gulp.watch("lib/**/*", ["chrome"]);
 });

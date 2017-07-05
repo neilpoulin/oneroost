@@ -1,6 +1,6 @@
 import Parse from "parse"
 import {fromJS} from "immutable"
-import {handleSignInClick, handleSignOutClick} from "googleAuth"
+import {handleSignInClick, handleSignOutClick, loadUserFromCache} from "googleAuth"
 import * as UserActions from "actions/user"
 
 const initialState = {
@@ -84,7 +84,7 @@ export const loadUserDetails = (userId) => (dispatch, getState) => {
 
 export const logIn = ({email, password}) => (dispatch, getState) => {
     const state = getState()
-    if (state.isLoggedIn && Parse.User.current()) {
+    if (state.isLoggedIn) {
         console.log("user already logged in, exiting")
         return null
     }
@@ -127,6 +127,22 @@ export const logOutGoogle = () => (dispatch, getState) => {
     handleSignOutClick().then(() => {
         dispatch({type: UserActions.GOOGLE_LOG_OUT_SUCCESS})
     })
+}
+
+export const loadCachedUser = () => (dispatch, getState) => {
+    let user = Parse.User.current()
+    if (user){
+        dispatch({
+            type: UserActions.LOG_IN_SUCCESS,
+            userId: user.id,
+            payload: user.toJSON()
+        })
+        dispatch(loadUserDetails(user.id))
+    }
+    loadUserFromCache().then(({email}) => {
+        console.log("Loaded google user from cache finished...", email)
+        dispatch({type: UserActions.GOOGLE_LOG_IN_SUCCESS, payload: {email}})
+    }).catch(console.error)
 }
 
 export const aliases = {
