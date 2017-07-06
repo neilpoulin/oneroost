@@ -21,7 +21,9 @@
         }
 
     }
-    Raven.config('https://50020b1e8db94c39be96db010cdbba4f@sentry.io/128546', ravenCfg).install()
+    if (window.Raven){
+        window.Raven.config('https://50020b1e8db94c39be96db010cdbba4f@sentry.io/128546', ravenCfg).install()
+    }
 
     if (!version) {
         console.warn("No version information found!");

@@ -1,4 +1,4 @@
-import {fromJS} from "immutable"
+import {fromJS, List} from "immutable"
 import * as brandPageSettings from "ducks/brandPageSettings"
 import {getActions} from "DuckUtil"
 import {normalize} from "normalizr"
@@ -6,7 +6,7 @@ import Parse from "parse"
 import * as BrandPage from "models/BrandPage"
 import * as Account from "models/Account"
 import {getCurrentAccountId} from "ducks/user"
-import {LOAD_PAGE_SUCCESS} from "ducks/brandPageSettings"
+import {LOAD_PAGE_SUCCESS, DELETE_PAGE_SUCCESS} from "ducks/brandPageSettings"
 import * as log from "LoggingUtil"
 
 const pageSettingsActions = getActions(brandPageSettings)
@@ -20,21 +20,31 @@ export const CREATE_BRAND_PAGE_REQUEST = "oneroost/brandPageSettings/CREATE_BRAN
 export const CREATE_BRAND_PAGE_SUCCESS = "oneroost/brandPageSettings/CREATE_BRAND_PAGE_SUCCESS"
 export const CREATE_BRAND_PAGE_ERROR = "oneroost/brandPageSettings/CREATE_BRAND_PAGE_ERROR"
 
+export const TOGGLE_PAGE_ID_OPEN = "oneroost/brandSettingsAdmin/TOGGLE_PAGE_ID_OPEN"
+export const SET_OPEN_PAGE_IDS = "oneroost/brandSettingsAdmin/SET_OPEN_PAGE_IDS"
+
 const initialState = fromJS({
     isLoading: false,
     hasLoaded: false,
+    openPageIds: [],
     brandPageIds: [],
     brandPageSettingsById: {},
     error: {},
 })
 
 const getPageIdFromAction = (action) => {
-    let pageId = action.brandPageId || action.payload.get("objectId") || action.payload.getIn(["brandPage", "objectId"])
-    return pageId
+    try{
+        let pageId = action.brandPageId || action.payload.get("objectId") || action.payload.getIn(["brandPage", "objectId"])
+        return pageId
+    }
+    catch (e){
+        return null
+    }
 }
 
 export default function reducer(state=initialState, action){
     const payload = action.payload
+    const pageId = getPageIdFromAction(action)
     switch (action.type) {
         case LOAD_BRAND_PAGES_REQUEST:
             state = state.set("isLoading", true)
@@ -50,9 +60,26 @@ export default function reducer(state=initialState, action){
             state = state.set("error", payload.error)
             break;
         case CREATE_BRAND_PAGE_SUCCESS:
-            let pageId = getPageIdFromAction(action)
             state = state.setIn(["brandPageSettingsById", pageId], brandPageSettings.default(state.getIn(["brandPageSettingsById", pageId]), action))
+            state = state.set("openPageIds", List([pageId]))
             break
+        case DELETE_PAGE_SUCCESS:
+            state = state.deleteIn(["brandPageSettingsById", pageId])
+            break;
+        case SET_OPEN_PAGE_IDS:
+            state = state.set("openPageIds", fromJS(payload))
+            break
+        case TOGGLE_PAGE_ID_OPEN:
+            let openIds = state.get("openPageIds", List()).toJS()
+
+            if (openIds.indexOf(pageId) === -1){
+                openIds.push(pageId)
+            }
+            else {
+                openIds = openIds.filter(id => id !== pageId)
+            }
+            state = state.set("openPageIds", fromJS(openIds))
+            break;
         default:
             if (pageSettingsActionList.indexOf(action.type) !== -1){
                 let pageId = getPageIdFromAction(action)
@@ -95,6 +122,12 @@ export const loadPages = () => (dispatch, getState) => {
             payload: page,
             brandPageId: page.objectId
         }))
+        if (pages.length === 1){
+            dispatch({
+                type: SET_OPEN_PAGE_IDS,
+                payload: pages.map(page => page.objectId)
+            })
+        }
         log.info("Success!", pages)
     }).catch(error => {
         log.error("Failed to fetch brand pages for account " + accountId, error)
@@ -130,4 +163,11 @@ export const createPage = () => (dispatch, getState) => {
             }
         })
     })
+}
+
+export const togglePageOpen = (pageId) => {
+    return {
+        type: TOGGLE_PAGE_ID_OPEN,
+        brandPageId: pageId
+    }
 }
