@@ -6,9 +6,8 @@ var del = require("del")
 var {paths} = require("./../../build-paths")
 var {getWebpackConfig} = require("./util")
 
-const bundle = (done, withStats=false) => {
-    let webpackConfig = getWebpackConfig("prod", false)
-    console.log(JSON.stringify(webpackConfig, null, 2))
+const bundle = (done, withStats=false, env="prod") => {
+    let webpackConfig = getWebpackConfig(env, false)
     webpack(webpackConfig).run((err, stats) => {
         if (err) {
             var error = new gutil.PluginError("bundle", err);
@@ -19,7 +18,7 @@ const bundle = (done, withStats=false) => {
             });
         }
         else {
-            gutil.log("[webpack:build-prod]", stats.toString({
+            gutil.log(`[webpack:build-${env}]`, stats.toString({
                 colors: true,
                 version: true,
                 timings: true,
@@ -55,3 +54,5 @@ gulp.task("clean", function(done){
 gulp.task("set-prod-node-env", function() {
     return process.env.NODE_ENV = "production";
 });
+
+module.exports.bundle = bundle;

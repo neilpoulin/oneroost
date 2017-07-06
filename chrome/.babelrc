@@ -1,0 +1,4 @@
+{
+    "presets": ["es2015", "react", "stage-0"],
+    "plugins": ["syntax-async-functions", "jsx-display-if", "transform-class-properties"]
+}

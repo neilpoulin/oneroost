@@ -61,6 +61,10 @@ pipeline.*
 codebuild_build.*
 stats.json
 
+chrome/build/*
+chrome/build.crx
+chrome/build.pem
+
 # Elastic Beanstalk Files
 .elasticbeanstalk
 .elasticbeanstalk/*

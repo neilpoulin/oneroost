@@ -1,0 +1,62 @@
+$bootstrap-sass-asset-helper: true;
+// @import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+$gmailHoverColor: #dddddd;
+@import "./sass-resources";
+@import "./bootstrap-custom/custom";
+@import "./google";
+html, body{
+    // font-size: 100%;
+}
+.ThreadViewApp{
+    background-color: yellow;
+    .ThreadView{
+        height: 100%;
+        background: lightblue;
+        .subject{
+            font-weight: bold;
+            color: $roostOrange;
+        }
+        .message-body{
+            white-space: pre-line;
+        }
+    }
+}
+
+.form-group{
+    display: flex;
+    flex-direction: column;
+    input.form-control{
+        padding: 0 12;
+        width: auto;
+    }
+}
+
+#popup_app{
+    width: 300px;
+    min-height: 10rem;
+}
+
+.RedirectDropdownView{
+    padding: 10px 0 0 0;
+    .title{
+        font-weight: bold;
+        padding: 5px;
+    }
+    ul.vanityUrls{
+        list-style: none;
+        margin: 0px;
+        padding: 0px;
+        li{
+            padding: 10px;
+            text-decoration: none;
+            margin: 0px;
+            &:hover{
+                cursor: pointer;
+                background-color: $gmailHoverColor;
+            }
+            &:not(:first-child){
+                // border-top: 1px solid darkgray;
+            }
+        }
+    }
+}

@@ -16,6 +16,14 @@ app.get("/admin/emails/:templateName/:number", function(req, resp){
     });
 });
 
+app.get("/config", function(req, resp){
+    const env = envUtil.getEnv()
+    resp.setHeader("Content-Type", "application/json");
+    var copy = {...env}
+    delete copy.json
+    resp.send(JSON.stringify(copy));
+})
+
 app.get("*", function(request, response){
     var env = envUtil.getEnv();
     var homePage = "index.ejs";
