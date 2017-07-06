@@ -19,8 +19,9 @@ app.get("/admin/emails/:templateName/:number", function(req, resp){
 app.get("/config", function(req, resp){
     const env = envUtil.getEnv()
     resp.setHeader("Content-Type", "application/json");
-    delete env.json
-    resp.send(JSON.stringify(env));    
+    var copy = {...env}
+    delete copy.json
+    resp.send(JSON.stringify(copy));
 })
 
 app.get("*", function(request, response){
