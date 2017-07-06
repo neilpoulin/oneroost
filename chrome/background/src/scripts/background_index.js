@@ -4,8 +4,8 @@ import Parse from "parse"
 import axios from "axios"
 import {loadCachedUser} from "ducks/user"
 
-const oneroostDomain = "https://dev.oneroost.com"
-
+const oneroostDomain = process.env.HOSTNAME || "https://www.oneroost.com"
+console.log("ONEROOST DOMAIL = " + oneroostDomain)
 wrapStore(store, {
     portName: "oneroost"
 })

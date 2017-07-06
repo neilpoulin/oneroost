@@ -71,7 +71,12 @@ module.exports = {
         extractCss,
         new ProgressBarPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-        new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("production")}}),
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify("production"),
+                HOSTNAME: "https://dev.oneroost.com"
+            }
+        }),
         new OptimizeCssAssetsPlugin()
     ],
     context: __dirname,
