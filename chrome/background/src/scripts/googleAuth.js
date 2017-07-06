@@ -11,13 +11,12 @@ var manifest = chrome.runtime.getManifest();
 
 var scopes = encodeURIComponent(manifest.oauth2.scopes.join(" "));
 
-function getLastToken() {
+window.getLastToken = function() {
     return token;
 }
 
 export function loadUserFromCache() {
-    console.log("Client finished loading", gapi)
-    return oauth2(false)
+    return oauth2(false)    
 }
 
 export function handleSignInClick(event) {
@@ -30,37 +29,47 @@ function oauth2(interactive=true){
     "?client_id=" + webClientId +
     "&response_type=token" +
     "&redirect_uri=" + redirectUri +
+    // "&access_type=offline" +
+    "&include_granted_scopes=true" +
+    // "&prompt=consent" +
     "&scope=" + scopes;
 
     console.log(url)
     return new Promise((resolve, reject) => {
-        chrome.identity.launchWebAuthFlow(
-            {
-                "url": url,
-                "interactive": interactive
-            },
-            function(redirectUrl) {
-                console.log("finished redirect", redirectUrl)
-                if (redirectUrl){
-                    console.log("launchWebAuthFlow login successful: ", redirectUrl);
-                    var parsed = parse(redirectUrl.substr(chrome.identity.getRedirectURL("oauth2").length + 1));
-                    token = parsed.access_token;
-                    console.log("Background login complete.. token =", token);
-                    getTokenInfo(token).then(({isValid, ...rest}) => {
-                        if(isValid){
-                            console.log("Token was found to be valid!!")
-                            getGmailFilters()
-                        }
-                        else{
-                            console.log("Token was not valid!")
-                        }
-                        resolve(rest)
-                    })
-                }
-                else{
-                    reject()
-                }
-            });
+        try{
+            chrome.identity.launchWebAuthFlow(
+                {
+                    "url": url,
+                    "interactive": interactive
+                },
+                function(redirectUrl) {
+                    console.log("finished redirect", redirectUrl)
+                    if (redirectUrl){
+                        console.log("launchWebAuthFlow login successful: ", redirectUrl);
+                        var parsed = parse(redirectUrl.substr(chrome.identity.getRedirectURL("oauth2").length + 1));
+                        token = parsed.access_token;
+                        console.log("Background login complete.. token =", token);
+                        getTokenInfo(token).then(({isValid, ...rest}) => {
+                            if(isValid){
+                                console.log("Token was found to be valid!!")
+                            }
+                            else{
+                                console.log("Token was not valid!")
+                            }
+                            resolve(rest)
+                        })
+                    }
+                    else{
+                        console.log("no redirect token was found")
+                        reject()
+                        // doLogout()
+                    }
+                });
+        }
+        catch (e){
+            reject()
+            doLogout()
+        }
     })
 }
 
@@ -96,6 +105,10 @@ function parse(str) {
 }
 
 export function handleSignOutClick(event) {
+    return doLogout()
+}
+
+export function doLogout(){
     return new Promise((resolve, reject) => {
         chrome.identity.launchWebAuthFlow({"url": logoutUrl, "interactive": false}, function (redirectUrl) {
             console.log("launchWebAuthFlow logout complete");
@@ -109,24 +122,6 @@ export function handleSignOutClick(event) {
             })
         });
     })
-}
-
-export function getGmailFilters(){
-    axios.get("https://www.googleapis.com/gmail/v1/users/me/settings/filters")
-        .then(({data}) => {
-            console.log("filters!", data)
-        }).catch(console.error)
-}
-
-export function getCurrentUser(){
-    return gapi.client.people.people.get({
-        "resourceName": "people/me",
-        "requestMask.includeField": "person.names"
-    }).then((response) => {
-        return response.result;
-    }, (reason) => {
-        console.error("Error: " + reason);
-    });
 }
 
 export function getTokenInfo(token){

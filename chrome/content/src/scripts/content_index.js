@@ -1,9 +1,6 @@
 import {Store} from "react-chrome-redux"
-import ThreadViewApp from "ThreadViewApp"
 import {SET_SUBJECT, SET_BODY, SET_SENDER, SET_ROOST_ID, RESET_THREAD} from "actions/thread"
 import {composeViewHandler} from "RedirectButtonController"
-
-const iconUrl = "https://www.oneroost.com/favicon.ico"
 
 const store = new Store({
     portName: "oneroost"
@@ -22,18 +19,20 @@ Promise.all([loadSDK, storeReady]).then(function([sdk, isReady]){
     // let oneroostRoute = sdk.Router.createLink(oneroostRouteId, {})
     // console.log("oneroostRoute", oneroostRoute)
     // the SDK has been loaded, now do something with it!
-    sdk.Compose.registerComposeViewHandler(composeViewHandler);
+    const currentEmail = sdk.User.getEmailAddress()
+    if(store.getState().user.googleEmail !== currentEmail){
+        console.log("not the current user, exiting: ", currentEmail)
+        return;
+    }
+
+    sdk.Compose.registerComposeViewHandler((composeView) => {
+        composeViewHandler(composeView, store)
+    });
 
     sdk.Conversations.registerThreadViewHandler(function(threadView){
-        const subject = threadView.getSubject()
         dispatch({type: RESET_THREAD})
+        const subject = threadView.getSubject()
         dispatch({type: SET_SUBJECT, payload: subject})
-        var app = ThreadViewApp
-        threadView.addSidebarContentPanel({
-            el: app,
-            title: "Thread Info",
-            iconUrl,
-        });
     });
 
     sdk.Conversations.registerMessageViewHandler(function(messageView){
@@ -49,8 +48,5 @@ Promise.all([loadSDK, storeReady]).then(function([sdk, isReady]){
         }
         dispatch({type: SET_BODY, payload: $messageBody.innerText})
         dispatch({type: SET_SENDER, payload: sender})
-        // var messageApp = MessageViewApp({
-        //     store: store
-        // })
     })
 });

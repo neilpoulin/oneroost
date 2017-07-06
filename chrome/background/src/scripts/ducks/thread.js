@@ -24,8 +24,7 @@ export default function reducer(state=initialState, action){
             state = state.set("roostId", action.payload)
             break;
         case ThreadActions.RESET_THREAD:
-            var count = state.get("count")
-            state = fromJS(initialState).set("count", count)
+            state = fromJS(initialState)
             break;
         default:
             state = state;

@@ -18,7 +18,7 @@ const logger = createLogger({
     },
     actionTransformer: (action) => {
         let newAction = {}
-        for (var i of Object.keys(action)) {
+        for (var i of Object.keys(action || {})) {
             if (Iterable.isIterable(action[i])) {
                 newAction[i] = action[i].toJS();
             }
