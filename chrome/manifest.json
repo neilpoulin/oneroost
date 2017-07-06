@@ -1,7 +1,7 @@
 {
-    "name": "OneRoost Dev",
-    "description": "Sample OneRoost Extension",
-    "version": "0.2",
+    "name": "OneRoost Stage",
+    "description": "OneRoost Gmail Extension - Stage",
+    "version": "0.3",
     "background": {
         "page": "background.html",
         "persistent": true
