@@ -52,7 +52,7 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - ls public public/bundle
+      - ls public/bundle
 artifacts:
   files:
     - .ebextensions/**/*
