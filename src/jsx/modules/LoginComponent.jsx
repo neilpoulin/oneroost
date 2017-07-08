@@ -361,6 +361,7 @@ const LoginComponent = React.createClass({
                 {actionButton}
                 {forgotLink}
             </form>
+            <div className="googleLogin"></div>
             {terms}
         </div>
 

@@ -2,6 +2,7 @@ const webpack = require("webpack")
 const path = require("path")
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const extractCss = new ExtractTextPlugin("email-bundle.scss");
+const ProgressBarPlugin = require("progress-bar-webpack-plugin");
 process.traceDeprecation = true
 
 const outputDir = path.join("build", "node", "email", "template", "style")
@@ -52,6 +53,7 @@ module.exports = {
     },
     plugins: [
         extractCss,
+        new ProgressBarPlugin(),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",

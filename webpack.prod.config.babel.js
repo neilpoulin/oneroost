@@ -3,6 +3,7 @@ require("babel-polyfill")
 const path = require("path")
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const ProgressBarPlugin = require("progress-bar-webpack-plugin");
 const extractCss = new ExtractTextPlugin({
     filename: "styles.css", allChunks: false
 });
@@ -80,6 +81,7 @@ module.exports = {
             jQuery: "jquery",
             Tether: "tether",
         }),
+        new ProgressBarPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("production")}}),
         new webpack.optimize.UglifyJsPlugin({sourceMap: true}),

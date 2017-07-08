@@ -66,3 +66,14 @@ a{
 #intercom-container .intercom-app .intercom-launcher-frame{
     margin-bottom: 50px;
 }
+
+#preload-images{
+    position: fixed;
+    top: -9999px;
+    left: -99999px;
+    img{
+        width: 1px;
+        height: 1px;
+
+    }
+}
