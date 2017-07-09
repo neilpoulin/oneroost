@@ -45,5 +45,9 @@ export function getParseServer(){
         verifyUserEmails: true,
         emailVerifyTokenValidityDuration: 2 * 60 * 60, // in seconds, 2 hours
         preventLoginWithUnverifiedEmail: false,
+        auth: {
+            google: true,
+            linkedin: {client_id: "78v10otstxnu8h"},
+        }
     });
 }

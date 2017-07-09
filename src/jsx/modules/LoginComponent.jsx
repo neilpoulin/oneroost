@@ -1,4 +1,5 @@
-import React, {PropTypes} from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import Parse from "parse";
 import FormInputGroup from "FormInputGroup"
 import {withRouter} from "react-router"
@@ -8,8 +9,14 @@ import ReactGA from "react-ga"
 import TermsOfServiceDisclaimer from "TermsOfServiceDisclaimer"
 import {loginValidation, registerValidation} from "RegistrationValidations"
 import {connect} from "react-redux"
-import {userLoggedIn, updateIntercomUser} from "ducks/user"
+import {userLoggedIn,
+    updateIntercomUser,
+    linkUserWithProvider,
+    linkUserWithProviderError
+} from "ducks/user"
 import * as log from "LoggingUtil"
+import GoogleLogin from "react-google-login"
+import LoginWithLinkedin from "form/LoginWithLinkedin"
 
 const LoginComponent = React.createClass({
     propTypes: {
@@ -236,10 +243,19 @@ const LoginComponent = React.createClass({
             lastName,
             password,
             isLogin,
-            isLoggedIn
+            isLoggedIn,
         } = this.state;
 
-        const {showTabs, showRegister, showCompany, showTermsOfService} = this.props;
+        const {
+            showTabs,
+            showRegister,
+            showCompany,
+            showTermsOfService,
+            googleSuccess,
+            googleError,
+            linkedinSuccess,
+            linkedinError,
+        } = this.props;
 
         if (isLoggedIn) {
             return false;
@@ -361,7 +377,23 @@ const LoginComponent = React.createClass({
                 {actionButton}
                 {forgotLink}
             </form>
-            <div className="googleLogin"></div>
+            <div className="oauthLogins">
+                <GoogleLogin
+                        clientId='298915058255-27b27sbb83fpe105kj12ccv0hc7380es.apps.googleusercontent.com'
+                        onSuccess={googleSuccess}
+                        onFailure={googleError}
+                        onRequest={() => console.log("google loading")}
+                        offline={false}
+                        approvalPrompt="force"
+                        responseType="id_token"
+                        isSignedIn={true}
+                        className="googleLogin"
+                        style={false}
+                        tag="span"
+                        buttonText={null}
+                    />
+                <LoginWithLinkedin connectSuccess={linkedinSuccess}/>
+            </div>
             {terms}
         </div>
 
@@ -379,7 +411,27 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         userLoggedIn: (user) => {
             dispatch(userLoggedIn(user))
-        }
+        },
+        googleSuccess: (authData) => {
+            const {familyName, givenName, email} = authData.profileObj || {}
+            dispatch(linkUserWithProvider("google", {
+                access_token: authData.accessToken,
+                id: authData.googleId,
+                firstName: givenName,
+                lastName: familyName,
+                email,
+                username: email,
+            }))
+        },
+        googleError: (error) => {
+            dispatch(linkUserWithProviderError("google", error))
+        },
+        linkedinSuccess: (authData) => {
+            dispatch(linkUserWithProvider("linkedin", authData))
+        },
+        linkedinError: (error) => {
+            dispatch(linkUserWithProviderError("linkedin"), error)
+        },
     }
 }
 

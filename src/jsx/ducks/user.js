@@ -47,6 +47,7 @@ const initialState = Map({
     sendingEmailValidation: false,
     lastEmailValidationSent: null,
     sendEmailValidationError: null,
+    connectedProviders: []
 });
 
 export default function reducer(state=initialState, action){
@@ -58,7 +59,13 @@ export default function reducer(state=initialState, action){
             state = state.set("email", user.get("email", user.get("username")))
             state = state.set("username", user.get("username"))
             state = state.set("accountId", user.getIn(["account", "objectId"]))
-            state = state.set("emailVerified", !!user.get("emailVerified"))
+            let emailVerified = !!user.get("emailVerified")
+
+            if (!emailVerified && user.getIn(["authData", "google", "email"]) == state.get("email")){
+                emailVerified = true;
+            }
+            state = state.set("connectedProviders", user.get("authData", {}).keySeq())
+            state = state.set("emailVerified", emailVerified)
             state = state.set("firstName", user.get("firstName"))
             state = state.set("lastName", user.get("lastName"))
             break;
@@ -389,4 +396,37 @@ export const resendEmailVerification = () => (dispatch, getState) => {
                 dispatch({type: SEND_EMAIL_VALIDATION_SUCCESS})
             }
         })
+}
+
+export function linkUserWithProviderError(providerName, error){
+    return (dispatch, getState) => {
+        log.error("Failed to link " + providerName, error)
+    }
+}
+
+export function linkUserWithProvider(provider, authData){
+    return (dispatch, getState) => {
+        console.log("authData:", authData)
+        debugger;
+        const {firstName, lastName, email} = authData || {}
+        let user = Parse.User.current() || new Parse.User({
+            email,
+            firstName,
+            lastName,
+            username: email
+        });
+
+        let options = {
+            authData
+        }
+        return user._linkWith(provider, options).then(savedUser => {
+            log.info("Linked with " + provider, savedUser)
+            dispatch(userLoggedIn(savedUser))
+            // return savedUser.set({
+            //     passwordChangeRequired: false
+            // }).save()
+        }).catch(error => {
+            log.error("Failed to link with" + provider, error)
+        })
+    }
 }

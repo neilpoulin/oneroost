@@ -3,7 +3,7 @@ import {connect} from "react-redux"
 import * as RoostUtil from "RoostUtil"
 import UserSettingsDisplay from "UserSettingsDisplay"
 import UserSettingsForm from "UserSettingsForm"
-import {saveUser, fetchUserPermissions, refreshCachedUserData} from "ducks/user"
+import {saveUser, fetchUserPermissions, refreshCachedUserData, linkUserWithProvider, linkUserWithProviderError} from "ducks/user"
 
 const UserSettings = React.createClass({
     propTypes: {
@@ -23,23 +23,39 @@ const UserSettings = React.createClass({
         this.setState({isEdit: false});
     },
     render () {
-        const {user, saveUser, isLoading} = this.props
+        const {user,
+            saveUser,
+            isLoading,
+            googleSuccess,
+            googleError,
+            linkedinSuccess,
+            linkedinError,
+            connectedProviders} = this.props
+
         if (isLoading){
             return <div><i className="fa fa-spinner fa-spin fa-2x"></i> Loading</div>
         }
         if (this.state.isEdit){
             return <UserSettingsForm user={user} doCancel={() => this.setState({isEdit: false})} afterSave={this.doDisplay} saveUser={saveUser}/>
         }
-        return <UserSettingsDisplay user={user} doEdit={() => this.setState({isEdit: true})}/>
+        return <UserSettingsDisplay user={user}
+            doEdit={() => this.setState({isEdit: true})}
+            googleSuccess={googleSuccess}
+            googleError={googleError}
+            linkedinSuccess={linkedinSuccess}
+            linkedInError={linkedinError}
+            connectedProviders={connectedProviders}
+            />
     }
 })
 
 const mapStateToProps = (state, ownProps) => {
     const userState = state.user.toJS()
     const user = RoostUtil.getCurrentUser(state)
-
+    const {connectedProviders} = userState
     return {
         user,
+        connectedProviders,
         isLoading: userState.isLoading,
     }
 }
@@ -50,7 +66,27 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loadData: (userId) => {
             dispatch(fetchUserPermissions())
             dispatch(refreshCachedUserData())
-        }
+        },
+        googleSuccess: (authData) => {
+            const {familyName, givenName, email} = authData.profileObj || {}
+            dispatch(linkUserWithProvider("google", {
+                access_token: authData.accessToken,
+                id: authData.googleId,
+                firstName: givenName,
+                lastName: familyName,
+                email,
+                username: email,
+            }))
+        },
+        googleError: (error) => {
+            dispatch(linkUserWithProviderError("google", error))
+        },
+        linkedinSuccess: (authData) => {
+            dispatch(linkUserWithProvider("linkedin", authData))
+        },
+        linkedinError: (error) => {
+            dispatch(linkUserWithProviderError("linkedin"), error)
+        },
     }
 }
 
