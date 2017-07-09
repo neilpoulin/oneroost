@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import {connect} from "react-redux"
 import {withRouter} from "react-router"
 import * as RoostUtil from "RoostUtil"
@@ -11,7 +12,7 @@ import RoostNav from "RoostNav"
 import {loadInvitationByStakeholderId, acceptInvite} from "ducks/invitation"
 import LoadingIndicator from "LoadingIndicator"
 
-const ReviewInvitation = withRouter( React.createClass({
+const ReviewInvitation = withRouter(React.createClass({
     propTypes: {
         router: PropTypes.object.isRequired,
         params: PropTypes.shape({
@@ -47,15 +48,14 @@ const ReviewInvitation = withRouter( React.createClass({
             var stakeholderUser = stakeholder.user
             var dealId = roost.objectId;
 
-            if ( stakeholder.inviteAccepted || !isLoggedIn && !stakeholderUser.passwordChangeRequired )  // OR the user needs to log in
+            if (stakeholder.inviteAccepted || !isLoggedIn && !stakeholderUser.passwordChangeRequired)  // OR the user needs to log in
             {
-                this.sendToRoost( dealId );
+                this.sendToRoost(dealId);
             }
         }
     },
-    sendToRoost( roostId )
-    {
-        this.props.router.replace("/roosts/" + roostId )
+    sendToRoost(roostId) {
+        this.props.router.replace("/roosts/" + roostId)
     },
     acceptInvite: function(){
         let stakeholder = this.props.stakeholder;
@@ -64,16 +64,13 @@ const ReviewInvitation = withRouter( React.createClass({
     render () {
         const {isLoading, stakeholder, invitedBy, roost, inviteAccepted, isLoggedIn} = this.props;
 
-        if (isLoading)
-        {
+        if (isLoading) {
             return <div>
                 <RoostNav/>
                 <LoadingIndicator/>
             </div>
-
         }
-        else if (!stakeholder)
-        {
+        else if (!stakeholder) {
             return (
                 <div>
                     <RoostNav/>
@@ -108,24 +105,25 @@ const ReviewInvitation = withRouter( React.createClass({
             <RoostNav/>
             <div className="row-fluid">
                 <div className="container-fluid">
-                    <h2>Review Opportunity</h2>
+                    <h2>Review {roost.dealName} Opportunity</h2>
                     <p className="lead">
                         <span className="">{stakeholder.user.firstName},</span>
                         <br/>
-                        {RoostUtil.getFullName(invitedBy)} from {invitedBy.company} has submitted a proposal called <i>{roost.dealName}</i> for you to review
+                        {RoostUtil.getFullName(invitedBy)} at {invitedBy.company} has submitted an opportunity for you to review.
+
                     </p>
                 </div>
             </div>
             <div className = "form">
                 <div className="form-group">
-                    <button className="btn btn-success btn-block" onClick={this.acceptInvite}>View Proposal</button>
+                    <button className="btn btn-success btn-block" onClick={this.acceptInvite}>View Opportunity</button>
                 </div>
             </div>
         </div>
 
         return result;
     }
-}) )
+}))
 
 const mapStateToProps = (state, ownProps) => {
     let entities = state.entities.toJS()
@@ -139,7 +137,7 @@ const mapStateToProps = (state, ownProps) => {
     let isLoading = true
     let inviteAccepted = false
 
-    if ( invitation && !invitation.isLoading && invitation.hasLoaded ){
+    if (invitation && !invitation.isLoading && invitation.hasLoaded){
         isLoading = invitation.isLoading
         stakeholder = denormalize(invitation.stakeholderId, Stakeholder.Schema, entities)
         roost = denormalize(invitation.dealId, Deal.Schema, entities)

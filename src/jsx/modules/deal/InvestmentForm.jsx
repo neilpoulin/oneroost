@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import Parse from "parse"
 import AutosizeTextAreaFormGroup from "AutosizeTextAreaFormGroup"
 import FormInputGroup from "FormInputGroup"
@@ -24,7 +25,7 @@ const InvestmentForm = React.createClass({
     },
     doSubmit(){
         let errors = FormUtil.getErrors(this.state, InvestmentValidation);
-        if ( !FormUtil.hasErrors(errors) ){
+        if (!FormUtil.hasErrors(errors)){
             this.setState({errors: {}});
             var budget = {high: this.state.high, low: this.state.low};
             var user = Parse.User.current();
@@ -52,37 +53,38 @@ const InvestmentForm = React.createClass({
         var saveMessage = null;
         var saveClass = "";
         let {errors, saveSuccess} = this.state;
-        if ( saveSuccess ){
+        if (saveSuccess){
             saveMessage = <div className="help-block">Success <i className="fa fa-check"></i></div>
             saveClass = "has-success";
         }
 
         var timelineSidebar =
         <div className="InvestmentForm">
+            <label>Cost Range for Your Offering</label>
             <div className="form-inline-half">
                 <FormInputGroup
-                    label="Low"
+                    label=""
                     fieldName="low"
                     value={this.state.low}
                     errors={errors}
                     type="number"
                     onChange={val => this.setState({low: val})}
-                    addonBefore={"$"}
+                    addonBefore={"Low $"}
                     />
 
                 <FormInputGroup
-                    label="High"
+                    label=""
                     fieldName="high"
                     value={this.state.high}
                     errors={errors}
                     type="number"
                     onChange={val => this.setState({high: val})}
-                    addonBefore={"$"}
+                    addonBefore={"High $"}
                     />
             </div>
 
             <FormInputGroup
-                label="Problem Summary"
+                label="Category"
                 fieldName="dealName"
                 value={this.state.dealName}
                 errors={errors}
@@ -90,13 +92,14 @@ const InvestmentForm = React.createClass({
                 />
 
             <AutosizeTextAreaFormGroup
-                label="Product / Service"
+                label="Product / Service Elevator Pitch"
                 fieldName="description"
                 value={this.state.description}
                 errors={errors}
                 maxRows={15}
                 minRows={4}
                 onChange={val => this.setState({description: val})}
+                placeholder={"Tell us about your product or service, including how your pricing works, i.e. per-seat, per-month, etc."}
                 />
 
             <div className={saveClass}>
