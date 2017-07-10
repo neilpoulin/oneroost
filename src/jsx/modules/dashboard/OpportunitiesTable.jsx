@@ -25,17 +25,7 @@ const headers = [
         sortable: false,
     },
     {
-        label: "Department",
-        clickable: false,
-        sortable: false,
-    },
-    {
         label: "Category",
-        clickable: false,
-        sortable: false,
-    },
-    {
-        label: "Sub-Category",
         clickable: false,
         sortable: false,
     },
@@ -53,12 +43,7 @@ const headers = [
         label: "Budget",
         clickable: false,
         sortable: false,
-    },
-    {
-        label: "Next Step",
-        clickable: false,
-        sortable: false,
-    },    
+    }
 ]
 
 const OpportunitiesTable = React.createClass({
@@ -68,7 +53,6 @@ const OpportunitiesTable = React.createClass({
             stakeholders: PropTypes.arrayOf(PropTypes.object),
             comments: PropTypes.arrayOf(PropTypes.object),
             documents: PropTypes.arrayOf(PropTypes.object),
-            nextSteps: PropTypes.arrayOf(PropTypes.object)
         })),
         currentUser: PropTypes.object.isRequired,
         userId: PropTypes.string.isRequired,

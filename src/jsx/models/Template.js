@@ -44,17 +44,17 @@ export const Pointer = (arg) => {
 export const defaultRequirements = [
     {
         "title": "Offering Overview",
-        "description": "Please describe what your offering is and how it can help our organization.  You can detail your offering in the \"Investment\" section.",
+        "description": "Please describe what your offering is and how it can help our organization.  You can detail your offering in the \"Overview\" section.",
         "navLink": {
             "text": "Detail Offering",
             "type": "investment"
         }
     },
     {
-        "title": "Add Investment Range",
-        "description": "In the \"Investment\" section, please submit the desired investment amount needed to utilize your offering.  Feel free to include pricing details, such as CPM or per month in the Product/Service field",
+        "title": "Add Pricing Information",
+        "description": "In the \"Investment\" section, please submit the estimated cost needed to utilize your offering.  Feel free to include pricing details, such as CPM or per month in the Product/Service field",
         "navLink": {
-            "text": "Investment Required",
+            "text": "Add Pricing Information",
             "type": "investment"
         }
     },
@@ -67,27 +67,11 @@ export const defaultRequirements = [
         }
     },
     {
-        "title": "ROI Calculator",
-        "description": "If possible, we'd like to access a Return on Investment calculator to get a better understanding of how your offering will impact our business.  The \"Documents\" section can accept excel files and Google Sheets.",
-        "navLink": {
-            "text": "Upload ROI Calculator",
-            "type": "document"
-        }
-    },
-    {
         "title": "Pitch Deck",
         "description": "If you have one readily available, please upload your offering's pitch deck.  The \"Documents\" section can handle Power Points, Keynote, and Google Slides",
         "navLink": {
             "text": "Upload Pitch Deck",
             "type": "document"
-        }
-    },
-    {
-        "title": "Proposal Submission",
-        "description": "Have all the previous requirements been addressed for this opportunity? If yes, you can submit the opportunity to the company by navigating to the \"Participants\" section and clicking submit.  After you've done so, make sure to complete the associated Next Step  ",
-        "navLink": {
-            "text": "Submit Opportunity",
-            "type": "participant"
         }
     }
 ]

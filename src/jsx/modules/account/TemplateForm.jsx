@@ -10,7 +10,7 @@ import {denormalize} from "normalizr"
 import * as User from "models/User"
 import * as Template from "models/Template"
 import * as log from "LoggingUtil"
-import {LINK_TYPE_OPTIONS} from "LinkTypes"
+import {REQUIREMENT_CTA_OPTIONS} from "LinkTypes"
 
 const TemplateForm = React.createClass({
     propTypes: {
@@ -212,12 +212,12 @@ const TemplateForm = React.createClass({
                                 <span display-if={!req.hasCta}
                                     className="btn btn-sm btn-outline-secondary"
                                     onClick={() => this.handleRequirementChange(i, {hasCta: true})}>
-                                    Add CTA
+                                    Add Action Button
                                 </span>
 
                                 <div display-if={req.hasCta}>
                                     <div className="ctaHeader">
-                                        <label>Call to Action</label>
+                                        <label>Requirement Action</label>
                                         <span className="ctaAction"
                                             onClick={() => this.handleRequirementChange(i, {hasCta: false, ctaText: null, ctaType: null})}
                                             >remove</span>
@@ -229,8 +229,8 @@ const TemplateForm = React.createClass({
                                             value={req.ctaType}
                                             errors={errors}
                                             fieldName={`requirement_${i}_ctaType`}
-                                            options={LINK_TYPE_OPTIONS}
-                                            placeholder={"CTA Type..."}
+                                            options={REQUIREMENT_CTA_OPTIONS}
+                                            placeholder={"Action Button Type..."}
                                             onChange={(value) => this.handleRequirementChange(i, {ctaType: value ? value.value : null})}
                                             />
                                         <FormInputGroup

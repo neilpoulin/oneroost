@@ -39,6 +39,21 @@ export const LINK_TYPE_OPTIONS = [
     }
 ].sort((opt1, opt2) => opt1.displayText.toUpperCase().localeCompare(opt2.displayText.toUpperCase()))
 
+export const REQUIREMENT_CTA_OPTIONS = [
+    {
+        displayText: "Participant",
+        value: PARTICIPANT_TYPE
+    },
+    {
+        displayText: "Overview",
+        value: INVESTMENT_TYPE
+    },
+    {
+        displayText: "Document",
+        value: DOCUMENT_TYPE
+    }    
+].sort((opt1, opt2) => opt1.displayText.toUpperCase().localeCompare(opt2.displayText.toUpperCase()))
+
 export const getSlugFromType = (type) => {
     let path = "/"
     if (!type) return path

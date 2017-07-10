@@ -14,7 +14,6 @@ const TableRow = React.createClass({
             stakeholders: PropTypes.arrayOf(PropTypes.object),
             comments: PropTypes.arrayOf(PropTypes.object),
             documents: PropTypes.arrayOf(PropTypes.object),
-            nextSteps: PropTypes.arrayOf(PropTypes.object)
         }).isRequired,
         currentUser: PropTypes.object.isRequired,
         showRequirements: PropTypes.bool,
@@ -79,29 +78,29 @@ const TableRow = React.createClass({
             // stakeholders,
             //  comments,
             //  documents,
-            nextSteps,
+            // nextSteps,
             archived,
             requirements,
         } = opportunity
 
-        let sortedSteps = nextSteps.filter(step => {
-            return step.completedDate == null && step.active !== false
-        }).sort((a, b) => {
-            return a.dueDate > b.dueDate
-        })
-        let nextStep = null;
-        if (sortedSteps.length > 0){
-            let step = sortedSteps[0]
-            nextStep =
-            <div>
-                <div>
-                    {step.title}
-                </div>
-                <div>
-                    due {formatDate(step.dueDate)}
-                </div>
-            </div>
-        }
+        // let sortedSteps = nextSteps.filter(step => {
+        //     return step.completedDate == null && step.active !== false
+        // }).sort((a, b) => {
+        //     return a.dueDate > b.dueDate
+        // })
+        // let nextStep = null;
+        // if (sortedSteps.length > 0){
+        //     let step = sortedSteps[0]
+        //     nextStep =
+        //     <div>
+        //         <div>
+        //             {step.title}
+        //         </div>
+        //         <div>
+        //             due {formatDate(step.dueDate)}
+        //         </div>
+        //     </div>
+        // }
 
         let requirementCells = []
         if (showRequirements && requirementHeadings && requirementHeadings.length > 0){
@@ -137,13 +136,9 @@ const TableRow = React.createClass({
                 </td>
                 <td>
                     {this._getDepartmentDisplayName()}
-                </td>
-                <td>
-                    {this._getCategoryDisplayName()}
-                </td>
-                <td>
-                    {this._getSubCategoryDisplayName()}
-                </td>
+                    <span display-if={this._getCategoryDisplayName()}> | {this._getCategoryDisplayName()}</span>
+                    <span display-if={this._getSubCategoryDisplayName()}> | {this._getSubCategoryDisplayName()}</span>
+                </td>                
                 <td>
                     {formatDate(deal.lastActiveAt || deal.updatedAt)}
                 </td>
@@ -152,9 +147,6 @@ const TableRow = React.createClass({
                 </td>
                 <td>
                     {getBudgetString(deal, "--")}
-                </td>
-                <td>
-                    {nextStep}
                 </td>
                 {requirementCells.map((req) => {
                     return req
