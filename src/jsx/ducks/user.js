@@ -26,6 +26,7 @@ export const SET_PERMISSIONS = "oneroost/user/SET_PERMISSIONS"
 export const SEND_EMAIL_VALIDATION_REQUEST = "oneroost/user/SEND_EMAIL_VALIDATION_REQUEST"
 export const SEND_EMAIL_VALIDATION_SUCCESS = "oneroost/user/SEND_EMAIL_VALIDATION_SUCCESS"
 export const SEND_EMAIL_VALIDATION_ERROR = "oneroost/user/SEND_EMAIL_VALIDATION_ERROR"
+export const SET_ACCESS_TOKEN = "oneroost/ser/SET_ACCESS_TOKEN"
 
 const initialState = Map({
     isLoading: false,
@@ -47,7 +48,8 @@ const initialState = Map({
     sendingEmailValidation: false,
     lastEmailValidationSent: null,
     sendEmailValidationError: null,
-    connectedProviders: []
+    connectedProviders: [],
+    accessTokens: Map({}),
 });
 
 export default function reducer(state=initialState, action){
@@ -118,6 +120,9 @@ export default function reducer(state=initialState, action){
         case SEND_EMAIL_VALIDATION_ERROR:
             state = state.set("sendingEmailValidation", false)
             state = state.set("sendEmailValidationError", action.error)
+            break;
+        case SET_ACCESS_TOKEN:
+            state = state.setIn(["accessTokens", action.payload.get("provider"), "access_token"], action.payload.get("access_token"))
             break;
         default:
             break;
@@ -401,6 +406,45 @@ export const resendEmailVerification = () => (dispatch, getState) => {
 export function linkUserWithProviderError(providerName, error){
     return (dispatch, getState) => {
         log.error("Failed to link " + providerName, error)
+    }
+}
+
+export function loginWithLinkedin({code, redirectUri}){
+    return (dispatch, getState) => {
+        return dispatch(getOauthTokenFromCode("linkedin", {
+            code,
+            redirectUri
+        })).then(({access_token, id, firstName, lastName, email, company}) => {
+            return dispatch(linkUserWithProvider("linkedin", {
+                access_token,
+                id,
+                redirectUri,
+                firstName,
+                lastName,
+                email,
+                company,
+            }))
+        })
+    }
+}
+
+export function getOauthTokenFromCode(provider, {code, redirectUri}){
+    return (dispatch, getState) => {
+        return Parse.Cloud.run("getOAuthToken", {provider, code, redirectUri})
+            .then(({access_token, id, firstName, lastName, email, company}) => {
+                dispatch({
+                    type: SET_ACCESS_TOKEN,
+                    payload: {
+                        provider,
+                        access_token,
+                        id,
+                        firstName,
+                        lastName,
+                        email,
+                    }
+                })
+                return {access_token, id, firstName, lastName, email, company}
+            });
     }
 }
 

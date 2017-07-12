@@ -125,7 +125,7 @@ function requireEmailVerified(nextState, replace){
         return false
     }
 
-    let emailVerified = user.get("emailVerified")
+    let emailVerified = user.get("emailVerified") || user.get("connectedProviders").size > 0
     if (!emailVerified){
         replace({
             pathname: "/verify-email",

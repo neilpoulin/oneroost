@@ -99,9 +99,10 @@ const initialize = () => {
         try{
             let user = request.user
             const {userId, email} = request.params
-            const authData = user.get("authData")
+            const authData = user.get("authData", {})
             const googleEmail = authData && authData.google ? authData.google.email : null
-            if (!user || user.id != userId || !user.get("emailVerified") && user.get("email") !== googleEmail){
+            const authEmails = !authData ? [] : Object.values(authData).map(auth => auth.email)
+            if (!user || user.id != userId || !user.get("emailVerified") && authEmails.indexOf(user.get("email")) === -1){
                 return response.error({
                     success: false,
                     message: "User must be logged in with a verified email as the user that is being associated."

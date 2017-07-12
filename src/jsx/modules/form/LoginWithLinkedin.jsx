@@ -1,30 +1,34 @@
-import React, { PropTypes } from "react"
+import React from "react"
 import LinkedIn from "react-linkedin-login"
+import {connect} from "react-redux"
+import {
+    loginWithLinkedin
+} from "ducks/user"
 
-const clientId = "78v10otstxnu8h"
+const clientId = OneRoost.Config.linkedinClientId
 
 class LoginWithLinkedin extends React.Component {
-    static propTypes = {
-        connectSuccess: PropTypes.func.isRequired,
-    }
-
-    _callbackLinkedIn = (response) => {
-        console.log("Logged in", response)
-        const {code, redirectUri} = response
-        this.props.connectSuccess({
-            access_token: code,
-        })
-    }
-
-    render () {
+    render() {
         return (
             <LinkedIn
                 clientId={clientId}
-                callback={this._callbackLinkedIn}
-                className={"linkedinLogin"}
-                text='LinkedIn' />
-        )
+                        callback={this.props.linkedInSuccess}
+                        className={"btn btn-outline-primary"}
+                        text='LinkedIn'
+                ></LinkedIn>
+        );
     }
 }
 
-export default LoginWithLinkedin;
+const mapDispatchToProps = (dispatch, getState) => {
+    return {
+        linkedInSuccess: ({code, redirectUri}) => {
+            dispatch(loginWithLinkedin({
+                code,
+                redirectUri
+            }))
+        }
+    }
+}
+
+export default connect(undefined, mapDispatchToProps)(LoginWithLinkedin);

@@ -32,6 +32,7 @@ module.exports = {
     },
     "globals": {
         "OneRoost": true,
+        "IN": true,
     },
     "rules": {
         "strict": [2, "never"],
