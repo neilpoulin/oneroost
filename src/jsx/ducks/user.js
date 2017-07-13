@@ -83,6 +83,7 @@ export default function reducer(state=initialState, action){
             state = state.set("accountId", user.getIn(["account", "objectId"], null))
             state = state.set("firstName", user.get("firstName"))
             state = state.set("lastName", user.get("lastName"))
+            state = state.set("connectedProviders", user.get("authData", {}).keySeq())
             break;
         case SET_ACCOUNT:
             var payload = action.payload || Map({})

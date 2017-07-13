@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import Parse from "parse"
 import NextStepActions from "NextStepActions"
 import moment from "moment"

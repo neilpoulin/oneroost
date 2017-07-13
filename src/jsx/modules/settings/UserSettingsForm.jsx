@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import {profileValidation} from "ProfileValidations"
 import FormUtil from "FormUtil"
 import FormInputGroup from "FormInputGroup"

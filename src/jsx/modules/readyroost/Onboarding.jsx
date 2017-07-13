@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import Introduction from "readyroost/Introduction"
 import Registration from "readyroost/Registration"
 import OpportunityDetail from "readyroost/OpportunityDetail"

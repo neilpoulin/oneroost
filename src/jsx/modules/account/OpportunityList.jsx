@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import AccountSidebarItem from "account/AccountSidebarItem"
 import * as RoostUtil from "RoostUtil"
 import {Map} from "immutable"

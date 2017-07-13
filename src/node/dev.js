@@ -19,7 +19,7 @@ module.exports.intitialize = (app) => {
 
     app.use(require("webpack-hot-middleware")(compiler, {
         log: console.log,
-        tes: 1
+        path: "/__webpack_hmr",
     }));
     // app.use("/static/css", express.static(__dirname + "./../public/css"));
     app.use("/static/images", express.static(__dirname + "./../public/images"));

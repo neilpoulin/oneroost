@@ -20,7 +20,7 @@ module.exports = {
         path: path.join(__dirname, "/public/bundle"),
         filename: "[name].js",
         sourceMapFilename: "[name].js.map",
-        publicPath: "https://dev.oneroost.com/static/bundle",
+        publicPath: "https://dev.oneroost.com/static/bundle/",
     },
     devtool: "eval",
     module: {

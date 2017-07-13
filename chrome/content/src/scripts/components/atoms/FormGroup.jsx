@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 // import FormUtil from "FormUtil"
 
 const FormGroup = React.createClass({
@@ -40,7 +41,7 @@ const FormGroup = React.createClass({
                 className={`control-label ${requiredLabelClass} ${labelClass} label-${this.props.labelAlign}`}>
                 {this.props.label}
             </label>
-            {children}            
+            {children}
         </div>
 
         return form;

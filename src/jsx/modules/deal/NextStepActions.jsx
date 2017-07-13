@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import NextStepDeleteButton from "NextStepDeleteButton"
 import NextStepSaveButton from "NextStepSaveButton"
 import NextStepEditButton from "NextStepEditButton"

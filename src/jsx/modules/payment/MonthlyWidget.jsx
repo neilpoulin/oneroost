@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import PlanWidget from "PlanWidget"
 import {MONTHLY_USER as Plan} from "plans"
 

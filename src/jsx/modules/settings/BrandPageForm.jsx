@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import FormInputGroup from "FormInputGroup"
 import FormSelectGroup from "FormSelectGroup"
 import {isUrlAvailable, saveBrandPage, deletePage} from "ducks/brandPageSettings"
