@@ -64,6 +64,9 @@ class BasicInfoDisplay extends React.Component{
 
                     />
             </div>
+            <div>
+                <span className="btn btn-outline-primary editButton" onClick={this.props.doEdit}>Edit</span>
+            </div>
             <div className="oauthLogins">
                 <div>
                     Connect to 3 Party Applications
@@ -88,14 +91,11 @@ class BasicInfoDisplay extends React.Component{
                     <LoginWithLinkedin connectSuccess={linkedinSuccess}/>
                 </div>
             </div>
-            <div>
-                <span className="btn btn-outline-primary editButton" onClick={this.props.doEdit}>Edit</span>
-            </div>
             <div className="connectedProviders" display-if={connectedProviders && connectedProviders.length > 0}>
                 <ul className="list-unstyled list">
                     {connectedProviders.map((providerName, i) =>
                         <li key={`${providerName}_${i}`}>
-                            <span><i className="fa fa-check"></i> {providerName}</span><span><i className="fa fa-times"></i></span>
+                            <span><i className="fa fa-check"></i> {providerName}</span>
                         </li>
                     )}
                 </ul>
