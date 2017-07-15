@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import FormGroupStatic from "FormGroupStatic"
 import * as RoostUtil from "RoostUtil"
 import * as log from "LoggingUtil"
-import GoogleLogin from "react-google-login"
+import GoogleLoginButton from "GoogleLoginButton"
 import LoginWithLinkedin from "form/LoginWithLinkedin"
 
 class BasicInfoDisplay extends React.Component{
@@ -14,7 +14,7 @@ class BasicInfoDisplay extends React.Component{
         googleError: PropTypes.func,
         linkedinSuccess: PropTypes.func,
         linkedinError: PropTypes.func,
-        connectedProviders: PropTypes.arrayOf(PropTypes.string)
+        connectedProviders: PropTypes.arrayOf(PropTypes.string),
     }
 
     static defaultProps = {
@@ -31,6 +31,7 @@ class BasicInfoDisplay extends React.Component{
             googleError,
             connectedProviders,
             linkedinSuccess,
+            unlinkProvider,
         } = this.props
         const {email, company, jobTitle, account} = user
         var info =
@@ -72,20 +73,7 @@ class BasicInfoDisplay extends React.Component{
                     Connect to 3 Party Applications
                 </div>
                 <div display-if={connectedProviders.indexOf("google") === -1}>
-                    <GoogleLogin
-                            clientId='298915058255-27b27sbb83fpe105kj12ccv0hc7380es.apps.googleusercontent.com'
-                            onSuccess={googleSuccess}
-                            onFailure={googleError}
-                            onRequest={() => log.info("google loading")}
-                            offline={false}
-                            approvalPrompt="force"
-                            responseType="id_token"
-                            isSignedIn={true}
-                            className="googleLogin"
-                            style={false}
-                            tag="span"
-                            buttonText={null}
-                        />
+                    <GoogleLoginButton/>
                 </div>
                 <div display-if={connectedProviders.indexOf("linkedin") === -1}>
                     <LoginWithLinkedin connectSuccess={linkedinSuccess}/>
@@ -94,8 +82,9 @@ class BasicInfoDisplay extends React.Component{
             <div className="connectedProviders" display-if={connectedProviders && connectedProviders.length > 0}>
                 <ul className="list-unstyled list">
                     {connectedProviders.map((providerName, i) =>
-                        <li key={`${providerName}_${i}`}>
+                        <li key={`${providerName}_${i}`} className="provider">
                             <span><i className="fa fa-check"></i> {providerName}</span>
+                            <span className="unlink" onClick={() => unlinkProvider(providerName)}><i className="fa fa-times"></i></span>
                         </li>
                     )}
                 </ul>

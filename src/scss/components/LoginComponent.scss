@@ -12,10 +12,14 @@
 
     }
     .oauthLogins{
-        display: flex;
-        justify-content: center;
+
         margin-top: 5rem;
         margin-bottom: 5rem;
+        > .provider {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+        }
     }
 
 }

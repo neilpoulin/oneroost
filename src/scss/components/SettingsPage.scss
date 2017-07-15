@@ -5,6 +5,16 @@
         align-items: flex-start;
         flex-wrap: wrap;
     }
+
+    .connectedProviders{
+        .provider{
+            display: flex;
+            justify-content: space-between;
+            .unlink{
+                cursor: pointer;
+            }
+        }
+    }
 }
 
 .CreateTemplateForm{

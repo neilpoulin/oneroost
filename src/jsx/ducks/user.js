@@ -1,6 +1,6 @@
 // import User from "models/User"
 import Parse from "parse"
-import {Map} from "immutable"
+import {Map, List} from "immutable"
 import * as RoostUtil from "RoostUtil"
 import {normalize} from "normalizr"
 import * as User from "models/User"
@@ -12,6 +12,7 @@ import {getFullName, toJSON} from "RoostUtil"
 import {LOADED_ENTITIES} from "ducks/entities"
 import moment from "moment"
 import request from "superagent"
+import * as AuthProvider from "AuthProviders"
 
 const NO_ACCOUNT = "NO_ACCOUNT"
 
@@ -26,7 +27,10 @@ export const SET_PERMISSIONS = "oneroost/user/SET_PERMISSIONS"
 export const SEND_EMAIL_VALIDATION_REQUEST = "oneroost/user/SEND_EMAIL_VALIDATION_REQUEST"
 export const SEND_EMAIL_VALIDATION_SUCCESS = "oneroost/user/SEND_EMAIL_VALIDATION_SUCCESS"
 export const SEND_EMAIL_VALIDATION_ERROR = "oneroost/user/SEND_EMAIL_VALIDATION_ERROR"
-export const SET_ACCESS_TOKEN = "oneroost/ser/SET_ACCESS_TOKEN"
+
+export const SET_PROVIDER_ERROR = "oneroost/user/SET_PROVIDER_ERROR"
+export const SET_ACCESS_TOKEN = "oneroost/user/SET_ACCESS_TOKEN"
+export const REMOVE_PROVIDER = "oneroost/user/REMOVE_PROVIDER"
 
 const initialState = Map({
     isLoading: false,
@@ -50,6 +54,7 @@ const initialState = Map({
     sendEmailValidationError: null,
     connectedProviders: [],
     accessTokens: Map({}),
+    providerErrors: Map({}),
 });
 
 export default function reducer(state=initialState, action){
@@ -66,10 +71,11 @@ export default function reducer(state=initialState, action){
             if (!emailVerified && user.getIn(["authData", "google", "email"]) == state.get("email")){
                 emailVerified = true;
             }
-            state = state.set("connectedProviders", user.get("authData", {}).keySeq())
+            state = state.set("connectedProviders", user.get("authData", Map({})).keySeq())
             state = state.set("emailVerified", emailVerified)
             state = state.set("firstName", user.get("firstName"))
             state = state.set("lastName", user.get("lastName"))
+            state = state.set("providerErrors", Map({}))
             break;
         case LOGIN_SUCCESS:
             var user = action.payload
@@ -83,13 +89,14 @@ export default function reducer(state=initialState, action){
             state = state.set("accountId", user.getIn(["account", "objectId"], null))
             state = state.set("firstName", user.get("firstName"))
             state = state.set("lastName", user.get("lastName"))
-            state = state.set("connectedProviders", user.get("authData", {}).keySeq())
+            state = state.set("connectedProviders", user.get("authData", Map({})).keySeq())
+            state = state.set("providerErrors", Map({}))
             break;
         case SET_ACCOUNT:
             var payload = action.payload || Map({})
             state = state.set("accountId", payload.getIn(["account", "objectId"]))
             state = state.set("accountSeatId", payload.getIn(["accountSeat", "objectId"]))
-            state = state.set("roles", payload.getIn(["accountSeat", "roles"], []))
+            state = state.set("roles", payload.getIn(["accountSeat", "roles"], List()))
             break;
         case LOAD_PERMISSIONS_ERROR:
             state = state.set("isLoading", false)
@@ -117,6 +124,7 @@ export default function reducer(state=initialState, action){
         case SEND_EMAIL_VALIDATION_SUCCESS:
             state = state.set("lastEmailValidationSent", new Date())
             state = state.set("sendingEmailValidation", false)
+            state = state.set("providerErrors", Map({}))
             break;
         case SEND_EMAIL_VALIDATION_ERROR:
             state = state.set("sendingEmailValidation", false)
@@ -124,7 +132,15 @@ export default function reducer(state=initialState, action){
             break;
         case SET_ACCESS_TOKEN:
             state = state.setIn(["accessTokens", action.payload.get("provider"), "access_token"], action.payload.get("access_token"))
+            state = state.set("providerErrors", Map({}))
             break;
+        case REMOVE_PROVIDER:
+            state = state.set("connectedProviders", state.get("connectedProviders").filter(provider => provider !== action.payload.get("provider")))
+            state = state.set("accessTokens", state.get("accessTokens").delete(action.payload.get("provider")))
+            state = state.set("providerErrors", Map({}))
+            break;
+        case SET_PROVIDER_ERROR:
+            state = state.update("providerErrors", errors => errors.merge(action.error))
         default:
             break;
     }
@@ -147,6 +163,15 @@ export const fetchUserById = (userId) => {
     query.include("invitedBy")
     query.include("accountSeat")
     return query.get(userId)
+}
+
+const fetchUserByEmail = (email) => {
+    let query = new Parse.Query(User.className)
+    query.include("account")
+    query.include("invitedBy")
+    query.include("accountSeat")
+    query.equalTo("email", email)
+    return query.first()
 }
 
 export const updateIntercomUser = (user) => {
@@ -407,6 +432,12 @@ export const resendEmailVerification = () => (dispatch, getState) => {
 export function linkUserWithProviderError(providerName, error){
     return (dispatch, getState) => {
         log.error("Failed to link " + providerName, error)
+        dispatch({
+            type: SET_PROVIDER_ERROR,
+            error: {
+                [providerName]: error
+            }
+        })
     }
 }
 
@@ -449,10 +480,38 @@ export function getOauthTokenFromCode(provider, {code, redirectUri}){
     }
 }
 
+export function unlinkUserWithProvider(provider){
+    log.warn("UNLINKING IS NOT YET SUPPORTED ")
+    // return (dispatch) => {
+    //     let user = Parse.User.current();
+    //     if(!user){
+    //         return false;
+    //     }
+    //     let opts = {
+    //         authData: {
+    //             id: ""
+    //         }
+    //     }
+    //     user._linkWith(AuthProvider[provider], opts).then(success => {
+    //         dispatch({
+    //             type: REMOVE_PROVIDER,
+    //             payload: {
+    //                 provider,
+    //             }
+    //         })
+    //     }).catch(error => {
+    //         dispatch(linkUserWithProviderError(provider, error))
+    //     })
+    // }
+}
+
 export function linkUserWithProvider(provider, authData){
     return (dispatch, getState) => {
-        console.log("authData:", authData)
-        debugger;
+        log.info("authData:", authData)
+        if(!authData || !authData.access_token){
+            log.info("no valid auth data present, exit")
+            return null;
+        }
         const {firstName, lastName, email} = authData || {}
         let user = Parse.User.current() || new Parse.User({
             email,
@@ -460,18 +519,42 @@ export function linkUserWithProvider(provider, authData){
             lastName,
             username: email
         });
+        dispatch(linkUser(user, provider, authData))
+    }
+}
 
+function linkUser(user, provider, authData){
+    return (dispatch) => {
         let options = {
             authData
         }
+
         return user._linkWith(provider, options).then(savedUser => {
             log.info("Linked with " + provider, savedUser)
             dispatch(userLoggedIn(savedUser))
-            // return savedUser.set({
-            //     passwordChangeRequired: false
-            // }).save()
         }).catch(error => {
-            log.error("Failed to link with" + provider, error)
+            switch (error.code){
+                case 202:
+                    log.warn("user exists, can't link.. need to login first")
+                    let email = user.get("email")
+                    dispatch(connectExistingUser({email, provider, authData}))
+                    break;
+                default:
+                    log.error("Failed to link with" + provider, error)
+                    dispatch(linkUserWithProviderError(provider, error))
+                    break;
+            }
+        })
+    }
+}
+
+export function connectExistingUser({email, provider, authData}){
+    return (dispatch) => {
+        fetchUserByEmail(email).then(user => {
+            dispatch(linkUser(user, provider, authData))
+        }).catch(error => {
+            log.error("Failed to link existing with" + provider, error)
+            dispatch(linkUserWithProviderError(provider, error))
         })
     }
 }

@@ -15,7 +15,7 @@ import {userLoggedIn,
     linkUserWithProviderError
 } from "ducks/user"
 import * as log from "LoggingUtil"
-import GoogleLogin from "react-google-login"
+import GoogleLoginButton from "GoogleLoginButton"
 import LoginWithLinkedin from "form/LoginWithLinkedin"
 
 const LoginComponent = React.createClass({
@@ -251,10 +251,6 @@ const LoginComponent = React.createClass({
             showRegister,
             showCompany,
             showTermsOfService,
-            googleSuccess,
-            googleError,
-            linkedinSuccess,
-            linkedinError,
         } = this.props;
 
         if (isLoggedIn) {
@@ -378,21 +374,12 @@ const LoginComponent = React.createClass({
                 {forgotLink}
             </form>
             <div className="oauthLogins">
-                <GoogleLogin
-                        clientId='298915058255-27b27sbb83fpe105kj12ccv0hc7380es.apps.googleusercontent.com'
-                        onSuccess={googleSuccess}
-                        onFailure={googleError}
-                        onRequest={() => console.log("google loading")}
-                        offline={false}
-                        approvalPrompt="force"
-                        responseType="id_token"
-                        isSignedIn={true}
-                        className="googleLogin"
-                        style={false}
-                        tag="span"
-                        buttonText={null}
-                    />
-                <LoginWithLinkedin connectSuccess={linkedinSuccess}/>
+                <div className="provider">
+                    <GoogleLoginButton/>
+                </div>
+                <div className="provider">
+                    <LoginWithLinkedin/>
+                </div>
             </div>
             {terms}
         </div>
@@ -411,20 +398,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         userLoggedIn: (user) => {
             dispatch(userLoggedIn(user))
-        },
-        googleSuccess: (authData) => {
-            const {familyName, givenName, email} = authData.profileObj || {}
-            dispatch(linkUserWithProvider("google", {
-                access_token: authData.accessToken,
-                id: authData.googleId,
-                firstName: givenName,
-                lastName: familyName,
-                email,
-                username: email,
-            }))
-        },
-        googleError: (error) => {
-            dispatch(linkUserWithProviderError("google", error))
         },
         linkedinSuccess: (authData) => {
             dispatch(linkUserWithProvider("linkedin", authData))

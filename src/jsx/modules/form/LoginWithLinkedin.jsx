@@ -12,9 +12,9 @@ class LoginWithLinkedin extends React.Component {
         return (
             <LinkedIn
                 clientId={clientId}
-                        callback={this.props.linkedInSuccess}
-                        className={"btn btn-outline-primary"}
-                        text='LinkedIn'
+                callback={this.props.linkedInSuccess}
+                className={"linkedinLogin"}
+                text={undefined}
                 ></LinkedIn>
         );
     }
