@@ -23,7 +23,7 @@ class GoogleLoginButton extends React.Component {
                 clientId={googleClientId}
                 onSuccess={googleSuccess}
                 onFailure={googleError}
-                offline={false}                
+                offline={false}
                 responseType="id_token"
                 isSignedIn={true}
                 className="googleLogin"
@@ -50,6 +50,7 @@ const mapDispatchToProps = (dispatch) => {
             const {familyName, givenName, email} = authData.profileObj || {}
             dispatch(linkUserWithProvider("google", {
                 access_token: authData.accessToken,
+                id_token: authData.tokenId,
                 id: authData.googleId,
                 firstName: givenName,
                 lastName: familyName,

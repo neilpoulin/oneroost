@@ -22,7 +22,7 @@ var INTERCOM_SECRET_KEY = process.env.INTERCOM_SECRET_KEY
 var PUBLIC_SERVER_URL = HOSTNAME + PARSE_MOUNT;
 var LINKEDIN_CLIENT_ID = process.env.LINKEDIN_CLIENT_ID || "78v10otstxnu8h"
 var LINKEDIN_CLIENT_SECRET = process.env.LINKEDIN_CLIENT_SECRET || "not set"
-
+var GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "298915058255-27b27sbb83fpe105kj12ccv0hc7380es.apps.googleusercontent.com"
 if (SERVER_URL.trim().indexOf("http:") != 0){
     if (SERVER_URL.indexOf("//") != 0) {
         SERVER_URL = "//" + SERVER_URL;
@@ -156,7 +156,7 @@ exports.getIntercomSecretKey = function(){
 
 exports.LINKEDIN_CLIENT_ID = LINKEDIN_CLIENT_ID;
 exports.LINKEDIN_CLIENT_SECRET = LINKEDIN_CLIENT_SECRET;
-
+exports.GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID;
 exports.getEnv = function(){
     if (appEnv == null) {
         var props = {

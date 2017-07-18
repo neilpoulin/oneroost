@@ -12,7 +12,7 @@ import {getFullName, toJSON} from "RoostUtil"
 import {LOADED_ENTITIES} from "ducks/entities"
 import moment from "moment"
 import request from "superagent"
-import * as AuthProvider from "AuthProviders"
+import {push} from "react-router-redux"
 
 const NO_ACCOUNT = "NO_ACCOUNT"
 
@@ -481,28 +481,36 @@ export function getOauthTokenFromCode(provider, {code, redirectUri}){
 }
 
 export function unlinkUserWithProvider(provider){
-    log.warn("UNLINKING IS NOT YET SUPPORTED ")
-    // return (dispatch) => {
-    //     let user = Parse.User.current();
-    //     if(!user){
-    //         return false;
-    //     }
-    //     let opts = {
-    //         authData: {
-    //             id: ""
-    //         }
-    //     }
-    //     user._linkWith(AuthProvider[provider], opts).then(success => {
-    //         dispatch({
-    //             type: REMOVE_PROVIDER,
-    //             payload: {
-    //                 provider,
-    //             }
-    //         })
-    //     }).catch(error => {
-    //         dispatch(linkUserWithProviderError(provider, error))
-    //     })
-    // }
+    return (dispatch) => {
+        let user = Parse.User.current()
+        var providerObj = {
+            authenticate(options) {
+                if (options.success) {
+                    options.success(this, {
+                        id: user.get("authData")[provider].id,
+                        access_token: user.get("authData")[provider].access_token
+                    });
+                }
+            },
+
+            restoreAuthentication(authData) {},
+
+            getAuthType() {
+                return provider;
+            },
+            deauthenticate() {}
+        };
+        user._unlinkFrom(providerObj).then(success => {
+            dispatch({
+                type: REMOVE_PROVIDER,
+                payload: {
+                    provider,
+                }
+            })
+        }).catch(error => {
+            dispatch(linkUserWithProviderError(provider, error))
+        });
+    }
 }
 
 export function linkUserWithProvider(provider, authData){
@@ -532,6 +540,7 @@ function linkUser(user, provider, authData){
         return user._linkWith(provider, options).then(savedUser => {
             log.info("Linked with " + provider, savedUser)
             dispatch(userLoggedIn(savedUser))
+            dispatch(push("/roosts"))
         }).catch(error => {
             switch (error.code){
                 case 202:

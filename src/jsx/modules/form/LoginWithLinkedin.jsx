@@ -9,14 +9,15 @@ const clientId = OneRoost.Config.linkedinClientId
 
 class LoginWithLinkedin extends React.Component {
     render() {
-        return (
-            <LinkedIn
-                clientId={clientId}
-                callback={this.props.linkedInSuccess}
-                className={"linkedinLogin"}
-                text={undefined}
-                ></LinkedIn>
-        );
+        // return (
+        //     <LinkedIn
+        //         clientId={clientId}
+        //         callback={this.props.linkedInSuccess}
+        //         className={"linkedinLogin"}
+        //         text={undefined}
+        //         ></LinkedIn>
+        // );
+        return null;
     }
 }
 
