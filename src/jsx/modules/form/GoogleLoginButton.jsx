@@ -10,7 +10,7 @@ import {
 const googleClientId = "298915058255-27b27sbb83fpe105kj12ccv0hc7380es.apps.googleusercontent.com"
 
 class GoogleLoginButton extends React.Component {
-    propTypes = {
+    static propTypes = {
         hostedDomain: PropTypes.string,
     }
     render () {

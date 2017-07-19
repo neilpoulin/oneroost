@@ -6,7 +6,7 @@ import FormInputGroup from "FormInputGroup"
 import * as log from "LoggingUtil"
 import FormGroupStatic from "FormGroupStatic"
 
-const BasicInfoForm = React.createClass({
+const UserSettingsForm = React.createClass({
     propTypes: {
         user: PropTypes.object.isRequired,
         saveUser: PropTypes.func.isRequired,
@@ -76,7 +76,7 @@ const BasicInfoForm = React.createClass({
 
             <FormInputGroup
                 label="Job Title"
-                value={jobTitle}
+                value={jobTitle || ""}
                 fieldName="jobTitle"
                 onChange={val => this.setState({"jobTitle": val})}
                 errors={errors}
@@ -94,4 +94,4 @@ const BasicInfoForm = React.createClass({
     }
 })
 
-export default BasicInfoForm
+export default UserSettingsForm

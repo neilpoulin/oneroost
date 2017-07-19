@@ -2,6 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import {connect} from "react-redux"
 import * as RoostUtil from "RoostUtil"
+import GoogleLoginButton from "GoogleLoginButton"
 import {unlinkUserWithProvider} from "ducks/user"
 
 class ConnectedProviders extends React.Component {
