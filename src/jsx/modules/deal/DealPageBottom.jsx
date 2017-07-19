@@ -29,8 +29,7 @@ const DealPageBottom = React.createClass({
         const {deal, nextSteps, stakeholders, documents, requirements} = this.props;
         var sidebar = null;
         var isOpen = false
-        if ( this.props.sidebar )
-        {
+        if (this.props.sidebar) {
             var sidebarWithProps = null;
             sidebarWithProps = React.cloneElement(this.props.sidebar, {
                 deal: deal,
@@ -50,7 +49,7 @@ const DealPageBottom = React.createClass({
         this.sidebarOpen = isOpen
 
         var sidebarOpen = false;
-        if ( sidebar ){
+        if (sidebar){
             sidebarOpen = true;
         }
 

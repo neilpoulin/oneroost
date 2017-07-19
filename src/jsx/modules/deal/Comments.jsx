@@ -159,10 +159,7 @@ const Comments = React.createClass({
                     <ul>
                         <li>
                             <Link to={`/roosts/${deal.objectId}/requirements`}>Complete all requirements</Link>
-                        </li>
-                        <li>
-                            <Link to={`/roosts/${deal.objectId}/steps` + (nextNextStepId ? `/${nextNextStepId}` : "")}>Review Next Steps</Link>
-                        </li>
+                        </li>                        
                         <li>
                             <Link to={`/roosts/${deal.objectId}/participants`}>Submit Proposal</Link>
                         </li>

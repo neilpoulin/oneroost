@@ -16,7 +16,7 @@ import * as User from "models/User"
 import {loadInvitationByStakeholderId, submitInviteAccept} from "ducks/invitation"
 import Unauthorized from "Unauthorized"
 
-const Invitation = withRouter( React.createClass({
+const Invitation = withRouter(React.createClass({
     propTypes: {
         router: PropTypes.object.isRequired,
         params: PropTypes.shape({
@@ -53,18 +53,17 @@ const Invitation = withRouter( React.createClass({
             var stakeholderUser = stakeholder.user
             var dealId = roost.objectId;
 
-            if ( stakeholder.inviteAccepted || !isLoggedIn && !stakeholderUser.passwordChangeRequired )  // OR the user needs to log in
+            if (stakeholder.inviteAccepted || !isLoggedIn && !stakeholderUser.passwordChangeRequired)  // OR the user needs to log in
             {
-                this.sendToRoost( dealId );
+                this.sendToRoost(dealId);
             }
         }
     },
     sendToUnauthorized(){
-        this.props.router.replace("/roosts/unauthorized" )
+        this.props.router.replace("/roosts/unauthorized")
     },
-    sendToRoost( roostId )
-    {
-        this.props.router.replace("/roosts/" + roostId )
+    sendToRoost(roostId) {
+        this.props.router.replace("/roosts/" + roostId)
     },
     submit: function(){
         let self = this;
@@ -72,14 +71,13 @@ const Invitation = withRouter( React.createClass({
         const {user, deal} = stakeholder
         const {password} = this.state
 
-
         let validation = {};
-        if ( user.passwordChangeRequired ){
+        if (user.passwordChangeRequired){
             validation = confirmValidation;
         }
         let errors = FormUtil.getErrors(this.state, validation);
-        if ( !FormUtil.hasErrors(errors) ){
-            this.props.acceptInvite(stakeholder, password).then( () => {
+        if (!FormUtil.hasErrors(errors)){
+            this.props.acceptInvite(stakeholder, password).then(() => {
                 self.sendToRoost(deal.objectId)
             })
         }
@@ -96,8 +94,7 @@ const Invitation = withRouter( React.createClass({
             isSaving,
             isLoggedIn} = this.props;
         const {errors, password, confirmPassword} = this.state;
-        if ( isLoading )
-        {
+        if (isLoading) {
             return (
                 <div>
                     <RoostNav/>
@@ -111,8 +108,7 @@ const Invitation = withRouter( React.createClass({
                     </div>
                 </div>)
         }
-        else if (!stakeholder)
-        {
+        else if (!stakeholder) {
             return (
                 <div>
                     <RoostNav/>
@@ -126,10 +122,10 @@ const Invitation = withRouter( React.createClass({
                     </div>
                 </div>)
         }
-        else if ( isLoggedIn && currentUserId !== stakeholder.user.objectId ){
+        else if (isLoggedIn && currentUserId !== stakeholder.user.objectId){
             return <Unauthorized/>
         }
-        else if ( !stakeholder.user.passwordChangeRequired && !isLoggedIn && !inviteAccepted || inviteAccepted){
+        else if (!stakeholder.user.passwordChangeRequired && !isLoggedIn && !inviteAccepted || inviteAccepted){
             this.sendToRoost(roost.objectId)
             return (
                 <div>
@@ -147,8 +143,7 @@ const Invitation = withRouter( React.createClass({
 
         let deal = stakeholder.deal
         var form = null
-        if ( stakeholder.user.passwordChangeRequired )
-        {
+        if (stakeholder.user.passwordChangeRequired) {
             form =
             <div className="row-fluid">
                 <div className="container-fluid">
@@ -182,7 +177,7 @@ const Invitation = withRouter( React.createClass({
 
             </div>
         }
-        else if( stakeholder.user && !stakeholder.user.passwordChangeRequired ){
+        else if(stakeholder.user && !stakeholder.user.passwordChangeRequired){
             form =
             <div className = "form">
                 <div className="form-group">
@@ -204,9 +199,9 @@ const Invitation = withRouter( React.createClass({
                     <div className="container-fluid">
                         <Logo className="header"/>
                         <p className="lead">
-                            <span className="">{RoostUtil.getFullName(stakeholder.user)},</span>
+                            <span className="">{stakeholder.user.firstName},</span>
                             <br/>
-                            {RoostUtil.getFullName(stakeholder.invitedBy)} from {stakeholder.invitedBycompany} has invited to you join {deal.dealName} on OneRoost
+                            {RoostUtil.getFullName(stakeholder.invitedBy)}<span display-if={stakeholder.user.company}> from {stakeholder.user.company}</span> has invited to you take part in an opportunity on OneRoost
                         </p>
                     </div>
                 </div>
@@ -217,7 +212,7 @@ const Invitation = withRouter( React.createClass({
 
         return result;
     }
-}) )
+}))
 
 const mapStateToProps = (state, ownProps) => {
     let entities = state.entities.toJS()
@@ -232,7 +227,7 @@ const mapStateToProps = (state, ownProps) => {
     let inviteAccepted = false
     let isSaving = false
 
-    if ( invitation && !invitation.isLoading && invitation.hasLoaded ){
+    if (invitation && !invitation.isLoading && invitation.hasLoaded){
         isLoading = invitation.isLoading
         isSaving = invitation.isSaving
         stakeholder = denormalize(invitation.stakeholderId, Stakeholder.Schema, entities)
