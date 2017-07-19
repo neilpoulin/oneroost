@@ -263,7 +263,7 @@ export const saveUser = (updates) => (dispatch, getState) => {
     currentUser.set(updates)
     currentUser.save()
         .then(saved => {
-            dispatch(updateUserAction(saved))
+            dispatch(refreshCachedUserData())
         })
         .catch(log.error)
 }
@@ -299,16 +299,18 @@ export const fetchUserPermissions = () => (dispatch, getState) => {
     })
 }
 
-export const refreshCachedUserData = () => (dispatch) => {
-    let user = Parse.User.current()
-    if (!user){
-        return null
+export function refreshCachedUserData(){
+    return (dispatch) => {
+        let user = Parse.User.current()
+        if (!user){
+            return null
+        }
+        // calling .fetch() to have Parse refresh the internal cache
+        user.fetch()
+        fetchUserById(user.id).then(updated => {
+            dispatch(updateUserAction(updated.toJSON()))
+        })
     }
-    // calling .fetch() to have Parse refresh the internal cache
-    user.fetch()
-    fetchUserById(user.id).then(updated => {
-        dispatch(updateUserAction(updated.toJSON()))
-    })
 }
 
 export const setAccount = (account, accountSeat) => (dispatch, getState) => {
@@ -551,6 +553,10 @@ function linkUser(user, provider, authData){
                     let email = user.get("email")
                     dispatch(connectExistingUser({email, provider, authData}))
                     break;
+                case 206:
+                    error.message = "If you already have an account, you must log in before you can connect via a thrid party."
+                    dispatch(linkUserWithProviderError(provider, error))
+                    break
                 default:
                     log.error("Failed to link with" + provider, error)
                     dispatch(linkUserWithProviderError(provider, error))
@@ -563,9 +569,19 @@ function linkUser(user, provider, authData){
 export function connectExistingUser({email, provider, authData}){
     return (dispatch) => {
         fetchUserByEmail(email).then(user => {
-            dispatch(linkUser(user, provider, authData))
+            if (user){
+                dispatch(linkUser(user, provider, authData))
+            }
+            else {
+                throw new Error("No user found.")
+            }
         }).catch(error => {
             log.error("Failed to link existing with" + provider, error)
+            switch(error.code){
+                case 206:
+                    error.message = "If you already have an account, you must log in before you can connect via a thrid party."
+                    break
+            }
             dispatch(linkUserWithProviderError(provider, error))
         })
     }

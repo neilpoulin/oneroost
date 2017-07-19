@@ -4,7 +4,13 @@ import {profileValidation} from "ProfileValidations"
 import FormUtil from "FormUtil"
 import FormInputGroup from "FormInputGroup"
 import * as log from "LoggingUtil"
+import * as RoostUtil from "RoostUtil"
 import FormGroupStatic from "FormGroupStatic"
+import {connect} from "react-redux"
+import {
+    saveUser,
+    resendEmailVerification,
+} from "ducks/user"
 
 const UserSettingsForm = React.createClass({
     propTypes: {
@@ -32,6 +38,7 @@ const UserSettingsForm = React.createClass({
             }
             if (this.props.user.email !== email){
                 changes.email = email
+                changes.username = email
             }
             this.props.saveUser(changes);
             this.setState({errors: {}});
@@ -47,7 +54,8 @@ const UserSettingsForm = React.createClass({
     },
     render () {
         let {errors, firstName, lastName, jobTitle, email} = this.state;
-        let {account, emailVerified} = this.props.user
+        const {user, resendEmail, isLoading, sendSuccessMessage} = this.props
+        let {account, emailVerified} = user
         var form =
         <div className="">
             <h3>My Profile</h3>
@@ -88,16 +96,47 @@ const UserSettingsForm = React.createClass({
                 value={`${account.accountName}`}
                 label="Account"
                 />
-            <FormGroupStatic
-                value={`${emailVerified}`}
-                label="Email Verified"
-                />
+            <div>
+                <FormGroupStatic
+                    value={`${emailVerified}`}
+                    label="Email Verified">
+                    <span display-if={!emailVerified} className="link link-secondary" onClick={resendEmail}>Resend Verification Email</span>
+                    <p display-if={sendSuccessMessage}>{sendSuccessMessage}</p>
+                </FormGroupStatic>
+            </div>
+
             <div className="actions">
                 <button className="btn btn-primary btn-block" onClick={this.doSave}>Save</button>
             </div>
         </div>
+
+        if (isLoading){
+            return <div>Loading...</div>
+        }
+
         return form
     }
 })
 
-export default UserSettingsForm
+const mapStateToProps = (state) => {
+    const userState = state.user.toJS()
+    const user = RoostUtil.getCurrentUser(state)
+    let {lastEmailValidationSent, email, isLoading} = userState;
+    let sendSuccessMessage = lastEmailValidationSent ? `An email has been sent to ${email}` : null
+    return {
+        isLoading,
+        user,
+        sendSuccessMessage,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        saveUser: (changes) => dispatch(saveUser(changes)),
+        resendEmail: () => {
+            dispatch(resendEmailVerification())
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserSettingsForm)

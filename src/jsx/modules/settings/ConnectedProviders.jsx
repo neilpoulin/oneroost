@@ -31,7 +31,7 @@ class ConnectedProviders extends React.Component {
                                 <span>{providerName}</span>
                             </div>
                             <div className="actions">
-                                <button className="unlink btn btn-link" onClick={() => unlinkProvider(providerName)}>unlink</button>
+                                <span className="unlink link link-secondary" onClick={() => unlinkProvider(providerName)}>unlink</span>
                             </div>
                         </li>
                     )}

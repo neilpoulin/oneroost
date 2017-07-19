@@ -47,6 +47,9 @@ h1 {
     cursor: pointer;
     color: $roostOrange;
     text-decoration: none;
+    &-secondary{
+        color: $link-color;
+    }
     &:hover{
         color: $roostDarkGray;
     }

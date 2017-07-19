@@ -17,7 +17,7 @@ class GoogleLoginButton extends React.Component {
         const {googleSuccess, googleError, hostedDomain, error} = this.props;
         return <div>
             <p display-if={error}>
-                Something went wrong with google {error.message}
+                {error.message}
             </p>
             <GoogleLogin
                 clientId={googleClientId}
