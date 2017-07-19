@@ -7,7 +7,7 @@ import {
     linkUserWithProviderError
 } from "ducks/user"
 
-const googleClientId = "298915058255-27b27sbb83fpe105kj12ccv0hc7380es.apps.googleusercontent.com"
+const googleClientId = OneRoost.Config.googleClientId
 
 class GoogleLoginButton extends React.Component {
     static propTypes = {

@@ -39,6 +39,21 @@ exports.initialize = function(){
                 })
         }
     })
+
+    Parse.Cloud.define("checkEmailAfterOAuth", (request, response) => {        
+        const user = request.user;
+        const userEmail = user.get("email")
+        const authData = user.get("authData")
+        let matchedEmail = Object.values(authData).map(auth => auth.email).filter(authEmail => !!authEmail && authEmail === userEmail)
+        if (matchedEmail){
+            user.set("emailVerified", true);
+            user.save(null, {useMasterKey: true}).then(user => {
+                return response.success({
+                    emailVerified: true,
+                })
+            }).catch(error => response.error({error}))
+        }
+    })
 }
 
 function handleLinkedIn({code, redirectUri}){

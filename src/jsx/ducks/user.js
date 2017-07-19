@@ -68,9 +68,6 @@ export default function reducer(state=initialState, action){
             state = state.set("accountId", user.getIn(["account", "objectId"]))
             let emailVerified = !!user.get("emailVerified")
 
-            if (!emailVerified && user.getIn(["authData", "google", "email"]) == state.get("email")){
-                emailVerified = true;
-            }
             state = state.set("connectedProviders", user.get("authData", Map({})).keySeq())
             state = state.set("emailVerified", emailVerified)
             state = state.set("firstName", user.get("firstName"))
@@ -260,6 +257,9 @@ export const updateUserAction = (user) => {
 
 export const saveUser = (updates) => (dispatch, getState) => {
     let currentUser = Parse.User.current();
+    if (updates.email && currentUser.get("email") === updates.email){
+        delete updates.email
+    }
     currentUser.set(updates)
     currentUser.save()
         .then(saved => {
@@ -541,6 +541,9 @@ function linkUser(user, provider, authData){
             log.info("Linked with " + provider, savedUser)
             dispatch(userLoggedIn(savedUser))
             dispatch(push("/roosts"))
+            Parse.Cloud.run("checkEmailAfterOAuth").then((response) => {
+                dispatch(userLoggedIn(savedUser))
+            }).catch(error => log.error)
         }).catch(error => {
             switch (error.code){
                 case 202:

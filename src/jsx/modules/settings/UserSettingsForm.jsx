@@ -25,11 +25,13 @@ const UserSettingsForm = React.createClass({
             let {email, firstName, lastName, company, jobTitle} = this.state
 
             let changes = {
-                email,
                 firstName,
                 lastName,
                 company,
                 jobTitle
+            }
+            if (this.props.user.email !== email){
+                changes.email = email
             }
             this.props.saveUser(changes);
             this.setState({errors: {}});
@@ -45,7 +47,7 @@ const UserSettingsForm = React.createClass({
     },
     render () {
         let {errors, firstName, lastName, jobTitle, email} = this.state;
-        let {account} = this.props.user
+        let {account, emailVerified} = this.props.user
         var form =
         <div className="">
             <h3>My Profile</h3>
@@ -85,6 +87,10 @@ const UserSettingsForm = React.createClass({
             <FormGroupStatic
                 value={`${account.accountName}`}
                 label="Account"
+                />
+            <FormGroupStatic
+                value={`${emailVerified}`}
+                label="Email Verified"
                 />
             <div className="actions">
                 <button className="btn btn-primary btn-block" onClick={this.doSave}>Save</button>

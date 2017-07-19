@@ -167,7 +167,8 @@ exports.getEnv = function(){
             "stripePublishKey": STRIPE_PUBLISH_KEY,
             "intercomAppId": INTERCOM_APP_ID,
             "version": version,
-            "linkedinClientId": LINKEDIN_CLIENT_ID
+            "linkedinClientId": LINKEDIN_CLIENT_ID,
+            "googleClientId": GOOGLE_CLIENT_ID,
         };
 
         var json = JSON.stringify(props);
