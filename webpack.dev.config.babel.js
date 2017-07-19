@@ -1,6 +1,7 @@
 const webpack = require("webpack")
 // const HappyPack = require("happypack")
 require("babel-polyfill")
+const ProgressBarPlugin = require("progress-bar-webpack-plugin");
 const path = require("path")
 
 process.traceDeprecation = true
@@ -19,7 +20,7 @@ module.exports = {
         path: path.join(__dirname, "/public/bundle"),
         filename: "[name].js",
         sourceMapFilename: "[name].js.map",
-        publicPath: "https://dev.oneroost.com/static/bundle",
+        publicPath: "https://dev.oneroost.com/static/bundle/",
     },
     devtool: "eval",
     module: {
@@ -28,16 +29,9 @@ module.exports = {
                 test: /\.json$/,
                 use: "json-loader"
             },
-            // {
-            //     test: /\.js[x]?$/,
-            //     exclude: /(node_modules|bower_components|cloud|build)/,
-            //     loaders: [ "happypack/loader" ],
-            // },
             {
                 test: /\.js[x]?$/,
                 exclude: /(node_modules|cloud|build)/,
-                // include: [path.join(process.cwd(), "src", "jsx")],
-                // loaders: ["react-hot-loader", "babel-loader?presets[]=react,presets[]=es2015", "webpack-module-hot-accept"],
                 use: [
                     {loader: "react-hot-loader"},
                     {loader: "webpack-module-hot-accept"},
@@ -59,22 +53,26 @@ module.exports = {
                 loader: "file-loader?name=fonts/[name].[ext]"
             },
             {
+                test: /\.(png|jpg|jpeg)/,
+                loader: "file-loader?name=images/[name].[ext]"
+            },
+            {
                 test: /\.scss$/,
                 use: [
                         {loader: "style-loader"},
                         {
                             loader: "css-loader",
-                            options: {sourceMap: false, }
+                            options: {sourceMap: true, }
                         },
                         {
                             loader: "sass-loader",
-                            options: {sourceMap: false, }
+                            options: {sourceMap: true, }
                         },
                         {
                             loader: "sass-resources-loader",
                             options: {
                                 resources: "./src/scss/sass-resources.scss",
-                                sourceMap: false,
+                                sourceMap: true,
                             }
                         }
                 ]
@@ -84,29 +82,17 @@ module.exports = {
     },
 
     plugins: [
-        // new HappyPack({
-        //     // loaders is the only required parameter:
-        //     loaders: ["react-hot-loader", "babel-loader?presets[]=react,presets[]=es2015", "webpack-module-hot-accept"],
-        //
-        //     // customize as needed, see Configuration below
-        //     threads: 4,
-        //     cache: true,
-        // }),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
             Tether: "tether",
         }),
+        new ProgressBarPlugin(),
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin(),
-        // new webpack.PrefetchPlugin("/node_modules/sass-resources-loader/lib/loader.js"),
-        // new webpack.PrefetchPlugin(path.join(__dirname, "src", "scss"), "index.scss"),
-        // new webpack.PrefetchPlugin("/node_modules/sass-loader/lib/loader.js"),
-        // new webpack.PrefetchPlugin(path.join(__dirname, "src", "scss"), "sass-resources.scss"),
-
+        new webpack.NoEmitOnErrorsPlugin()
     ],
     resolve: {
-        extensions: [".js", ".jsx", ".json", ".scss", ".css", ".sass"],
+        extensions: [".js", ".jsx", ".json", ".scss", ".css", ".sass", ".png", ".jpg", ".jpeg"],
         modules: ["jsx", "modules", "ducks", "util", "admin", "brand", "settings", "payment", "deal", "atom", "form", "modules/dashboard", "navigation", "node_modules", "models", "actions", "reducers", "store", "middleware", "version"],
     },
 };

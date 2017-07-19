@@ -20,7 +20,9 @@ var STRIPE_PUBLISH_KEY = process.env.STRIPE_PUBLISH_KEY || "PK_NOT_DEFINED"
 var INTERCOM_APP_ID = process.env.INTERCOM_APP_ID || "lkx95sfl"
 var INTERCOM_SECRET_KEY = process.env.INTERCOM_SECRET_KEY
 var PUBLIC_SERVER_URL = HOSTNAME + PARSE_MOUNT;
-
+var LINKEDIN_CLIENT_ID = process.env.LINKEDIN_CLIENT_ID || "78v10otstxnu8h"
+var LINKEDIN_CLIENT_SECRET = process.env.LINKEDIN_CLIENT_SECRET || "not set"
+var GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "298915058255-27b27sbb83fpe105kj12ccv0hc7380es.apps.googleusercontent.com"
 if (SERVER_URL.trim().indexOf("http:") != 0){
     if (SERVER_URL.indexOf("//") != 0) {
         SERVER_URL = "//" + SERVER_URL;
@@ -48,6 +50,8 @@ console.log("STRIPE_SECRET_KEY: ", "******")
 console.log("STRIPE_PUBLISH_KEY: ", STRIPE_PUBLISH_KEY)
 console.log("INTERCOM_APP_ID: ", INTERCOM_SECRET_KEY)
 console.log("INTERCOM_SECRET_KEY: ", INTERCOM_SECRET_KEY ? "******" : "NOT SET")
+console.log("LINKEDIN_CLIENT_ID: ", LINKEDIN_CLIENT_ID)
+console.log("LINKEDIN_CLIENT_SECRET: ", LINKEDIN_CLIENT_SECRET ? "******" : "NOT SET")
 console.log("GIT_HASH", version.hash)
 console.log("GIT_TAG", version.version)
 
@@ -150,6 +154,9 @@ exports.getIntercomSecretKey = function(){
     return INTERCOM_SECRET_KEY
 }
 
+exports.LINKEDIN_CLIENT_ID = LINKEDIN_CLIENT_ID;
+exports.LINKEDIN_CLIENT_SECRET = LINKEDIN_CLIENT_SECRET;
+exports.GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID;
 exports.getEnv = function(){
     if (appEnv == null) {
         var props = {
@@ -160,6 +167,8 @@ exports.getEnv = function(){
             "stripePublishKey": STRIPE_PUBLISH_KEY,
             "intercomAppId": INTERCOM_APP_ID,
             "version": version,
+            "linkedinClientId": LINKEDIN_CLIENT_ID,
+            "googleClientId": GOOGLE_CLIENT_ID,
         };
 
         var json = JSON.stringify(props);

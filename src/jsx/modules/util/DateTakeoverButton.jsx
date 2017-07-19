@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import InfiniteCalendar from "react-infinite-calendar"
 import TakeoverButton from "TakeoverButton"
 

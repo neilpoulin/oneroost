@@ -1,4 +1,4 @@
-import envUtil from "./util/envUtil"
+import * as envUtil from "./util/envUtil"
 import {ParseServer} from "parse-server"
 import ParseDashboard from "parse-dashboard"
 import ParseDashboardConfig from "./parse-dashboard-config.json"
@@ -45,5 +45,11 @@ export function getParseServer(){
         verifyUserEmails: true,
         emailVerifyTokenValidityDuration: 2 * 60 * 60, // in seconds, 2 hours
         preventLoginWithUnverifiedEmail: false,
+        auth: {
+            google: {
+                client_id: envUtil.GOOGLE_CLIENT_ID
+            },
+            linkedin: {client_id: "78v10otstxnu8h"},
+        }
     });
 }

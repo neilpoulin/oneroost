@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import FormGroup from "FormGroup"
 import AutosizeTextarea from "react-textarea-autosize";
 import * as log from "LoggingUtil"

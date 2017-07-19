@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import {withRouter} from "react-router"
 import { connect } from "react-redux"
 import Parse from "parse"
@@ -157,7 +158,7 @@ const Roost = withRouter(React.createClass({
                 <EmptyState display-if={error}
                     className="container text-center"
                     message="Oops, it looks like you don't have any opportunities yet."
-                    link={{text: "Go to My Settings", path: "/settings/company"}}
+                    link={{text: "Go to My Settings", path: "/settings/templates"}}
                     />
                 <div className="RoostBody" display-if={!dealLoading && !error && deal}>
                     <AccountSidebar deals={opportunities.deals} archivedDeals={opportunities.archivedDeals}/>

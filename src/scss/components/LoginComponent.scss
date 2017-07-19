@@ -11,7 +11,19 @@
         padding-top: 15px;
 
     }
+    .oauthLogins{
+
+        margin-top: 5rem;
+        margin-bottom: 5rem;
+        > .provider {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+        }
+    }
+
 }
+
 
 .pointer{
     cursor: pointer;

@@ -1,9 +1,44 @@
 .SettingsPage{
     padding-top: 20px;
-    .contents{
+    margin-bottom: 20rem;
+    .content{
+        // display: flex;
+        // align-items: flex-start;
+        // flex-wrap: wrap;
+        // justify-content: center;
+    }
+    .UserSettingsPage{
         display: flex;
-        align-items: flex-start;
-        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    .connectedProviders{
+        .provider{
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2em;
+            align-items: center;
+            .actions{
+                .unlink{
+                    cursor: pointer;
+                }
+            }
+            .info{
+                display:flex;
+                align-items: flex-start;
+                .logo{
+                    &.google{
+                        background-image: url("/static/images/g-logo.png");
+                    }
+                    width:24px;
+                    height: 24px;
+                    margin-right: 1.8rem;
+                    background-size: cover;
+                    background-position: 50% 50%;
+                }
+            }
+
+        }
     }
 }
 
@@ -172,7 +207,11 @@
             width: 100%;
         }
     }
-
+    .SettingsPage{
+        .UserSettingsPage{
+            flex-direction: column;
+        }
+    }
     .CompanySettingsPage{
         .departmentContainer{
             display: flex;

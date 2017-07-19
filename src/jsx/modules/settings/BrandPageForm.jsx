@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import FormInputGroup from "FormInputGroup"
 import FormSelectGroup from "FormSelectGroup"
 import {isUrlAvailable, saveBrandPage, deletePage} from "ducks/brandPageSettings"
@@ -82,7 +83,7 @@ const BrandPageForm = React.createClass({
     },
     _delete(){
         let confirm = window.confirm(`Are you sure you want to delete ${this.props.brand.vanityUrl || "(new page)"}?`)
-        if (confirm){        
+        if (confirm){
             this.props.deletePage()
         }
     },
@@ -196,7 +197,7 @@ const BrandPageForm = React.createClass({
                         </div>
                         <div display-if={templateOptions.length === 0}>
                             <label>Templates</label>
-                            <p>You do not have any templates configured. Please to to <Link to="settings/company">Company Settings</Link> to configure some.</p>
+                            <p>You do not have any templates configured. Please to to <Link to="settings/templates">Company Settings</Link> to configure some.</p>
                         </div>
                         <div className="actions">
                             <div className="delete-action">

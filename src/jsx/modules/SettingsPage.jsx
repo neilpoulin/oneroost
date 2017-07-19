@@ -8,8 +8,8 @@ const navLinks = [
         displayText: "My Profile"
     },
     {
-        path: "/settings/company",
-        displayText: "Company"
+        path: "/settings/templates",
+        displayText: "Templates"
     },
     {
         path: "/settings/brand-page",

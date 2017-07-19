@@ -4,9 +4,11 @@ const path = require("path")
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const extractCss = new ExtractTextPlugin({
-    filename: "styles.css", allChunks: false
+    filename: "styles.css",
+    allChunks: false,
+    publicPath: "/"
 });
-
+const ProgressBarPlugin = require("progress-bar-webpack-plugin");
 process.traceDeprecation = true
 
 module.exports = {
@@ -76,6 +78,7 @@ module.exports = {
     },
     plugins: [
         extractCss,
+        new ProgressBarPlugin(),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",

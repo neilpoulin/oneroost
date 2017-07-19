@@ -46,8 +46,10 @@ import EmailValidationInstructionsPage from "EmailValidationInstructionsPage"
 import * as log from "LoggingUtil"
 
 Parse.initialize(OneRoost.Config.applicationId);
+
 // Parse.serverURL = OneRoost.Config.serverURL;
 Parse.serverURL = window.location.origin + "/parse";
+
 const store = configureStore()
 ReactGA.initialize(OneRoost.Config.gaTrackingId, getGaOptions());
 const history = syncHistoryWithStore(browserHistory, store)
@@ -125,7 +127,7 @@ function requireEmailVerified(nextState, replace){
         return false
     }
 
-    let emailVerified = user.get("emailVerified")
+    let emailVerified = user.get("emailVerified") || user.get("connectedProviders").size > 0
     if (!emailVerified){
         replace({
             pathname: "/verify-email",
@@ -183,7 +185,7 @@ render(
                 <Redirect from="/settings" to="/settings/profile" />
                 <Route path="/settings" component={SettingsPage} onEnter={requireActivatedUser}>
                     <Route path="profile" component={UserSettings}/>
-                    <Route path="company" component={CompanySettings}/>
+                    <Route path="templates" component={CompanySettings}/>
                     <Route path="brand-page" component={BrandPageSettings}/>
                 </Route>
                 <Route path="/proposals/:templateId" component={ReadyRoostPage}/>

@@ -81,6 +81,7 @@ const buildEmails = (done) => {
 const startServer = (props) => {
     gutil.log("starting the server");
     nodemon({
+        exec: "node --inspect",
         script: "main.js",
         watch: ["cloud"],
         ext: "js html ejs json",

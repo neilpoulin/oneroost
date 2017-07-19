@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import {connect} from "react-redux"
 import {fetchUserPermissions} from "ducks/user"
 import {denormalize} from "normalizr"
@@ -28,9 +29,9 @@ const CompanySettingsPage = React.createClass({
                 </div>
                 <div>
                     <h2>Departments</h2>
-                    <div className="departmentContainer">
+                    <div className="departmentContainer" display-if={departments}>
                         {departments.map((department, i) => <DepartmentCard key={`department_${i}`} department={department}/>)}
-                    </div>
+                    </div>                    
                 </div>
             </div>
         )

@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import Logo from "Logo"
 import {connect} from "react-redux"
 import {Link, withRouter } from "react-router"

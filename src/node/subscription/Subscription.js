@@ -34,7 +34,7 @@ const createAccount = async (user, domain) => {
         let Account = Parse.Object.extend("Account")
         let account = new Account({
             emailDomain: domain.toLowerCase(),
-            accountName: user.get("company"),
+            accountName: user.get("company") || domain,
             createdBy: user,
         })
         account = await account.save()
@@ -99,7 +99,10 @@ const initialize = () => {
         try{
             let user = request.user
             const {userId, email} = request.params
-            if (!user || user.id != userId || !user.get("emailVerified")){
+            const authData = user.get("authData", {})
+            const googleEmail = authData && authData.google ? authData.google.email : null
+            const authEmails = !authData ? [] : Object.values(authData).map(auth => auth.email)
+            if (!user || user.id != userId || !user.get("emailVerified") && authEmails.indexOf(user.get("email")) === -1){
                 return response.error({
                     success: false,
                     message: "User must be logged in with a verified email as the user that is being associated."

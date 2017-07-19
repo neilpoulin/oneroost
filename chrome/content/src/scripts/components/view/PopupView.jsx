@@ -17,10 +17,7 @@ class PopupView extends Component {
         return (
             <div className="container-fluid">
                 <div>
-                    <div className="googleLogin" onClick={logInGoogle} display-if={!googleEmail}>
-                        <span className="icon"></span>
-                        <span className="buttonText">Sign in with Google</span>
-                    </div>
+                    <div className="googleLogin" onClick={logInGoogle} display-if={!googleEmail}></div>
                     <div display-if={googleEmail}>
                         Logged in as {googleEmail}
                         <button className="btn btn-error" onClick={logOutGoogle} >Sign Out</button>

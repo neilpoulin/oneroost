@@ -1,4 +1,5 @@
-import React, {PropTypes} from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import Parse from "parse";
 import FormInputGroup from "FormInputGroup"
 import {withRouter} from "react-router"
@@ -8,8 +9,14 @@ import ReactGA from "react-ga"
 import TermsOfServiceDisclaimer from "TermsOfServiceDisclaimer"
 import {loginValidation, registerValidation} from "RegistrationValidations"
 import {connect} from "react-redux"
-import {userLoggedIn, updateIntercomUser} from "ducks/user"
+import {userLoggedIn,
+    updateIntercomUser,
+    linkUserWithProvider,
+    linkUserWithProviderError
+} from "ducks/user"
 import * as log from "LoggingUtil"
+import GoogleLoginButton from "GoogleLoginButton"
+import LoginWithLinkedin from "form/LoginWithLinkedin"
 
 const LoginComponent = React.createClass({
     propTypes: {
@@ -236,10 +243,15 @@ const LoginComponent = React.createClass({
             lastName,
             password,
             isLogin,
-            isLoggedIn
+            isLoggedIn,
         } = this.state;
 
-        const {showTabs, showRegister, showCompany, showTermsOfService} = this.props;
+        const {
+            showTabs,
+            showRegister,
+            showCompany,
+            showTermsOfService,
+        } = this.props;
 
         if (isLoggedIn) {
             return false;
@@ -361,6 +373,14 @@ const LoginComponent = React.createClass({
                 {actionButton}
                 {forgotLink}
             </form>
+            <div className="oauthLogins">
+                <div className="provider">
+                    <GoogleLoginButton/>
+                </div>
+                <div className="provider">
+                    <LoginWithLinkedin/>
+                </div>
+            </div>
             {terms}
         </div>
 
@@ -378,7 +398,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         userLoggedIn: (user) => {
             dispatch(userLoggedIn(user))
-        }
+        },
+        linkedinSuccess: (authData) => {
+            dispatch(linkUserWithProvider("linkedin", authData))
+        },
+        linkedinError: (error) => {
+            dispatch(linkUserWithProviderError("linkedin"), error)
+        },
     }
 }
 

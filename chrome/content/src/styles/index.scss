@@ -60,3 +60,10 @@ html, body{
         }
     }
 }
+
+#preloaded_images{
+    display: none;
+    position: fixed;
+    top: -99999px;
+    left: -9999px;
+}

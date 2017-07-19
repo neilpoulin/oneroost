@@ -73,6 +73,9 @@
                     color: $roostOrange;
                 }
             }
+            .navbar-default .navbar-nav .open .dropdown-menu > li > a:not(.btn):hover{
+                color: $roostOrange;
+            }
         }
 
         &.font-light{
@@ -84,15 +87,15 @@
         }
         &.font-dark{
             .navbar-collapse{
-                .dropdown.open > a, a:not(.btn){
+                .dropdown.open a, a:not(.btn){
                     color: $roostDarkGray;
                 }
-            }
+            }            
         }
         &.font-hover-dark, &.font-hover-light{
             .navbar-collapse{
                 a:hover:not(.btn){
-                    color: $roostOrange;
+                    color: $roostDarkGray;
                 }
             }
         }

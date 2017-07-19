@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import FormUtil, {Validation} from "./../util/FormUtil"
 import FormInputGroup from "FormInputGroup"
 import * as log from "LoggingUtil"

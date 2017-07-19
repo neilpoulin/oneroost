@@ -2,6 +2,8 @@ import gulp from "gulp";
 import loadPlugins from "gulp-load-plugins";
 import webpack from "webpack";
 import rimraf from "rimraf";
+import zip from "gulp-zip";
+import jeditor from "gulp-json-editor";
 
 const plugins = loadPlugins();
 
@@ -62,6 +64,21 @@ gulp.task("chrome:copy-lib", ["chrome:clean"], () => {
 gulp.task("chrome:clean", (cb) => {
     rimraf("./build", cb);
 });
+
+gulp.task("package:copy-manifest", ["chrome:copy-manifest"], () => {
+    gulp.src("manifest.json")
+        .pipe(jeditor(manifest => {
+            delete manifest.key
+            return manifest
+        }))
+        .pipe(gulp.dest("build"));
+})
+
+gulp.task("package", ["chrome", "package:copy-manifest"], () =>
+    gulp.src("build/*")
+        .pipe(zip("archive.zip"))
+        .pipe(gulp.dest("dist"))
+);
 
 gulp.task("chrome", ["chrome:copy-images",
                      "chrome:copy-lib",
