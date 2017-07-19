@@ -4,23 +4,12 @@ import {profileValidation} from "ProfileValidations"
 import FormUtil from "FormUtil"
 import FormInputGroup from "FormInputGroup"
 import * as log from "LoggingUtil"
+import FormGroupStatic from "FormGroupStatic"
 
 const BasicInfoForm = React.createClass({
     propTypes: {
         user: PropTypes.object.isRequired,
-        doCancel: PropTypes.func.isRequired,
-        afterSave: PropTypes.func.isRequired,
         saveUser: PropTypes.func.isRequired,
-    },
-    getDefaultProps(){
-        return {
-            onCancel: function(){
-                log.error("failed to impelement onCancel for BasicInfoForm");
-            },
-            onSave: function(){
-                log.error("Failed to implement onSave for BasicInfoForm");
-            }
-        }
     },
     getInitialState(){
         var user = this.props.user;
@@ -43,7 +32,6 @@ const BasicInfoForm = React.createClass({
                 jobTitle
             }
             this.props.saveUser(changes);
-            this.props.afterSave()
             this.setState({errors: {}});
             return true;
         }
@@ -56,10 +44,11 @@ const BasicInfoForm = React.createClass({
         this.props.doCancel();
     },
     render () {
-        let {errors, firstName, lastName, company, jobTitle, email} = this.state;
+        let {errors, firstName, lastName, jobTitle, email} = this.state;
+        let {account} = this.props.user
         var form =
         <div className="">
-            <h2>Edit your info</h2>
+            <h3>My Profile</h3>
             <div className="form-inline-equal">
                 <FormInputGroup
                     label="First Name"
@@ -86,14 +75,6 @@ const BasicInfoForm = React.createClass({
                 />
 
             <FormInputGroup
-                label="Company"
-                value={company}
-                fieldName="company"
-                onChange={val => this.setState({"company": val})}
-                errors={errors}
-                />
-
-            <FormInputGroup
                 label="Job Title"
                 value={jobTitle}
                 fieldName="jobTitle"
@@ -101,9 +82,12 @@ const BasicInfoForm = React.createClass({
                 errors={errors}
                 />
 
+            <FormGroupStatic
+                value={`${account.accountName}`}
+                label="Account"
+                />
             <div className="actions">
-                <button className="btn btn-link pull-left" onClick={this.doCancel}>Cancel</button>
-                <button className="btn btn-primary pull-right" onClick={this.doSave}>Save</button>
+                <button className="btn btn-primary btn-block" onClick={this.doSave}>Save</button>
             </div>
         </div>
         return form

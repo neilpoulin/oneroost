@@ -2,8 +2,9 @@ import React from "react"
 import PropTypes from "prop-types"
 import {connect} from "react-redux"
 import * as RoostUtil from "RoostUtil"
-import UserSettingsDisplay from "UserSettingsDisplay"
+// import UserSettingsDisplay from "UserSettingsDisplay"
 import UserSettingsForm from "UserSettingsForm"
+import ConnectedProviders from "ConnectedProviders"
 import {
     saveUser,
     fetchUserPermissions,
@@ -23,40 +24,23 @@ const UserSettings = React.createClass({
         return{
             isEdit: false
         }
-    },
-    doEdit(){
-        this.setState({isEdit: true});
-    },
-    doDisplay(){
-        this.setState({isEdit: false});
-    },
+    },    
     render () {
         const {user,
             saveUser,
             isLoading,
-            googleSuccess,
-            googleError,
-            linkedinSuccess,
-            linkedinError,
-            connectedProviders,
-            unlinkProvider
         } = this.props
 
         if (isLoading){
             return <div><i className="fa fa-spinner fa-spin fa-2x"></i> Loading</div>
         }
-        if (this.state.isEdit){
-            return <UserSettingsForm user={user} doCancel={() => this.setState({isEdit: false})} afterSave={this.doDisplay} saveUser={saveUser}/>
-        }
-        return <UserSettingsDisplay user={user}
-            doEdit={() => this.setState({isEdit: true})}
-            googleSuccess={googleSuccess}
-            googleError={googleError}
-            linkedinSuccess={linkedinSuccess}
-            linkedInError={linkedinError}
-            connectedProviders={connectedProviders}
-            unlinkProvider={unlinkProvider}
-            />
+
+        return <div className="UserSettingsPage">
+                <UserSettingsForm
+                    user={user}
+                    saveUser={saveUser}/>
+                <ConnectedProviders/>
+            </div>
     }
 })
 
