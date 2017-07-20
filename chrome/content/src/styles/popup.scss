@@ -1,0 +1,23 @@
+.PopupView{
+    .loginContainer{
+        display: flex;
+        justify-content: center;
+    }
+
+    .header{
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+    }
+    .content{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .brandPages{
+        padding: 1rem 0;
+        li{
+            padding: .2rem 0;
+        }
+    }
+}

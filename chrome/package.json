@@ -17,6 +17,7 @@
         "babel-preset-stage-0": "^6.24.1",
         "bootstrap-loader": "^2.1.0",
         "bootstrap-sass": "^3.3.7",
+        "classnames": "^2.2.5",
         "css-loader": "^0.28.4",
         "exports-loader": "^0.6.4",
         "extract-text-webpack-plugin": "^2.1.2",

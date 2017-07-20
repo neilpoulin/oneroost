@@ -65,27 +65,27 @@ export function getGmailFilters(){
 
 /*
 {
-  "id": string,
-  "criteria": {
-    "from": string,
-    "to": string,
-    "subject": string,
-    "query": string,
-    "negatedQuery": string,
-    "hasAttachment": boolean,
-    "excludeChats": boolean,
-    "size": integer,
-    "sizeComparison": string
-  },
-  "action": {
-    "addLabelIds": [
-      string
-    ],
-    "removeLabelIds": [
-      string
-    ],
-    "forward": string
-  }
+"id": string,
+"criteria": {
+"from": string,
+"to": string,
+"subject": string,
+"query": string,
+"negatedQuery": string,
+"hasAttachment": boolean,
+"excludeChats": boolean,
+"size": integer,
+"sizeComparison": string
+},
+"action": {
+"addLabelIds": [
+string
+],
+"removeLabelIds": [
+string
+],
+"forward": string
+}
 }
 */
 // https://developers.google.com/gmail/api/v1/reference/users/settings/filters#resource
@@ -94,7 +94,7 @@ export function createFilter({senderName, senderEmail, vanityUrl, ...action}){
         if (!senderEmail){
             return null;
         }
-        const labelName = `OneRoost ${vanityUrl}`
+        const labelName = `OneRoost | ${vanityUrl}`
         axios.post("https://www.googleapis.com/gmail/v1/users/me/labels", {
             name: labelName
         })
@@ -119,16 +119,15 @@ export function createFilter({senderName, senderEmail, vanityUrl, ...action}){
                         from: senderEmail
                     },
                     action: {
-                        addLabelIds: [
-                        label.id
-                        ]
+                        addLabelIds: [label.id],
+                        removeLabelIds: ["INBOX"]
                     }
                 })
             })
-            .then(({data}) => {
+            .then(filter => {
                 dispatch({
                     type: CREATE_FILTER_SUCCESS,
-                    payload: {test: "this is not real", senderName, senderEmail, vanityUrl}
+                    payload: filter
                 })
             })
             .catch(error => {

@@ -2,6 +2,7 @@ import Parse from "parse"
 import {fromJS} from "immutable"
 import {handleSignInClick, handleSignOutClick, loadUserFromCache} from "googleAuth"
 import * as UserActions from "actions/user"
+import {LOAD_PAGES_ALIAS} from "actions/brandPages"
 
 const initialState = {
     isLogin: false,
@@ -10,8 +11,8 @@ const initialState = {
     firstName: null,
     lastName: null,
     isLoading: false,
-    googleEmail: null,
     role: null,
+    email: null,
     error: null,
 }
 
@@ -35,6 +36,7 @@ export default function reducer(state=initialState, action){
         case UserActions.UPDATE_USER_INFO:
             state.firstName = payload.firstName;
             state.lastName = payload.lastName;
+            state.email = payload.email;
             if (payload.account){
                 state.accountId = payload.account.objectId;
                 state.accountName = payload.account.accountName;
@@ -48,12 +50,6 @@ export default function reducer(state=initialState, action){
             break;
         case UserActions.LOG_IN_ERROR:
             console.error(action)
-            break;
-        case UserActions.GOOGLE_LOG_IN_SUCCESS:
-            state.googleEmail = action.payload.email
-            break;
-        case UserActions.GOOGLE_LOG_OUT_SUCCESS:
-            state.googleEmail = null
             break;
         case UserActions.SET_PROVIDER_ERROR:
             break;
@@ -78,6 +74,9 @@ export const loadUserDetails = (userId) => (dispatch, getState) => {
         dispatch({
             type: UserActions.UPDATE_USER_INFO,
             payload: user.toJSON()
+        })
+        dispatch({
+            type: LOAD_PAGES_ALIAS,
         })
     }).catch(error => {
         console.error(error)
@@ -170,6 +169,9 @@ export function refreshUserData(){
                     type: UserActions.UPDATE_USER_INFO,
                     userId: user.id,
                     payload: updatedUser.toJSON()
+                })
+                dispatch({
+                    type: LOAD_PAGES_ALIAS
                 })
             })
         }

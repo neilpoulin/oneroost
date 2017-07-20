@@ -8,23 +8,37 @@ import {getFullName} from "selectors/user"
 
 class PopupView extends Component {
     render() {
-        const {userId, fullName, logOut, isLoggedIn, logInGoogle, googleEmail} = this.props
+        const {userId, fullName, logOut, isLoggedIn, logInGoogle, email, pages, brandPagesLoading} = this.props
         return (
-            <div className="container-fluid">
-                <div display-if={!isLoggedIn}>
-                    <div className="googleLogin" onClick={logInGoogle} display-if={!googleEmail}></div>
-                    <div display-if={googleEmail}>
-                        Logged in as {googleEmail}
-                    </div>
+            <div className="container-fluid PopupView">
+                <div display-if={!isLoggedIn} className="loginContainer">
+                    <div className="googleLogin" onClick={logInGoogle}></div>
                 </div>
-                <div display-if={isLoggedIn}>
-                    <div display-if={fullName}>
-                        Welcome, {fullName}
+                <div display-if={isLoggedIn} className="">
+                    <div className="header">
+                        <div display-if={fullName} className="email">
+                            {email}
+                        </div>
+                        <Clickable text="Log Out"
+                            onClick={logOut}
+                            className="logout"
+                            look="link"/>
                     </div>
-                    <div display-if={userId}>
-                        Your User ID is {userId}
+
+                    <div display-if={userId} className="content">
                         <div>
-                            <Clickable text="Log Out" onClick={logOut}/>
+                            <Clickable href={"https://www.oneroost.com/settings/templates"}
+                                target="_blank"
+                                look="button"
+                                text="Manage Tempaltes"/>
+                        </div>
+                        <div display-if={!brandPagesLoading && pages} className="brandPages">
+                            <h3>Brand Pages</h3>
+                            <ul className="list-unstyled">
+                                {pages.map((page, i) =>
+                                    <li><Clickable target="_blank" look="link" key={`page_${i}`} text={page.vanityUrl} href={`https://www.oneroost.com/${page.vanityUrl}`}/></li>
+                                )}
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -34,11 +48,17 @@ class PopupView extends Component {
 }
 
 const mapStateToProps = (state) => {
+    const user = state.user
+    const {email, isLoggedIn, userId} = user
+    const brandPages = state.brandPages
+
     return {
-        userId: state.user.userId,
+        userId,
         fullName: getFullName(state),
-        isLoggedIn: state.user.isLoggedIn,
-        googleEmail: state.user.googleEmail,
+        isLoggedIn,
+        email,
+        brandPagesLoading: brandPages.isLoading,
+        pages: brandPages.pages,
     }
 }
 

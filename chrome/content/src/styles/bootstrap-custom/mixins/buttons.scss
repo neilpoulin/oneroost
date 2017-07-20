@@ -3,7 +3,7 @@
   background-image: none;
   background-color: transparent;
   border-color: $color;
-
+  text-decoration: none;
   @include hover {
     color: #fff;
     background-color: $color;

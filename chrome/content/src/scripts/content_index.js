@@ -20,7 +20,7 @@ Promise.all([loadSDK, storeReady]).then(function([sdk, isReady]){
     // console.log("oneroostRoute", oneroostRoute)
     // the SDK has been loaded, now do something with it!
     const currentEmail = sdk.User.getEmailAddress()
-    if(store.getState().user.googleEmail !== currentEmail){
+    if(store.getState().user.email !== currentEmail){
         console.log("not the current user, exiting: ", currentEmail)
         return;
     }
