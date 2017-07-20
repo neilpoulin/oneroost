@@ -55,6 +55,8 @@ export default function reducer(state=initialState, action){
         case UserActions.GOOGLE_LOG_OUT_SUCCESS:
             state.googleEmail = null
             break;
+        case UserActions.SET_PROVIDER_ERROR:
+            break;
         default:
             break;
     }
@@ -117,8 +119,9 @@ export const logOut = () => (dispatch, getState) => {
 }
 
 export const logInGoogle = () => (dispatch, getState) => {
-    handleSignInClick().then(({email}) => {
+    handleSignInClick().then(({email, id_token, access_token, id}) => {
         console.log("Signed In Click finished...", email)
+        dispatch(linkUserWithProvider("google", {access_token, id}))
         dispatch({type: UserActions.GOOGLE_LOG_IN_SUCCESS, payload: {email}})
     })
 }
@@ -139,10 +142,83 @@ export const loadCachedUser = () => (dispatch, getState) => {
         })
         dispatch(loadUserDetails(user.id))
     }
-    loadUserFromCache().then(({email}) => {
+    loadUserFromCache().then(({email, access_token, id}) => {
         console.log("Loaded google user from cache finished...", email)
-        dispatch({type: UserActions.GOOGLE_LOG_IN_SUCCESS, payload: {email}})
+        dispatch(linkUserWithProvider("google", {access_token, id}))
+        // dispatch({type: UserActions.GOOGLE_LOG_IN_SUCCESS, payload: {email}})
     }).catch(console.error)
+}
+
+export function linkUserWithProvider(provider, authData){
+    return (dispatch, getState) => {
+        console.log("authData:", authData)
+        if(!authData || !authData.access_token){
+            console.log("no valid auth data present, exit")
+            return null;
+        }
+        let user = Parse.User.current() || new Parse.User({});
+        dispatch(linkUser(user, provider, authData))
+    }
+}
+
+export function refreshUserData(){
+    return (dispatch) => {
+        let user = Parse.User.current();
+        if (user){
+            user.fetch().then(updatedUser => {
+                dispatch({
+                    type: UserActions.UPDATE_USER_INFO,
+                    userId: user.id,
+                    payload: updatedUser.toJSON()
+                })
+            })
+        }
+    }
+}
+
+function linkUser(user, provider, authData){
+    return (dispatch) => {
+        let options = {
+            authData
+        }
+
+        return user._linkWith(provider, options).then(savedUser => {
+            console.info("Linked with " + provider, savedUser)
+            dispatch({
+                type: UserActions.LOG_IN_SUCCESS,
+                userId: user.id,
+                payload: savedUser.toJSON()
+            })
+            Parse.Cloud.run("checkEmailAfterOAuth").then((response) => {
+                dispatch(refreshUserData())
+            }).catch(error => console.error)
+            dispatch(refreshUserData())
+        }).catch(error => {
+            switch (error.code){
+                case 202:
+                case 206:
+                    error.message = "If you already have an account, you must log in before you can connect via a thrid party."
+                    dispatch(linkUserWithProviderError(provider, error))
+                    break
+                default:
+                    console.error("Failed to link with" + provider, error)
+                    dispatch(linkUserWithProviderError(provider, error))
+                    break
+            }
+        })
+    }
+}
+
+export function linkUserWithProviderError(providerName, error){
+    return (dispatch, getState) => {
+        console.error("Failed to link " + providerName, error)
+        dispatch({
+            type: UserActions.SET_PROVIDER_ERROR,
+            error: {
+                [providerName]: error
+            }
+        })
+    }
 }
 
 export const aliases = {

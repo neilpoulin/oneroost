@@ -6,17 +6,18 @@ const logoutUrl = "https://accounts.google.com/logout"
 const redirectUri = chrome.identity.getRedirectURL("oauth2");
 const verifyTokenUrl = "https://www.googleapis.com/oauth2/v3/tokeninfo"
 
-var token = null;
+var access_token = null;
+var id_token = null;
 var manifest = chrome.runtime.getManifest();
 
 var scopes = encodeURIComponent(manifest.oauth2.scopes.join(" "));
 
 window.getLastToken = function() {
-    return token;
+    return access_token;
 }
 
 export function loadUserFromCache() {
-    return oauth2(false)    
+    return oauth2(false)
 }
 
 export function handleSignInClick(event) {
@@ -46,17 +47,22 @@ function oauth2(interactive=true){
                     console.log("finished redirect", redirectUrl)
                     if (redirectUrl){
                         console.log("launchWebAuthFlow login successful: ", redirectUrl);
-                        var parsed = parse(redirectUrl.substr(chrome.identity.getRedirectURL("oauth2").length + 1));
-                        token = parsed.access_token;
-                        console.log("Background login complete.. token =", token);
-                        getTokenInfo(token).then(({isValid, ...rest}) => {
+                        var parsed = parse(redirectUrl.substr(chrome.identity.getRedirectURL("oauth2").length + 1));                        
+                        id_token = parsed.id_token;
+                        access_token = parsed.access_token;
+                        console.log("Background login complete.. token =", access_token);
+                        getTokenInfo(access_token).then(({isValid, ...rest}) => {
                             if(isValid){
                                 console.log("Token was found to be valid!!")
                             }
                             else{
                                 console.log("Token was not valid!")
                             }
-                            resolve(rest)
+                            resolve({...rest,
+                                id_token,
+                                access_token,
+                                id: rest.sub,
+                            })
                         })
                     }
                     else{
@@ -112,9 +118,9 @@ export function doLogout(){
     return new Promise((resolve, reject) => {
         chrome.identity.launchWebAuthFlow({"url": logoutUrl, "interactive": false}, function (redirectUrl) {
             console.log("launchWebAuthFlow logout complete");
-            getTokenInfo(token).then(tokenInfo => {
+            getTokenInfo(access_token).then(tokenInfo => {
                 console.log(tokenInfo)
-                token=null
+                access_token=null
                 resolve(tokenInfo)
             }).catch(error => {
                 console.log(error)
