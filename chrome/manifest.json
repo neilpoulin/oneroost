@@ -1,7 +1,7 @@
 {
-    "name": "OneRoost Stage",
+    "name": "OneRoost - Vendor Interceptor",
     "description": "OneRoost Gmail Extension - Stage",
-    "version": "0.3",
+    "version": "1.0",
     "background": {
         "page": "background.html",
         "persistent": true

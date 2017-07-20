@@ -65,6 +65,10 @@ gulp.task("chrome:clean", (cb) => {
     rimraf("./build", cb);
 });
 
+gulp.task("chrome:package:clean", (cb) => {
+    rimraf("./dist", cb);
+});
+
 gulp.task("package:copy-manifest", ["chrome:copy-manifest"], () => {
     gulp.src("manifest.json")
         .pipe(jeditor(manifest => {
@@ -74,8 +78,11 @@ gulp.task("package:copy-manifest", ["chrome:copy-manifest"], () => {
         .pipe(gulp.dest("build"));
 })
 
-gulp.task("package", ["chrome", "package:copy-manifest"], () =>
-    gulp.src("build/*")
+gulp.task("package", ["chrome",
+                      "chrome:package:clean",
+                      "package:copy-manifest"
+], () =>
+    gulp.src("build/**/*")
         .pipe(zip("archive.zip"))
         .pipe(gulp.dest("dist"))
 );

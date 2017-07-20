@@ -73,8 +73,7 @@ module.exports = {
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
             "process.env": {
-                NODE_ENV: JSON.stringify("production"),
-                HOSTNAME: JSON.stringify("https://stage.oneroost.com")
+                NODE_ENV: JSON.stringify("production")                
             }
         }),
         new OptimizeCssAssetsPlugin()
