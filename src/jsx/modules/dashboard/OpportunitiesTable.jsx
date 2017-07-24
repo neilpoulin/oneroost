@@ -5,12 +5,8 @@ import TableHeader from "TableHeader"
 import TableRow from "TableRow"
 import {denormalize} from "normalizr"
 import {connect} from "react-redux"
-import * as Deal from "models/Deal"
-import * as NextStep from "models/NextStep"
 import * as Requirement from "models/Requirement"
 import * as Template from "models/Template"
-import {loadNextStepsForDeals} from "ducks/roost/nextSteps"
-import {loadRequirementsForDealIds} from "ducks/roost/requirements"
 import _ from "lodash"
 import moment from "moment"
 import * as log from "LoggingUtil"
@@ -70,25 +66,25 @@ const OpportunitiesTable = React.createClass({
             opportunities: []
         }
     },
-    componentDidMount(){
-        const {opportunities} = this.props
-        const dealIds = opportunities.map(({deal}) => deal.objectId)
-        this.props.loadNextSteps(dealIds)
-        this.props.loadRequirements(dealIds)
-    },
     componentWillUpdate(nextProps, nextState){
         const oldOpps = this.props.opportunities;
         const {opportunities=[]} = nextProps;
         if (opportunities.length === oldOpps.length){
             return
         }
-        const dealIds = opportunities.map(({deal}) => deal.objectId)
-        this.props.loadNextSteps(dealIds)
 
         nextProps.exportCsvData(nextProps.csvData)
     },
     render () {
-        const {opportunities, currentUser, headings, requirementHeadings, showRequirements, isLoading, departmentMap} = this.props
+        const {
+            opportunities,
+            currentUser,
+            headings,
+            requirementHeadings,
+            showRequirements,
+            isLoading,
+            departmentMap,
+        } = this.props
         if (isLoading){
             return null
         }
@@ -116,42 +112,33 @@ const mapStateToProps = (state, ownProps) => {
     let dashboard = state.dashboard.toJS()
     let {selectedTemplateId} = dashboard
     let departmentMap = state.config.get("departmentMap")
-    let deals = []
-    let archivedDeals = []
     let query = dashboard.searchTerm
     let isLoading = dashboard.isLoading
-    // let requirementIds = Object.values(entities.requirements).filter(req => allDealIds.indexOf(req.deal) != -1)
-    // let requirements = denormalize(requirementIds, [Requirement.Schema], entities)
-    // let requirementsByDealId = requirements.reduce((group, req) => {
-    //     let dealId = req.deal.objectId
-    //     let reqs = group[dealId] || []
-    //     reqs.push(req)
-    //     group[dealId] = reqs
-    //     return group
-    // }, {})
+    let allOpportunities = Object.values(dashboard.roosts)
+    let requirementIds = Object.values(entities.requirements).filter(req => Object.keys(dashboard.roosts).indexOf(req.deal) != -1)
+    let requirements = denormalize(requirementIds, [Requirement.Schema], entities)
+    let requirementsByDealId = requirements.reduce((group, req) => {
+        let dealId = req.deal.objectId
+        let reqs = group[dealId] || []
+        reqs.push(req)
+        group[dealId] = reqs
+        return group
+    }, {})
 
-    // let opportunities = deals.map(deal => {
-    //     return {
-    //         deal: deal,
-    //         archived: false,
-    //         nextSteps: nextStepsByDealId[deal.objectId] || [],
-    //         requirements: requirementsByDealId[deal.objectId] || [],
-    //         searchScore: 0,
-    //     }
-    // })
-    // let archivedOpportunities = archivedDeals.map(deal => {
-    //     return {
-    //         deal: deal,
-    //         archived: true,
-    //         // nextSteps: nextStepsByDealId[deal.objectId] || [],
-    //         searchScore: 0,
-    //     }
-    // })
     let headings = headers
     let requirementHeadings = []
-
-    let allOpportunities = Object.values(dashboard.roosts)
     let showRequirements = false
+    let showArchived = dashboard.showArchived
+
+    if (!showArchived){
+        allOpportunities = allOpportunities.filter(opp => !opp.archived)
+    }
+    else {
+        allOpportunities.forEach(opp => {
+            opp.requirements = requirementsByDealId[opp.dealId] || []
+        })
+    }
+
     if (selectedTemplateId){
         // let selectedTemplateId = selectedTemplate.objectId
         let selectedTemplate = denormalize(selectedTemplateId, Template.Schema, entities)
@@ -185,7 +172,7 @@ const mapStateToProps = (state, ownProps) => {
             let fields = []
             fields.push(deal.dealName)
             fields.push(deal.description)
-
+            fields.push(RoostUtil.getRoostDisplayName(deal, currentUser))
             let searchScore = fields.reduce((fieldScore, field) => {
                 return fieldScore + patterns.reduce((patScore, pat) => {
                     return patScore + (pat.test(field) ? 1 : 0)
@@ -249,14 +236,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        loadNextSteps: (dealIds=[]) => {
-            log.info("Loading next steps for deals", dealIds)
-            dispatch(loadNextStepsForDeals(dealIds))
-        },
-        loadRequirements: (dealIds=[]) => {
-            log.info("Loading requirements for deals", dealIds)
-            dispatch(loadRequirementsForDealIds(dealIds))
-        }
+
     }
 }
 

@@ -5,6 +5,7 @@ import * as Account from "models/Account"
 import * as Stakeholder from "models/Stakeholder"
 import Parse from "parse"
 import {normalize} from "normalizr"
+import {loadRequirementsForDealIds} from "ducks/roost/requirements"
 
 export const SHOW_ARCHIVED = "oneroost/dashboard/SHOW_ARCHIVED"
 export const HIDE_ARCHIVED = "oneroost/dashboard/HIDE_ARCHIVED"
@@ -134,6 +135,8 @@ export function loadDashboard(){
         getRoostsForAccount(accountId).then(stakeholders => {
             stakeholders = stakeholders.map(p => p.toJSON())
             let templateIds = Set([])
+            let dealIds = stakeholders.map(stakeholder => stakeholder.deal.objectId)
+            dispatch(loadRequirementsForDealIds(dealIds))
             let roosts = stakeholders.reduce((map, stakeholder) => {
                 let dealId = stakeholder.deal.objectId;
                 templateIds = templateIds.add(stakeholder.deal.template.objectId)

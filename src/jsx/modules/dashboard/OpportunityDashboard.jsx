@@ -159,6 +159,12 @@ const mapStateToProps = (state, ownProps) => {
         return t1.department.localeCompare(t2.department)
     })
 
+    Object.values(dashboard.roosts).forEach(roost => {
+        if (roost.archived){
+            hasArchivedDeals = true;
+        }
+    })
+    
     showTable = Object.values(dashboard.roosts).length > 0
 
     return {

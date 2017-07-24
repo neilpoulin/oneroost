@@ -73,7 +73,7 @@ export const updateRequirement = (requirement, changes, message) => (dispatch, g
     requirement = Requirement.fromJS(requirement);
     requirement.set(changes);
     requirement.save().then(saved => {
-        try{            
+        try{
             let intercomMetadata = {
                 completed: !!saved.get("completedDate"),
                 title: saved.get("title"),
@@ -122,6 +122,14 @@ export const loadRequirementsForDealIds = (dealIds=[]) => (dispatch, getState) =
     findResults.then(results => {
         let json = results.map(requirement => requirement.toJSON())
         let entities = normalize(json, [Requirement.Schema]).entities || {}
+        json.forEach(req => {
+            dispatch({
+                type: [req],
+                payload: json,
+                dealId: req.deal.objectId
+            })
+        })
+
         dispatch({
             type: LOADED_ENTITIES,
             entities,
