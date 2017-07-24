@@ -44,6 +44,11 @@ const headers = [
         label: "Budget",
         clickable: false,
         sortable: false,
+    },
+    {
+        label: "Status",
+        clickable: false,
+        sortable: false,
     }
 ]
 
@@ -108,62 +113,44 @@ const mapStateToProps = (state, ownProps) => {
     let currentUser = RoostUtil.getCurrentUser(state)
     let userId = currentUser.objectId;
     let entities = state.entities.toJS()
-    let myOpportunities = state.opportunitiesByUser.get(userId)
     let dashboard = state.dashboard.toJS()
     let {selectedTemplateId} = dashboard
     let departmentMap = state.config.get("departmentMap")
     let deals = []
     let archivedDeals = []
     let query = dashboard.searchTerm
-    let isLoading = true
-    if (myOpportunities){
-        myOpportunities = myOpportunities.toJS()
-        isLoading = myOpportunities.isLoading;
-        deals = denormalize(myOpportunities.deals, [Deal.Schema], entities)
-        archivedDeals = dashboard.showArchived ? denormalize(myOpportunities.archivedDeals, [Deal.Schema], entities) : []
-    }
+    let isLoading = dashboard.isLoading
+    // let requirementIds = Object.values(entities.requirements).filter(req => allDealIds.indexOf(req.deal) != -1)
+    // let requirements = denormalize(requirementIds, [Requirement.Schema], entities)
+    // let requirementsByDealId = requirements.reduce((group, req) => {
+    //     let dealId = req.deal.objectId
+    //     let reqs = group[dealId] || []
+    //     reqs.push(req)
+    //     group[dealId] = reqs
+    //     return group
+    // }, {})
 
-    let allDealIds = deals.concat(archivedDeals).map(deal => deal.objectId);
-    let stepIds = Object.values(entities.nextSteps).filter(step => allDealIds.indexOf(step.deal) != -1)
-    let nextSteps = denormalize(stepIds, [NextStep.Schema], entities)
-    let nextStepsByDealId = nextSteps.reduce((group, step) => {
-        let dealId = step.deal.objectId
-        let steps = group[dealId] || []
-        steps.push(step)
-        group[dealId] = steps
-        return group
-    }, {})
-
-    let requirementIds = Object.values(entities.requirements).filter(req => allDealIds.indexOf(req.deal) != -1)
-    let requirements = denormalize(requirementIds, [Requirement.Schema], entities)
-    let requirementsByDealId = requirements.reduce((group, req) => {
-        let dealId = req.deal.objectId
-        let reqs = group[dealId] || []
-        reqs.push(req)
-        group[dealId] = reqs
-        return group
-    }, {})
-
-    let opportunities = deals.map(deal => {
-        return {
-            deal: deal,
-            archived: false,
-            nextSteps: nextStepsByDealId[deal.objectId] || [],
-            requirements: requirementsByDealId[deal.objectId] || [],
-            searchScore: 0,
-        }
-    })
-    let archivedOpportunities = archivedDeals.map(deal => {
-        return {
-            deal: deal,
-            archived: true,
-            nextSteps: nextStepsByDealId[deal.objectId] || [],
-            searchScore: 0,
-        }
-    })
+    // let opportunities = deals.map(deal => {
+    //     return {
+    //         deal: deal,
+    //         archived: false,
+    //         nextSteps: nextStepsByDealId[deal.objectId] || [],
+    //         requirements: requirementsByDealId[deal.objectId] || [],
+    //         searchScore: 0,
+    //     }
+    // })
+    // let archivedOpportunities = archivedDeals.map(deal => {
+    //     return {
+    //         deal: deal,
+    //         archived: true,
+    //         // nextSteps: nextStepsByDealId[deal.objectId] || [],
+    //         searchScore: 0,
+    //     }
+    // })
     let headings = headers
     let requirementHeadings = []
-    let allOpportunities = opportunities.concat(archivedOpportunities)
+
+    let allOpportunities = Object.values(dashboard.roosts)
     let showRequirements = false
     if (selectedTemplateId){
         // let selectedTemplateId = selectedTemplate.objectId
@@ -223,6 +210,7 @@ const mapStateToProps = (state, ownProps) => {
         args = {data: allOpportunities.map(opp => {
             let requirementData = {}
             requirementHeadings.map(heading => {
+                if (!opp.requirements) return
                 let requirement = opp.requirements.find(req => {
                     return req.title.trim().toLowerCase() === heading.label.trim().toLowerCase()
                 })

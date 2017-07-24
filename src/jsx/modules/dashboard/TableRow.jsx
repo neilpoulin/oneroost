@@ -81,7 +81,7 @@ const TableRow = React.createClass({
             //  documents,
             // nextSteps,
             archived,
-            requirements,
+            requirements=[],
         } = opportunity
 
         // let sortedSteps = nextSteps.filter(step => {
@@ -130,16 +130,18 @@ const TableRow = React.createClass({
             <tr className={archived? "archived" : ""}>
                 <td>
                     <NavLink className="" to={"/roosts/" + deal.objectId}
+                        display-if={opportunity.hasAccess}
                         tag="span"
                         activeClassName="active">
                         {getRoostDisplayName(deal, currentUser)}
                     </NavLink>
+                    <span display-if={!opportunity.hasAccess}>{getRoostDisplayName(deal, currentUser)}</span>
                 </td>
                 <td>
                     {this._getDepartmentDisplayName()}
                     <span display-if={this._getCategoryDisplayName()}> | {this._getCategoryDisplayName()}</span>
                     <span display-if={this._getSubCategoryDisplayName()}> | {this._getSubCategoryDisplayName()}</span>
-                </td>                
+                </td>
                 <td>
                     {formatDate(deal.lastActiveAt || deal.updatedAt)}
                 </td>
@@ -148,6 +150,9 @@ const TableRow = React.createClass({
                 </td>
                 <td>
                     {getBudgetString(deal, "--")}
+                </td>
+                <td>
+                    {opportunity.status}
                 </td>
                 {requirementCells.map((req) => {
                     return req

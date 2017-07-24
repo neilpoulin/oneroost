@@ -26,7 +26,8 @@ const initialState = fromJS({
     selectedTemplateId: null,
     roosts: {},
     templateIds: [],
-    csvData: null
+    csvData: null,
+    error: null,
 });
 export default function reducer(state=initialState, action) {
     switch (action.type) {
@@ -41,6 +42,7 @@ export default function reducer(state=initialState, action) {
             break;
         case LOAD_DASHBOARD_ERROR:
             state = state.set("isLoading", false)
+            state = state.set("error", action.error)
             break;
         case SHOW_ARCHIVED:
             state = state.set("showArchived", true)
@@ -148,7 +150,7 @@ export function loadDashboard(){
 
                     let roost = {
                         dealId,
-                        templateId: stakeholder.deal.templateId,
+                        templateId: stakeholder.deal.template.objectId,
                         templateOwner: stakeholder.deal.template ? stakeholder.deal.template.ownedBy : null,
                         dealName,
                         budgetLow,
@@ -162,6 +164,8 @@ export function loadDashboard(){
                         stakeholders: [],
                         hasAccess: false,
                         status: "NOT SET",
+                        deal: stakeholder.deal,
+                        requirements: [],
                     }
 
                     map[dealId] = roost
@@ -171,13 +175,14 @@ export function loadDashboard(){
                 // set up user specific stuff
                 roost.stakeholders.push(stakeholder.user)
                 if (stakeholder.user.objectId === currentUserId){
-                    let isApprover = stakeholder.readyRoostApprover.objectId === currentUserId
+                    let isApprover = stakeholder.readyRoostApprover ? stakeholder.user.objectId === currentUserId : false
                     roost = {...roost,
                         archived: !stakeholder.active,
                         inviteAccepted: stakeholder.inviteAccepted,
                         isApprover,
                         invitedByUserId: stakeholder.invitedBy ? stakeholder.invitedBy.objectId : null,
                         invitedByUserEmail: stakeholder.invitedBy ? stakeholder.invitedBy.username : null,
+                        hasAccess: true,
                     }
                 }
                 map[dealId] = roost
