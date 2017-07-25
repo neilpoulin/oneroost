@@ -1,12 +1,14 @@
 import React from "react"
 import PropTypes from "prop-types"
 import {
-    getRoostDisplayName
+    getRoostDisplayName,
+    getFullName,
 } from "RoostUtil"
 
 import {formatDurationAsDays, formatDate} from "DateUtil"
 import {getBudgetString} from "CurrencyUtil"
 import NavLink from "NavLink"
+import RoostStatusToggle from "RoostStatusToggle"
 
 const TableRow = React.createClass({
     propTypes: {
@@ -20,6 +22,7 @@ const TableRow = React.createClass({
         showRequirements: PropTypes.bool,
         requirementHeadings: PropTypes.arrayOf(PropTypes.object).isRequired,
         departmentMap: PropTypes.object.isRequired,
+        requestAccess: PropTypes.func.isRequired,
     },
     _getDepartmentDisplayName(){
         const {opportunity: {deal}, departmentMap} = this.props;
@@ -74,6 +77,7 @@ const TableRow = React.createClass({
             opportunity,
             showRequirements,
             requirementHeadings,
+            requestAccess,
         } = this.props;
         const {deal,
             // stakeholders,
@@ -81,27 +85,8 @@ const TableRow = React.createClass({
             //  documents,
             // nextSteps,
             archived,
-            requirements,
+            requirements=[],
         } = opportunity
-
-        // let sortedSteps = nextSteps.filter(step => {
-        //     return step.completedDate == null && step.active !== false
-        // }).sort((a, b) => {
-        //     return a.dueDate > b.dueDate
-        // })
-        // let nextStep = null;
-        // if (sortedSteps.length > 0){
-        //     let step = sortedSteps[0]
-        //     nextStep =
-        //     <div>
-        //         <div>
-        //             {step.title}
-        //         </div>
-        //         <div>
-        //             due {formatDate(step.dueDate)}
-        //         </div>
-        //     </div>
-        // }
 
         let requirementCells = []
         if (showRequirements && requirementHeadings && requirementHeadings.length > 0){
@@ -130,16 +115,28 @@ const TableRow = React.createClass({
             <tr className={archived? "archived" : ""}>
                 <td>
                     <NavLink className="" to={"/roosts/" + deal.objectId}
+                        display-if={opportunity.hasAccess}
                         tag="span"
                         activeClassName="active">
                         {getRoostDisplayName(deal, currentUser)}
                     </NavLink>
+                    <div display-if={!opportunity.hasAccess}>
+                        <p>{getRoostDisplayName(deal, currentUser)}</p>
+                        <span display-if={!opportunity.accessRequested} className="btn btn-sm btn-outline-primary" onClick={requestAccess}>Request Access</span>
+                        <span display-if={opportunity.accessRequested} className="" >Request Sent</span>
+                    </div>
+
                 </td>
                 <td>
                     {this._getDepartmentDisplayName()}
                     <span display-if={this._getCategoryDisplayName()}> | {this._getCategoryDisplayName()}</span>
                     <span display-if={this._getSubCategoryDisplayName()}> | {this._getSubCategoryDisplayName()}</span>
-                </td>                
+                </td>
+                <td>
+                    <span display-if={deal.template}>
+                        {getFullName(deal.template.ownedBy)} {deal.template.ownedBy.username}
+                    </span>
+                </td>
                 <td>
                     {formatDate(deal.lastActiveAt || deal.updatedAt)}
                 </td>
@@ -148,6 +145,11 @@ const TableRow = React.createClass({
                 </td>
                 <td>
                     {getBudgetString(deal, "--")}
+                </td>
+                <td>
+                    <RoostStatusToggle roostId={deal.objectId}
+                        status={opportunity.deal.status}
+                        isApprover={opportunity.isApprover}/>
                 </td>
                 {requirementCells.map((req) => {
                     return req

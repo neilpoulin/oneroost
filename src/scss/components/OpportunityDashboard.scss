@@ -69,6 +69,30 @@ $archivedFade: 30%;
 }
 
 
+.RoostStatusToggle{
+    .option{
+        cursor: pointer;
+        padding: .2rem .6rem;
+        font-size: 1.2rem;
+        margin-left: .5rem;
+        border-radius: 6px;
+        display: inline-block;
+        border: 1px solid $roostOrange;
+        color: $roostOrange;
+        white-space: nowrap;
+        margin-bottom: .5rem;
+        width: 92px;
+        text-align: center;
+        &:hover, &.active{
+            background-color: $roostOrange;
+            color: white;
+        }
+
+        &.active{
+            cursor: default;        
+        }
+    }
+}
 
 @media (max-width: $screen-sm-min) {
     .OpportunityDashboard{

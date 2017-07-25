@@ -1,16 +1,14 @@
-import Parse from "parse"
-import React, {PropTypes} from "react"
+import React from "react"
+import PropTypes from "prop-types"
 import { connect } from "react-redux"
 import RoostNav from "navigation/RoostNav"
 import BetaUserWelcome from "BetaUserWelcome"
-import {loadOpportunities, subscribeOpportunities} from "ducks/opportunities"
-import {setShowArchived, searchOpportunities, setTemplateId, setExportCsvData} from "ducks/dashboard"
+import {setShowArchived, searchOpportunities, setTemplateId, setExportCsvData, loadDashboard} from "ducks/dashboard"
 import OpportunitiesTable from "OpportunitiesTable"
 import ToggleButton from "ToggleButton"
 import LoadingIndicator from "LoadingIndicator"
 import SearchInput from "SearchInput"
 import * as RoostUtil from "RoostUtil"
-import {loadTemplates} from "ducks/userTemplates"
 import {fetchUserPermissions} from "ducks/user"
 import * as Template from "models/Template"
 import * as Deal from "models/Deal"
@@ -18,8 +16,8 @@ import {denormalize} from "normalizr"
 import DashboardPaywall from "DashboardPaywall"
 import {loadSettings} from "ducks/accountSettings"
 
-const OpportunityDashboard = React.createClass({
-    propTypes: {
+class OpportunityDashboard extends React.Component{
+    static propTypes = {
         showTable: PropTypes.bool.isRequired,
         userId: PropTypes.string.isRequired,
         isLoading: PropTypes.bool.isRequired,
@@ -27,11 +25,11 @@ const OpportunityDashboard = React.createClass({
         templates: PropTypes.arrayOf(PropTypes.object),
         templatesLoading: PropTypes.bool,
         archivedTemplates: PropTypes.arrayOf(PropTypes.object)
-    },
+    }
     componentWillMount(){
         this.props.loadData()
         document.title = "Reporting | OneRoost"
-    },
+    }
     render () {
         const {showTable,
             userId,
@@ -52,11 +50,11 @@ const OpportunityDashboard = React.createClass({
             departmentMap,
             } = this.props
         let contents = null
-        if (!hasAccess){
-            return <DashboardPaywall/>
+        if (isLoading){
+            return <LoadingIndicator message="Loading Dashboard" size="large"/>
         }
-        else if (isLoading){
-            contents = <LoadingIndicator message="Loading Dashboard" size="large"/>
+        else if (!hasAccess){
+            return <DashboardPaywall/>
         }
         else if (!showTable){
             contents = <BetaUserWelcome emailVerified={currentUser.emailVerified} userId={userId} templates={templates} templatesLoading={templatesLoading} archivedTemplates={archivedTemplates}/>
@@ -118,7 +116,7 @@ const OpportunityDashboard = React.createClass({
             </div>
         )
     }
-})
+}
 
 const mapStateToProps = (state, ownProps) => {
     let dashboard = state.dashboard.toJS()
@@ -127,53 +125,47 @@ const mapStateToProps = (state, ownProps) => {
     const {departmentMap} = accountState
     const payment = state.payment.toJS()
     const config = state.config.toJS()
+    const entities = state.entities.toJS()
 
+    let userId = currentUser.objectId
+
+    let isLoading = dashboard.isLoading
+    let showTable = false
+    let hasArchivedDeals = false
+
+    if (isLoading){
+        return {
+            isLoading,
+            showTable,
+            hasArchivedDeals,
+            hasAccess: true,
+            currentUser,
+            userId,
+        }
+    }
+
+    // TODO set up a wrapper component to check for payment status
     let hasAccess = payment.currentPlanId || currentUser.admin
     if (!config.paymentEnabled){
         hasAccess = true
     }
-    let userId = currentUser.objectId
-    let myOpportunities = state.opportunitiesByUser.get(userId)
-    const entities = state.entities.toJS()
-    let isLoading = accountState.isLoading || !accountState.accountId
-    let showTable = false
-    let hasArchivedDeals = false
-    let templates = []
-
-    if (myOpportunities && !accountState.isLoading){
-        myOpportunities = myOpportunities.toJS()
-        isLoading = myOpportunities.isLoading
-        showTable = myOpportunities.deals.length > 0 || myOpportunities.archivedDeals.length > 0
-        hasArchivedDeals = myOpportunities.archivedDeals.length > 0
-        let deals = denormalize(myOpportunities.deals, [Deal.Schema], entities)
-        let dealTemplates = deals.filter(deal => !!deal.template).map(deal => deal.template)
-        dealTemplates.forEach(dealTempalte => {
-            let existing = templates.find(t => {
-                return t.objectId === dealTempalte.objectId
-            })
-            if (!existing){
-                templates.push(dealTempalte)
-            }
-        })
-    }
 
     let templatesLoading = false;
-
+    let templateIds = dashboard.templateIds || [];
+    let templates = denormalize(templateIds, [Template.Schema], entities)
     let archivedTemplates = []
     let selectedTemplateId = dashboard.selectedTemplateId
-    if (!accountState.isLoading){
-        let myTemplateIds = accountState.templateIds.filter(id => {
-            return !templates.find(t => {
-                return t.objectId === id
-            })
-        })
-        templates = templates.concat(denormalize(myTemplateIds, [Template.Schema], entities))
-        templates.sort((t1, t2) => {
-            return t1.department.localeCompare(t2.department)
-        })
+    templates.sort((t1, t2) => {
+        return t1.department.localeCompare(t2.department)
+    })
 
-        archivedTemplates = denormalize(accountState.archivedTemplateIds, [Template.Schema], entities)
-    }
+    Object.values(dashboard.roosts).forEach(roost => {
+        if (roost.archived){
+            hasArchivedDeals = true;
+        }
+    })
+    
+    showTable = Object.values(dashboard.roosts).length > 0
 
     return {
         showTable,
@@ -193,15 +185,16 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-    const currentUser = Parse.User.current()
-    const userId = currentUser.id
+    // const currentUser = Parse.User.current()
+    // const userId = currentUser.id
     return {
         loadData: () => {
             dispatch(loadSettings())
             dispatch(fetchUserPermissions())
-            dispatch(loadOpportunities(userId))
-            dispatch(subscribeOpportunities(userId))
-            dispatch(loadTemplates(userId))
+            // dispatch(loadOpportunities(userId))
+            // dispatch(subscribeOpportunities(userId))
+            // dispatch(loadTemplates(userId))
+            dispatch(loadDashboard())
         },
         setShowArchived: (show) => {
             dispatch(setShowArchived(show))

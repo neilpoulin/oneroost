@@ -5,17 +5,15 @@ import TableHeader from "TableHeader"
 import TableRow from "TableRow"
 import {denormalize} from "normalizr"
 import {connect} from "react-redux"
-import * as Deal from "models/Deal"
-import * as NextStep from "models/NextStep"
 import * as Requirement from "models/Requirement"
 import * as Template from "models/Template"
-import {loadNextStepsForDeals} from "ducks/roost/nextSteps"
-import {loadRequirementsForDealIds} from "ducks/roost/requirements"
 import _ from "lodash"
 import moment from "moment"
 import * as log from "LoggingUtil"
 import {convertArrayOfObjectsToCSV} from "DataUtil"
 import {formatDateShort} from "DateUtil"
+import * as Deal from "models/Deal"
+import {requestAccess} from "ducks/roost/roost"
 
 const RFP_TITLE = "RFP Title"
 
@@ -27,6 +25,11 @@ const headers = [
     },
     {
         label: "Category",
+        clickable: false,
+        sortable: false,
+    },
+    {
+        label: "Owner",
         clickable: false,
         sortable: false,
     },
@@ -44,6 +47,11 @@ const headers = [
         label: "Budget",
         clickable: false,
         sortable: false,
+    },
+    {
+        label: "Status",
+        clickable: false,
+        sortable: false,
     }
 ]
 
@@ -59,17 +67,12 @@ const OpportunitiesTable = React.createClass({
         userId: PropTypes.string.isRequired,
         exportCsvData: PropTypes.func.isRequired,
         isLoading: PropTypes.bool.isRequired,
+        requestAccess: PropTypes.func.isRequired,
     },
     getDefaultProps() {
         return {
             opportunities: []
         }
-    },
-    componentDidMount(){
-        const {opportunities} = this.props
-        const dealIds = opportunities.map(({deal}) => deal.objectId)
-        this.props.loadNextSteps(dealIds)
-        this.props.loadRequirements(dealIds)
     },
     componentWillUpdate(nextProps, nextState){
         const oldOpps = this.props.opportunities;
@@ -77,13 +80,20 @@ const OpportunitiesTable = React.createClass({
         if (opportunities.length === oldOpps.length){
             return
         }
-        const dealIds = opportunities.map(({deal}) => deal.objectId)
-        this.props.loadNextSteps(dealIds)
 
         nextProps.exportCsvData(nextProps.csvData)
     },
     render () {
-        const {opportunities, currentUser, headings, requirementHeadings, showRequirements, isLoading, departmentMap} = this.props
+        const {
+            opportunities,
+            currentUser,
+            headings,
+            requirementHeadings,
+            showRequirements,
+            isLoading,
+            departmentMap,
+            requestAccess
+        } = this.props
         if (isLoading){
             return null
         }
@@ -96,7 +106,9 @@ const OpportunitiesTable = React.createClass({
                             key={"opportunities_table_row_" + i}
                             currentUser={currentUser} showRequirements={showRequirements}
                             requirementHeadings={requirementHeadings}
-                            departmentMap={departmentMap} />
+                            departmentMap={departmentMap}
+                            requestAccess={() => requestAccess(opp.deal, currentUser)}
+                             />
                     })}
                 </tbody>
             </table>
@@ -108,34 +120,18 @@ const mapStateToProps = (state, ownProps) => {
     let currentUser = RoostUtil.getCurrentUser(state)
     let userId = currentUser.objectId;
     let entities = state.entities.toJS()
-    let myOpportunities = state.opportunitiesByUser.get(userId)
     let dashboard = state.dashboard.toJS()
     let {selectedTemplateId} = dashboard
     let departmentMap = state.config.get("departmentMap")
-    let deals = []
-    let archivedDeals = []
     let query = dashboard.searchTerm
-    let isLoading = true
-    if (myOpportunities){
-        myOpportunities = myOpportunities.toJS()
-        isLoading = myOpportunities.isLoading;
-        deals = denormalize(myOpportunities.deals, [Deal.Schema], entities)
-        archivedDeals = dashboard.showArchived ? denormalize(myOpportunities.archivedDeals, [Deal.Schema], entities) : []
-    }
-
-    let allDealIds = deals.concat(archivedDeals).map(deal => deal.objectId);
-    let stepIds = Object.values(entities.nextSteps).filter(step => allDealIds.indexOf(step.deal) != -1)
-    let nextSteps = denormalize(stepIds, [NextStep.Schema], entities)
-    let nextStepsByDealId = nextSteps.reduce((group, step) => {
-        let dealId = step.deal.objectId
-        let steps = group[dealId] || []
-        steps.push(step)
-        group[dealId] = steps
-        return group
-    }, {})
-
-    let requirementIds = Object.values(entities.requirements).filter(req => allDealIds.indexOf(req.deal) != -1)
+    let isLoading = dashboard.isLoading
+    let allOpportunities = denormalize(Object.keys(dashboard.roosts), [Deal.Schema], entities).map(deal => ({
+        deal,
+        ...dashboard.roosts[deal.objectId]
+    }))
+    let requirementIds = Object.values(entities.requirements).filter(req => Object.keys(dashboard.roosts).indexOf(req.deal) != -1)
     let requirements = denormalize(requirementIds, [Requirement.Schema], entities)
+    let deals = denormalize(Object.keys(dashboard.roosts), [Deal.Schema], entities)
     let requirementsByDealId = requirements.reduce((group, req) => {
         let dealId = req.deal.objectId
         let reqs = group[dealId] || []
@@ -144,27 +140,18 @@ const mapStateToProps = (state, ownProps) => {
         return group
     }, {})
 
-    let opportunities = deals.map(deal => {
-        return {
-            deal: deal,
-            archived: false,
-            nextSteps: nextStepsByDealId[deal.objectId] || [],
-            requirements: requirementsByDealId[deal.objectId] || [],
-            searchScore: 0,
-        }
-    })
-    let archivedOpportunities = archivedDeals.map(deal => {
-        return {
-            deal: deal,
-            archived: true,
-            nextSteps: nextStepsByDealId[deal.objectId] || [],
-            searchScore: 0,
-        }
-    })
     let headings = headers
     let requirementHeadings = []
-    let allOpportunities = opportunities.concat(archivedOpportunities)
     let showRequirements = false
+    let showArchived = dashboard.showArchived
+    deals.forEach(deal => {
+        let roost = dashboard.roosts[deal.objectId]
+        roost.status = deal.status;
+    })
+    if (!showArchived){
+        allOpportunities = allOpportunities.filter(opp => !opp.archived)
+    }
+
     if (selectedTemplateId){
         // let selectedTemplateId = selectedTemplate.objectId
         let selectedTemplate = denormalize(selectedTemplateId, Template.Schema, entities)
@@ -186,6 +173,9 @@ const mapStateToProps = (state, ownProps) => {
                 headings.push(header)
                 requirementHeadings.push(header)
             })
+            allOpportunities.forEach(opp => {
+                opp.requirements = requirementsByDealId[opp.dealId] || []
+            })
         }
     }
 
@@ -198,7 +188,7 @@ const mapStateToProps = (state, ownProps) => {
             let fields = []
             fields.push(deal.dealName)
             fields.push(deal.description)
-
+            fields.push(RoostUtil.getRoostDisplayName(deal, currentUser))
             let searchScore = fields.reduce((fieldScore, field) => {
                 return fieldScore + patterns.reduce((patScore, pat) => {
                     return patScore + (pat.test(field) ? 1 : 0)
@@ -223,6 +213,7 @@ const mapStateToProps = (state, ownProps) => {
         args = {data: allOpportunities.map(opp => {
             let requirementData = {}
             requirementHeadings.map(heading => {
+                if (!opp.requirements) return
                 let requirement = opp.requirements.find(req => {
                     return req.title.trim().toLowerCase() === heading.label.trim().toLowerCase()
                 })
@@ -261,13 +252,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        loadNextSteps: (dealIds=[]) => {
-            log.info("Loading next steps for deals", dealIds)
-            dispatch(loadNextStepsForDeals(dealIds))
-        },
-        loadRequirements: (dealIds=[]) => {
-            log.info("Loading requirements for deals", dealIds)
-            dispatch(loadRequirementsForDealIds(dealIds))
+        requestAccess: (deal, user) => {
+            dispatch(requestAccess(deal, user))
         }
     }
 }

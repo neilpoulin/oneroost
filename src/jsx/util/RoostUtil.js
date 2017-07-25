@@ -114,6 +114,14 @@ export const isNotCurrentUser = function(user, currentUser){
     return !isCurrentUser(user, currentUser);
 }
 
+export function getCompanyNameForUser(user){
+    user = toJSON(user)
+    if (user.account && user.account.accountName){
+        return user.account.accountName
+    }
+    return user.company;
+}
+
 function getRoostNameForParseUser(deal, displayFor, currentUser){
     log.warn("Using getRoostNameForParseUser")
     let readyRoostUser = deal.get("readyRoostUser");
@@ -126,13 +134,15 @@ function getRoostNameForParseUser(deal, displayFor, currentUser){
     if (!createdBy){
         log.warn("There is no created by on the deal object", deal);
     }
+    let roostComapnyName = getCompanyNameForUser(readyRoostUser)
+    let ownCompanyName = getCompanyNameForUser(createdBy)
 
     let roostName = "";
-    if (createdBy && !isCreator && createdBy.get("company")){
-        roostName = createdBy.get("company")
+    if (createdBy && !isCreator && ownCompanyName){
+        roostName = ownCompanyName
     }
-    else if (readyRoostUser && !isReadyRoostUser && readyRoostUser.get("company")){
-        roostName = readyRoostUser.get("company");
+    else if (readyRoostUser && !isReadyRoostUser && roostComapnyName){
+        roostName = roostComapnyName;
     }
     else{
         roostName = deal.get("dealName")
@@ -159,11 +169,11 @@ export const getRoostDisplayName = function(deal, displayFor){
     }
 
     let roostName = "";
-    if (createdBy && !isCreator && createdBy.company){
-        roostName = createdBy.company
+    if (createdBy && !isCreator){
+        roostName = getCompanyNameForUser(createdBy)
     }
-    else if (readyRoostUser && !isReadyRoostUser && readyRoostUser.company){
-        roostName = readyRoostUser.company;
+    else if (readyRoostUser && !isReadyRoostUser){
+        roostName = getCompanyNameForUser(readyRoostUser.account)
     }
     else{
         roostName = deal.dealName;
