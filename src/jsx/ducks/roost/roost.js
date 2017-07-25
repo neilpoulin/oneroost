@@ -215,3 +215,18 @@ const roost = (state=initialState, action) => {
     return state;
 }
 export default roost;
+
+export function setStatus(roostId, status){
+    return (dispatch) => {
+        let deal = Deal.Pointer(roostId)
+        deal.set({"status": status})
+        deal.save().then(saved => {
+            dispatch({
+                type: DEAL_UPDATED,
+                payload: saved.toJSON(),
+                dealId: roostId,
+                entities: normalize(saved.toJSON(), Deal.Schema).entities,
+            })
+        })
+    }
+}

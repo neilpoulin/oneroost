@@ -1,12 +1,14 @@
 import React from "react"
 import PropTypes from "prop-types"
 import {
-    getRoostDisplayName
+    getRoostDisplayName,
+    getFullName,
 } from "RoostUtil"
 
 import {formatDurationAsDays, formatDate} from "DateUtil"
 import {getBudgetString} from "CurrencyUtil"
 import NavLink from "NavLink"
+import RoostStatusToggle from "RoostStatusToggle"
 
 const TableRow = React.createClass({
     propTypes: {
@@ -84,25 +86,6 @@ const TableRow = React.createClass({
             requirements=[],
         } = opportunity
 
-        // let sortedSteps = nextSteps.filter(step => {
-        //     return step.completedDate == null && step.active !== false
-        // }).sort((a, b) => {
-        //     return a.dueDate > b.dueDate
-        // })
-        // let nextStep = null;
-        // if (sortedSteps.length > 0){
-        //     let step = sortedSteps[0]
-        //     nextStep =
-        //     <div>
-        //         <div>
-        //             {step.title}
-        //         </div>
-        //         <div>
-        //             due {formatDate(step.dueDate)}
-        //         </div>
-        //     </div>
-        // }
-
         let requirementCells = []
         if (showRequirements && requirementHeadings && requirementHeadings.length > 0){
             requirementCells = requirementHeadings.map((heading, i) => {
@@ -135,12 +118,21 @@ const TableRow = React.createClass({
                         activeClassName="active">
                         {getRoostDisplayName(deal, currentUser)}
                     </NavLink>
-                    <span display-if={!opportunity.hasAccess}>{getRoostDisplayName(deal, currentUser)}</span>
+                    <div display-if={!opportunity.hasAccess}>
+                        <p>{getRoostDisplayName(deal, currentUser)}</p>
+                        <span className="btn btn-sm btn-outline-primary">Request Access</span>
+                    </div>
+
                 </td>
                 <td>
                     {this._getDepartmentDisplayName()}
                     <span display-if={this._getCategoryDisplayName()}> | {this._getCategoryDisplayName()}</span>
                     <span display-if={this._getSubCategoryDisplayName()}> | {this._getSubCategoryDisplayName()}</span>
+                </td>
+                <td>
+                    <span display-if={deal.template}>
+                        {getFullName(deal.template.ownedBy)} {deal.template.ownedBy.username}
+                    </span>
                 </td>
                 <td>
                     {formatDate(deal.lastActiveAt || deal.updatedAt)}
@@ -152,7 +144,9 @@ const TableRow = React.createClass({
                     {getBudgetString(deal, "--")}
                 </td>
                 <td>
-                    {opportunity.status}
+                    <RoostStatusToggle roostId={deal.objectId}
+                        status={opportunity.status}
+                        isApprover={opportunity.isApprover}/>
                 </td>
                 {requirementCells.map((req) => {
                     return req

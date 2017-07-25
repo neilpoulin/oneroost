@@ -12,6 +12,7 @@ import moment from "moment"
 import * as log from "LoggingUtil"
 import {convertArrayOfObjectsToCSV} from "DataUtil"
 import {formatDateShort} from "DateUtil"
+import * as Deal from "models/Deal"
 
 const RFP_TITLE = "RFP Title"
 
@@ -23,6 +24,11 @@ const headers = [
     },
     {
         label: "Category",
+        clickable: false,
+        sortable: false,
+    },
+    {
+        label: "Owner",
         clickable: false,
         sortable: false,
     },
@@ -117,6 +123,7 @@ const mapStateToProps = (state, ownProps) => {
     let allOpportunities = Object.values(dashboard.roosts)
     let requirementIds = Object.values(entities.requirements).filter(req => Object.keys(dashboard.roosts).indexOf(req.deal) != -1)
     let requirements = denormalize(requirementIds, [Requirement.Schema], entities)
+    let deals = denormalize(Object.keys(dashboard.roosts), [Deal.Schema], entities)
     let requirementsByDealId = requirements.reduce((group, req) => {
         let dealId = req.deal.objectId
         let reqs = group[dealId] || []
@@ -129,14 +136,12 @@ const mapStateToProps = (state, ownProps) => {
     let requirementHeadings = []
     let showRequirements = false
     let showArchived = dashboard.showArchived
-
+    deals.forEach(deal => {
+        let roost = dashboard.roosts[deal.objectId]
+        roost.status = deal.status;
+    })
     if (!showArchived){
         allOpportunities = allOpportunities.filter(opp => !opp.archived)
-    }
-    else {
-        allOpportunities.forEach(opp => {
-            opp.requirements = requirementsByDealId[opp.dealId] || []
-        })
     }
 
     if (selectedTemplateId){
@@ -159,6 +164,9 @@ const mapStateToProps = (state, ownProps) => {
                 }
                 headings.push(header)
                 requirementHeadings.push(header)
+            })
+            allOpportunities.forEach(opp => {
+                opp.requirements = requirementsByDealId[opp.dealId] || []
             })
         }
     }

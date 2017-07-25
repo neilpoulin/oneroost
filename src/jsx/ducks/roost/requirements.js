@@ -122,17 +122,16 @@ export const loadRequirementsForDealIds = (dealIds=[]) => (dispatch, getState) =
     findResults.then(results => {
         let json = results.map(requirement => requirement.toJSON())
         let entities = normalize(json, [Requirement.Schema]).entities || {}
-        json.forEach(req => {
-            dispatch({
-                type: [req],
-                payload: json,
-                dealId: req.deal.objectId
-            })
-        })
-
         dispatch({
             type: LOADED_ENTITIES,
             entities,
+        })
+        json.forEach(req => {
+            dispatch({
+                type: REQUIREMENT_LOAD_SUCCESS,
+                payload: json,
+                dealId: req.deal.objectId,
+            })
         })
     }).catch(log.error)
 }

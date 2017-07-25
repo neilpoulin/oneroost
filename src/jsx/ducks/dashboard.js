@@ -82,7 +82,9 @@ function getRoostsForAccount(accountId){
     query.matchesQuery("user", accountUserQuery)
         .include("deal.template")
         .include("user")
-        .include("template")
+        .include("deal.template")
+        .include("deal.template.ownedBy")
+        .include("deal.template.ownedBy.account")
         .include("invitedBy.account")
     return query.find()
 }
@@ -140,6 +142,7 @@ export function loadDashboard(){
             let roosts = stakeholders.reduce((map, stakeholder) => {
                 let dealId = stakeholder.deal.objectId;
                 templateIds = templateIds.add(stakeholder.deal.template.objectId)
+                let template = stakeholder.deal.template
                 if (!map.hasOwnProperty(dealId)){
                     let {
                         dealName,
@@ -163,10 +166,9 @@ export function loadDashboard(){
                         department,
                         departmentCategory,
                         departmentSubCategory,
-                        approver: stakeholder.readyRoostApprover,
                         stakeholders: [],
                         hasAccess: false,
-                        status: "NOT SET",
+                        status: stakeholder.deal.status,
                         deal: stakeholder.deal,
                         requirements: [],
                     }
@@ -179,8 +181,12 @@ export function loadDashboard(){
                 roost.stakeholders.push(stakeholder.user)
                 if (stakeholder.user.objectId === currentUserId){
                     let isApprover = stakeholder.readyRoostApprover ? stakeholder.user.objectId === currentUserId : false
+                    if(template){
+                        isApprover = isApprover || template.ownedBy.objectId === currentUserId
+                    }
+
                     roost = {...roost,
-                        archived: !stakeholder.active,
+                        archived: !stakeholder.active && stakeholder.active !== undefined,
                         inviteAccepted: stakeholder.inviteAccepted,
                         isApprover,
                         invitedByUserId: stakeholder.invitedBy ? stakeholder.invitedBy.objectId : null,

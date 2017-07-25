@@ -88,7 +88,7 @@ async function setupRoost(roost, currentUser, profileUser, template, response){
             savedRequirements.forEach(req => roost.relation("requirements").add(req))
             roost.save().then(savedRoost => {
                 response.success({roost: roost});
-            })            
+            })
         },
         error: function(error){
             console.error("ERROR SAVING ALL")
@@ -144,7 +144,8 @@ function createStakeholders(currentUser, profileUser, template, roost){
             inviteAccepted: true,
             invitedBy: null,
             role: "CREATOR",
-            onboarding: true
+            onboarding: true,
+            active: true,
         })]
 
     if (templateStakeholders){
