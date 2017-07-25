@@ -114,6 +114,13 @@ export const isNotCurrentUser = function(user, currentUser){
     return !isCurrentUser(user, currentUser);
 }
 
+export function getCompanyName(user){
+    if (!user){
+        return null
+    }
+    user.get("account")
+}
+
 function getRoostNameForParseUser(deal, displayFor, currentUser){
     log.warn("Using getRoostNameForParseUser")
     let readyRoostUser = deal.get("readyRoostUser");
@@ -126,13 +133,22 @@ function getRoostNameForParseUser(deal, displayFor, currentUser){
     if (!createdBy){
         log.warn("There is no created by on the deal object", deal);
     }
+    let roostComapnyName = readyRoostUser ? readyRoostUser.get("company") : null
+    if (readyRoostUser && readyRoostUser.get("account")){
+        roostComapnyName = readyRoostUser.get("account").get("accountName")
+    }
+
+    let ownCompanyName = createdBy ? createdBy.get("company") : null
+    if (createdBy.get("account")){
+        ownCompanyName = createdBy.get("account").get("accountName")
+    }
 
     let roostName = "";
-    if (createdBy && !isCreator && createdBy.get("company")){
-        roostName = createdBy.get("company")
+    if (createdBy && !isCreator && ownCompanyName){
+        roostName = ownCompanyName
     }
-    else if (readyRoostUser && !isReadyRoostUser && readyRoostUser.get("company")){
-        roostName = readyRoostUser.get("company");
+    else if (readyRoostUser && !isReadyRoostUser && roostComapnyName){
+        roostName = roostComapnyName;
     }
     else{
         roostName = deal.get("dealName")
@@ -159,11 +175,11 @@ export const getRoostDisplayName = function(deal, displayFor){
     }
 
     let roostName = "";
-    if (createdBy && !isCreator && createdBy.company){
-        roostName = createdBy.company
+    if (createdBy && !isCreator){
+        roostName = createdBy.account ? createdBy.account.accountName : createdBy.company
     }
-    else if (readyRoostUser && !isReadyRoostUser && readyRoostUser.company){
-        roostName = readyRoostUser.company;
+    else if (readyRoostUser && !isReadyRoostUser){
+        roostName = readyRoostUser.account ? readyRoostUser.account.accountName : readyRoostUser.company;
     }
     else{
         roostName = deal.dealName;
