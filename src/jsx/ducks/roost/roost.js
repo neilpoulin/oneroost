@@ -6,11 +6,13 @@ import * as documents from "ducks/roost/documents"
 import * as stakeholders from "ducks/roost/stakeholders"
 import * as requirements from "ducks/roost/requirements"
 import {LOADED_ENTITIES} from "ducks/entities"
+import {ACCESS_REQUESTED} from "ducks/dashboard"
 import Parse from "parse"
 import * as Deal from "models/Deal"
 import { Map } from "immutable"
 import * as log from "LoggingUtil"
 import * as RoostUtil from "RoostUtil"
+import {StatusOptions} from "RoostStatus"
 import ReactGA from "react-ga"
 
 export const DEAL_LOAD_REQUEST = "oneroost/roost/DEAL_LOAD_REQUSET"
@@ -227,6 +229,37 @@ export function setStatus(roostId, status){
                 dealId: roostId,
                 entities: normalize(saved.toJSON(), Deal.Schema).entities,
             })
+            if (deal.get("template") && deal.get("template").get("ownedBy")){
+                let templateOwner = deal.get("template").get("ownedBy")
+                let approverName = RoostUtil.getFullName(templateOwner)
+                let companyName = RoostUtil.getCompanyNameForUser(templateOwner)
+                let comment = {
+                    deal: deal,
+                    message: `${approverName} has indicated ${companyName} is ${StatusOptions[status].displayText.toLowerCase()} in this opportunity.`,
+                    author: null,
+                    username: "OneRoost",
+                }
+                dispatch(comments.createComment(comment))
+            }
+        })
+    }
+}
+
+export function requestAccess(deal, user){
+    return (dispatch) => {
+        let requesterName = RoostUtil.getFullName(user)
+        let requesterCompanyName = RoostUtil.getCompanyNameForUser(user)
+        let comment = {
+            deal: deal,
+            message: `${requesterName} at ${requesterCompanyName} (${user.username}) would like to be added as a participant to this opportunity.`,
+            author: null,
+            username: "OneRoost",
+            navLink: {type: "participant"},
+        }
+        dispatch(comments.createComment(comment))
+        dispatch({
+            type: ACCESS_REQUESTED,
+            payload: deal,
         })
     }
 }

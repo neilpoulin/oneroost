@@ -18,6 +18,8 @@ export const LOAD_DASHBOARD_REQUEST = "oneroost/dashboard/LOAD_DASHBOARD_REQUEST
 export const LOAD_DASHBOARD_SUCCESS = "oneroost/dashboard/LOAD_DASHBOARD_SUCCESS"
 export const LOAD_DASHBOARD_ERROR = "oneroost/dashboard/LOAD_DASHBOARD_ERROR"
 
+export const ACCESS_REQUESTED = "oneroost/dashboard/ACCESS_REQUESTED"
+
 const initialState = fromJS({
     isLoading: false,
     sortBy: null,
@@ -40,6 +42,9 @@ export default function reducer(state=initialState, action) {
             state = state.set("stakeholders", action.payload.get("stakeholders"))
             state = state.set("roosts", action.payload.get("roosts"))
             state = state.set("templateIds", action.payload.get("templateIds"))
+            break;
+        case ACCESS_REQUESTED:
+            state = state.setIn(["roosts", action.payload.get("objectId"), "accessRequested"], true);
             break;
         case LOAD_DASHBOARD_ERROR:
             state = state.set("isLoading", false)

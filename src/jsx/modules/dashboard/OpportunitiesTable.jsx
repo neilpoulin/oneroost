@@ -13,6 +13,7 @@ import * as log from "LoggingUtil"
 import {convertArrayOfObjectsToCSV} from "DataUtil"
 import {formatDateShort} from "DateUtil"
 import * as Deal from "models/Deal"
+import {requestAccess} from "ducks/roost/roost"
 
 const RFP_TITLE = "RFP Title"
 
@@ -66,6 +67,7 @@ const OpportunitiesTable = React.createClass({
         userId: PropTypes.string.isRequired,
         exportCsvData: PropTypes.func.isRequired,
         isLoading: PropTypes.bool.isRequired,
+        requestAccess: PropTypes.func.isRequired,
     },
     getDefaultProps() {
         return {
@@ -90,6 +92,7 @@ const OpportunitiesTable = React.createClass({
             showRequirements,
             isLoading,
             departmentMap,
+            requestAccess
         } = this.props
         if (isLoading){
             return null
@@ -103,7 +106,9 @@ const OpportunitiesTable = React.createClass({
                             key={"opportunities_table_row_" + i}
                             currentUser={currentUser} showRequirements={showRequirements}
                             requirementHeadings={requirementHeadings}
-                            departmentMap={departmentMap} />
+                            departmentMap={departmentMap}
+                            requestAccess={() => requestAccess(opp.deal, currentUser)}
+                             />
                     })}
                 </tbody>
             </table>
@@ -247,7 +252,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-
+        requestAccess: (deal, user) => {
+            dispatch(requestAccess(deal, user))
+        }
     }
 }
 

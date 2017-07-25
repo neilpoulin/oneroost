@@ -22,6 +22,7 @@ const TableRow = React.createClass({
         showRequirements: PropTypes.bool,
         requirementHeadings: PropTypes.arrayOf(PropTypes.object).isRequired,
         departmentMap: PropTypes.object.isRequired,
+        requestAccess: PropTypes.func.isRequired,
     },
     _getDepartmentDisplayName(){
         const {opportunity: {deal}, departmentMap} = this.props;
@@ -76,6 +77,7 @@ const TableRow = React.createClass({
             opportunity,
             showRequirements,
             requirementHeadings,
+            requestAccess,
         } = this.props;
         const {deal,
             // stakeholders,
@@ -120,7 +122,8 @@ const TableRow = React.createClass({
                     </NavLink>
                     <div display-if={!opportunity.hasAccess}>
                         <p>{getRoostDisplayName(deal, currentUser)}</p>
-                        <span className="btn btn-sm btn-outline-primary">Request Access</span>
+                        <span display-if={!opportunity.accessRequested} className="btn btn-sm btn-outline-primary" onClick={requestAccess}>Request Access</span>
+                        <span display-if={opportunity.accessRequested} className="" >Request Sent</span>
                     </div>
 
                 </td>
