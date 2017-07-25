@@ -145,7 +145,7 @@ const TableRow = React.createClass({
                 </td>
                 <td>
                     <RoostStatusToggle roostId={deal.objectId}
-                        status={opportunity.status}
+                        status={opportunity.deal.status}
                         isApprover={opportunity.isApprover}/>
                 </td>
                 {requirementCells.map((req) => {

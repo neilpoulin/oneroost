@@ -144,32 +144,12 @@ export function loadDashboard(){
                 templateIds = templateIds.add(stakeholder.deal.template.objectId)
                 let template = stakeholder.deal.template
                 if (!map.hasOwnProperty(dealId)){
-                    let {
-                        dealName,
-                        budget: {low: budgetLow, budgetHigh},
-                        lastActiveAt,
-                        readyRoostSubmitted,
-                        department,
-                        departmentCategory,
-                        departmentSubCategory,
-                    } = stakeholder.deal
-
                     let roost = {
                         dealId,
                         templateId: stakeholder.deal.template.objectId,
                         templateOwner: stakeholder.deal.template ? stakeholder.deal.template.ownedBy : null,
-                        dealName,
-                        budgetLow,
-                        budgetHigh,
-                        lastActiveAt,
-                        readyRoostSubmitted,
-                        department,
-                        departmentCategory,
-                        departmentSubCategory,
                         stakeholders: [],
                         hasAccess: false,
-                        status: stakeholder.deal.status,
-                        deal: stakeholder.deal,
                         requirements: [],
                     }
 

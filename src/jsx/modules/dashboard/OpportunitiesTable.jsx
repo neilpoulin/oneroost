@@ -120,7 +120,10 @@ const mapStateToProps = (state, ownProps) => {
     let departmentMap = state.config.get("departmentMap")
     let query = dashboard.searchTerm
     let isLoading = dashboard.isLoading
-    let allOpportunities = Object.values(dashboard.roosts)
+    let allOpportunities = denormalize(Object.keys(dashboard.roosts), [Deal.Schema], entities).map(deal => ({
+        deal,
+        ...dashboard.roosts[deal.objectId]
+    }))
     let requirementIds = Object.values(entities.requirements).filter(req => Object.keys(dashboard.roosts).indexOf(req.deal) != -1)
     let requirements = denormalize(requirementIds, [Requirement.Schema], entities)
     let deals = denormalize(Object.keys(dashboard.roosts), [Deal.Schema], entities)
