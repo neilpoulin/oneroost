@@ -255,6 +255,7 @@ export function requestAccess(deal, user){
             author: null,
             username: "OneRoost",
             navLink: {type: "participant"},
+            forceSendNotification: true,
         }
         dispatch(comments.createComment(comment))
         dispatch({

@@ -3,28 +3,46 @@ import EmailSender from "./../EmailSender.js"
 import envUtil from "./../util/envUtil.js"
 import {Parse} from "parse-cloud-express"
 import NotificationSettings from "./NotificationSettings"
+import {getUrl} from "./LinkTypes"
 import Raven from "raven"
 
 Parse.serverURL = envUtil.serverURL;
 
-async function sendCommentEmail(comment){
-    console.log("preparing DealComment email notification");
+async function sendSystemCommentEmail(comment){
+    try{
+        console.log("Sending sytem coment email", comment.toJSON())
+        let sendNotification = await NotificationSettings.getNotificationSetting(NotificationSettings.Settings.COMMENT_EMAILS)
+        if (sendNotification){
+            var deal = comment.get("deal");
+            let recipients = await EmailUtil.getActualRecipientsForDeal(deal);
+            var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
+            if(comment.get("navLink")){
+                dealLink = envUtil.getHost() + getUrl(comment.get("navLink"), deal.id)
+            }
+            var data = {
+                message: comment.get("message"),
+                dealName: deal.get("dealName"),
+                author: "OneRoost Notifications",
+                dealLink: dealLink,
+                messageId: deal.id,
+                subject: comment.get("message"),
+            };
+            EmailSender.sendTemplate("systemCommentNotif", data, recipients);
+        }
+    }
+    catch(e){
+        console.error("something went wrong sending systemCommentEmail", e);
+        Raven.captureException(e)
+    }
+}
+
+async function sendUserCommentEmail(comment){
     try{
         let sendNotification = await NotificationSettings.getNotificationSetting(NotificationSettings.Settings.COMMENT_EMAILS)
         if (sendNotification){
             var deal = comment.get("deal");
             var author = comment.get("author");
             var authorEmail = author.get("email");
-            // console.log("comment", comment.toJSON());
-            // console.log("author", author.toJSON());
-            console.log("authorEmail", authorEmail);
-            console.log("author.email", author.get("email"));
-
-            // var stakeholderQuery = new Parse.Query("Stakeholder");
-            // stakeholderQuery.include( "user" );
-            // stakeholderQuery.equalTo( "deal", deal );
-            // let stakeholders = await stakeholderQuery.find();
-            // var recipients = EmailUtil.getRecipientsFromStakeholders( stakeholders, authorEmail );
             let recipients = await EmailUtil.getActualRecipientsForDeal(deal, authorEmail);
             var dealLink = envUtil.getHost() + "/roosts/" + deal.id;
             var data = {
@@ -40,6 +58,16 @@ async function sendCommentEmail(comment){
     catch(e){
         console.error("something went wrong with the comment sender", e);
         Raven.captureException(e)
+    }
+}
+
+async function sendCommentEmail(comment){
+    console.log("preparing DealComment email notification");
+    if(comment.get("author") !== null){
+        sendUserCommentEmail(comment)
+    }
+    else if (comment.get("forceSendNotification") === true) {
+        sendSystemCommentEmail(comment)
     }
 }
 
@@ -67,16 +95,19 @@ exports.afterSave = function(io){
             comment.get("deal").set({
                 lastActiveAt: new Date(),
                 lastActiveUser: req.user
-            }).save().then(saved => {
-                console.log("successfully saved deal after comment save");
-            }).catch(Raven.captureException)
+            })
+                .save()
+                .then(saved => {
+                    console.log("successfully saved deal after comment save");
+                })
+                .catch(Raven.captureException)
         }
         catch (e){
             console.error("Failed to update deal with last activity date", e)
             Raven.captureException(e);
         }
 
-        if (comment.get("author") != null) {
+        if (comment.get("author") != null || comment.get("forceSendNotification") === true) {
             var query = new Parse.Query("DealComment");
             query.include("author");
             query.include("deal");
