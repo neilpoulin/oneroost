@@ -15,6 +15,7 @@ import request from "superagent"
 import {push} from "react-router-redux"
 
 const NO_ACCOUNT = "NO_ACCOUNT"
+const PUBLIC_DOMAIN_ERROR_CODE = 141
 
 export const UPDATE_USER = "oneroost/user/UPADATE_USER"
 export const LOGIN_SUCCESS = "oneroost/user/LOGIN_SUCCESS"
@@ -323,10 +324,11 @@ export const setAccount = (account, accountSeat) => (dispatch, getState) => {
     })
 }
 
-export const connectToAccount = () => (dispatch, getState) => {
+export const connectToAccount = ({companyName}) => (dispatch, getState) => {
     const {user} = getState()
     const email = user.get("email")
     const userId = user.get("userId")
+    let accountName = companyName || user.get("companyName")
     if (user.get("accountId")){
         log.info("User already has an account. Exititng")
         return null;
@@ -334,6 +336,7 @@ export const connectToAccount = () => (dispatch, getState) => {
     Parse.Cloud.run("addUserToAccount", {
         email,
         userId,
+        companyName: accountName,
     }).then(({account, accountSeat, message, user}) => {
         log.info("success!", message)
         let userEntities = normalize(RoostUtil.toJSON(user), User.Schema).entities
@@ -354,6 +357,9 @@ export const connectToAccount = () => (dispatch, getState) => {
                     type: NO_ACCOUNT,
                 })
                 break;
+            case PUBLIC_DOMAIN_ERROR_CODE:
+                log.warn("unable to create account using public domain")
+
             default:
                 log.error("Unknown error occurred when adding user to account", error)
         }

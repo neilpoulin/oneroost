@@ -4,6 +4,7 @@ var ParseCloud = require("parse-cloud-express");
 import Raven from "raven"
 var Parse = ParseCloud.Parse;
 Parse.serverURL = envUtil.serverURL;
+import {domains} from "./../email/publicEmailDomains"
 
 const ROLES = {
     USER: "USER",
@@ -29,12 +30,12 @@ const createSeat = async (user, account, roles) => {
     }
 }
 
-const createAccount = async (user, domain) => {
+const createAccount = async (user, domain, companyName) => {
     try{
         let Account = Parse.Object.extend("Account")
         let account = new Account({
-            emailDomain: domain.toLowerCase(),
-            accountName: user.get("company") || domain,
+            emailDomain: domain ? domain.toLowerCase() : null,
+            accountName: companyName,
             createdBy: user,
         })
         account = await account.save()
@@ -95,12 +96,13 @@ const initialize = () => {
         }
     })
 
+    //TODO: add method for connecting to specific account - and validate the user has permission (i.e. domain) to do so
     Parse.Cloud.define("addUserToAccount", async (request, response) => {
         try{
             let user = request.user
-            const {userId, email} = request.params
+            const {userId, email, companyName} = request.params
             const authData = user.get("authData", {})
-            const googleEmail = authData && authData.google ? authData.google.email : null
+            // const googleEmail = authData && authData.google ? authData.google.email : null
             const authEmails = !authData ? [] : Object.values(authData).map(auth => auth.email)
             if (!user || user.id != userId || !user.get("emailVerified") && authEmails.indexOf(user.get("email")) === -1){
                 return response.error({
@@ -109,6 +111,14 @@ const initialize = () => {
                 })
             }
             const userDomain = email.toLowerCase().split("@")[1]
+            const validDomain = domains.indexOf(userDomain) === -1
+            if (!validDomain && !companyName){
+                return response.error({
+                    success: false,
+                    message: "You can not create an account with the domain " + userDomain + ". Please use your company email."
+                })
+            }
+
             console.log("UserDomain = ", userDomain)
             let query = new Parse.Query("Account")
             query.equalTo("emailDomain", userDomain)
@@ -116,7 +126,7 @@ const initialize = () => {
             console.log("Fetched an account... resulting in ", account)
             if (!account){
                 console.log("No account found for domain " + userDomain + "...creating new one")
-                account = await createAccount(user, userDomain)
+                account = await createAccount(user, validDomain ? userDomain : null, companyName)
                 if (!account){
                     return response.error({
                         success: false,

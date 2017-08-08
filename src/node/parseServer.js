@@ -1,12 +1,26 @@
 import * as envUtil from "./util/envUtil"
 import {ParseServer} from "parse-server"
 import ParseDashboard from "parse-dashboard"
-import ParseDashboardConfig from "./parse-dashboard-config.json"
 import SESParseAdapter from "./email/SESParseAdapter.js"
 import {S3Adapter} from "parse-server"
 
 export function getParseDashboard(){
-    return new ParseDashboard(ParseDashboardConfig);
+    const envName = envUtil.getEnvName()
+    console.log(`envName = ${envName}`)
+    let config
+    switch (envName) {
+        case "stage":
+            config = require("./parse-dashboard-config-stage.json")
+            break
+        case "prod":
+            config = require("./parse-dashboard-config-prod.json")
+            break;
+        case "dev":
+        default:
+            config = require("./parse-dashboard-config-dev.json")
+            break;
+    }
+    return new ParseDashboard(config);
 }
 
 export function getLiveQueryServer(httpServer){
