@@ -3618,5 +3618,5 @@ export const domains = ["1033edge.com",
                         "zzom.co.uk"]
 
 export function hasPublicDomain(email){
-    return domains.indexOf(email.split("@")[1] !== -1)
+    return domains.indexOf(email.split("@")[1]) !== -1
 }

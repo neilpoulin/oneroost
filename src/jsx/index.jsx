@@ -194,7 +194,7 @@ render(
                 <Route path="/privacy" component={PrivacyPage}/>
                 <Route path="/reporting" component={OpportunityDashboard} onEnter={requireActivatedUser}/>
                 <Route path="/plans" component={PlansPage}/>
-                <Route path="/roosts" component={DealDashboard} onEnter={requireActivatedUser}>
+                <Route path="/roosts" component={DealDashboard} onEnter={requireAuthOrParam}>
                     <IndexRoute component={Roost}/>
                     <Route path="unauthorized" component={Unauthorized}/>
                     <Redirect from=":dealId" to="/roosts/:dealId/messages" />

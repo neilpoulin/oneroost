@@ -203,7 +203,7 @@ const Onboarding = withRouter(React.createClass({
         if (this.state.error){
             let link = null
             if (this.state.error.link){
-                link = <Link className={"alert-link"} tag="a" to={this.state.error.link}>View the Opportunity</Link>
+                link = <Link className={"alert-link"} to={this.state.error.link}>View the Opportunity</Link>
             }
             alert =
             <div className="alert alert-warning">

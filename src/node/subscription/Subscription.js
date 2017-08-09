@@ -96,6 +96,33 @@ const initialize = () => {
         }
     })
 
+    Parse.Cloud.define("createAccount", async (request, response) => {
+        try{
+            let user = request.user
+            const {email, companyName} = request.params
+            const userDomain = email.toLowerCase().split("@")[1]
+            const validDomain = domains.indexOf(userDomain) === -1
+            let domain = validDomain ? userDomain : null
+            let account = await createAccount(user, domain, companyName)
+            let userSeat = await createSeat(user, account, [ROLES.USER])
+            user.set({
+                account,
+                accountSeat: userSeat
+            })
+            let savedUser = await user.save(null, {useMasterKey: true})
+            return response.success({
+                success: true,
+                account,
+                accountSeat: userSeat,
+                user: savedUser,
+                message: `Added user to account ${account.get("name")}`
+            })
+        }
+        catch (e) {
+            Raven.captureException("unexpected error while processing Subsription.createAccount", e)
+        }
+    })
+
     //TODO: add method for connecting to specific account - and validate the user has permission (i.e. domain) to do so
     Parse.Cloud.define("addUserToAccount", async (request, response) => {
         try{
@@ -115,27 +142,29 @@ const initialize = () => {
             if (!validDomain && !companyName){
                 return response.error({
                     success: false,
+                    code: "NO_ACCOUNT",
                     message: "You can not create an account with the domain " + userDomain + ". Please use your company email."
                 })
             }
 
-            console.log("UserDomain = ", userDomain)
+            console.log("looking for accounts with UserDomain = ", userDomain)
             let query = new Parse.Query("Account")
             query.equalTo("emailDomain", userDomain)
             let account = await query.first()
             console.log("Fetched an account... resulting in ", account)
             if (!account){
-                console.log("No account found for domain " + userDomain + "...creating new one")
-                account = await createAccount(user, validDomain ? userDomain : null, companyName)
-                if (!account){
-                    return response.error({
-                        success: false,
-                        message: "No account found for domain",
-                        code: "NO_ACCOUNT"
-                    })
-                }
+                // console.log("No account found for domain " + userDomain + "...creating new one")
+                // account = await createAccount(user, validDomain ? userDomain : null, companyName)
+                // if (!account){
+                console.log("No account found with domain ", userDomain)
+                return response.error({
+                    success: false,
+                    message: "No account found for domain",
+                    code: "NO_ACCOUNT"
+                })
+                // }
             }
-            console.log("Account ", account.toJSON())
+            console.log("Found an account Account ", account.toJSON())
             // find account seats
             let seatQuery = new Parse.Query("AccountSeat")
             seatQuery.equalTo("account", account)

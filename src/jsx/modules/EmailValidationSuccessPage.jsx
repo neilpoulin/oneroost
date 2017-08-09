@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import RoostNav from "RoostNav"
 import {connect} from "react-redux"
 import * as Account from "models/Account"
-import {refreshCachedUserData, connectToAccount} from "ducks/user"
+import {refreshCachedUserData, connectToAccount, createAccount} from "ducks/user"
 import {Link} from "react-router"
 import {denormalize} from "normalizr"
 import FormInput from "FormInputGroup"
@@ -11,7 +11,8 @@ import {hasPublicDomain} from "util/publicEmailDomains"
 
 class EmailValidationSuccessPage extends React.Component{
     static propTypes = {
-        username: PropTypes.string
+        username: PropTypes.string,
+        createNewAccount: PropTypes.func.isRequired,
     }
 
     constructor(props) {
@@ -23,10 +24,11 @@ class EmailValidationSuccessPage extends React.Component{
 
     componentDidMount(){
         this.props.refreshUser();
+        this.props.addToAccount();
     }
 
     render () {
-        const {username, addToAccount, account, isPublicDomain} = this.props;
+        const {username, createNewAccount, account, isPublicDomain, showCreateAccount} = this.props;
         const {companyName} = this.state;
         return (
             <div className="EmailValidationSuccessPage">
@@ -36,7 +38,7 @@ class EmailValidationSuccessPage extends React.Component{
                     <p className="lead">
                         Your email <span display-if={username}>({username})</span> has been successfully verified.
                     </p>
-                    <div display-if={!account} >
+                    <div display-if={showCreateAccount} >
                         <p className="lead">
                             Now, you just need to finish setting up your orginization
                         </p>
@@ -54,7 +56,7 @@ class EmailValidationSuccessPage extends React.Component{
                                 Note: Because you created an account using a public email domain, you will not be able to have other users join your originazation. If this was in error, please create a new account using your company email address.
                             </div>
                         </div>
-                        <button className="btn btn-outline-primary" onClick={() => addToAccount({companyName})}>
+                        <button className="btn btn-outline-primary" onClick={() => createNewAccount({companyName})}>
                              {account ? `Connect to ${account.accountName}` : "Create a new Account"}
                         </button>
                     </div>
@@ -81,7 +83,7 @@ const mapStateToProps = (state, ownProps) => {
         username = location.query.username
     }
     const isPublicDomain = hasPublicDomain(user.email)
-    const accountId = user.accountId
+    const {accountId, showCreateAccount} = user
     let account = null
     if (accountId){
         account = denormalize(accountId, Account.Schema, state.entities.toJS())
@@ -90,6 +92,7 @@ const mapStateToProps = (state, ownProps) => {
         username,
         account,
         isPublicDomain,
+        showCreateAccount
     }
 }
 
@@ -99,8 +102,13 @@ const mapDispatchToProps = (dispatch, props) => {
             dispatch(refreshCachedUserData())
             // dispatch(connectToAccount())
         },
-        addToAccount: ({companyName}) => {
-            dispatch(connectToAccount({companyName}))
+        addToAccount: () => {
+            console.log("adding to existing account.....")
+            dispatch(connectToAccount())
+        },
+        createNewAccount: ({companyName}) => {
+            console.log("adding to account.....")
+            dispatch(createAccount({companyName}))
         },
     }
 }
