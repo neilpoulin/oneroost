@@ -125,16 +125,15 @@ const Onboarding = withRouter(React.createClass({
                 log.warn("unable to send event to Intercom for Roost submitted.")
             }
             self.props.router.replace("/roosts/" + (result.roost.objectId || result.roost.id) + "/requirements");
-        },
-            function(error){
-                log.error("can not create roost, already have one for this user", error);
-                self.setState({
-                    error: {
-                        message: "You have already submitted an opportunity for to " + RoostUtil.getFullName(self.props.readyRoostUser) + ".",
-                        link: error.message.link
-                    }
-                })
+        }).catch((error) => {
+            log.error("can not create roost, already have one for this user", error);
+            self.setState({
+                error: {
+                    message: "You have already submitted an opportunity for to " + RoostUtil.getFullName(self.props.readyRoostUser) + ".",
+                    link: error.message.link
+                }
             })
+        })
     },
     getLoggedInStep(){
         switch (this.state.step) {
