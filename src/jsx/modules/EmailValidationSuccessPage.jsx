@@ -3,22 +3,33 @@ import PropTypes from "prop-types"
 import RoostNav from "RoostNav"
 import {connect} from "react-redux"
 import * as Account from "models/Account"
-import {refreshCachedUserData, connectToAccount} from "ducks/user"
+import {refreshCachedUserData, connectToAccount, createAccount} from "ducks/user"
 import {Link} from "react-router"
 import {denormalize} from "normalizr"
+import FormInput from "FormInputGroup"
+import {hasPublicDomain} from "util/publicEmailDomains"
 
-const EmailValidationSuccessPage = React.createClass({
-    propTypes: {
-        username: PropTypes.string
-    },
+class EmailValidationSuccessPage extends React.Component{
+    static propTypes = {
+        username: PropTypes.string,
+        createNewAccount: PropTypes.func.isRequired,
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            companyName: ""
+        };
+    }
+
     componentDidMount(){
         this.props.refreshUser();
-    },
-    getDefaultProps(){
+        this.props.addToAccount();
+    }
 
-    },
     render () {
-        const {username, addToAccount, account} = this.props;
+        const {username, createNewAccount, account, isPublicDomain, showCreateAccount} = this.props;
+        const {companyName} = this.state;
         return (
             <div className="EmailValidationSuccessPage">
                 <RoostNav/>
@@ -27,11 +38,25 @@ const EmailValidationSuccessPage = React.createClass({
                     <p className="lead">
                         Your email <span display-if={username}>({username})</span> has been successfully verified.
                     </p>
-                    <div display-if={!account} >
+                    <div display-if={showCreateAccount} >
                         <p className="lead">
-                            Now, you just need to create or join an account
+                            Now, you just need to finish setting up your orginization
                         </p>
-                        <button className="btn btn-outline-primary" onClick={() => addToAccount()}>
+                        <div>
+                            <FormInput
+                                name="accountName"
+                                value={companyName}
+                                placeholder="Company Name"
+                                label="Company Name"
+                                fieldName="accountName"
+                                onChange={(value) => this.setState({companyName: value})}
+                                errors={{}}
+                                />
+                            <div display-if={isPublicDomain}>
+                                Note: Because you created an account using a public email domain, you will not be able to have other users join your originazation. If this was in error, please create a new account using your company email address.
+                            </div>
+                        </div>
+                        <button className="btn btn-outline-primary" onClick={() => createNewAccount({companyName})}>
                              {account ? `Connect to ${account.accountName}` : "Create a new Account"}
                         </button>
                     </div>
@@ -48,7 +73,7 @@ const EmailValidationSuccessPage = React.createClass({
             </div>
         )
     }
-})
+}
 
 const mapStateToProps = (state, ownProps) => {
     const user = state.user.toJS()
@@ -57,7 +82,8 @@ const mapStateToProps = (state, ownProps) => {
     if (location && location.query){
         username = location.query.username
     }
-    const accountId = user.accountId
+    const isPublicDomain = hasPublicDomain(user.email)
+    const {accountId, showCreateAccount} = user
     let account = null
     if (accountId){
         account = denormalize(accountId, Account.Schema, state.entities.toJS())
@@ -65,6 +91,8 @@ const mapStateToProps = (state, ownProps) => {
     return {
         username,
         account,
+        isPublicDomain,
+        showCreateAccount
     }
 }
 
@@ -75,7 +103,12 @@ const mapDispatchToProps = (dispatch, props) => {
             // dispatch(connectToAccount())
         },
         addToAccount: () => {
+            console.log("adding to existing account.....")
             dispatch(connectToAccount())
+        },
+        createNewAccount: ({companyName}) => {
+            console.log("adding to account.....")
+            dispatch(createAccount({companyName}))
         },
     }
 }

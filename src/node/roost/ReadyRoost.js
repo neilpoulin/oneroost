@@ -85,9 +85,11 @@ async function setupRoost(roost, currentUser, profileUser, template, response){
     Parse.Object.saveAll(toSave, {
         success: function([savedComments, savedSteps, savedDocs, savedStakeholders, savedRequirements]) {
             console.log("SUCCESS for all!")
-            savedRequirements.forEach(req => roost.relation("requirements").add(req))
+            // savedRequirements.forEach(req => roost.relation("requirements").add(req))
             roost.save().then(savedRoost => {
                 response.success({roost: roost});
+            }).catch(error => {
+                response.error("Faild to save objects", error);
             })
         },
         error: function(error){

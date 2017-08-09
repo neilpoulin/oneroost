@@ -15,6 +15,7 @@ import request from "superagent"
 import {push} from "react-router-redux"
 
 const NO_ACCOUNT = "NO_ACCOUNT"
+const PUBLIC_DOMAIN_ERROR_CODE = 141
 
 export const UPDATE_USER = "oneroost/user/UPADATE_USER"
 export const LOGIN_SUCCESS = "oneroost/user/LOGIN_SUCCESS"
@@ -55,6 +56,7 @@ const initialState = Map({
     connectedProviders: [],
     accessTokens: Map({}),
     providerErrors: Map({}),
+    showCreateAccount: false,
 });
 
 export default function reducer(state=initialState, action){
@@ -138,6 +140,10 @@ export default function reducer(state=initialState, action){
             break;
         case SET_PROVIDER_ERROR:
             state = state.update("providerErrors", errors => errors.merge(action.error))
+            break;
+        case NO_ACCOUNT:
+            state = state.set("showCreateAccount", true);
+            break
         default:
             break;
     }
@@ -323,10 +329,32 @@ export const setAccount = (account, accountSeat) => (dispatch, getState) => {
     })
 }
 
+export const createAccount = ({companyName}) => (dispatch, getState) => {
+    const {user} = getState()
+    const email = user.get("email")
+    Parse.Cloud.run("createAccount", {
+        companyName,
+        email,
+    }).then(({account, accountSeat, message, user}) => {
+        log.info("success!", message)
+        let userEntities = normalize(RoostUtil.toJSON(user), User.Schema).entities
+        let accountEntities = normalize(RoostUtil.toJSON(account), Account.Schema).entities
+        let accountSeatEntities = normalize(RoostUtil.toJSON(accountSeat), AccountSeat.Schema).entities
+        let entities = Object.assign({}, userEntities, accountEntities, accountSeatEntities)
+        dispatch({
+            type: LOADED_ENTITIES,
+            entities
+        })
+        dispatch(setAccount(account))
+        dispatch(refreshCachedUserData())
+    }).catch(log.error)
+}
+
 export const connectToAccount = () => (dispatch, getState) => {
     const {user} = getState()
     const email = user.get("email")
     const userId = user.get("userId")
+    console.log("connecting to account...")
     if (user.get("accountId")){
         log.info("User already has an account. Exititng")
         return null;
@@ -347,13 +375,16 @@ export const connectToAccount = () => (dispatch, getState) => {
         dispatch(setAccount(account))
         dispatch(refreshCachedUserData())
     }).catch(error => {
-        switch (error.code) {
+        switch (error.message.code) {
             case NO_ACCOUNT:
                 log.info("no account exists for this user", email)
                 dispatch({
                     type: NO_ACCOUNT,
                 })
                 break;
+            case PUBLIC_DOMAIN_ERROR_CODE:
+                log.warn("unable to create account using public domain")
+
             default:
                 log.error("Unknown error occurred when adding user to account", error)
         }

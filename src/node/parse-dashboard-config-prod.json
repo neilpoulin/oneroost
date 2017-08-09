@@ -1,0 +1,21 @@
+{
+    "apps": [
+        {
+            "serverURL": "https://www.oneroost.com/parse",
+            "appId": "lSNtmvBTimEY6VfOo5zvvOQkljcHeDIOQcjefNUu",
+            "masterKey": "LqJHvr4fr6kD43RwCawwwq1AxaiGcQpGHZRvpmc9",
+            "production": true,
+            "appName": "Prod"
+        }
+    ],
+    "users": [
+        {
+            "user":"neil",
+            "pass":"OneRoost88"
+        },
+        {
+            "user":"taylor",
+            "pass":"PlatformT2016"
+        }
+    ]
+}
