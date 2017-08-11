@@ -159,6 +159,7 @@ const Roost = withRouter(React.createClass({
                     className="container text-center"
                     message="Oops, it looks like you don't have any opportunities yet."
                     link={{text: "Go to My Settings", path: "/settings/templates"}}
+                    showLogo={true}
                     />
                 <div className="RoostBody" display-if={!dealLoading && !error && deal}>
                     <AccountSidebar deals={opportunities.deals} archivedDeals={opportunities.archivedDeals}/>
