@@ -5,6 +5,8 @@ import RoostNav from "RoostNav"
 import {resendEmailVerification} from "ducks/user"
 import GoogleLoginButton from "GoogleLoginButton"
 import {push} from "react-router-redux"
+import {Link} from "react-router"
+import Logo from "Logo"
 
 class EmailValidationSuccessPage extends React.Component{
     static propTypes = {
@@ -27,18 +29,20 @@ class EmailValidationSuccessPage extends React.Component{
         return (
             <div className="EmailValidationSuccessPage">
                 <RoostNav/>
+                <Logo className="header"/>
                 <div className="container">
-                    <p className="lead">
-                        <span display-if={firstName}>{firstName}, </span>Please check your email and click the link to validate you address.
-                    </p>
-                    <div>
-                        <p className="lead">Or Connect with Google</p>
-                        <GoogleLoginButton hostedDomain={hostedDomain}/>
-                    </div>
-                    <div>
-                        <button className="btn btn-link" onClick={resendEmail}>Resend Verification Email</button>
+                    <section>
+                        <p className="lead">
+                            <span display-if={firstName}>{firstName}, </span>Please check your email and click the link to validate you address.
+                        </p>
+                        <Link className="" onClick={resendEmail}>Resend Verification Email</Link>
                         <p display-if={sendSuccessMessage}>{sendSuccessMessage}</p>
-                    </div>
+                    </section>
+                    <section>
+                        <p className="">Or Connect with Google</p>
+                        <GoogleLoginButton hostedDomain={hostedDomain}/>
+                    </section>
+
                 </div>
             </div>
         )
