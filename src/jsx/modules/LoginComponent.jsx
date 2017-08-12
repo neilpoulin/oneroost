@@ -29,6 +29,7 @@ const LoginComponent = React.createClass({
         afterLoginPath: PropTypes.string,
         showTermsOfService: PropTypes.bool,
         showTabs: PropTypes.bool,
+        showThirdPartyLogins: PropTypes.bool,
     },
     getInitialState: function(){
         var username;
@@ -67,6 +68,7 @@ const LoginComponent = React.createClass({
             afterLoginPath: "/roosts",
             showTermsOfService: true,
             showTabs: false,
+            showThirdPartyLogins: true,
             success: function(user){
                 const { location, router, afterLoginPath} = this;
                 if (location && location.query.forward){
@@ -251,6 +253,7 @@ const LoginComponent = React.createClass({
             showRegister,
             showCompany,
             showTermsOfService,
+            showThirdPartyLogins,
         } = this.props;
 
         if (isLoggedIn) {
@@ -373,7 +376,7 @@ const LoginComponent = React.createClass({
                 {actionButton}
                 {forgotLink}
             </form>
-            <div className="oauthLogins">
+            <div className="oauthLogins" display-if={showThirdPartyLogins}>
                 <div className="provider">
                     <GoogleLoginButton/>
                 </div>

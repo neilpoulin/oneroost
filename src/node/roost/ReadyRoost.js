@@ -5,7 +5,7 @@ var Parse = ParseCloud.Parse;
 var EmailSender = require("./../EmailSender.js");
 var envUtil = require("./../util/envUtil.js");
 
-const DOCS_CONFIG_KEY = "readyRoostDocs";
+// const DOCS_CONFIG_KEY = "readyRoostDocs";
 const STEPS_CONFIG_KEY = "readyRoostSteps";
 
 async function processReadyRoostRequest(currentUser, params, response){
@@ -202,7 +202,8 @@ function createDocs(createdBy, roost, template, config){
     let toCreate = template.get("documents")
     if (!toCreate){
         console.log("falling back to default readyRosot documents")
-        toCreate = config.get(DOCS_CONFIG_KEY);
+        // toCreate = config.get(DOCS_CONFIG_KEY);
+        toCreate = []
     }
 
     let docs = toCreate.map((doc) => {

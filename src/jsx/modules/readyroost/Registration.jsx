@@ -52,6 +52,7 @@ const Registration = React.createClass({
             company={this.props.company}
             showButton={false}
             ref="loginComponent"
+            showThirdPartyLogins={false}
             showTermsOfService={false} />
         let continueButton = <button className="btn btn-primary" onClick={this.doLogin}>{this.props.nextText}</button>
 

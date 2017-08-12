@@ -201,7 +201,7 @@ const Invitation = withRouter(React.createClass({
                         <p className="lead">
                             <span className="">{stakeholder.user.firstName},</span>
                             <br/>
-                            {RoostUtil.getFullName(stakeholder.invitedBy)}<span display-if={stakeholder.user.company}> from {stakeholder.user.company}</span> has invited to you take part in an opportunity on OneRoost
+                            {RoostUtil.getFullName(stakeholder.invitedBy)}<span display-if={stakeholder.user.company}> from {stakeholder.user.company}</span> has invited to you take part in an opportunity.
                         </p>
                     </div>
                 </div>

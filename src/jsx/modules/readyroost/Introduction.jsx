@@ -25,7 +25,7 @@ const Introduction = React.createClass({
                 template={template}/>
         }
         let page =
-        <div>
+        <div className="Introduction">
             <div>
                 <h2>{template.title}</h2>
                 <p className="lead">
