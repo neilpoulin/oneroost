@@ -5,21 +5,19 @@ import SESParseAdapter from "./email/SESParseAdapter.js"
 import {S3Adapter} from "parse-server"
 
 export function getParseDashboard(){
-    const envName = envUtil.getEnvName()
+    const envName = envUtil.getEnvName().split("-")[0]
     console.log(`envName = ${envName}`)
     let config
-    switch (envName) {
-        case "stage":
-            config = require("./parse-dashboard-config-stage.json")
-            break
-        case "prod":
-            config = require("./parse-dashboard-config-prod.json")
-            break;
-        case "dev":
-        default:
-            config = require("./parse-dashboard-config-dev.json")
-            break;
+    if (envUtil.isStage()) {
+        config = require("./parse-dashboard-config-stage.json")
     }
+    else if (envUtil.isProd()) {
+        config = require("./parse-dashboard-config-prod.json")
+    }
+    else {
+        config = require("./parse-dashboard-config-dev.json")
+    }
+
     return new ParseDashboard(config);
 }
 
