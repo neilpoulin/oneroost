@@ -81,6 +81,7 @@ const opportunitiesQuery = (userId) => {
     query.include("deal.createdBy")
     query.include("deal.readyRoostUser")
     query.include("deal.template")
+    query.include("deal.template.account")
     query.equalTo("user", User.Pointer(userId))
     // query.equalTo("inviteAccepted", true)
     return query

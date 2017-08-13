@@ -173,7 +173,7 @@ export const getRoostDisplayName = function(deal, displayFor){
         roostName = getCompanyNameForUser(createdBy)
     }
     else if (readyRoostUser && !isReadyRoostUser){
-        roostName = getCompanyNameForUser(readyRoostUser.account)
+        roostName = getCompanyNameForUser(readyRoostUser)
     }
     else{
         roostName = deal.dealName;
