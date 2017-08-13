@@ -41,8 +41,8 @@ export default function reducer(state=initialState, action){
             state = state.set("lastLoaded", new Date())
             state = state.set("error", null)
             state = state.set("stakeholderId", stakeholder.get("objectId"))
-            state = state.set("dealId", stakeholder.get("deal").get("objectId"))
-            state = state.set("invitedBy", stakeholder.get("invitedBy").get("objectId"))
+            state = state.set("dealId", stakeholder.getIn(["deal", "objectId"]))
+            state = state.set("invitedBy", stakeholder.getIn(["invitedBy", "objectId"]))
             state = state.set("inviteAccepted", stakeholder.get("inviteAccepted") || false)
             break;
         case LOAD_ERROR:

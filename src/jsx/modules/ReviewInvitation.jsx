@@ -109,7 +109,7 @@ const ReviewInvitation = withRouter(React.createClass({
                     <p className="lead">
                         <span className="">{stakeholder.user.firstName},</span>
                         <br/>
-                        {RoostUtil.getFullName(invitedBy)} at {invitedBy.company} has submitted an opportunity for you to review.
+                        {RoostUtil.getFullName(invitedBy)} at {invitedBy.account.accountName} has submitted an opportunity for you to review.
 
                     </p>
                 </div>

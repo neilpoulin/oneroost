@@ -147,7 +147,7 @@ function getRoostNameForParseUser(deal, displayFor, currentUser){
     else{
         roostName = deal.get("dealName")
     }
-    return roostName;
+    return roostName || "";
 }
 
 /** Get the display name for the roost, contextual to the user passed in**/
@@ -178,5 +178,5 @@ export const getRoostDisplayName = function(deal, displayFor){
     else{
         roostName = deal.dealName;
     }
-    return roostName;
+    return roostName || "";
 }

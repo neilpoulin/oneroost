@@ -7,6 +7,11 @@ gulp.task("update-config", ["mongo-start"], function(){
     runCommand(command);
 })
 
+gulp.task("clean:db", ["mongo-start"], function(){
+    var command = "mongo localhost:27017/oneroost-db db/scripts/clean.js";
+    runCommand(command, true);
+})
+
 gulp.task("mongo-start", function() {
     var command = "mongod --dbpath db/data";
     runCommand(command);

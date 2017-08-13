@@ -146,6 +146,9 @@ export function loadDashboard(){
             dispatch(loadRequirementsForDealIds(dealIds))
             let roosts = stakeholders.reduce((map, stakeholder) => {
                 let dealId = stakeholder.deal.objectId;
+                if (!stakeholder.deal.template){
+                    return map;
+                }
                 templateIds = templateIds.add(stakeholder.deal.template.objectId)
                 let template = stakeholder.deal.template
                 if (!map.hasOwnProperty(dealId)){
